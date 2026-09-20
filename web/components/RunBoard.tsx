@@ -12,7 +12,7 @@ function summaryText(j: Job) {
   const arr = (k: string) => (Array.isArray(s[k]) ? (s[k] as unknown[]) : null);
   if (j.stage === "draft" && arr("drafted")) return arr("drafted")!.length ? "drafted" : "kept";
   if (j.stage === "direct" && s.lines) return `${s.lines} lines`;
-  if (j.stage === "voice" && s.planned != null) return `${s.rendered}/${s.planned} stems${s.cached ? ` (${s.cached} cached)` : ""}${arr("placeholder_voices")?.length ? " · placeholder" : ""}`;
+  if (j.stage === "voice" && s.planned != null) return `${s.rendered}/${s.planned} ${s.batching === "scene" ? "chunks" : "stems"}${s.lines ? ` · ${s.lines} lines` : ""}${s.cached ? ` (${s.cached} cached)` : ""}${arr("placeholder_voices")?.length ? " · placeholder" : ""}`;
   if (j.stage === "assemble" && s.total_ms) return `${((s.total_ms as number) / 1000).toFixed(0)}s master`;
   if (j.stage === "qa" && arr("failed_checks")) return arr("failed_checks")!.length ? `⚠ ${arr("failed_checks")!.join(",")}` : `✓ ${s.review_lines} to review`;
   if (j.stage === "outline" && s.ok) return `${s.outline ? (s.mode ?? "") : "kept"}${arr("new_characters")?.length ? ` · +${arr("new_characters")!.length} uncast` : ""}`;
@@ -54,7 +54,7 @@ export function RunBoard({ run, engineLabel }: { run: Run; engineLabel: string }
         <StatusPill status={run.status} />
         <span className="font-mono text-[13px] font-medium">{run.run_id}</span>
         <span className="text-[12px] text-muted">
-          {finished}/{run.jobs.length} jobs · {run.params.episodes} planned · producing {eps.length > 6 ? `${eps[0]}–${eps[eps.length - 1]}` : eps.map(ep).join(", ") || "none"} · {run.params.min_sec}-{run.params.max_sec}s · {engineLabel}{run.params.tts_model ? ` / ${run.params.tts_model}` : ""}
+          {finished}/{run.jobs.length} jobs · {run.params.episodes} planned · producing {eps.length > 6 ? `${eps[0]}–${eps[eps.length - 1]}` : eps.map(ep).join(", ") || "none"} · {run.params.min_sec}-{run.params.max_sec}s · {engineLabel}{run.params.tts_model ? ` / ${run.params.tts_model}` : ""}{run.params.tts_provider === "gemini" ? (run.params.tts_batching === "line" ? " · per line" : " · per scene") : ""}
         </span>
         <div className="meter min-w-[140px] flex-1"><i style={{ width: `${run.jobs.length ? (100 * finished) / run.jobs.length : 0}%` }} /></div>
         {live && <button className="btn-ghost" onClick={() => api.cancelRun(run.run_id).catch((e) => alert(e.message))}>Cancel</button>}

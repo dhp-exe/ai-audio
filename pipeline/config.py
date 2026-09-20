@@ -30,6 +30,7 @@ class Settings:
     # TTS (D4)
     tts_provider: str  # elevenlabs | gemini
     tts_model: str | None  # None = provider default (catalog.DEFAULT_MODEL)
+    tts_batching: str  # auto | line | scene (scene = Gemini multi-speaker chunks, auto = scene on Gemini)
     # assembly (D5, D6, D8, D9)
     enable_bgm: bool
     enable_sfx: bool
@@ -61,6 +62,7 @@ def get_settings() -> Settings:
         llm_temperature=float(os.getenv("AI_AUDIO_LLM_TEMPERATURE", "0.4")),
         tts_provider=os.getenv("AI_AUDIO_TTS_PROVIDER", "elevenlabs"),
         tts_model=os.getenv("AI_AUDIO_TTS_MODEL") or None,
+        tts_batching=os.getenv("AI_AUDIO_TTS_BATCHING", "auto"),
         enable_bgm=_bool("ENABLE_BGM", False),
         enable_sfx=_bool("ENABLE_SFX", False),
         padding_ms=int(os.getenv("AI_AUDIO_PADDING_MS", "400")),

@@ -152,6 +152,24 @@ def ambience_stem_name(episode: int, scene: int, tag: str) -> str:
     return f"ep{episode:02d}_sc{scene:02d}_amb_{tag}.wav"
 
 
+def chunk_stem_name(episode: int, scene: int, chunk: int) -> str:
+    """Scene-batched render unit (Gemini multi-speaker): several lines of one scene in one file."""
+    return f"ep{episode:02d}_sc{scene:02d}_c{chunk:02d}_chunk.wav"
+
+
+def chunk_stem_name_from_id(chunk_id: str) -> str:
+    m = re.match(r"^ep(\d{2})_sc(\d{2})_c(\d{2})$", chunk_id)
+    if not m:
+        raise ValueError(f"bad chunk_id {chunk_id!r}")
+    ep, sc, c = (int(x) for x in m.groups())
+    return chunk_stem_name(ep, sc, c)
+
+
+def render_manifest_path(series_id: str, episode: int) -> Path:
+    """Written by generate-voice: which render units (lines or chunks) make up the episode."""
+    return stems_dir(series_id, episode) / "render.json"
+
+
 def meta_path(stem: Path) -> Path:
     """Sidecar with provider, settings, content hash, cost. Used for idempotent regeneration."""
     return stem.with_suffix(stem.suffix + ".meta.json")

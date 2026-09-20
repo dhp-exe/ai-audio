@@ -2,7 +2,7 @@
 
 import { Plus, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { api, type ActorSummary, type Config, type Provider, type SeriesDetail, type StartRun } from "@/lib/api";
+import { api, type ActorSummary, type Batching, type Config, type Provider, type SeriesDetail, type StartRun } from "@/lib/api";
 import { wordCount } from "@/lib/format";
 import { ErrorText, Field, PlayButton, SectionTitle } from "./ui";
 
@@ -36,6 +36,7 @@ export function StoryForm({ cfg, existing, onStarted }: { cfg: Config; existing?
   const [script, setScript] = useState(st?.script ?? existing?.story_raw ?? "");
   const [provider, setProvider] = useState<Provider>(existing?.run?.tts_provider ?? cfg.tts.provider);
   const [model, setModel] = useState<string>(existing?.run?.tts_model ?? "");
+  const [batching, setBatching] = useState<Batching>("auto");
   const [episodes, setEpisodes] = useState(existing?.planned || cfg.defaults.episodes);
   const [minSec, setMinSec] = useState(existing?.run?.min_sec ?? cfg.defaults.min_sec);
   const [maxSec, setMaxSec] = useState(existing?.run?.max_sec ?? cfg.defaults.max_sec);
@@ -62,7 +63,7 @@ export function StoryForm({ cfg, existing, onStarted }: { cfg: Config; existing?
       title, total_minutes: minutes ? +minutes : null, genre, setting,
       roles: roles.filter((r) => r.name.trim()).map((r) => ({ name: r.name.trim(), description: r.description.trim(), actor_id: r.actor_id || null })),
       roles_text: rolesText, script, series_id: seriesId || null, episodes, produce: produce || null, min_sec: minSec, max_sec: maxSec,
-      force, tts_provider: provider, tts_model: model || null,
+      force, tts_provider: provider, tts_model: model || null, tts_batching: provider === "gemini" ? batching : "auto",
     };
     try { const run = await api.startRun(body); onStarted(run.run_id); }
     catch (ex) { setErr((ex as Error).message); }
@@ -129,7 +130,7 @@ export function StoryForm({ cfg, existing, onStarted }: { cfg: Config; existing?
       </details>
 
       <SectionTitle n={3}>Script</SectionTitle>
-      <textarea className="field min-h-[240px] font-mono text-[13px]" value={script} onChange={(e) => setScript(e.target.value)} placeholder="Dán toàn bộ kịch bản, cảnh theo cảnh…" required />
+      <textarea className="field min-h-[560px] font-mono text-[13px] leading-[1.55]" rows={28} value={script} onChange={(e) => setScript(e.target.value)} placeholder="Dán toàn bộ kịch bản, cảnh theo cảnh…" required />
       <p className="mt-1 text-[12px] text-muted">
         {words ? `${words} words · ${episodes} episodes × ${minSec}s need about ${need} words → ${words >= need * 0.5 ? "segment mode (your dialogue is kept word for word)" : "write mode (a treatment is expanded into dialogue)"}` : "Paste the whole story. A full script is split into episodes verbatim; a synopsis is written out."}
       </p>
@@ -149,6 +150,14 @@ export function StoryForm({ cfg, existing, onStarted }: { cfg: Config; existing?
         {prov.models.find((m) => m.id === model)?.note}
         {missingVoices.length > 0 && ` No ${prov.label} voice yet for ${missingVoices.join(", ")}; one is assigned at cast time.`}
       </p>
+      {provider === "gemini" && (
+        <Field label="Requests per episode" className="mt-3" hint={batching === "line" ? "One request per spoken line (8–12 per episode); gives per-line stems." : "One request per scene chunk of up to two speakers (usually 1–3 per episode); best when the daily request quota is small."}>
+          <select className="field" value={batching} onChange={(e) => setBatching(e.target.value as Batching)}>
+            <option value="auto">Fewest requests (per scene)</option>
+            <option value="line">One per line</option>
+          </select>
+        </Field>
+      )}
 
       <SectionTitle n={5}>Production</SectionTitle>
       <div className="grid grid-cols-3 gap-3">

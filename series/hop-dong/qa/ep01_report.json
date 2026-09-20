@@ -1,0 +1,36 @@
+{
+  "checks": {
+    "stems_complete": {
+      "ok": true,
+      "missing": [],
+      "batching": "scene",
+      "units": 1
+    },
+    "duration": {
+      "ok": false,
+      "seconds": 40.6,
+      "target": 70
+    },
+    "loudness": {
+      "ok": true,
+      "integrated_lufs": -15.9,
+      "true_peak_dbtp": -4.5,
+      "target_lufs": -16.0,
+      "target_tp": -1.5
+    },
+    "clipping": {
+      "ok": null,
+      "todo": true
+    },
+    "silence": {
+      "ok": null,
+      "todo": true
+    }
+  },
+  "review_lines": [
+    "ep01_sc01_l006",
+    "ep01_sc01_l008"
+  ],
+  "human": null,
+  "generated_at": "2026-09-20T12:36:55+00:00"
+}

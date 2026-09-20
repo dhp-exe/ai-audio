@@ -1,10 +1,31 @@
 {
-  "overview": {"title": "Bản Hợp Đồng Định Mệnh", "total_minutes": 30, "genre": "Ngôn tình Tổng tài, thanh mai trúc mã, oan gia ngõ hẹp", "setting": "Hiện đại, thành phố lớn tại Trung Quốc"},
+  "overview": {
+    "title": "Bản Hợp Đồng Định Mệnh",
+    "total_minutes": 30,
+    "genre": "Ngôn tình Tổng tài, thanh mai trúc mã, oan gia ngõ hẹp",
+    "setting": "Hiện đại, thành phố lớn tại Trung Quốc"
+  },
   "roles": [
-    {"name": "Giang Thần /duong", "description": "28 tuổi, Tổng giám đốc tập đoàn Hoàng Gia. Đẹp trai, lạnh lùng, tài giỏi, có chút gia trưởng nhưng ẩn sâu bên trong là trái tim ấm áp. Luôn giữ khoảng cách với mọi người, ngoại trừ một người duy nhất."},
-    {"name": "Tô Mạn", "description": "24 tuổi, nhân viên mới tốt nghiệp, hoạt bát, thông minh, có chút bướng bỉnh và gan dạ. Cô và Giang Thần là thanh mai trúc mã. /ngan"},
-    {"name": "Lý Minh", "description": "29 tuổi, trợ lý thân cận của Giang Thần, người bạn luôn giúp anh giải quyết mọi vấn đề."},
-    {"name": "Trần Vy", "description": "25 tuổi, đồng nghiệp của Tô Mạn, xinh đẹp nhưng đố kỵ và luôn tìm cách hãm hại Tô Mạn."}
+    {
+      "name": "Giang Thần",
+      "description": "28 tuổi, Tổng giám đốc tập đoàn Hoàng Gia. Đẹp trai, lạnh lùng, tài giỏi, có chút gia trưởng nhưng ẩn sâu bên trong là trái tim ấm áp. Luôn giữ khoảng cách với mọi người, ngoại trừ một người duy nhất.",
+      "actor_id": "duong"
+    },
+    {
+      "name": "Tô Mạn",
+      "description": "24 tuổi, nhân viên mới tốt nghiệp, hoạt bát, thông minh, có chút bướng bỉnh và gan dạ. Cô và Giang Thần là thanh mai trúc mã.",
+      "actor_id": null
+    },
+    {
+      "name": "Lý Minh",
+      "description": "29 tuổi, trợ lý thân cận của Giang Thần, người bạn luôn giúp anh giải quyết mọi vấn đề.",
+      "actor_id": null
+    },
+    {
+      "name": "Trần Vy",
+      "description": "25 tuổi, đồng nghiệp của Tô Mạn, xinh đẹp nhưng đố kỵ và luôn tìm cách hãm hại Tô Mạn.",
+      "actor_id": null
+    }
   ],
-  "script": "CẢNH 1. Sảnh tập đoàn Hoàng Gia. Sáng.\nTô Mạn (nội tâm): Ngày đầu tiên đi làm. Tôi đã tự nhủ sẽ không để ai biết mình quen tổng giám đốc từ nhỏ.\nTrần Vy: Cô là người mới? Nhớ đấy, ở đây không ai bênh cô đâu.\nTô Mạn: Tôi không cần ai bênh. Tôi cần một cái bàn và một máy tính.\nLý Minh: Tô Mạn phải không? Tổng giám đốc muốn gặp cô. Ngay bây giờ.\nTô Mạn (nội tâm): Tim tôi đập mạnh. Anh ấy biết tôi ở đây.\n\nCẢNH 2. Phòng tổng giám đốc.\nGiang Thần: Ngồi xuống. Cô ký hợp đồng thử việc mà không đọc điều khoản thứ bảy.\nTô Mạn: Điều khoản thứ bảy nói gì?\nGiang Thần: Nhân viên thử việc phải báo cáo trực tiếp cho tôi. Mỗi ngày. Bảy giờ sáng.\nTô Mạn: Anh cố tình. Anh vẫn thích kiểm soát người khác như hồi mười lăm tuổi.\nGiang Thần: Hồi mười lăm tuổi, cô là người bỏ đi mà không nói một lời.\nTô Mạn (nội tâm): Anh vẫn nhớ. Sau chín năm, anh vẫn nhớ.\nGiang Thần: Ra ngoài đi. Bảy giờ sáng mai.\n\nCẢNH 3. Phòng làm việc chung. Chiều.\nTrần Vy: Nghe nói cô được gọi lên phòng tổng giám đốc. Quen biết gì à?\nTô Mạn: Chỉ là hợp đồng.\nTrần Vy: Hợp đồng gì mà phải gặp riêng? Cẩn thận, ở đây người ta ghét nhất kẻ đi cửa sau.\nLý Minh: Trần Vy, hồ sơ dự án Bắc Hải của cô trễ hai ngày rồi.\nTô Mạn (nội tâm): Cô ta nhìn tôi như nhìn một con mồi. Tôi biết ánh mắt đó.\n\nCẢNH 4. Bãi đỗ xe. Tối.\nGiang Thần: Sao còn chưa về?\nTô Mạn: Tôi làm nốt báo cáo cho bảy giờ sáng mai. Anh muốn thế mà.\nGiang Thần: Lên xe. Trời sắp mưa.\nTô Mạn: Không cần. Tôi có ô.\nGiang Thần: Tô Mạn. Chín năm trước cô bỏ đi vì mẹ cô bệnh, tôi biết. Tôi đã tìm cô hai năm.\nTô Mạn (nội tâm): Tôi đứng chết lặng. Anh biết. Anh đã biết từ lâu.\nTô Mạn: Vậy tại sao anh không đến?\nGiang Thần: Vì bố tôi đưa cho mẹ cô một bản hợp đồng. Và bà đã ký.\n\nCẢNH 5. Căn hộ Tô Mạn. Đêm.\nTô Mạn (nội tâm): Bản hợp đồng. Mẹ chưa bao giờ kể. Tôi lục lại hộp giấy tờ cũ của mẹ.\nTô Mạn: Đây rồi. Hợp đồng chuyển nhượng... đứng tên tôi?\nTô Mạn (nội tâm): Tôi là người thừa kế một phần tập đoàn Hoàng Gia. Và Giang Thần đã giấu điều đó suốt chín năm.\nLý Minh (qua điện thoại): Tô Mạn, đừng tin bất cứ giấy tờ nào trước khi gặp tôi. Trần Vy vừa vào phòng tổng giám đốc với một tập hồ sơ mang tên cô."
+  "script": "Phân cảnh 1: Cuộc Gặp Gỡ Định Mệnh Dưới Hầm Xe\n\nÂm thanh: Tiếng xe cộ ồn ào trong bãi đỗ xe, tiếng động cơ xe máy, tiếng va chạm, tiếng đồ rơi loảng xoảng.\nGiang Thần (Lồng tiếng, giọng trầm, lạnh lùng): \"Cô không có mắt nhìn đường sao? Chiếc xe của cô suýt nữa thì quệt vào xe của tôi!\"\nTô Mạn (Lồng tiếng, giọng hơi cao, có chút bối rối và tự vệ): \"Xin lỗi anh, tôi không cố ý! Xe của tôi chỉ hơi lướt qua thôi mà, anh có sao không?\"\nGiang Thần: \"Hơi lướt qua? Cô nghĩ cái gì vậy? Đây là xe của tôi, không phải đồ chơi để cô tùy tiện làm trầy xước!\"\nTô Mạn (Lấy lại bình tĩnh, hơi bực mình): \"Anh quá đáng rồi đó! Tôi đã xin lỗi rồi mà. Xe của tôi cũng bị hỏng rồi đây này.\"\nGiang Thần (Nhếch mép cười khinh bỉ): \"Cô nghĩ tôi quan tâm đến cái xe máy rách đó của cô sao? Đền đi, chi phí sửa xe cho tôi. Cô có làm việc ở đây không? Giám đốc tập đoàn Hoàng Gia, Giang Thần.\"\nTô Mạn (Sững sờ): \"Anh... anh là...\"\nGiang Thần: \"Đúng vậy. Giờ thì, cô có muốn mất việc ngay trong ngày đầu tiên không?\"\n\nPhân cảnh 2: Ngày Đầu Tiên Làm Việc Tại Tập Đoàn Hoàng Gia\n\nÂm thanh: Tiếng gõ bàn phím rộn ràng, tiếng bước chân, tiếng mở cửa văn phòng.\nTô Mạn (Nghĩ thầm, giọng hơi run): \"Trời ơi, tại sao lại là anh ta? Lẽ nào số phận muốn trêu đùa mình sao?\"\nGiang Thần (Bước vào văn phòng, giọng vẫn lạnh lùng nhưng có chút gì đó khác lạ): \"Báo cáo tiến độ dự án X. Tôi cần nó trên bàn tôi trước giờ ăn trưa.\"\nTrần Vy (Giọng điệu nịnh nọt, giả tạo): \"Giám đốc, em đã hoàn thành rồi ạ. Cô Tô Mạn chỉ là nhân viên mới, có lẽ còn nhiều điều chưa biết.\"\nTô Mạn (Lên tiếng, giọng tự tin hơn): \"Tôi đã hoàn thành rồi, Giám đốc. Anh có thể xem qua.\" (Đặt tập tài liệu lên bàn Giang Thần).\nGiang Thần (Nhìn lướt qua, ánh mắt dừng lại ở Tô Mạn): \"Tốt. Tôi sẽ xem xét.\"\nTô Mạn (Nghĩ thầm): \"Thật kỳ lạ, anh ta nhìn mình sao đó...\"\nTrần Vy (Bực tức, sau khi Giang Thần rời đi): \"Cô nghĩ cô là ai mà dám cạnh tranh với tôi?\""
 }

@@ -36,11 +36,28 @@ def duration_ms(path: Path) -> int:
     return int(round(float(out) * 1000))
 
 
+def load_units(stems: Path) -> dict[str, dict]:
+    """line_id -> render unit from stems/epNN/render.json (scene batching). Empty when the episode was
+    rendered per line (or before manifests existed)."""
+    p = stems / "render.json"
+    if not p.exists():
+        return {}
+    try:
+        data = json.loads(p.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {}
+    if data.get("batching") != "scene":
+        return {}
+    return {lid: u for u in data.get("units", []) for lid in u.get("line_ids", [])}
+
+
 def build_timeline(script: EpisodeScript, stems: Path, *, padding_ms: int, padding_min: int, padding_max: int,
                    use_director_pauses: bool, scene_gap_ms: int) -> Timeline:
     clips: list[TimelineClip] = []
     missing: list[str] = []
     cursor = 0
+    units = load_units(stems)  # scene batching: several lines share one stem
+    placed: set[str] = set()
 
     def add_silence(ms: int, scene_id: str, line_id: str | None = None) -> None:
         nonlocal cursor
@@ -56,16 +73,25 @@ def build_timeline(script: EpisodeScript, stems: Path, *, padding_ms: int, paddi
             if line.type == LineType.pause:
                 add_silence(line.pause_after_ms, scene.scene_id, line.line_id)
                 continue
-            stem = stems / naming.stem_name_from_line_id(line.line_id, line.character_id, line.type.value)
+            unit = units.get(line.line_id)
+            if unit:
+                if unit["id"] in placed:
+                    continue  # already covered by its chunk
+                stem = stems / unit["path"]
+                unit_id, pause = unit["id"], unit.get("pause_after_ms", line.pause_after_ms)
+                placed.add(unit_id)
+            else:
+                stem = stems / naming.stem_name_from_line_id(line.line_id, line.character_id, line.type.value)
+                unit_id, pause = line.line_id, line.pause_after_ms
             if not stem.exists():
-                missing.append(line.line_id)
+                missing.append(unit_id)
                 continue
             d = duration_ms(stem)
             clips.append(TimelineClip(kind="stem", path=str(stem), start_ms=cursor, duration_ms=d,
-                                      line_id=line.line_id, scene_id=scene.scene_id))
+                                      line_id=unit_id, scene_id=scene.scene_id))
             cursor += d
-            gap = max(padding_min, min(padding_max, line.pause_after_ms)) if use_director_pauses else padding_ms
-            add_silence(gap, scene.scene_id, line.line_id)
+            gap = max(padding_min, min(padding_max, pause)) if use_director_pauses else padding_ms
+            add_silence(gap, scene.scene_id, unit_id)
 
     if missing:
         raise SystemExit(f"missing stems for {len(missing)} lines (run generate-voice): {missing[:5]}{'...' if len(missing) > 5 else ''}")

@@ -206,12 +206,23 @@ Provider adapters live in `pipeline/providers/`. Vendor rules learned live and e
 FFmpeg; Free tier cannot use library voices via the API. The character alignment returned by
 `convert_with_timestamps` is stored for later subtitle and lip-sync work.
 
-Two engines, chosen per run: **ElevenLabs** (the Voice IPs; paid) and **Gemini TTS** (free tier;
-30 prebuilt voices by name; the Director's emotion/intensity/pace/volume/tags become a Vietnamese
-direction prefixed to the text, which the model does not read aloud). A character keeps one voice for
-the whole run; there is no cross-engine fallback. Concurrency: thread pool of 2 for ElevenLabs, serial
-for Gemini (free-tier rate limits); the orchestrator additionally serializes the voice stage across
-episodes.
+Two engines, chosen per run: **ElevenLabs** (the Voice IPs) and **Gemini TTS** (30 prebuilt voices
+by name; the Director's emotion/intensity/pace/volume/tags become a Vietnamese direction prefixed to
+the text, which the model does not read aloud). A character keeps one voice for the whole run; there
+is no cross-engine fallback. Concurrency: thread pool of 2 for ElevenLabs, serial for Gemini (per-minute
+limits).
+
+**Scene batching (Gemini, default).** Without billing Gemini allows 3 requests per minute and 10 per
+day per model, so one request per line (8-12 per episode) does not fit. `pipeline/chunking.py` cuts
+each scene into *chunks*: maximal runs of consecutive spoken lines with at most two actors (a pause line
+or a third actor closes the chunk). Each chunk is one multi-speaker request: the request config maps
+ASCII speaker labels (`Ngan`, `MinhKhoi`) to the actors' Gemini voices, the text is a labelled
+transcript, and the direction header lists the per-line acting notes as a numbered guide the model is
+told not to read. Output is `stems/epNN/epNN_scNN_cNN_chunk.wav` plus `stems/epNN/render.json`, the
+manifest that tells assemble-audio and qa-audio which lines each unit covers. Inside a chunk the model
+places the pauses; the timeline still adds the clamped Director pause after each chunk, the scene gaps,
+explicit pause lines and the tail. Typical episodes need 1-3 requests. `--batching line` keeps per-line
+stems (needed for line-level re-renders and the alignment data); ElevenLabs always renders per line.
 
 Cost control: the hash covers provider, model, voice, final text and settings. Editing one line and
 re-running touches one stem. `--dry-run` prints payloads and the character count before spending.

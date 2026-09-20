@@ -76,12 +76,14 @@ class GeminiTtsProvider:
 
         client = self._get_client()
         prompt = build_prompt(req.settings.get("style"), req.text)
-        config = types.GenerateContentConfig(
-            response_modalities=["AUDIO"],
-            speech_config=types.SpeechConfig(
-                voice_config=types.VoiceConfig(prebuilt_voice_config=types.PrebuiltVoiceConfig(voice_name=req.voice_id))
-            ),
-        )
+        if len(req.speakers) > 1:  # scene chunk: up to two speakers in one request
+            speech = types.SpeechConfig(multi_speaker_voice_config=types.MultiSpeakerVoiceConfig(speaker_voice_configs=[
+                types.SpeakerVoiceConfig(speaker=label, voice_config=types.VoiceConfig(
+                    prebuilt_voice_config=types.PrebuiltVoiceConfig(voice_name=voice))) for label, voice in req.speakers]))
+        else:
+            voice = req.speakers[0][1] if req.speakers else req.voice_id
+            speech = types.SpeechConfig(voice_config=types.VoiceConfig(prebuilt_voice_config=types.PrebuiltVoiceConfig(voice_name=voice)))
+        config = types.GenerateContentConfig(response_modalities=["AUDIO"], speech_config=speech)
         attempt = 0
         t0 = time.time()
         while True:

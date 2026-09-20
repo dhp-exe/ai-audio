@@ -1,5 +1,7 @@
-$ /Users/dohuuphuoc/ai-audio/.venv/bin/python /Users/dohuuphuoc/ai-audio/.claude/skills/episodize/scripts/episodize.py --series hop-dong --only 1
+$ /Users/dohuuphuoc/ai-audio/.venv/bin/python /Users/dohuuphuoc/ai-audio/.claude/skills/episodize/scripts/episodize.py --series hop-dong --only 1 --force
 
-{"ok": true, "outline": false, "mode": "segment", "drafted": [], "skipped": [1], "new_characters": [], "dry_run": false}
+ep01: verbatim 100%
+ep01: 1 scenes, 145 words, est 65s
+{"ok": true, "outline": false, "mode": "segment", "drafted": [1], "skipped": [], "new_characters": [], "dry_run": false}
 
 [exit 0]

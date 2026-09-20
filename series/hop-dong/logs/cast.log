@@ -1,10 +1,10 @@
 engine: Gemini TTS / gemini-2.5-flash-preview-tts
 duong: ok (gemini:Orus)
 ngan: ok (gemini:Leda)
-minh-khoi: ok (gemini:Charon)
-linh: ok (gemini:Erinome)
-casting: Giang Thần -> duong (user) voice Orus Giọng nam trầm ấm, uy quyền, phù hợp với hình tượng tổng giám đốc lạnh lùng.
-casting: Tô Mạn -> ngan (user) voice Leda Giọng nữ trẻ trung, thông minh, bướng bỉnh, phù hợp với nhân vật chính.
-casting: Lý Minh -> minh-khoi (ai) voice Charon Giọng nam trầm ấm, đáng tin cậy, phù hợp với vai trợ lý thân cận.
-casting: Trần Vy -> linh (ai) voice Erinome Giọng nữ sắc sảo, có chút khàn, phù hợp với vai phản diện đố kỵ.
+minh-khoi: ok (gemini:Puck)
+linh: ok (gemini:Kore)
+casting: Giang Thần -> duong (user) voice Orus Giọng trầm, lạnh lùng, điềm tĩnh phù hợp với hình tượng tổng tài gia trưởng nhưng sâu sắc.
+casting: Tô Mạn -> ngan (ai) voice Leda Giọng trong trẻo, tươi sáng, thể hiện được sự bướng bỉnh và ngây thơ của nhân viên mới.
+casting: Lý Minh -> minh-khoi (ai) voice Puck Chất giọng linh hoạt, tinh nghịch phù hợp với vai trợ lý thân cận, hay tấu hài.
+casting: Trần Vy -> linh (ai) voice Kore Giọng sắc sảo, có chút mỉa mai, rất hợp với vai đồng nghiệp đố kỵ.
 {"ok": true, "provider": "gemini", "model": "gemini-2.5-flash-preview-tts", "cast": ["duong", "ngan", "minh-khoi", "linh"], "placeholders": [], "auto_voiced": []}

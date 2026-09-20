@@ -23,18 +23,22 @@ class TtsRequest:
     line_id: str | None = None
     previous_text: str | None = None  # prosody context (same speaker), not part of the cache hash
     next_text: str | None = None
+    speakers: tuple[tuple[str, str], ...] = ()  # multi-speaker chunk: ((label, voice_id), ...); voice_id then names the chunk
 
     def content_hash(self) -> str:
         payload = json.dumps(
             {"provider": self.provider, "model_id": self.model_id, "voice_id": self.voice_id,
-             "text": self.text, "settings": dict(sorted(self.settings.items()))},
+             "text": self.text, "settings": dict(sorted(self.settings.items())), "speakers": list(self.speakers)},
             sort_keys=True, ensure_ascii=False,
         )
         return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
     def as_dict(self) -> dict:
-        return {"provider": self.provider, "model_id": self.model_id, "voice_id": self.voice_id,
-                "text": self.text, "settings": self.settings, "line_id": self.line_id}
+        d = {"provider": self.provider, "model_id": self.model_id, "voice_id": self.voice_id,
+             "text": self.text, "settings": self.settings, "line_id": self.line_id}
+        if self.speakers:
+            d["speakers"] = [list(s) for s in self.speakers]
+        return d
 
 
 class TtsProvider(Protocol):

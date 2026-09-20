@@ -2,9 +2,9 @@
   "series_id": "hop-dong",
   "language": "vi-VN",
   "title": "Bản Hợp Đồng Định Mệnh",
-  "logline": "Tô Mạn trở lại làm việc tại tập đoàn Hoàng Gia, nơi cô tái ngộ người bạn thanh mai trúc mã Giang Thần, chỉ để khám phá ra những bí mật đen tối đằng sau bản hợp đồng định mệnh giữa gia đình họ.",
-  "premise": "Tô Mạn, một nhân viên mới, vô tình rơi vào lưới tình và những âm mưu quyền lực khi phát hiện ra mình là người thừa kế bí ẩn của tập đoàn Hoàng Gia, trong khi người bạn cũ Giang Thần dường như đang che giấu một sự thật đau lòng từ 9 năm trước.",
-  "tone": "Lãng mạn, kịch tính, căng thẳng, bí ẩn.",
+  "logline": "Cuộc chạm trán oan gia tại bãi đỗ xe khiến Tô Mạn không ngờ rằng kẻ bắt nạt mình lại chính là vị sếp tổng lạnh lùng, khởi đầu cho một mối quan hệ đầy sóng gió.",
+  "premise": "Tô Mạn, một nhân viên mới, vô tình va chạm xe với Giang Thần - vị tổng giám đốc quyền lực và cũng là thanh mai trúc mã cô đã mất liên lạc nhiều năm. Từ những hiểu lầm tại bãi đỗ xe đến sự cạnh tranh khốc liệt tại văn phòng, cả hai dần nhận ra nhau giữa những toan tính và đố kỵ.",
+  "tone": "Lãng mạn, kịch tính, hài hước nhẹ nhàng.",
   "genre": [
     "Ngôn tình",
     "Tổng tài",
@@ -25,28 +25,28 @@
       "role_type": "protagonist",
       "actor_id": "duong",
       "assigned_by": "user",
-      "reason": "Giọng nam trầm ấm, uy quyền, phù hợp với hình tượng tổng giám đốc lạnh lùng."
+      "reason": "Giọng trầm, lạnh lùng, điềm tĩnh phù hợp với hình tượng tổng tài gia trưởng nhưng sâu sắc."
     },
     {
       "role_name": "Tô Mạn",
       "role_type": "protagonist",
       "actor_id": "ngan",
-      "assigned_by": "user",
-      "reason": "Giọng nữ trẻ trung, thông minh, bướng bỉnh, phù hợp với nhân vật chính."
+      "assigned_by": "ai",
+      "reason": "Giọng trong trẻo, tươi sáng, thể hiện được sự bướng bỉnh và ngây thơ của nhân viên mới."
     },
     {
       "role_name": "Lý Minh",
       "role_type": "supporting",
       "actor_id": "minh-khoi",
       "assigned_by": "ai",
-      "reason": "Giọng nam trầm ấm, đáng tin cậy, phù hợp với vai trợ lý thân cận."
+      "reason": "Chất giọng linh hoạt, tinh nghịch phù hợp với vai trợ lý thân cận, hay tấu hài."
     },
     {
       "role_name": "Trần Vy",
       "role_type": "antagonist",
       "actor_id": "linh",
       "assigned_by": "ai",
-      "reason": "Giọng nữ sắc sảo, có chút khàn, phù hợp với vai phản diện đố kỵ."
+      "reason": "Giọng sắc sảo, có chút mỉa mai, rất hợp với vai đồng nghiệp đố kỵ."
     }
   ],
   "cast": [
@@ -65,42 +65,42 @@
   "episodes": [
     {
       "number": 1,
-      "title": "Ngày Đầu Tiên Định Mệnh",
-      "logline": "Tô Mạn bắt đầu công việc tại tập đoàn Hoàng Gia và ngay lập tức bị Giang Thần triệu tập, khơi gợi lại ký ức 9 năm trước.",
+      "title": "Va chạm định mệnh",
+      "logline": "Tô Mạn gây tai nạn nhỏ với một chiếc xe sang trọng trong hầm đỗ xe và bàng hoàng nhận ra đó là vị tổng giám đốc khó tính của công ty mình.",
       "key_beats": [
-        "Tô Mạn vào làm tại Hoàng Gia",
-        "Trần Vy gây khó dễ",
-        "Lý Minh thông báo Giang Thần muốn gặp",
-        "Cuộc đối đầu giữa Tô Mạn và Giang Thần trong phòng tổng giám đốc"
+        "Tô Mạn va chạm xe trong hầm",
+        "Cuộc tranh cãi nảy lửa với người lạ",
+        "Người lạ tiết lộ danh tính là sếp tổng",
+        "Tô Mạn đối mặt với nguy cơ mất việc"
       ],
-      "cliffhanger": "Giang Thần lạnh lùng ra lệnh cho Tô Mạn phải báo cáo trực tiếp cho anh vào 7 giờ sáng mỗi ngày, khơi lại nỗi đau quá khứ.",
-      "source_span": "Cảnh 1 - Cảnh 2"
+      "cliffhanger": "Giang Thần lạnh lùng hỏi: Cô có muốn mất việc ngay trong ngày đầu tiên không?",
+      "source_span": "Phân cảnh 1"
     },
     {
       "number": 2,
-      "title": "Bí Mật Chôn Giấu",
-      "logline": "Sự nghi ngờ của đồng nghiệp tăng cao khi Tô Mạn liên tục gặp riêng Giang Thần, dẫn đến một cuộc đối thoại bãi đỗ xe đầy sóng gió.",
+      "title": "Ngày đầu ác mộng",
+      "logline": "Tô Mạn đi làm ngày đầu tiên và phát hiện sếp mới chính là kẻ cô đã đắc tội, đồng thời đối mặt với sự hãm hại từ đồng nghiệp.",
       "key_beats": [
-        "Trần Vy nghi ngờ Tô Mạn đi cửa sau",
-        "Lý Minh nhắc nhở Trần Vy về dự án trễ",
-        "Giang Thần bắt gặp Tô Mạn ở bãi đỗ xe",
-        "Giang Thần tiết lộ lý do anh tìm kiếm cô suốt 2 năm"
+        "Tô Mạn bàng hoàng nhận ra sếp",
+        "Giang Thần giao nhiệm vụ khó",
+        "Trần Vy tìm cách hạ bệ Tô Mạn",
+        "Tô Mạn nỗ lực hoàn thành công việc"
       ],
-      "cliffhanger": "Giang Thần tiết lộ rằng 9 năm trước, bố anh đã ép mẹ Tô Mạn ký một bản hợp đồng khiến cô phải bỏ đi.",
-      "source_span": "Cảnh 3 - Cảnh 4"
+      "cliffhanger": "Trần Vy đe dọa: Cô nghĩ cô là ai mà dám cạnh tranh với tôi?",
+      "source_span": "Phân cảnh 2 - đầu đến giữa"
     },
     {
       "number": 3,
-      "title": "Sự Thật Phơi Bày",
-      "logline": "Tô Mạn phát hiện ra mình là người thừa kế của tập đoàn Hoàng Gia, trong khi một âm mưu mới đang nhắm vào cô.",
+      "title": "Bí mật thanh mai",
+      "logline": "Sự căng thẳng lên đến đỉnh điểm khi Giang Thần bắt đầu nghi ngờ về danh tính thực sự của Tô Mạn, khiến Trần Vy càng thêm điên tiết.",
       "key_beats": [
-        "Tô Mạn lục lại giấy tờ cũ của mẹ",
-        "Phát hiện bản hợp đồng chuyển nhượng đứng tên mình",
-        "Nhận ra Giang Thần đã giấu sự thật suốt 9 năm",
-        "Lý Minh gọi điện cảnh báo khẩn cấp"
+        "Giang Thần xem xét tài liệu của Tô Mạn",
+        "Ánh mắt kỳ lạ của Giang Thần",
+        "Sự đố kỵ của Trần Vy bùng phát",
+        "Khoảnh khắc Giang Thần nhận ra bóng hình xưa cũ"
       ],
-      "cliffhanger": "Lý Minh cảnh báo Tô Mạn không được tin vào bất cứ giấy tờ nào vì Trần Vy đang âm mưu chiếm đoạt hồ sơ mang tên cô.",
-      "source_span": "Cảnh 5"
+      "cliffhanger": "Giang Thần tiến lại gần, thì thầm: Chúng ta đã gặp nhau ở đâu đó rồi, phải không?",
+      "source_span": "Phân cảnh 2 - cuối"
     }
   ],
   "changelog": [

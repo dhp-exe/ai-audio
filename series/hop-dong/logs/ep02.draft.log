@@ -1,0 +1,5 @@
+$ /Users/dohuuphuoc/ai-audio/.venv/bin/python /Users/dohuuphuoc/ai-audio/.claude/skills/episodize/scripts/episodize.py --series hop-dong --only 2
+
+ep02: verbatim 100%
+
+[exit -15]

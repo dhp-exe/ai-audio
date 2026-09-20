@@ -1,5 +1,5 @@
 $ /Users/dohuuphuoc/ai-audio/.venv/bin/python /Users/dohuuphuoc/ai-audio/.claude/skills/parse-script/scripts/parse_script.py --series hop-dong --episode 1 --force --provider gemini
 
-{"ok": true, "episode": 1, "lines": 12, "scenes": 2, "peak_lines": ["ep01_sc02_l007"], "remapped": 0, "path": "/Users/dohuuphuoc/ai-audio/series/hop-dong/scripts/parsed/ep01.json"}
+{"ok": true, "episode": 1, "lines": 8, "scenes": 1, "peak_lines": ["ep01_sc01_l006", "ep01_sc01_l008"], "remapped": 0, "path": "/Users/dohuuphuoc/ai-audio/series/hop-dong/scripts/parsed/ep01.json"}
 
 [exit 0]

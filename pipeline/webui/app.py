@@ -147,7 +147,7 @@ def config() -> dict:
     reg = registry_io.load()
     return {
         "llm_model": s.llm_model,
-        "tts": {"provider": s.tts_provider, "model": s.tts_model or DEFAULT_MODEL.get(s.tts_provider)},
+        "tts": {"provider": s.tts_provider, "model": s.tts_model or DEFAULT_MODEL.get(s.tts_provider), "batching": s.tts_batching},
         "keys": {"gemini": bool(s.gemini_api_key), "elevenlabs": bool(s.elevenlabs_api_key)},
         "catalog": catalog(),
         "defaults": {"episodes": 30, "produce": 5, "min_sec": 50, "max_sec": 70},
@@ -186,6 +186,7 @@ class StartRun(BaseModel):
     # engine
     tts_provider: str = "elevenlabs"
     tts_model: str | None = None
+    tts_batching: str = "auto"
 
 
 def _slug(s: str) -> str:
@@ -222,8 +223,11 @@ def start_run(body: StartRun) -> dict:
                                 + "; ".join(f"{a} -> {', '.join(n)}" for a, n in dup.items()))
         story = StoryInput(overview=StoryOverview(title=body.title, total_minutes=body.total_minutes, genre=body.genre, setting=body.setting),
                            roles=roles, script=body.script)
-        params = RunParams(series_id=sid, episodes=body.episodes, produce=body.produce, min_sec=body.min_sec, max_sec=body.max_sec,
-                           force=body.force, tts_provider=body.tts_provider, tts_model=model)
+        try:
+            params = RunParams(series_id=sid, episodes=body.episodes, produce=body.produce, min_sec=body.min_sec, max_sec=body.max_sec,
+                               force=body.force, tts_provider=body.tts_provider, tts_model=model, tts_batching=body.tts_batching)
+        except ValueError as e:
+            raise HTTPException(422, str(e)) from e
         orch = Orchestrator(params, story)
         run = orch.start()
         _runs[run.run_id] = orch
@@ -313,6 +317,7 @@ class ResumeIn(BaseModel):
     next: int | None = Field(None, ge=1, le=99, description="produce the next N episodes without a master")
     tts_provider: str | None = None
     tts_model: str | None = None
+    tts_batching: str = "auto"
     force: bool = False
 
 
@@ -334,8 +339,11 @@ def resume_series(sid: str, body: ResumeIn) -> dict:
             only = pool[: (body.next or 5)]
         if not only:
             raise HTTPException(409, "nothing left to produce: every planned episode already has a master (tick overwrite to re-render)")
-        params = RunParams(series_id=sid, episodes=s["planned"], min_sec=last.get("min_sec") or 50, max_sec=last.get("max_sec") or 70,
-                           force=body.force, tts_provider=provider, tts_model=model, only=only)
+        try:
+            params = RunParams(series_id=sid, episodes=s["planned"], min_sec=last.get("min_sec") or 50, max_sec=last.get("max_sec") or 70,
+                               force=body.force, tts_provider=provider, tts_model=model, tts_batching=body.tts_batching, only=only)
+        except ValueError as e:
+            raise HTTPException(422, str(e)) from e
         orch = Orchestrator(params, None)
         run = orch.start()
         _runs[run.run_id] = orch

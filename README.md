@@ -139,14 +139,14 @@ Design rules that hold everywhere:
 
 | # | stage | job in the run board | input | what happens | output |
 |---|---|---|---|---|---|
-| 0 | Input | — | web form | Overview (name, length, genre, setting), one row per character (name, description, optional Character IP or `/actor` tag), the script, engine and model, episodes and length. The API rejects an IP pinned to two roles. | `series/<id>/story.json`, `story_raw.txt` |
-| 1 | Outline + casting | `outline` | story, registry | One Gemini call returns the premise, tone, protagonist, a casting table (user pins kept, the rest chosen by gender, age, personality and voice description, one actor per role, `null` if nothing fits) and N episode plans with cliffhangers. Mode is `segment` when a full script was pasted (dialogue kept verbatim) or `write` when a treatment was pasted. | `series/<id>/series.json` |
-| 2 | Cast | `cast` | bible, registry | Every cast actor gets a voice on the run's engine: uncast roles become one-off registry entries with placeholder voices; IP actors missing a voice on the engine get one auto-assigned. Voices are never shared between two roles. | registry updates, casting table in run state |
-| 3 | Draft | `epNN.draft` | plan, script | One Gemini call per episode (structured `EpisodeDraft`, rendered to screenplay text). Segment mode copies lines word for word and verifies it (one retry); write mode enforces a word floor of `min_sec × 3.3`. | `scripts/raw/epNN.txt` |
-| 4 | Direct | `epNN.direct` | raw script, casting table | The AI Director maps speakers to actor ids and adds per line: type (dialogue / monologue / pause), `tts_text` with approved audio tags, emotion, intensity 1–10, acoustic direction, pace, volume, pause after. Validated client-side. | `scripts/parsed/epNN.json` |
-| 5 | Voice | `epNN.voice` | parsed script, registry | Per line: Vietnamese normalizer → engine settings (ElevenLabs: stability/similarity/style from intensity; Gemini: a Vietnamese acting direction prefixed to the text) → TTS → WAV 44.1 kHz mono + sidecar. Cached by content hash. ElevenLabs 402 on a voice falls back to the actor's premade fallback and is flagged. | `stems/epNN/*.wav` + `.meta.json` |
-| 6 | Assemble | `epNN.assemble` | stems, parsed script | Timeline from measured durations (Director pauses clamped to 300–500 ms, 800 ms between scenes, 500 ms tail), FFmpeg concat, two-pass loudnorm to -16 LUFS / -1.5 dBTP stereo, MP3 192 kbps. | `timelines/epNN_timeline.json`, `masters/epNN_master.wav`, `.mp3` |
-| 7 | QA | `epNN.qa` | master, stems | Stems complete, duration versus target, loudness and true peak; a list of lines a human should listen to first; optional human verdict. Failed checks show as a warning, not a failure. | `qa/epNN_report.json` |
+| 0 | Input | — | web form | You describe the story (name, length, genre, setting), list the characters with a short description each, optionally pin a Character IP to a role, paste the script, and pick the engine, episode count and length. | `series/<id>/story.json`, `story_raw.txt` |
+| 1 | Outline | `outline` | story, registry | One AI call reads the whole story and plans the series: premise, tone, who the protagonist is, and one plan per episode with its cliffhanger. It also proposes the cast: your pinned IPs stay, every other role gets the best-fitting Character IP. | `series/<id>/series.json` |
+| 2 | Cast | `cast` | series plan, registry | Makes sure every cast member has a voice on the chosen engine. Roles no IP fits get a temporary stand-in voice; no two roles ever share a voice. | registry updates, casting table on the run board |
+| 3 | Draft | `epNN.draft` | episode plan, script | Writes the episode's screenplay. If you pasted a full script, the lines are copied word for word; if you pasted a synopsis, the dialogue is written from the plan. | `scripts/raw/epNN.txt` |
+| 4 | Direct | `epNN.direct` | screenplay, cast | Acts as the director: for every line it notes who speaks, the emotion and how strong it is, the pace, the volume, and the pause after the line. | `scripts/parsed/epNN.json` |
+| 5 | Voice | `epNN.voice` | directed script, registry | Turns the lines into speech with each character's own voice, following the director's notes. Gemini renders a whole scene in one request; ElevenLabs renders line by line. Unchanged lines are reused from cache. | `stems/epNN/*.wav` (+ `.meta.json`, `render.json`) |
+| 6 | Assemble | `epNN.assemble` | voice clips | Joins the clips into one episode in order, with natural pauses between lines and scenes, and sets the loudness to broadcast level. | `masters/epNN_master.wav`, `.mp3` |
+| 7 | QA | `epNN.qa` | master | Checks that nothing is missing, the length is right and the loudness is on target, then lists the lines a person should listen to first. | `qa/epNN_report.json` |
 
 Episodes are produced one at a time, in order: all five stages of episode 1 finish before episode 2
 starts. Continuing a series later ("Continue producing" in the Library, or `--only` on the CLI) runs the
@@ -217,6 +217,7 @@ All settings come from `.env` through `pipeline/config.py`; nothing reads the en
 | `AI_AUDIO_LLM_TEMPERATURE` | `0.4` | LLM temperature (segment-mode drafts use 0.15). |
 | `AI_AUDIO_TTS_PROVIDER` | `elevenlabs` | Default engine for new runs (`elevenlabs` or `gemini`); the web client picks per run. |
 | `AI_AUDIO_TTS_MODEL` | empty | Default model for that engine only (`eleven_v3`, `gemini-3.1-flash-tts-preview`, …). |
+| `AI_AUDIO_TTS_BATCHING` | `auto` | Voice requests per episode: `auto` (Gemini: per scene chunk, ElevenLabs: per line), `line`, or `scene` (Gemini only). |
 | `AI_AUDIO_NORMALIZE_VI` | `true` | Run the Vietnamese text normalizer before TTS. |
 | `ENABLE_BGM`, `ENABLE_SFX` | `false` | Music and effects are off in this phase. |
 | `AI_AUDIO_PADDING_MS`, `_MIN_MS`, `_MAX_MS` | `400`, `300`, `500` | Silence between lines (fixed value, or the Director's pause clamped to the range). |
@@ -254,6 +255,8 @@ series/<series_id>/
   scripts/raw/epNN.txt            drafted screenplay per episode (human-editable)
   scripts/parsed/epNN.json        AI Director output per episode (EpisodeScript, validated)
   stems/epNN/ep{NN}_sc{NN}_l{NNN}_{actor}_{dialogue|monologue}.wav   one WAV per line, 44.1 kHz mono
+  stems/epNN/ep{NN}_sc{NN}_c{NN}_chunk.wav   Gemini scene chunk: several lines of one scene in one file (default on Gemini)
+  stems/epNN/render.json          which units (lines or chunks) make up the episode, with the line ids each covers
   stems/epNN/*.wav.meta.json      sidecar: request, hash, settings, duration, cost, alignment, fallback info
   timelines/epNN_timeline.json    clip placement computed from measured stem durations
   masters/epNN_master.wav|mp3     the deliverables (stereo, -16 LUFS; MP3 192 kbps)
@@ -288,7 +291,7 @@ an IP pinned twice, unknown model or engine, missing key), `423` registry locked
 
 | method and path | body | purpose |
 |---|---|---|
-| `POST /api/runs` | `title`, `total_minutes?`, `genre`, `setting`, `roles[] {name, description, actor_id?}`, `roles_text`, `script` (≥ 50 chars), `episodes` (1–99), `produce?`, `min_sec`, `max_sec`, `force`, `series_id?`, `tts_provider`, `tts_model?` | Writes the story, starts a run in a background thread, returns the run state. One run at a time. |
+| `POST /api/runs` | `title`, `total_minutes?`, `genre`, `setting`, `roles[] {name, description, actor_id?}`, `roles_text`, `script` (≥ 50 chars), `episodes` (1–99), `produce?`, `min_sec`, `max_sec`, `force`, `series_id?`, `tts_provider`, `tts_model?`, `tts_batching` (`auto`/`line`/`scene`) | Writes the story, starts a run in a background thread, returns the run state. One run at a time. |
 | `GET /api/runs` | — | `active[]` (in memory) and `persisted[]` (from state files). |
 | `GET /api/runs/{run_id}` | — | Run state: `status` (`pending`, `running`, `done`, `failed`, `cancelled`), `params`, `casting[]`, `notes[]`, `jobs[]` (id, stage, episode, status `pending`/`running`/`done`/`warn`/`failed`/`skipped`, timestamps, summary, error). |
 | `POST /api/runs/{run_id}/cancel` | — | Stops after the current jobs. |
@@ -300,7 +303,7 @@ an IP pinned twice, unknown model or engine, missing key), `423` registry locked
 |---|---|---|
 | `GET /api/library` | — | `series[]`: id, title, genre, mode, planned / drafted / directed / produced counts, QA counts, `remaining[]`, `status` (`new`, `in_progress`, `complete`), last `run` (id, status, engine, model, lengths), `roles[]`, `active_run`. |
 | `GET /api/series/{id}` | — | Everything above plus `story` (the StoryInput), `bible` (premise, tone, mode, protagonist), `episodes[]` (draft, direct, stems, master_url, duration, qa), `run_state`. |
-| `POST /api/series/{id}/resume` | `next?` (produce the next N episodes without a master), `episodes?[]`, `tts_provider?`, `tts_model?`, `force` | Starts a run for the remaining episodes. Engine and model default to the last run's. |
+| `POST /api/series/{id}/resume` | `next?` (produce the next N episodes without a master), `episodes?[]`, `tts_provider?`, `tts_model?`, `tts_batching`, `force` | Starts a run for the remaining episodes. Engine and model default to the last run's. |
 | `DELETE /api/series/{id}` | — | Removes the series folder. Refused while a run is active for it. |
 | `GET /api/series/{id}/master/{ep}.mp3` | — | The master as `audio/mpeg`. |
 | `GET /api/series/{id}/episode/{ep}` | — | Parsed script, QA report, episode plan and roles. |
@@ -329,7 +332,7 @@ Run any of them with `--help`.
 | Outline + drafts | `python .claude/skills/episodize/scripts/episodize.py --series s1 --outline-only --episodes 30 --min-sec 50 --max-sec 70` then `--only 1-5` | `--force` (drafts only), `--redo-outline`, `--model` |
 | AI Director | `python .claude/skills/parse-script/scripts/parse_script.py --series s1 --episode 1` | `--episodes 1-30`, `--provider elevenlabs\|gemini`, `--validate-only`, `--force` |
 | Character IPs | `python .claude/skills/voice-registry/scripts/voice_registry.py list \| add \| validate` | `add --character-id ngan --provider gemini --voice-id Leda`, `--unlock`, `--one-off`, `--fallback-voice-id` |
-| Voice | `python .claude/skills/generate-voice/scripts/generate_voice.py --series s1 --episode 1 --provider gemini` | `--model-override`, `--lines id,…`, `--force`, `--concurrency`; `one --voice-id … --text … --out …` for a single clip |
+| Voice | `python .claude/skills/generate-voice/scripts/generate_voice.py --series s1 --episode 1 --provider gemini` | `--batching auto\|line\|scene`, `--model-override`, `--lines id,…`, `--force`, `--concurrency`; `one --voice-id … --text … --out …` for a single clip |
 | Assemble | `python .claude/skills/assemble-audio/scripts/assemble_audio.py --series s1 --episode 1` | `--timeline-only`, `--render-only`, `--padding-ms`, `--fixed-padding`, `--scene-gap-ms`, `--lufs`, `--true-peak` |
 | QA | `python .claude/skills/qa-audio/scripts/qa_audio.py --series s1 --episode 1` | `--verdict approved\|rejected --reviewer name --notes …`, `--transcribe` |
 | Whole run | `python -m pipeline.orchestrator --series s1 --story story.txt --episodes 30 --produce 5 --tts gemini` | `--only 6-10` (continue), `--tts-model`, `--force`, `--min-sec`, `--max-sec` |
@@ -367,17 +370,17 @@ Measured on this project (see the Usage page for live numbers):
 | Gemini LLM draft | 1–3 per episode | ~1k in, ~0.7k out | segment mode passes the whole script |
 | Gemini LLM direct | 1 per episode | ~1.5k in, ~2.5k out | |
 | ElevenLabs TTS | 1 request per line, cached | ~1,000–1,500 characters per 60 s episode | 1 credit per character on v3 |
-| Gemini TTS | 1 request per line, cached | ~50 tokens in, 200–300 audio tokens out per line | 10 requests per day per model without billing |
+| Gemini TTS | scene batching: 1–3 requests per episode (one per chunk of ≤2 speakers); per line: 8–12 | ~200–400 tokens in, ~2–3k audio tokens out per episode | 3 per minute and 10 per day per model without billing |
 
 Two limits worth knowing before a run:
 
 - **ElevenLabs library voices** (the real Character IP voices) are refused with `402 paid_plan_required`
   on the free plan. The pipeline then renders with the actor's fallback premade voice and flags every
   such stem and the run. Upgrade the plan to use the IP voices.
-- **Gemini TTS without billing** allows 10 requests per day per model
-  (`GenerateRequestsPerDayPerProjectPerModel-FreeTier`). One episode needs about 12. The voice stage
-  fails fast with a clear message when the daily quota is hit; enable billing on the Gemini project
-  for real runs.
+- **Gemini TTS without billing** allows 3 requests per minute and 10 per day per model
+  (`GenerateRequestsPerDayPerProjectPerModel-FreeTier`). Scene batching (the default on Gemini) fits
+  3 to 5 episodes a day; per-line rendering fits less than one. The voice stage fails fast with a
+  clear message when the daily quota is hit; enable billing on the Gemini project for real runs.
 
 ## 11. Testing and troubleshooting
 

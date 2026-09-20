@@ -2,6 +2,7 @@
    or the Next rewrite in dev / on Vercel). */
 
 export type Provider = "elevenlabs" | "gemini";
+export type Batching = "auto" | "line" | "scene";
 
 export interface ModelInfo { id: string; label: string; tags: boolean; note: string }
 export interface VoiceInfo { id: string; gender: "female" | "male"; character: string }
@@ -12,7 +13,7 @@ export interface ActorSummary {
   voices: Partial<Record<Provider, string>>; previews: Partial<Record<Provider, Preview | null>>;
 }
 export interface Config {
-  llm_model: string; tts: { provider: Provider; model: string }; keys: { gemini: boolean; elevenlabs: boolean };
+  llm_model: string; tts: { provider: Provider; model: string; batching: Batching }; keys: { gemini: boolean; elevenlabs: boolean };
   catalog: { providers: ProviderInfo[] }; defaults: { episodes: number; produce: number; min_sec: number; max_sec: number };
   actors: ActorSummary[]; active_run: string | null;
 }
@@ -21,14 +22,14 @@ export interface Job { id: string; stage: string; episode: number | null; status
 export interface Casting { role: string; type: string; actor: string | null; assigned_by: string; reason: string; actor_name: string | null; voice: string | null }
 export interface Run {
   run_id: string; series_id: string; status: string; error: string | null; created_at: string; finished_at: string | null;
-  params: { episodes: number; produce: number | null; min_sec: number; max_sec: number; tts_provider: Provider; tts_model: string | null; only: number[] | null; force: boolean };
+  params: { episodes: number; produce: number | null; min_sec: number; max_sec: number; tts_provider: Provider; tts_model: string | null; tts_batching?: Batching; only: number[] | null; force: boolean };
   notes: string[]; casting: Casting[]; jobs: Job[];
 }
 
 export interface RoleIn { name: string; description: string; actor_id: string | null }
 export interface StartRun {
   series_id?: string | null; title: string; total_minutes: number | null; genre: string; setting: string; roles: RoleIn[]; roles_text: string; script: string;
-  episodes: number; produce: number | null; min_sec: number; max_sec: number; force: boolean; tts_provider: Provider; tts_model: string | null;
+  episodes: number; produce: number | null; min_sec: number; max_sec: number; force: boolean; tts_provider: Provider; tts_model: string | null; tts_batching: Batching;
 }
 
 export interface EpisodeStatus { number: number; title: string | null; logline: string | null; draft: boolean; direct: boolean; stems: number; master: boolean; master_url: string | null; duration_ms: number | null; qa: { ok: boolean; failed_checks: string[]; verdict: string | null } | null }
@@ -93,7 +94,7 @@ export const api = {
   jobLog: (id: string, job: string) => request<string>(`/api/runs/${id}/jobs/${job}/log`),
   library: () => request<{ series: SeriesSummary[] }>("/api/library"),
   series: (id: string) => request<SeriesDetail>(`/api/series/${id}`),
-  resume: (id: string, body: { next?: number; episodes?: number[]; tts_provider?: Provider; tts_model?: string | null; force?: boolean }) =>
+  resume: (id: string, body: { next?: number; episodes?: number[]; tts_provider?: Provider; tts_model?: string | null; tts_batching?: Batching; force?: boolean }) =>
     request<Run>(`/api/series/${id}/resume`, { method: "POST", body: JSON.stringify(body) }),
   deleteSeries: (id: string) => request<{ ok: boolean }>(`/api/series/${id}`, { method: "DELETE" }),
   characters: () => request<{ locked: boolean; default_provider: Provider; characters: Character[]; changelog: string[] }>("/api/characters"),

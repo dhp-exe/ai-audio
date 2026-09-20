@@ -81,6 +81,7 @@ class RunParams:
     force: bool = False
     tts_provider: str = "elevenlabs"
     tts_model: str | None = None
+    tts_batching: str = "auto"  # auto | line | scene (scene: Gemini multi-speaker chunks, 1-3 requests per episode)
     only: list[int] | None = None  # explicit episode numbers to produce (resume); overrides `produce`
 
     def __post_init__(self) -> None:
@@ -89,6 +90,10 @@ class RunParams:
         self.tts_model = self.tts_model or None
         if self.tts_model and self.tts_model not in model_ids(self.tts_provider):
             raise ValueError(f"{self.tts_model!r} is not a {self.tts_provider} model; expected one of {model_ids(self.tts_provider)}")
+        if self.tts_batching not in ("auto", "line", "scene"):
+            raise ValueError("tts_batching must be auto, line or scene")
+        if self.tts_batching == "scene" and self.tts_provider != "gemini":
+            raise ValueError("scene batching needs the Gemini engine")
 
     def episode_numbers(self) -> list[int]:
         if self.only:
@@ -172,7 +177,7 @@ class Orchestrator:
         jobs["outline"] = Job("outline", "outline", None, self._skill("episodize", "episodize.py", *outline_args))
         jobs["cast"] = Job("cast", "cast", None, ["<internal:ensure_voices>"])
         tts = ["--provider", p.tts_provider]
-        voice_args = [*tts, *(["--model-override", p.tts_model] if p.tts_model else [])]
+        voice_args = [*tts, *(["--model-override", p.tts_model] if p.tts_model else []), "--batching", p.tts_batching]
         for n in p.episode_numbers():
             e = f"ep{n:02d}"
             force = ["--force"] if p.force else []
@@ -399,6 +404,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--max-sec", type=int, default=70)
     ap.add_argument("--tts", choices=PROVIDER_NAMES, default=None, help="TTS engine (default AI_AUDIO_TTS_PROVIDER)")
     ap.add_argument("--tts-model", default=None)
+    ap.add_argument("--batching", choices=["auto", "line", "scene"], default=None, help="voice requests: scene (Gemini, 1-3 per episode) or line")
     ap.add_argument("--force", action="store_true")
     a = ap.parse_args(argv)
     from pipeline.config import get_settings
@@ -418,7 +424,7 @@ def main(argv: list[str] | None = None) -> int:
         bible = SeriesBible.model_validate_json(naming.series_bible_path(a.series).read_text(encoding="utf-8"))
         episodes = len(bible.episodes) or episodes
     params = RunParams(series_id=a.series, episodes=episodes, produce=a.produce, min_sec=a.min_sec, max_sec=a.max_sec,
-                       force=a.force, tts_provider=provider, tts_model=model, only=only)
+                       force=a.force, tts_provider=provider, tts_model=model, tts_batching=a.batching or settings.tts_batching, only=only)
     story: StoryInput | str | None = None
     if a.story:
         text = a.story.read_text(encoding="utf-8")

@@ -28,9 +28,20 @@ from pipeline.schema import EpisodeScript, LineType  # noqa: E402
 
 
 def check_stems_complete(script: EpisodeScript, stems: Path) -> dict:
+    manifest = stems / "render.json"
+    if manifest.exists():
+        try:
+            data = json.loads(manifest.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            data = {}
+        if data.get("batching") == "scene":
+            covered = {lid for u in data.get("units", []) for lid in u.get("line_ids", [])}
+            missing = [u["id"] for u in data.get("units", []) if not (stems / u["path"]).exists()]
+            uncovered = [ln.line_id for _, ln in script.all_lines() if ln.type != LineType.pause and ln.line_id not in covered]
+            return {"ok": not missing and not uncovered, "missing": missing + uncovered, "batching": "scene", "units": len(data.get("units", []))}
     missing = [ln.line_id for _, ln in script.all_lines() if ln.type != LineType.pause
                and not (stems / naming.stem_name_from_line_id(ln.line_id, ln.character_id, ln.type.value)).exists()]
-    return {"ok": not missing, "missing": missing}
+    return {"ok": not missing, "missing": missing, "batching": "line"}
 
 
 def check_duration(script: EpisodeScript, master: Path) -> dict:

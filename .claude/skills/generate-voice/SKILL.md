@@ -45,6 +45,22 @@ flagged in the sidecar (`voice_fallback`) and the summary (`placeholder_voices`)
   volume, monologue and `acoustic_direction` (`mapping.gemini_style`), sent as `"<direction>:\n<text>"`.
   Verified live: the direction is not spoken. Output is 24 kHz PCM resampled to the 44.1 kHz stem.
 
+## Batching (requests per episode)
+
+| `--batching` | ElevenLabs | Gemini |
+|---|---|---|
+| `auto` (default) | per line | per scene chunk |
+| `line` | per line | per line |
+| `scene` | refused | per scene chunk |
+
+A scene chunk is a maximal run of consecutive spoken lines in one scene with at most two actors (a pause
+line or a third actor starts a new chunk). It is one Gemini multi-speaker request: speaker labels map to the
+actors' Gemini voices, the text is a labelled transcript, and the direction header lists each line's acting
+notes. Output `ep01_sc02_c01_chunk.wav`; `stems/epNN/render.json` records which lines each unit covers so
+assemble-audio and qa-audio follow it. Typical episodes: 1-3 requests instead of 8-12, which is what fits
+Gemini's 10-requests-per-day limit without billing. `--lines` in scene mode re-renders the chunks that
+contain those lines.
+
 ## Caching
 
 Stem hash = sha256(provider | model_id | voice_id | final text | sorted(settings)). Sidecar hash

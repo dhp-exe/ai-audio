@@ -47,6 +47,8 @@ def gemini_style(line: Line) -> str:
         if word:
             bits.append(word)
     for tag in line.audio_tags():
+        if tag in MONOLOGUE_TAGS:
+            continue  # already expressed by the monologue direction above
         hint = TAG_VI.get(tag)
         if hint and hint not in bits:
             bits.append(hint)

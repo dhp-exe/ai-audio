@@ -38,7 +38,7 @@ def test_job_graph_shape(sandbox):
     assert sum(1 for j in jobs.values() if j.episode) == 3 * len(STAGES)
     assert "--episodes" in jobs["outline"].cmd and "30" in jobs["outline"].cmd
     assert jobs["ep02.draft"].cmd[-2:] == ["--only", "2"]
-    assert jobs["ep01.voice"].cmd[-2:] == ["--provider", "elevenlabs"] and "--model-override" not in jobs["ep01.voice"].cmd
+    assert jobs["ep01.voice"].cmd[-4:] == ["--provider", "elevenlabs", "--batching", "auto"] and "--model-override" not in jobs["ep01.voice"].cmd
     assert jobs["ep01.direct"].cmd[-2:] == ["--provider", "elevenlabs"]
 
 
@@ -47,7 +47,10 @@ def test_engine_and_resume_params(sandbox):
     assert p.episode_numbers() == [4, 9]
     jobs = Orchestrator(p, None).build_jobs()
     assert sorted({j.episode for j in jobs.values() if j.episode}) == [4, 9]
-    assert jobs["ep04.voice"].cmd[-4:] == ["--provider", "gemini", "--model-override", "gemini-3.1-flash-tts-preview"]
+    assert jobs["ep04.voice"].cmd[-6:] == ["--provider", "gemini", "--model-override", "gemini-3.1-flash-tts-preview", "--batching", "auto"]
+    assert RunParams(series_id="s", tts_provider="gemini", tts_batching="scene").tts_batching == "scene"
+    with pytest.raises(ValueError):  # scene batching is a Gemini feature
+        RunParams(series_id="s", tts_provider="elevenlabs", tts_batching="scene")
     with pytest.raises(ValueError):
         RunParams(series_id="s", tts_provider="minimax")
     with pytest.raises(ValueError):  # model from the other engine

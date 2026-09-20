@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { api, type Config, type Provider, type SeriesDetail } from "@/lib/api";
+import { api, type Batching, type Config, type Provider, type SeriesDetail } from "@/lib/api";
 import { fmtSeconds, pad2 } from "@/lib/format";
 import { Badge, ErrorText, Field, StatusPill } from "./ui";
 
@@ -13,6 +13,7 @@ export function StoryDetail({ d, cfg, onDeleted }: { d: SeriesDetail; cfg: Confi
   const [provider, setProvider] = useState<Provider>(run?.tts_provider ?? cfg.tts.provider);
   const [model, setModel] = useState<string>(run?.tts_model ?? "");
   const [next, setNext] = useState(Math.min(5, d.remaining.length || 5));
+  const [batching, setBatching] = useState<Batching>("auto");
   const [force, setForce] = useState(false);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
@@ -22,7 +23,7 @@ export function StoryDetail({ d, cfg, onDeleted }: { d: SeriesDetail; cfg: Confi
 
   const cont = async () => {
     setErr(null); setBusy(true);
-    try { const r = await api.resume(d.series_id, { next, tts_provider: provider, tts_model: model, force }); router.push(`/run/?id=${r.run_id}`); }
+    try { const r = await api.resume(d.series_id, { next, tts_provider: provider, tts_model: model, tts_batching: provider === "gemini" ? batching : "auto", force }); router.push(`/run/?id=${r.run_id}`); }
     catch (e) { setErr((e as Error).message); setBusy(false); }
   };
   const del = async () => {
@@ -60,6 +61,14 @@ export function StoryDetail({ d, cfg, onDeleted }: { d: SeriesDetail; cfg: Confi
           <Field label="Engine"><select className="field" value={provider} onChange={(e) => setProvider(e.target.value as Provider)}>{cfg.catalog.providers.map((p) => <option key={p.id} value={p.id}>{p.label}</option>)}</select></Field>
           <Field label="Model"><select className="field" value={model} onChange={(e) => setModel(e.target.value)}>{prov.models.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}</select></Field>
         </div>
+        {provider === "gemini" && (
+          <Field label="Requests per episode" className="mt-3">
+            <select className="field" value={batching} onChange={(e) => setBatching(e.target.value as Batching)}>
+              <option value="auto">Fewest requests (per scene, usually 1–3)</option>
+              <option value="line">One per line (8–12)</option>
+            </select>
+          </Field>
+        )}
         <label className="mt-3 flex items-center gap-2 text-[13px]"><input type="checkbox" checked={force} onChange={(e) => setForce(e.target.checked)} /> Re-render from the first episode (overwrite drafts and stems)</label>
         <div className="mt-3 flex items-center gap-3">
           <button className="btn-primary" disabled={busy || !!d.active_run} onClick={cont}>{busy ? "Starting…" : "Continue"}</button>

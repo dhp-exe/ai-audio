@@ -4,7 +4,8 @@ How one pasted story becomes a set of mastered Vietnamese audio episodes, step b
 Mermaid and render in GitHub, VS Code and most Markdown viewers.
 
 Audience: engineers and the director/producer who will operate the pipeline. Assumes you have read
-the decision table in `CLAUDE.md`.
+the decision table in `CLAUDE.md`. The top-level `README.md` is the shorter operator guide (running,
+API reference, storage layout); this document goes into each stage.
 
 ---
 
@@ -26,7 +27,7 @@ flowchart LR
         DIR[AI Director<br/>→ scripts/parsed/epNN.json]
     end
 
-    subgraph "Stage 3 · generate-voice (ElevenLabs)"
+    subgraph "Stage 3 · generate-voice (ElevenLabs | Gemini TTS)"
         NORM[vi_normalize]
         MAP[intensity → settings]
         TTS[TTS per line<br/>→ stems/epNN/*.wav + .meta.json]
@@ -45,7 +46,7 @@ flowchart LR
     REG --> OUT
     REG --> MAP
     ORCH[[pipeline/orchestrator.py<br/>runs the CLIs as jobs]] -.drives.-> OUT & DR & DIR & TTS & TL & QA
-    WEB[[pipeline/webui<br/>browser client]] -.starts / watches.-> ORCH
+    WEB[[web/ Next.js client<br/>via pipeline/webui API]] -.starts / watches.-> ORCH
 ```
 
 Every arrow is a file on disk with a deterministic name (see `pipeline/naming.py`). That is the
@@ -65,7 +66,11 @@ pipeline/                 shared Python package
   stories.py              story library index (progress per series, remaining episodes)
   text/vi_normalize.py    Vietnamese text normalizer for TTS
   orchestrator.py         job graph runner (CLI: python -m pipeline.orchestrator)
-  webui/                  FastAPI app + single HTML page (python -m pipeline.webui)
+  webui/                  FastAPI JSON API; serves the built client from web/out (python -m pipeline.webui)
+  usage.py                usage + limit monitor (ledger, vendor events, ElevenLabs subscription)
+  registry.py             the only writer of library/voice-ips.json (lock rule)
+  casting.py              /actor tags, gender guess, placeholder voices per engine
+web/                      Next.js client: Library, New/Edit story, Run, Characters, Usage
 .claude/skills/<name>/    one skill per stage: SKILL.md (how to use) + scripts/<name>.py (CLI)
 library/voice-ips.json    global, locked Voice IP registry (ElevenLabs voice_id and Gemini voice name per actor)
 series/<id>/              everything about one series (inputs, intermediates, outputs, logs, run state)

@@ -50,6 +50,9 @@ def test_engine_and_resume_params(sandbox):
     assert jobs["ep04.voice"].cmd[-4:] == ["--provider", "gemini", "--model-override", "gemini-3.1-flash-tts-preview"]
     with pytest.raises(ValueError):
         RunParams(series_id="s", tts_provider="minimax")
+    with pytest.raises(ValueError):  # model from the other engine
+        RunParams(series_id="s", tts_provider="gemini", tts_model="eleven_v3")
+    assert RunParams(series_id="s", tts_provider="gemini", tts_model="").tts_model is None
 
 
 def test_run_success_and_placeholder_cast(sandbox):
@@ -120,7 +123,7 @@ def test_cast_on_gemini_auto_assigns_ip_actor(sandbox):
     reg = {c["character_id"]: c for c in json.loads((sandbox / "library" / "voice-ips.json").read_text())["characters"]}
     linh_v, trum_v = reg["linh"]["providers"]["gemini"]["voice_id"], reg["ong-trum"]["providers"]["gemini"]["voice_id"]
     assert linh_v and trum_v and linh_v != trum_v
-    assert reg["linh"]["providers"]["gemini"]["model_id"] == "gemini-2.5-flash-preview-tts"
+    assert reg["linh"]["providers"]["gemini"]["model_id"] == "gemini-3.1-flash-tts-preview"
     assert reg["linh"]["providers"]["elevenlabs"]["voice_id"] == "v1"  # untouched
     assert any("auto-assigned" in n for n in run.notes)
     assert run.jobs["cast"].summary["auto_voiced"] == ["linh"] and run.jobs["cast"].summary["placeholders"] == ["ong-trum"]

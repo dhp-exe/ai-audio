@@ -115,7 +115,7 @@ def main(argv: list[str] | None = None) -> int:
     s.add_argument("--language", default="vi-VN")
     s.add_argument("--provider", default="elevenlabs", choices=PROVIDER_NAMES)
     s.add_argument("--voice-id", required=True, help="ElevenLabs voice_id, or a Gemini voice name such as Leda")
-    s.add_argument("--model-id", default=None, help="default: eleven_v3 / gemini-2.5-flash-preview-tts")
+    s.add_argument("--model-id", default=None, help="default: eleven_v3 / gemini-3.1-flash-tts-preview")
     s.add_argument("--voice-url")
     s.add_argument("--fallback-voice-id", help="premade voice used when the plan rejects voice_id (402)")
     s.add_argument("--default-settings", help='JSON, e.g. \'{"stability": 0.5}\'')

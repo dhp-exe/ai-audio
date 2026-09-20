@@ -104,7 +104,7 @@ def test_character_crud_and_lock(client):
     assert r.status_code == 200, r.text
     chars = client.get("/api/characters").json()["characters"]
     linh = next(c for c in chars if c["character_id"] == "linh")
-    assert linh["providers"]["gemini"] == {"voice_id": "Kore", "model_id": "gemini-2.5-flash-preview-tts", "voice_url": None, "fallback_voice_id": None, "default_settings": {}}
+    assert linh["providers"]["gemini"] == {"voice_id": "Kore", "model_id": "gemini-3.1-flash-tts-preview", "voice_url": None, "fallback_voice_id": None, "default_settings": {}}
     # bad gemini voice / bad model / unknown provider
     assert client.post("/api/characters", json={"character_id": "x1", "display_name": "X", "providers": {"gemini": {"voice_id": "Nope"}}}).status_code == 422
     assert client.post("/api/characters", json={"character_id": "x2", "display_name": "X", "providers": {"elevenlabs": {"voice_id": "v", "model_id": "speech-02-hd"}}}).status_code == 422
@@ -122,3 +122,39 @@ def test_character_crud_and_lock(client):
 def test_delete_series(client):
     assert client.delete("/api/series/s1").status_code == 200
     assert client.get("/api/library").json()["series"] == [] and stories.series_summary("s1") is None
+
+
+def test_interrupted_run_marked_on_startup(client, tmp_path):
+    p = naming.series_root("s1") / "pipeline_run.json"
+    data = json.loads(p.read_text())
+    data["status"] = "running"
+    data["jobs"] = [{"id": "outline", "stage": "outline", "episode": None, "status": "done"},
+                    {"id": "ep02.voice", "stage": "voice", "episode": 2, "status": "running"},
+                    {"id": "ep02.qa", "stage": "qa", "episode": 2, "status": "pending"}]
+    p.write_text(json.dumps(data))
+    assert webapp.mark_interrupted_runs() == ["s1-20260920-000000"]
+    data = json.loads(p.read_text())
+    assert data["status"] == "cancelled" and "interrupted" in data["error"]
+    assert [j["status"] for j in data["jobs"]] == ["done", "skipped", "skipped"]
+    assert client.get("/api/library").json()["series"][0]["run"]["status"] == "cancelled"
+    assert webapp.mark_interrupted_runs() == []
+
+
+def test_usage_summary(client, monkeypatch):
+    from datetime import UTC, datetime
+    from pipeline import usage
+    monkeypatch.setattr(usage, "elevenlabs_subscription", lambda: {"available": False, "reason": "test"})
+    usage.record_event("gemini", "gemini-3.1-flash-tts-preview", "quota_daily", status=429,
+                       quota_id="GenerateRequestsPerDayPerProjectPerModel-FreeTier", quota_value="10", message="quota")
+    usage.record_event("gemini", "gemini-2.5-flash-preview-tts", "rate_limit", status=429, retry_after_s=30, message="slow down")
+    u = client.get("/api/usage").json()
+    by = {m["model"]: m for m in u["models"]}
+    tts = by["gemini-3.1-flash-tts-preview"]
+    assert tts["status"] == "exhausted" and tts["limit"] == {"requests_per_day": 10, "source": "reported by the API (GenerateRequestsPerDayPerProjectPerModel-FreeTier)"}
+    assert by["gemini-2.5-flash-preview-tts"]["status"] == "rate_limited" and by["eleven_v3"]["status"] == "ok"
+    assert any(m["kind"] == "llm" for m in u["models"]) and len(u["events"]) == 2
+    assert u["providers"]["elevenlabs"]["credits_source"].startswith("ledger")
+    # the same summary computed after the reset time is clean again
+    later = datetime.fromisoformat(tts["resets_at"]).astimezone(UTC).replace(hour=23)
+    s2 = usage.summary(now=later + __import__("datetime").timedelta(days=1))
+    assert {m["model"]: m["status"] for m in s2["models"]}["gemini-3.1-flash-tts-preview"] == "ok"

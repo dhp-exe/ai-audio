@@ -40,7 +40,7 @@ from pathlib import Path
 from pipeline import naming
 from pipeline import registry as registry_io
 from pipeline.casting import guess_gender, placeholder_voice
-from pipeline.providers.catalog import DEFAULT_MODEL, PROVIDER_LABEL, PROVIDER_NAMES
+from pipeline.providers.catalog import DEFAULT_MODEL, PROVIDER_LABEL, PROVIDER_NAMES, model_ids
 from pipeline.schema import CharacterProfile, ProviderVoice, SeriesBible, StoryInput
 
 SKILLS = naming.REPO_ROOT / ".claude" / "skills"
@@ -89,6 +89,8 @@ class RunParams:
         if self.tts_provider not in PROVIDER_NAMES:
             raise ValueError(f"tts_provider must be one of {PROVIDER_NAMES}, got {self.tts_provider!r}")
         self.tts_model = self.tts_model or None
+        if self.tts_model and self.tts_model not in model_ids(self.tts_provider):
+            raise ValueError(f"{self.tts_model!r} is not a {self.tts_provider} model; expected one of {model_ids(self.tts_provider)}")
 
     def episode_numbers(self) -> list[int]:
         if self.only:
@@ -417,9 +419,15 @@ def main(argv: list[str] | None = None) -> int:
         for part in a.only.split(","):
             lo, _, hi = part.partition("-")
             only.extend(range(int(lo), int(hi or lo) + 1))
-    params = RunParams(series_id=a.series, episodes=a.episodes, produce=a.produce, min_sec=a.min_sec, max_sec=a.max_sec,
-                       max_parallel_episodes=a.parallel, force=a.force, tts_provider=a.tts or settings.tts_provider,
-                       tts_model=a.tts_model or settings.tts_model, only=only)
+    provider = a.tts or settings.tts_provider
+    # AI_AUDIO_TTS_MODEL only applies to its own engine (an eleven_v3 default must not leak into a Gemini run)
+    model = a.tts_model or (settings.tts_model if provider == settings.tts_provider else None)
+    episodes = a.episodes
+    if only and naming.series_bible_path(a.series).exists():  # resuming: the plan is already fixed by the bible
+        bible = SeriesBible.model_validate_json(naming.series_bible_path(a.series).read_text(encoding="utf-8"))
+        episodes = len(bible.episodes) or episodes
+    params = RunParams(series_id=a.series, episodes=episodes, produce=a.produce, min_sec=a.min_sec, max_sec=a.max_sec,
+                       max_parallel_episodes=a.parallel, force=a.force, tts_provider=provider, tts_model=model, only=only)
     story: StoryInput | str | None = None
     if a.story:
         text = a.story.read_text(encoding="utf-8")

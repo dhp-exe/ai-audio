@@ -41,7 +41,7 @@ linked pages before budgeting.
   - PVC requires ~30 min of clean recordings per voice and a verification step; plan a few days.
 
 ### Gemini TTS (second engine, uses `GEMINI_API_KEY`)
-- **Models:** `gemini-2.5-flash-preview-tts` (default), `gemini-3.1-flash-tts-preview`, `gemini-2.5-pro-preview-tts` (paid only).
+- **Models:** `gemini-3.1-flash-tts-preview` (default), `gemini-2.5-flash-preview-tts`, `gemini-2.5-pro-preview-tts` (paid only).
 - **Free tier:** the two Flash TTS models are "Free of charge" on the Gemini API free tier, with low
   per-minute request caps, so the voice stage runs serially. Paid: $0.50-1 per 1M text tokens in and
   $10-20 per 1M audio tokens out (a 60 s episode is roughly 3-4k audio tokens, so cents per episode).
@@ -60,6 +60,7 @@ linked pages before budgeting.
 - **Upgrade path:** Creator (~$22/mo) unlocks library voices and Professional Voice Cloning; that is the minimum for real Vietnamese Voice IPs.
 - **ElevenLabs 402 on Ngan/Duong (2026-09-20):** the exact response is `paid_plan_required: Free users cannot use library voices via the API`; both voices are correctly added to My Voices, every endpoint/model variant fails the same way, so only the plan tier matters. The API key also lacks `user_read`, so quota cannot be read; regenerate it with `user_read` + `models_read` after upgrading.
 - **Gemini TTS (2026-09-20):** both Flash TTS models render Vietnamese on the free tier in ~6 s per line; a transcript check confirmed the direction prefix is not spoken.
+- **Gemini TTS free-tier quota is 10 requests per day per model** (`GenerateRequestsPerDayPerProjectPerModel-FreeTier`, seen live on `gemini-2.5-flash-tts`). One 60 s episode is ~12 lines, so a real test needs billing enabled on the Gemini project (paid rate: cents per episode) or spreading calls across the models. The adapter fails fast with a clear message on the daily quota instead of retrying.
 
 ## Not needed
 

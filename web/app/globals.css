@@ -1,0 +1,98 @@
+@import "tailwindcss";
+
+/* Studio palette: graphite and paper, one signal blue, four meter colors. Light is the default;
+   dark follows the OS unless data-theme forces one. */
+:root {
+  --paper: #f2f3f5;
+  --panel: #ffffff;
+  --sunken: #e8eaee;
+  --line: #d5d9e0;
+  --line-strong: #b8bec9;
+  --ink: #12151b;
+  --muted: #5b6473;
+  --accent: #1e5bff;
+  --accent-ink: #ffffff;
+  --ok: #178a4f;
+  --warn: #c7791a;
+  --bad: #cf2e2e;
+  --live: #d9a400;
+  --tint-ok: #e4f5ec;
+  --tint-warn: #fbeedc;
+  --tint-bad: #fbe4e4;
+  --tint-accent: #e6edff;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0d0f13; --panel: #141820; --sunken: #0a0c10; --line: #252b36; --line-strong: #3a4352;
+    --ink: #e7eaf0; --muted: #8b95a7; --accent: #7aa2ff; --accent-ink: #0b1020;
+    --ok: #35b56f; --warn: #e0a03a; --bad: #ef5a5a; --live: #e6bd2f;
+    --tint-ok: #123424; --tint-warn: #3a2a12; --tint-bad: #3d1717; --tint-accent: #1a2a52;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0d0f13; --panel: #141820; --sunken: #0a0c10; --line: #252b36; --line-strong: #3a4352;
+  --ink: #e7eaf0; --muted: #8b95a7; --accent: #7aa2ff; --accent-ink: #0b1020;
+  --ok: #35b56f; --warn: #e0a03a; --bad: #ef5a5a; --live: #e6bd2f;
+  --tint-ok: #123424; --tint-warn: #3a2a12; --tint-bad: #3d1717; --tint-accent: #1a2a52;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-panel: var(--panel);
+  --color-sunken: var(--sunken);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-ok: var(--ok);
+  --color-warn: var(--warn);
+  --color-bad: var(--bad);
+  --color-live: var(--live);
+  --color-tint-ok: var(--tint-ok);
+  --color-tint-warn: var(--tint-warn);
+  --color-tint-bad: var(--tint-bad);
+  --color-tint-accent: var(--tint-accent);
+  --font-sans: var(--font-plex-sans), "IBM Plex Sans", system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+
+html, body { background: var(--paper); color: var(--ink); }
+body { font-family: var(--font-sans); font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+* { box-sizing: border-box; }
+
+/* form controls */
+.field { @apply w-full rounded-md border border-line bg-sunken px-3 py-2 text-[14px] text-ink outline-none transition-[border-color,box-shadow] focus:border-accent focus:ring-2 focus:ring-accent/25 disabled:opacity-60; }
+textarea.field { resize: vertical; min-height: 44px; }
+select.field { appearance: auto; }
+.label { @apply mb-1 block text-[12px] text-muted; }
+
+/* hairline structure instead of card kits */
+.hair { border: 1px solid var(--line); }
+.hair-t { border-top: 1px solid var(--line); }
+.hair-b { border-bottom: 1px solid var(--line); }
+
+/* buttons */
+.btn, .btn-primary, .btn-ghost, .btn-danger { @apply inline-flex items-center justify-center gap-2 rounded-md px-3 py-2 text-[13px] font-medium transition-colors disabled:cursor-default disabled:opacity-50; }
+.btn-primary { @apply bg-accent text-accent-ink hover:brightness-110; }
+.btn-ghost { @apply border border-line bg-transparent text-ink hover:border-line-strong; }
+.btn-danger { @apply border border-bad/50 bg-transparent text-bad hover:bg-tint-bad; }
+.btn-icon { @apply inline-flex h-8 w-8 items-center justify-center rounded-md text-muted transition-colors hover:bg-sunken hover:text-ink; }
+
+/* status pills and stage chips */
+.pill { @apply inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[12px] font-medium; }
+.chip { @apply inline-flex min-w-[96px] cursor-pointer items-center gap-2 rounded-md border border-transparent bg-sunken px-2.5 py-1 text-[12px] hover:border-accent; }
+.chip.sel { border-color: var(--accent); }
+.dot { width: 8px; height: 8px; border-radius: 999px; background: var(--line-strong); flex: none; }
+.dot.running { background: var(--live); animation: pulse 1s infinite; }
+.dot.done { background: var(--ok); } .dot.warn { background: var(--warn); } .dot.failed { background: var(--bad); } .dot.skipped { background: var(--line-strong); }
+@keyframes pulse { 50% { opacity: .3; } }
+
+audio { height: 30px; width: 220px; vertical-align: middle; }
+pre.log { @apply mt-3 max-h-[380px] overflow-auto whitespace-pre-wrap rounded-md border border-line bg-sunken p-3 font-mono text-[12px] leading-[1.45] text-ink; }
+
+/* meter */
+.meter { @apply h-2 w-full overflow-hidden rounded-full bg-line; }
+.meter > i { display: block; height: 100%; background: var(--ok); transition: width .4s; }
+.meter > i.warn { background: var(--warn); } .meter > i.bad { background: var(--bad); }

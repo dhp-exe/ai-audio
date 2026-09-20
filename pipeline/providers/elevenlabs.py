@@ -20,6 +20,7 @@ from pathlib import Path
 
 from pipeline.config import get_settings
 from pipeline.providers.base import ProviderError, StemInfo, TtsRequest, duration_ms, to_stem_wav
+from pipeline.usage import record_event
 
 LANGUAGE_ENFORCING_MODELS = {"eleven_turbo_v2_5", "eleven_flash_v2_5"}
 NO_CONTEXT_MODELS = {"eleven_v3"}  # "previous_text or next_text is not yet supported with the 'eleven_v3' model"
@@ -72,6 +73,10 @@ class ElevenLabsProvider:
                 msg = detail.get("message", str(e.body)) if isinstance(detail, dict) else str(detail)
                 status = e.status_code or 0
                 body_l = str(e.body).lower()
+                if status == 429 or "quota_exceeded" in body_l:
+                    record_event("elevenlabs", req.model_id, "quota_monthly" if "quota_exceeded" in body_l else "rate_limit", status=status, message=msg)
+                elif status == 402:
+                    record_event("elevenlabs", req.model_id, "payment_required", status=402, message=msg)
                 # Tier-gated output format: switch to the fallback format and retry immediately.
                 # Thread-safe: another worker may already have advanced the index; then just retry.
                 if status in (400, 402, 403) and ("output_format" in body_l or "output format" in body_l):

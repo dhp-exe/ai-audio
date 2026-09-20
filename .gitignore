@@ -15,3 +15,11 @@ library/sfx/
 *.wav
 *.mp3
 !series/*/reference/*.wav
+
+# web client build artifacts
+web/node_modules/
+web/.next/
+web/out/
+web/next-env.d.ts
+library/previews/
+library/usage-events.jsonl

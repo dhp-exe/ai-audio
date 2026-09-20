@@ -119,6 +119,10 @@ def generate_structured(
             break
         except errors.APIError as e:
             last_err = e
+            if getattr(e, "code", None) == 429:
+                from pipeline.usage import record_event
+
+                record_event("gemini", model, "rate_limit", status=429, message=str(getattr(e, "message", None) or e))
             if getattr(e, "code", None) in (429, 500, 503) and attempt < retries:
                 time.sleep(2 * (2**attempt))
                 continue

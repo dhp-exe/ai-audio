@@ -243,3 +243,23 @@ def test_gemini_non_retryable_error(fake_gemini, tmp_path):
 
 def test_gemini_prompt_without_style():
     assert gm.build_prompt(None, "Xin chào") == "Xin chào" and gm.build_prompt("giọng vui.", "A") == "giọng vui:\nA"
+
+
+def test_gemini_daily_quota_fails_fast(fake_gemini, tmp_path):
+    prov, calls, state = fake_gemini
+    details = {"error": {"code": 429, "details": [
+        {"@type": "type.googleapis.com/google.rpc.QuotaFailure", "violations": [
+            {"quotaId": "GenerateRequestsPerDayPerProjectPerModel-FreeTier", "quotaValue": "10", "quotaDimensions": {"model": "gemini-2.5-flash-tts"}}]},
+        {"@type": "type.googleapis.com/google.rpc.RetryInfo", "retryDelay": "26s"}]}}
+
+    def boom(**kw):
+        err = FakeGenaiError(429, "You exceeded your current quota")
+        err.details = details
+        raise err
+
+    prov._client = SimpleNamespace(models=SimpleNamespace(generate_content=boom))
+    with pytest.raises(ProviderError) as e:
+        prov.synthesize(TtsRequest(provider="gemini", model_id="gemini-2.5-flash-preview-tts", voice_id="Leda", text="x"), tmp_path / "x.wav")
+    assert e.value.status == 429 and not e.value.retryable and "10 requests/day" in str(e.value) and "gemini-2.5-flash-tts" in str(e.value)
+    assert gm.quota_violation(boom.__closure__ and FakeGenaiError(429, "x")) is None
+    assert gm.retry_delay(SimpleNamespace(details=details)) == 26.0

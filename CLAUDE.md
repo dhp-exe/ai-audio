@@ -18,7 +18,7 @@ fixed Virtual Actor IPs, so we can test audience retention cheaply before paying
 | D1 | **Vietnamese-first** (`vi-VN`). All prompts and content in Vietnamese. `pipeline/text/vi_normalize.py` runs before TTS (NFC, numbers, currency, time, dates, chat contractions, punctuation). |
 | D2 | **Hybrid upstream.** Director fills overview + characters + script (web form -> `story.json`); `episodize` casts roles onto Voice IP actors and produces `series.json` + N raw scripts (segment mode keeps the pasted dialogue verbatim; write mode expands a treatment). |
 | D3 | **No third-person narrator.** Inner voice is first person on the protagonist: `type: monologue`, alias `character_id: "protagonist"` resolved to the real id; tag `[internal monologue]` / `[introspective]`. |
-| D4 | **No speech-to-speech.** Two TTS engines, picked per run in the web client (`tts_provider`): **ElevenLabs** `eleven_v3` (the Voice IPs; paid; same-voice fallback `eleven_multilingual_v2`) and **Gemini TTS** `gemini-2.5-flash-preview-tts` (free tier; 30 prebuilt voices addressed by name; style by Vietnamese direction). No other provider (MiniMax removed 2026-09-20). |
+| D4 | **No speech-to-speech.** Two TTS engines, picked per run in the web client (`tts_provider`): **ElevenLabs** `eleven_v3` (the Voice IPs; paid; same-voice fallback `eleven_multilingual_v2`) and **Gemini TTS** `gemini-3.1-flash-tts-preview` (free tier; 30 prebuilt voices addressed by name; style by Vietnamese direction). No other provider (MiniMax removed 2026-09-20). |
 | D5/D6 | **BGM and SFX disabled** (`ENABLE_BGM=false`, `ENABLE_SFX=false`). Assembly = clean speech concat with 300-500 ms padding. |
 | D7 | **Local disk + sidecar JSON.** Voice IPs locked in `library/voice-ips.json` (global across series). |
 | D8 | Stereo master **-16 LUFS / -1.5 dBTP**, WAV + **MP3 192 kbps**. |
@@ -76,7 +76,9 @@ ai-audio/
     stories.py                   <- story library index: progress per series, remaining episodes, delete
     text/vi_normalize.py         <- Vietnamese TTS text normalizer
     orchestrator.py              <- CI-style job graph over the skill CLIs; state in series/<id>/pipeline_run.json
-    webui/                       <- FastAPI + one HTML page (light/dark): Library, New story + run board, Characters (python -m pipeline.webui)
+    usage.py                     <- usage + quota monitor: ledger aggregation, 429/402 events, ElevenLabs subscription, per-model status/reset
+    webui/                       <- FastAPI JSON API; serves web/out (Next.js static export) at / (python -m pipeline.webui)
+  web/                           <- Next.js 16 + Tailwind 4 client: Library, New/Edit story, Run board, Characters, Usage (npm run dev | npm run export)
   .claude/skills/<skill>/        <- SKILL.md + scripts/<skill>.py (anthropics/skills layout)
   library/
     voice-ips.json               <- LOCKED global Voice IP registry (per actor: elevenlabs voice_id + gemini voice name)
@@ -106,12 +108,12 @@ ai-audio/
 | LLM | `google-genai`, `gemini-3.1-flash-lite` | `pipeline.llm.gemini_client.generate_structured`; `response_mime_type=application/json` + Pydantic `response_schema`; response text re-validated with Pydantic (regex/cross-field rules are client-side). Retries on 429/500/503 and transport errors; 180 s timeout; IPv4 pinned (`AI_AUDIO_FORCE_IPV4`) because this network's IPv6 path resets TLS. |
 | TTS engine 1 (Voice IPs) | `elevenlabs` SDK, `eleven_v3` via `pipeline/providers/elevenlabs.py` | tags `[sighs] [whispers] [internal monologue]`; **stability discrete 0.0/0.5/1.0**; v3 rejects `language_code` and `previous_text`/`next_text`; `wav_44100` is Pro-tier only, adapter falls back to `mp3_44100_128` + ffmpeg; `convert_with_timestamps` alignment stored in sidecar |
 | TTS same-voice fallback | `eleven_multilingual_v2` | continuous stability/style; no tags |
-| TTS engine 2 (free) | Gemini TTS via `pipeline/providers/gemini_tts.py` (`google-genai`, same client as the LLM) | models `gemini-2.5-flash-preview-tts` (default), `gemini-3.1-flash-tts-preview`, `gemini-2.5-pro-preview-tts`; voice = one of 30 prebuilt names; direction prefixed as `"<style>:\n<text>"` (verified: direction is not spoken); 24 kHz PCM resampled to 44.1 k; serial (free-tier RPM) |
+| TTS engine 2 (free) | Gemini TTS via `pipeline/providers/gemini_tts.py` (`google-genai`, same client as the LLM) | models `gemini-3.1-flash-tts-preview` (default), `gemini-2.5-flash-preview-tts`, `gemini-2.5-pro-preview-tts`; voice = one of 30 prebuilt names; direction prefixed as `"<style>:\n<text>"` (verified: direction is not spoken); 24 kHz PCM resampled to 44.1 k; serial (free-tier RPM) |
 | Normalization | `pipeline.text.vi_normalize` | on by default (`AI_AUDIO_NORMALIZE_VI`) |
 | Mixing | FFmpeg `filter_complex` (apad + concat) then **two-pass** `loudnorm` | pydub dropped; single-pass landed 1.3 LU off, two-pass hits -16.0 exactly |
 | State | sidecar JSON + `run.log.jsonl` | no database |
-| Web client | FastAPI + uvicorn, `python -m pipeline.webui` (port 8765) | **Library** (every series, progress, listen, continue N more episodes, delete), **New story** (sectioned form, engine + model switch, CI-style board, logs, players), **Characters** (IP cards with a ▶ preview per engine, add/edit with Gemini voice picker, unlock). Light/dark theme. Approve/reject buttons are Phase 4. |
-| Keys | `.env`: `GEMINI_API_KEY` (LLM + Gemini TTS), `ELEVENLABS_API_KEY` | see docs/SETUP.md |
+| Web client | Next.js 16 (App Router, TypeScript, Tailwind 4, lucide) in `web/`; backend FastAPI + uvicorn `python -m pipeline.webui` (port 8765) serves the static export and the JSON API | Pages: **Library** (progress, listen, continue N more episodes, edit & re-run, delete), **New story / Edit story** (collapsible, resizable side panel; one IP per role), **Run** (CI-style board, logs, players), **Characters** (cards with a ▶ preview per engine rendered once and cached; `+ New character` opens the panel; edit is a separate panel title), **Usage** (per-model requests/tokens/characters, limits, exhausted/rate-limited status with live countdown to reset, vendor events). Light/dark themes. Deploy the `web/` app on Vercel with `API_BASE` pointing at a hosted backend. |
+| Keys | `.env`: `GEMINI_API_KEY` (LLM + Gemini TTS), `ELEVENLABS_API_KEY` (scope `user_read` lets the Usage page read the vendor's credit counter) | see docs/SETUP.md |
 
 ## Conventions
 
@@ -251,7 +253,8 @@ Removed: `sts-override` (D4). Run any script with `--help`.
 ### Running the whole pipeline
 
 ```bash
-python -m pipeline.webui                                   # browser client at http://127.0.0.1:8765
+python -m pipeline.webui                                   # API + web app at http://127.0.0.1:8765 (build once: cd web && npm install && npm run export)
+cd web && npm run dev                                      # UI dev server at http://localhost:3000 proxying /api to the backend
 python -m pipeline.orchestrator --series s1 --story story.txt --episodes 30 --produce 5 --min-sec 50 --max-sec 70 --tts gemini
 python -m pipeline.orchestrator --series s1 --only 6-10 --tts elevenlabs                   # continue an existing series
 ```
@@ -273,4 +276,5 @@ web dropdown); the outline call casts the rest. `character_id` in scripts, stems
 
 - ElevenLabs key is **Free tier** and scoped (no `user_read`/`models_read`): library voices (e.g. Thuy Duong, vi) return 402 via API, `wav_44100` returns 403. Placeholders in `library/voice-ips.json` are English premade voices driven in Vietnamese by v3; the target Vietnamese voices are noted in each `voice_description`. Upgrade to Creator+ for library voices and Professional Voice Cloning.
 - Measured pace on v3 with these voices: **3.6 words/s**; drafter uses 3.3.
+- Gemini TTS free tier: **10 requests/day per model** (each line is one request). Enable billing on the Gemini project for any real run; the adapter fails fast on the daily quota.
 - Test fixture for the episode contract lives in `tests/fixtures/episode.json`, never in `series/demo` (that folder is regenerated live).

@@ -1,7 +1,8 @@
-"""FastAPI app for the pipeline web client. Single-page UI in static/index.html; JSON API below.
+"""FastAPI app for the pipeline web client. The UI is the Next.js app in web/ (served from web/out when built); JSON API below.
 
 Config / engines
     GET  /api/config                          LLM + TTS defaults, key presence, engine catalog, actor roster (+ preview urls)
+    GET  /api/usage                           per-model usage, limits and status (Usage page)
 
 Pipeline
     POST /api/runs                            start a run with a sectioned story (see StartRun; tts_provider/tts_model per run)
@@ -23,8 +24,7 @@ Character IPs (library/voice-ips.json)
     POST   /api/characters                    add
     PUT    /api/characters/{id}?unlock=1      edit (unlock needed to change an IP asset's voice)
     DELETE /api/characters/{id}?unlock=1
-    POST   /api/characters/{id}/preview?provider=&force=   render (or return cached) ~5 s preview
-    POST   /api/characters/previews?provider=              render every missing preview on one engine
+    POST   /api/characters/{id}/preview?provider=   render the ~5 s preview once, then always the cached file
     POST   /api/voices/preview                {provider, voice_id, model_id} generic voice preview (voice picker)
     POST   /api/characters/{id}/audition      {text, provider} custom line (spends credits on ElevenLabs)
     GET    /api/previews/{file}, /api/auditions/{file}
@@ -33,17 +33,21 @@ Character IPs (library/voice-ips.json)
 from __future__ import annotations
 
 import json
+import os
 import re
 import threading
 import time
+from contextlib import asynccontextmanager
 from datetime import UTC, datetime
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse, PlainTextResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from pipeline import naming, previews, stories
+from pipeline import naming, previews, stories, usage
 from pipeline import registry as registry_io
 from pipeline.casting import apply_role_tags, duplicate_actor_pins, parse_roles_text
 from pipeline.config import get_settings
@@ -54,8 +58,20 @@ from pipeline.providers.catalog import gemini_voice
 from pipeline.registry import RegistryLocked
 from pipeline.schema import CharacterProfile, ProviderVoice, StoryInput, StoryOverview, StoryRole
 
-STATIC = Path(__file__).parent / "static"
-app = FastAPI(title="Audio AI Pipeline")
+
+@asynccontextmanager
+async def _lifespan(_app: FastAPI):
+    mark_interrupted_runs()
+    yield
+
+
+app = FastAPI(title="Audio AI Pipeline", lifespan=_lifespan)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[o.strip() for o in os.getenv("AI_AUDIO_CORS_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000").split(",") if o.strip()],
+    allow_methods=["*"], allow_headers=["*"],
+)
+WEB_OUT = naming.REPO_ROOT / "web" / "out"  # Next.js static export (cd web && npm run export)
 
 _runs: dict[str, Orchestrator] = {}
 _lock = threading.Lock()
@@ -63,6 +79,34 @@ _lock = threading.Lock()
 
 def _active() -> list[Orchestrator]:
     return [o for o in _runs.values() if o.run.status in ("pending", "running")]
+
+
+def mark_interrupted_runs() -> list[str]:
+    """A run lives in a thread of this process; if the server died mid-run its state file still says
+    'running'. On startup, mark those as cancelled so the Library and the run board tell the truth
+    (finished stages stay done; the Library's Continue picks up from the cached artifacts)."""
+    fixed: list[str] = []
+    if not naming.SERIES_DIR.exists():
+        return fixed
+    for p in naming.SERIES_DIR.glob("*/pipeline_run.json"):
+        try:
+            data = json.loads(p.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            continue
+        if data.get("status") not in ("pending", "running"):
+            continue
+        data["status"] = "cancelled"
+        data["error"] = "interrupted: the server stopped while this run was in progress; use Continue in the Library"
+        data["finished_at"] = datetime.now(UTC).isoformat(timespec="seconds")
+        for j in data.get("jobs", []):
+            if j.get("status") in ("pending", "running"):
+                j["status"] = "skipped"
+                j["finished_at"] = j.get("finished_at") or data["finished_at"]
+        p.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+        fixed.append(data.get("run_id", p.parent.name))
+    return fixed
+
+
 
 
 def _check_engine(provider: str, model: str | None) -> str | None:
@@ -90,9 +134,11 @@ def _actor_summary(c: CharacterProfile) -> dict:
 # --------------------------------------------------------------------------------------
 
 
-@app.get("/", response_class=HTMLResponse)
-def index() -> str:
-    return (STATIC / "index.html").read_text(encoding="utf-8")
+@app.get("/api/usage")
+def usage_summary() -> dict:
+    return usage.summary()
+
+
 
 
 @app.get("/api/config")
@@ -452,7 +498,8 @@ def _provider_error(e: ProviderError) -> HTTPException:
 
 
 @app.post("/api/characters/{cid}/preview")
-def character_preview(cid: str, provider: str = "elevenlabs", force: bool = False) -> dict:
+def character_preview(cid: str, provider: str = "elevenlabs") -> dict:
+    """Render the ~5 s preview once per (engine, model, voice) and cache it; later calls return the cached file."""
     reg = registry_io.load()
     if cid not in reg.ids():
         raise HTTPException(404, "unknown character")
@@ -461,33 +508,16 @@ def character_preview(cid: str, provider: str = "elevenlabs", force: bool = Fals
     if provider not in c.providers:
         raise HTTPException(422, f"{cid} has no {provider} voice")
     try:
-        p = previews.actor_preview(c, provider, force=force)
+        p = previews.actor_preview(c, provider)
     except ProviderError as e:
         raise _provider_error(e) from e
     return {"ok": True, "character_id": cid, "provider": provider, "preview": p}
-
-
-@app.post("/api/characters/previews")
-def all_previews(provider: str = "gemini", force: bool = False) -> dict:
-    reg = registry_io.load()
-    _check_engine(provider, None)
-    done, errors = [], {}
-    for c in reg.characters:
-        if provider not in c.providers:
-            continue
-        try:
-            previews.actor_preview(c, provider, force=force)
-            done.append(c.character_id)
-        except ProviderError as e:
-            errors[c.character_id] = str(e)[:200]
-    return {"ok": not errors, "rendered": done, "errors": errors}
 
 
 class VoicePreviewIn(BaseModel):
     provider: str
     voice_id: str = Field(min_length=1)
     model_id: str | None = None
-    force: bool = False
 
 
 @app.post("/api/voices/preview")
@@ -500,7 +530,7 @@ def voice_preview(body: VoicePreviewIn) -> dict:
             raise HTTPException(422, f"{vid!r} is not a Gemini prebuilt voice")
         vid = info["id"]
     try:
-        p = previews.voice_preview(body.provider, vid, model, force=body.force)
+        p = previews.voice_preview(body.provider, vid, model)
     except ProviderError as e:
         raise _provider_error(e) from e
     return {"ok": True, "preview": p}
@@ -549,3 +579,19 @@ def audition_file(name: str):
     if not p.exists():
         raise HTTPException(404)
     return FileResponse(p, media_type="audio/wav")
+
+
+# --------------------------------------------------------------------------------------
+# Web app (Next.js static export). Mounted last so /api/* wins. Build: cd web && npm run export
+# --------------------------------------------------------------------------------------
+
+if WEB_OUT.exists():
+    app.mount("/", StaticFiles(directory=str(WEB_OUT), html=True), name="web")
+else:
+    @app.get("/", response_class=HTMLResponse)
+    def index_placeholder() -> str:
+        return ("<!doctype html><meta charset=utf-8><title>Audio AI Studio</title>"
+                "<body style='font:15px/1.5 system-ui;padding:40px;max-width:640px'><h1>Web app not built yet</h1>"
+                "<p>Run <code>cd web && npm install && npm run export</code> once, then reload. "
+                "For development use <code>npm run dev</code> in <code>web/</code> (http://localhost:3000). "
+                "</p></body>")

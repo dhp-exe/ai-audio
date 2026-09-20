@@ -101,7 +101,17 @@ def actor_preview(profile: CharacterProfile, provider: str, *, force: bool = Fal
 
 
 def voice_preview(provider: str, voice_id: str, model_id: str | None = None, *, force: bool = False) -> dict:
+    """Preview for a voice picked in a form. Reuses an actor's cached clip of the same engine/voice/model
+    when one exists, so a voice is never rendered twice."""
+    from pipeline import registry as registry_io
+
     model_id = model_id or DEFAULT_MODEL[provider]
+    for c in registry_io.load().characters:
+        pv = c.providers.get(provider)
+        if pv and pv.voice_id.lower() == voice_id.lower() and pv.model_id == model_id:
+            cached = actor_preview(c, provider, render=False)
+            if cached:
+                return cached
     req = _request(provider, model_id, voice_id, VOICE_TEXT.format(name=voice_id))
     out = voice_preview_path(provider, voice_id, model_id)
     cached = status(out, req.content_hash())

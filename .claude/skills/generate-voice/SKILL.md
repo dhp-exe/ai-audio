@@ -12,7 +12,7 @@ cost, duration_ms, alignment when available).
 ```bash
 python .claude/skills/generate-voice/scripts/generate_voice.py --series demo --episode 1                       # AI_AUDIO_TTS_PROVIDER (elevenlabs)
 python .claude/skills/generate-voice/scripts/generate_voice.py --series demo --episode 1 --provider gemini     # free tier
-python .claude/skills/generate-voice/scripts/generate_voice.py --series demo --episode 1 --provider gemini --model-override gemini-3.1-flash-tts-preview
+python .claude/skills/generate-voice/scripts/generate_voice.py --series demo --episode 1 --provider gemini --model-override gemini-2.5-flash-preview-tts
 python .claude/skills/generate-voice/scripts/generate_voice.py --series demo --episode 1 --lines ep01_sc02_l003 --force
 python .claude/skills/generate-voice/scripts/generate_voice.py --series demo --episode 1 --dry-run   # payloads + character count
 python .claude/skills/generate-voice/scripts/generate_voice.py one --provider elevenlabs --voice-id <id> --text "[sighs] Anh đi đi." --out /tmp/a.wav
@@ -26,8 +26,8 @@ python .claude/skills/generate-voice/scripts/generate_voice.py one --provider ge
 | ElevenLabs `eleven_v3` | yes | highest, audio tags | stability 0.0/0.5/1.0 only | 1 credit/char | **Voice IPs** (paid plan needed for library voices) |
 | ElevenLabs `eleven_multilingual_v2` | yes | good, no tags | continuous stability/style | 1 credit/char | same-voice fallback when v3 artifacts on a line |
 | ElevenLabs `eleven_flash_v2_5` | yes | lowest | continuous | 0.5 credit/char | cheap drafts |
-| Gemini `gemini-2.5-flash-preview-tts` | yes (multilingual voices) | good, natural-language direction | direction text | **free tier**, else per audio token | pipeline and retention tests |
-| Gemini `gemini-3.1-flash-tts-preview` | yes | good | direction text | free tier | newer voices |
+| Gemini `gemini-3.1-flash-tts-preview` | yes (multilingual voices) | good, natural-language direction | direction text | **free tier**, else per audio token | **default Gemini model**; pipeline and retention tests |
+| Gemini `gemini-2.5-flash-preview-tts` | yes | good | direction text | free tier | older voices |
 | Gemini `gemini-2.5-pro-preview-tts` | yes | best of the Gemini line | direction text | paid | optional |
 
 The registry stores one voice per engine per actor (`providers.elevenlabs.voice_id`,

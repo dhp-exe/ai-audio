@@ -1,6 +1,6 @@
 """Gemini TTS adapter (second engine next to ElevenLabs).
 
-Models: gemini-2.5-flash-preview-tts, gemini-3.1-flash-tts-preview (free tier), gemini-2.5-pro-preview-tts.
+Models: gemini-3.1-flash-tts-preview (default), gemini-2.5-flash-preview-tts (both free tier), gemini-2.5-pro-preview-tts.
 Voices: 30 prebuilt names (see catalog.GEMINI_VOICES); `voice_id` in the registry is the name.
 
 Style is not a settings vector but a natural-language direction. `mapping.settings_for_line`
@@ -18,9 +18,38 @@ import time
 from pathlib import Path
 
 from pipeline.providers.base import ProviderError, StemInfo, TtsRequest, duration_ms, to_stem_wav
+from pipeline.usage import record_event
 
 PCM_RATE = 24_000
 RETRY_STATUSES = {429, 500, 502, 503, 504}
+
+
+def _error_details(e: Exception) -> list:
+    d = getattr(e, "details", None)
+    if isinstance(d, dict):
+        d = d.get("error", d)
+        return d.get("details", []) if isinstance(d, dict) else []
+    return d if isinstance(d, list) else []
+
+
+def quota_violation(e: Exception) -> dict | None:
+    """First QuotaFailure violation of a google-genai APIError: {quotaId, quotaValue, model}."""
+    for item in _error_details(e):
+        if isinstance(item, dict) and str(item.get("@type", "")).endswith("QuotaFailure"):
+            for v in item.get("violations", []):
+                return {"quotaId": v.get("quotaId", ""), "quotaValue": v.get("quotaValue"),
+                        "model": (v.get("quotaDimensions") or {}).get("model")}
+    return None
+
+
+def retry_delay(e: Exception) -> float:
+    for item in _error_details(e):
+        if isinstance(item, dict) and str(item.get("@type", "")).endswith("RetryInfo"):
+            try:
+                return float(str(item.get("retryDelay", "0")).rstrip("s"))
+            except ValueError:
+                return 0.0
+    return 0.0
 
 
 def build_prompt(style: str | None, text: str) -> str:
@@ -61,12 +90,25 @@ class GeminiTtsProvider:
                 break
             except errors.APIError as e:
                 status = int(getattr(e, "code", 0) or 0)
+                quota = quota_violation(e)
+                if status == 429:
+                    record_event("gemini", req.model_id, "quota_daily" if quota and "PerDay" in quota.get("quotaId", "") else "rate_limit",
+                                 status=429, quota_id=(quota or {}).get("quotaId"), quota_value=(quota or {}).get("quotaValue"),
+                                 retry_after_s=retry_delay(e) or None, message=str(getattr(e, "message", None) or e))
+                if quota and "PerDay" in quota.get("quotaId", ""):
+                    # Free tier: 10 requests per day per model. Waiting does not help; say so at once.
+                    raise ProviderError(
+                        f"gemini 429: daily free-tier quota exhausted for {quota.get('model', req.model_id)} "
+                        f"({quota.get('quotaValue', '?')} requests/day). Enable billing on the Gemini project, switch the Gemini "
+                        f"model, or retry tomorrow.", retryable=False, status=429) from e
                 if status in RETRY_STATUSES and attempt < retries:
                     attempt += 1
-                    time.sleep(min(60, 5 * (2 ** (attempt - 1))))
+                    time.sleep(min(60, max(retry_delay(e), 5 * (2 ** (attempt - 1)))))
                     continue
                 msg = str(getattr(e, "message", None) or e)
-                raise ProviderError(f"gemini {status}: {msg[:300]}", retryable=status in RETRY_STATUSES, status=status) from e
+                if quota:
+                    msg += f" [quota {quota.get('quotaId')} = {quota.get('quotaValue')} for {quota.get('model')}]"
+                raise ProviderError(f"gemini {status}: {msg[:400]}", retryable=status in RETRY_STATUSES, status=status) from e
             except (ConnectionError, TimeoutError, OSError) as e:
                 if attempt < retries:
                     attempt += 1

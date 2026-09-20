@@ -264,8 +264,10 @@ that episode but other episodes continue; the run is `done` only if no job faile
 subset of episodes (`only=[...]`), which is how the Library continues an unfinished series: the outline
 and existing drafts are kept, stems are cached by hash, masters and QA are recomputed.
 
-The web client (`python -m pipeline.webui`, http://127.0.0.1:8765) is a FastAPI app with one
-page:
+The web client is a Next.js app in `web/` (TypeScript, Tailwind, one typed API client in
+`web/lib/api.ts`). `npm run export` writes a static build that the FastAPI backend serves at
+http://127.0.0.1:8765; `npm run dev` proxies `/api/*` to the backend; on Vercel the same rewrite
+points at a hosted backend (`API_BASE`). The API it talks to:
 
 ```mermaid
 sequenceDiagram
@@ -286,14 +288,21 @@ sequenceDiagram
     B->>A: GET /api/series/{id}/master/{ep}.mp3 (audio player)
 ```
 
-The page has three views and a light/dark theme (system default, toggle in the header).
+Pages (light/dark theme: system default, toggle in the header; side panels collapse to a rail,
+resize by dragging their edge, and remember both):
 **Library** lists every series with progress (mastered / planned), the engine used, the cast, the
 episode table with inline players and QA, "continue N more episodes" (engine switchable), "edit
 story & re-run" and delete. **Characters** lists the Voice IP registry as cards with a ▶ preview
 per engine (rendered once, cached), edit and delete, and an add/edit form with the Gemini voice
 picker (unlock checkbox for locked voices). **New story** has the sectioned story form (one IP per
 role: a picked actor disappears from the other dropdowns; the API rejects duplicates too), the engine
-and model switch, and the run board: the casting table (role → actor, who assigned it, why),
+and model switch; the run board lives at `/run?id=`. **Usage** reads `GET /api/usage`
+(`pipeline/usage.py`): per model, requests / tokens / characters in the current period, the limit
+(from a vendor 429 when one was seen, else a documented default), a status of ok / rate limited /
+exhausted with a live countdown to the reset (Gemini: midnight Pacific; ElevenLabs: the billing
+period from the subscription endpoint), and every 429/402 the adapters recorded to
+`library/usage-events.jsonl`. Voice previews are rendered once per engine/voice/model and cached
+under `library/previews/`; nothing in the UI re-renders a cached clip. Board contents: the casting table (role → actor, who assigned it, why),
 one row per episode and one chip per stage (pending → running → done / warn /
 failed / skipped), the outline and cast jobs on a series row, an inline player once a master
 exists, the QA verdict, and any job's live log on click. Runs survive a server restart in read-only

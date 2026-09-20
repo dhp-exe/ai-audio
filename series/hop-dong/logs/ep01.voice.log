@@ -1,14 +1,6 @@
 $ /Users/dohuuphuoc/ai-audio/.venv/bin/python /Users/dohuuphuoc/ai-audio/.claude/skills/generate-voice/scripts/generate_voice.py --series hop-dong --episode 1 --provider gemini
 
-ep01_sc01_l001: 7491 ms, 87 chars, gemini
-ep01_sc01_l002: 4771 ms, 53 chars, gemini
-ep01_sc01_l003: ProviderError: gemini 429: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. 
+ep01_sc01_l001: ProviderError: gemini 429: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. 
 * Quota exceeded for metric: generativelanguage.googleapis.
-ep01_sc01_l004: ProviderError: gemini 429: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. 
-* Quota exceeded for metric: generativelanguage.googleapis.
-ep01_sc01_l005: ProviderError: gemini 429: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. 
-* Quota exceeded for metric: generativelanguage.googleapis.
-ep01_sc02_l001: ProviderError: gemini 429: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. 
-* Quota exceeded for metric: generativelanguage.googleapis.
-ep01_sc02_l002: ProviderError: gemini 429: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. 
+ep01_sc01_l002: ProviderError: gemini 429: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. 
 * Quota exceeded for metric: generativelanguage.googleapis.

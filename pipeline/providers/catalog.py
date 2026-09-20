@@ -32,16 +32,16 @@ ELEVENLABS_MODELS: list[ModelInfo] = [
     {"id": "eleven_multilingual_v2", "label": "Multilingual v2", "tags": False,
      "note": "Stable, continuous stability/style, no tags; 1 credit per character."},
     {"id": "eleven_flash_v2_5", "label": "Flash v2.5", "tags": False,
-     "note": "Fast and cheap (0.5 credit per character); least expressive."},
+     "note": "Fastest; 0.5 credit per character; least expressive."},
 ]
 
 GEMINI_MODELS: list[ModelInfo] = [
+    {"id": "gemini-3.1-flash-tts-preview", "label": "Gemini 3.1 Flash TTS", "tags": False,
+     "note": "Default. Newest voices; style by natural-language direction; 10 requests per day per model without billing."},
     {"id": "gemini-2.5-flash-preview-tts", "label": "Gemini 2.5 Flash TTS", "tags": False,
-     "note": "Free tier available; style by natural-language direction; $10 per 1M audio tokens when paid."},
-    {"id": "gemini-3.1-flash-tts-preview", "label": "Gemini 3.1 Flash TTS (preview)", "tags": False,
-     "note": "Free tier available; newest voices; $20 per 1M audio tokens when paid."},
+     "note": "Previous generation voices; 10 requests per day per model without billing."},
     {"id": "gemini-2.5-pro-preview-tts", "label": "Gemini 2.5 Pro TTS", "tags": False,
-     "note": "Paid only; highest quality of the Gemini line."},
+     "note": "Highest quality of the Gemini line; requires billing on the Gemini project."},
 ]
 
 # The 30 prebuilt Gemini voices (same set on Gemini API and Chirp 3 HD). Gender and character
@@ -79,7 +79,7 @@ GEMINI_VOICES: list[VoiceInfo] = [
     {"id": "Sadaltager", "gender": "male", "character": "knowledgeable"},
 ]
 
-DEFAULT_MODEL = {"elevenlabs": "eleven_v3", "gemini": "gemini-2.5-flash-preview-tts"}
+DEFAULT_MODEL = {"elevenlabs": "eleven_v3", "gemini": "gemini-3.1-flash-tts-preview"}
 MODELS = {"elevenlabs": ELEVENLABS_MODELS, "gemini": GEMINI_MODELS}
 PROVIDER_LABEL = {"elevenlabs": "ElevenLabs", "gemini": "Gemini TTS"}
 
@@ -102,7 +102,7 @@ def catalog() -> dict:
         "providers": [
             {"id": p, "label": PROVIDER_LABEL[p], "models": MODELS[p], "default_model": DEFAULT_MODEL[p],
              "voices": GEMINI_VOICES if p == "gemini" else None,
-             "billing": "1 credit per character (Flash v2.5: 0.5)" if p == "elevenlabs" else "free tier, then per audio token"}
+             "billing": "credits per character" if p == "elevenlabs" else "requests per day, then per audio token"}
             for p in PROVIDER_NAMES
         ]
     }

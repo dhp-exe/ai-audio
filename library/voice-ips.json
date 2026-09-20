@@ -6,7 +6,7 @@
       "character_id": "linh",
       "display_name": "Linh",
       "persona": "27 tuổi, kiến trúc sư trẻ ở Sài Gòn. Kín đáo, hài hước khô khan, trung thành đến mức dại dột.",
-      "voice_description": "PLACEHOLDER (Free tier): Sarah, EN premade, driven in Vietnamese by v3. On Creator+ switch to Thuy Duong MfXXiGR0HCVHHuMqcUJM (vi, northern) or a PVC. Target: nữ, giữa 20, giọng miền Nam, hơi khàn.",
+      "voice_description": "PLACEHOLDER: Sarah, EN premade, driven in Vietnamese by v3. After upgrading the ElevenLabs plan switch to Thuy Duong MfXXiGR0HCVHHuMqcUJM (vi, northern) or a PVC. Target: nữ, giữa 20, giọng miền Nam, hơi khàn.",
       "gender": "female",
       "age": "27",
       "tags": [],
@@ -21,7 +21,7 @@
         },
         "gemini": {
           "voice_id": "Erinome",
-          "model_id": "gemini-2.5-flash-preview-tts",
+          "model_id": "gemini-3.1-flash-tts-preview",
           "voice_url": "https://ai.google.dev/gemini-api/docs/speech-generation#voices",
           "fallback_voice_id": null,
           "default_settings": {}
@@ -48,34 +48,7 @@
         },
         "gemini": {
           "voice_id": "Charon",
-          "model_id": "gemini-2.5-flash-preview-tts",
-          "voice_url": "https://ai.google.dev/gemini-api/docs/speech-generation#voices",
-          "fallback_voice_id": null,
-          "default_settings": {}
-        }
-      },
-      "is_ip_asset": true
-    },
-    {
-      "character_id": "ong-trum",
-      "display_name": "Ông Trùm",
-      "persona": "Kẻ cho vay nặng lãi khét tiếng đứng sau dự án nhà thờ. Lịch sự bề ngoài, đe dọa ngầm.",
-      "voice_description": "PLACEHOLDER: Bill (EN, old, crisp) driven in Vietnamese by v3. Target: nam, trung niên, giọng trầm, chậm rãi, uy quyền.",
-      "gender": "male",
-      "age": "50s",
-      "tags": [],
-      "language": "vi-VN",
-      "providers": {
-        "elevenlabs": {
-          "voice_id": "pqHfZKP75CvOlQylNhV4",
-          "model_id": "eleven_v3",
-          "voice_url": null,
-          "fallback_voice_id": "pqHfZKP75CvOlQylNhV4",
-          "default_settings": {}
-        },
-        "gemini": {
-          "voice_id": "Algenib",
-          "model_id": "gemini-2.5-flash-preview-tts",
+          "model_id": "gemini-3.1-flash-tts-preview",
           "voice_url": "https://ai.google.dev/gemini-api/docs/speech-generation#voices",
           "fallback_voice_id": null,
           "default_settings": {}
@@ -107,7 +80,7 @@
         },
         "gemini": {
           "voice_id": "Leda",
-          "model_id": "gemini-2.5-flash-preview-tts",
+          "model_id": "gemini-3.1-flash-tts-preview",
           "voice_url": "https://ai.google.dev/gemini-api/docs/speech-generation#voices",
           "fallback_voice_id": null,
           "default_settings": {}
@@ -139,7 +112,7 @@
         },
         "gemini": {
           "voice_id": "Orus",
-          "model_id": "gemini-2.5-flash-preview-tts",
+          "model_id": "gemini-3.1-flash-tts-preview",
           "voice_url": "https://ai.google.dev/gemini-api/docs/speech-generation#voices",
           "fallback_voice_id": null,
           "default_settings": {}
@@ -156,6 +129,8 @@
     "2026-09-20 added gender/age/fallback metadata to linh, minh-khoi, ong-trum",
     "2026-09-20 added ngan (IP asset)",
     "2026-09-20 added duong (IP asset)",
-    "2026-09-20 removed MiniMax entries; added Gemini TTS voices: linh=Erinome, minh-khoi=Charon, ong-trum=Algenib, ngan=Leda, duong=Orus"
+    "2026-09-20 removed MiniMax entries; added Gemini TTS voices: linh=Erinome, minh-khoi=Charon, ong-trum=Algenib, ngan=Leda, duong=Orus",
+    "2026-09-20 gemini model for all actors: gemini-2.5-flash-preview-tts -> gemini-3.1-flash-tts-preview (default)",
+    "2026-09-20 removed ong-trum"
   ]
 }

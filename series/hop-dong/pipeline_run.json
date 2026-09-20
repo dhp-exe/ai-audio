@@ -1,0 +1,265 @@
+{
+  "run_id": "hop-dong-20260920-095101",
+  "series_id": "hop-dong",
+  "status": "running",
+  "error": null,
+  "created_at": "2026-09-20T09:51:01+00:00",
+  "finished_at": null,
+  "params": {
+    "series_id": "hop-dong",
+    "episodes": 3,
+    "produce": null,
+    "min_sec": 50,
+    "max_sec": 70,
+    "max_parallel_episodes": 1,
+    "force": false,
+    "tts_provider": "gemini",
+    "tts_model": null,
+    "only": [
+      1
+    ]
+  },
+  "stages": [
+    "outline",
+    "cast",
+    "draft",
+    "direct",
+    "voice",
+    "assemble",
+    "qa"
+  ],
+  "notes": [],
+  "casting": [
+    {
+      "role": "Giang Thần",
+      "type": "protagonist",
+      "actor": "duong",
+      "assigned_by": "user",
+      "reason": "Giọng nam trầm ấm, uy quyền, phù hợp với hình tượng tổng giám đốc lạnh lùng.",
+      "actor_name": "Dương",
+      "voice": "Orus"
+    },
+    {
+      "role": "Tô Mạn",
+      "type": "protagonist",
+      "actor": "ngan",
+      "assigned_by": "user",
+      "reason": "Giọng nữ trẻ trung, thông minh, bướng bỉnh, phù hợp với nhân vật chính.",
+      "actor_name": "Ngân",
+      "voice": "Leda"
+    },
+    {
+      "role": "Lý Minh",
+      "type": "supporting",
+      "actor": "minh-khoi",
+      "assigned_by": "ai",
+      "reason": "Giọng nam trầm ấm, đáng tin cậy, phù hợp với vai trợ lý thân cận.",
+      "actor_name": "Minh Khôi",
+      "voice": "Charon"
+    },
+    {
+      "role": "Trần Vy",
+      "type": "antagonist",
+      "actor": "linh",
+      "assigned_by": "ai",
+      "reason": "Giọng nữ sắc sảo, có chút khàn, phù hợp với vai phản diện đố kỵ.",
+      "actor_name": "Linh",
+      "voice": "Erinome"
+    }
+  ],
+  "jobs": [
+    {
+      "id": "outline",
+      "stage": "outline",
+      "episode": null,
+      "cmd": [
+        "/Users/dohuuphuoc/ai-audio/.venv/bin/python",
+        "/Users/dohuuphuoc/ai-audio/.claude/skills/episodize/scripts/episodize.py",
+        "--series",
+        "hop-dong",
+        "--outline-only",
+        "--episodes",
+        "3",
+        "--min-sec",
+        "50",
+        "--max-sec",
+        "70"
+      ],
+      "status": "done",
+      "started_at": "2026-09-20T09:51:01+00:00",
+      "finished_at": "2026-09-20T09:51:01+00:00",
+      "exit_code": 0,
+      "log_path": "/Users/dohuuphuoc/ai-audio/series/hop-dong/logs/outline.log",
+      "summary": {
+        "ok": true,
+        "outline": false,
+        "mode": "segment",
+        "drafted": [],
+        "skipped": [],
+        "new_characters": [],
+        "dry_run": false
+      },
+      "error": null,
+      "label": "Outline"
+    },
+    {
+      "id": "cast",
+      "stage": "cast",
+      "episode": null,
+      "cmd": [
+        "<internal:ensure_voices>"
+      ],
+      "status": "done",
+      "started_at": "2026-09-20T09:51:01+00:00",
+      "finished_at": "2026-09-20T09:51:01+00:00",
+      "exit_code": 0,
+      "log_path": "/Users/dohuuphuoc/ai-audio/series/hop-dong/logs/cast.log",
+      "summary": {
+        "ok": true,
+        "provider": "gemini",
+        "model": "gemini-2.5-flash-preview-tts",
+        "cast": [
+          "duong",
+          "ngan",
+          "minh-khoi",
+          "linh"
+        ],
+        "placeholders": [],
+        "auto_voiced": []
+      },
+      "error": null,
+      "label": "Cast"
+    },
+    {
+      "id": "ep01.draft",
+      "stage": "draft",
+      "episode": 1,
+      "cmd": [
+        "/Users/dohuuphuoc/ai-audio/.venv/bin/python",
+        "/Users/dohuuphuoc/ai-audio/.claude/skills/episodize/scripts/episodize.py",
+        "--series",
+        "hop-dong",
+        "--only",
+        "1"
+      ],
+      "status": "done",
+      "started_at": "2026-09-20T09:51:01+00:00",
+      "finished_at": "2026-09-20T09:51:01+00:00",
+      "exit_code": 0,
+      "log_path": "/Users/dohuuphuoc/ai-audio/series/hop-dong/logs/ep01.draft.log",
+      "summary": {
+        "ok": true,
+        "outline": false,
+        "mode": "segment",
+        "drafted": [],
+        "skipped": [
+          1
+        ],
+        "new_characters": [],
+        "dry_run": false
+      },
+      "error": null,
+      "label": "Draft"
+    },
+    {
+      "id": "ep01.direct",
+      "stage": "direct",
+      "episode": 1,
+      "cmd": [
+        "/Users/dohuuphuoc/ai-audio/.venv/bin/python",
+        "/Users/dohuuphuoc/ai-audio/.claude/skills/parse-script/scripts/parse_script.py",
+        "--series",
+        "hop-dong",
+        "--episode",
+        "1",
+        "--force",
+        "--provider",
+        "gemini"
+      ],
+      "status": "done",
+      "started_at": "2026-09-20T09:51:01+00:00",
+      "finished_at": "2026-09-20T09:51:10+00:00",
+      "exit_code": 0,
+      "log_path": "/Users/dohuuphuoc/ai-audio/series/hop-dong/logs/ep01.direct.log",
+      "summary": {
+        "ok": true,
+        "episode": 1,
+        "lines": 12,
+        "scenes": 2,
+        "peak_lines": [
+          "ep01_sc02_l005",
+          "ep01_sc02_l007"
+        ],
+        "remapped": 0,
+        "path": "/Users/dohuuphuoc/ai-audio/series/hop-dong/scripts/parsed/ep01.json"
+      },
+      "error": null,
+      "label": "Direct"
+    },
+    {
+      "id": "ep01.voice",
+      "stage": "voice",
+      "episode": 1,
+      "cmd": [
+        "/Users/dohuuphuoc/ai-audio/.venv/bin/python",
+        "/Users/dohuuphuoc/ai-audio/.claude/skills/generate-voice/scripts/generate_voice.py",
+        "--series",
+        "hop-dong",
+        "--episode",
+        "1",
+        "--provider",
+        "gemini"
+      ],
+      "status": "running",
+      "started_at": "2026-09-20T09:51:10+00:00",
+      "finished_at": null,
+      "exit_code": null,
+      "log_path": null,
+      "summary": {},
+      "error": null,
+      "label": "Voice"
+    },
+    {
+      "id": "ep01.assemble",
+      "stage": "assemble",
+      "episode": 1,
+      "cmd": [
+        "/Users/dohuuphuoc/ai-audio/.venv/bin/python",
+        "/Users/dohuuphuoc/ai-audio/.claude/skills/assemble-audio/scripts/assemble_audio.py",
+        "--series",
+        "hop-dong",
+        "--episode",
+        "1"
+      ],
+      "status": "pending",
+      "started_at": null,
+      "finished_at": null,
+      "exit_code": null,
+      "log_path": null,
+      "summary": {},
+      "error": null,
+      "label": "Assemble"
+    },
+    {
+      "id": "ep01.qa",
+      "stage": "qa",
+      "episode": 1,
+      "cmd": [
+        "/Users/dohuuphuoc/ai-audio/.venv/bin/python",
+        "/Users/dohuuphuoc/ai-audio/.claude/skills/qa-audio/scripts/qa_audio.py",
+        "--series",
+        "hop-dong",
+        "--episode",
+        "1"
+      ],
+      "status": "pending",
+      "started_at": null,
+      "finished_at": null,
+      "exit_code": null,
+      "log_path": null,
+      "summary": {},
+      "error": null,
+      "label": "QA"
+    }
+  ]
+}

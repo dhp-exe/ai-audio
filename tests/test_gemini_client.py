@@ -39,10 +39,10 @@ class FakeModels:
 def fake(monkeypatch):
     holder = {}
 
-    def _client():
+    def make_client(api_key=None):
         return SimpleNamespace(models=holder["models"])
 
-    monkeypatch.setattr(gc, "_client", _client)
+    monkeypatch.setattr(gc, "make_client", make_client)
     monkeypatch.setattr(gc.time, "sleep", lambda *_: None)
     monkeypatch.setenv("GEMINI_API_KEY", "x")
     return holder

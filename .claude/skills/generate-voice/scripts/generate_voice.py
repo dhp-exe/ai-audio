@@ -3,20 +3,22 @@
 
 Modes
     episode (default)
-        generate_voice.py --series <id> --episode <n> [--provider elevenlabs|minimax]
-                          [--model-override <model_id>] [--lines id,...] [--force] [--dry-run]
-                          [--no-normalize] [--concurrency 3] [--no-fallback]
+        generate_voice.py --series <id> --episode <n> [--provider elevenlabs|gemini] [--model-override <model_id>]
+                          [--lines id,...] [--force] [--dry-run] [--no-normalize] [--concurrency N]
     one
-        generate_voice.py one --voice-id <id> --text "<text>" --out <path.wav> [--model-id eleven_v3]
+        generate_voice.py one --provider elevenlabs --voice-id <id> --text "<text>" --out <path.wav> [--model-id eleven_v3]
                           [--stability 0.5] [--similarity-boost 0.75] [--style 0.0] [--speaker-boost]
+        generate_voice.py one --provider gemini --voice-id Leda --text "<text>" --out <path.wav> [--direction "giọng buồn, chậm"]
 
 Behaviour
-    * character_id -> voice profile from library/voice-ips.json (Voice IP anchoring, D7).
+    * character_id -> voice profile from library/voice-ips.json (Voice IP anchoring, D7); the voice used is the one
+      stored for the chosen provider (ElevenLabs voice_id or Gemini voice name).
     * tts_text -> Vietnamese normalizer -> provider-specific tag handling (D1), via pipeline.providers.mapping.
     * One WAV per line named by pipeline.naming; sidecar .meta.json with hash, settings, cost, alignment.
-    * Skips lines whose sidecar hash matches unless --force. Bounded thread pool.
-    * On a retryable provider error, retries the line on the fallback provider if the character has a
-      voice there (unless --no-fallback).
+    * Skips lines whose sidecar hash matches unless --force. Bounded thread pool (Gemini: serial, free-tier limits).
+    * ElevenLabs 402 "paid plan required" on a voice -> re-rendered with the actor's fallback premade voice and
+      flagged (voice_fallback in the sidecar, placeholder_voices in the summary). No cross-engine fallback: a
+      character keeps one voice per run.
 """
 
 from __future__ import annotations
@@ -35,7 +37,13 @@ from pipeline import naming  # noqa: E402
 from pipeline import registry as registry_io  # noqa: E402
 from pipeline.casting import guess_gender, placeholder_voice  # noqa: E402
 from pipeline.config import get_settings  # noqa: E402
-from pipeline.providers import PROVIDER_NAMES, TtsRequest, get_provider  # noqa: E402
+from pipeline.providers import (  # noqa: E402
+    DEFAULT_MODEL,
+    PROVIDER_NAMES,
+    TtsRequest,
+    default_concurrency,
+    get_provider,
+)
 from pipeline.providers.base import ProviderError  # noqa: E402
 from pipeline.providers.mapping import settings_for_line, text_for_provider  # noqa: E402
 from pipeline.schema import EpisodeScript, LineType, VoiceRegistry  # noqa: E402
@@ -70,7 +78,7 @@ def plan_episode(script: EpisodeScript, registry: VoiceRegistry, provider: str, 
         try:
             req = build_request(line, registry, provider, model_override, normalize, prev_text, next_text)
         except KeyError as e:
-            raise SystemExit(f"{e} (voice-registry add)") from e
+            raise SystemExit(f"{e} (assign one in the Characters page or voice-registry add)") from e
         out = naming.stems_dir(script.series_id, script.episode_number) / naming.stem_name_from_line_id(
             line.line_id, line.character_id, line.type.value)
         plan.append((req, out))
@@ -98,18 +106,22 @@ def log_run(series: str, episode: int, req: TtsRequest, info: dict) -> None:
     p.parent.mkdir(parents=True, exist_ok=True)
     with p.open("a", encoding="utf-8") as f:
         f.write(json.dumps({"at": datetime.now(UTC).isoformat(timespec="seconds"), "stage": "generate_voice", "episode": episode,
-                            "line_id": req.line_id, "provider": req.provider, "model_id": req.model_id,
-                            "characters_billed": info.get("characters_billed"), "duration_ms": info.get("duration_ms")}) + "\n")
+                            "line_id": req.line_id, "provider": req.provider, "model_id": req.model_id, "voice_id": req.voice_id,
+                            "characters_billed": info.get("characters_billed"), "tokens_in": info.get("tokens_in"),
+                            "tokens_out": info.get("tokens_out"), "duration_ms": info.get("duration_ms")}) + "\n")
 
 
 def run_episode(a: argparse.Namespace) -> int:
     settings = get_settings()
     provider = a.provider or settings.tts_provider
+    if provider not in PROVIDER_NAMES:
+        raise SystemExit(f"unknown provider {provider!r}; expected one of {PROVIDER_NAMES}")
+    model_override = a.model_override or (settings.tts_model if not a.provider or a.provider == settings.tts_provider else None)
     normalize = settings.normalize_vi and not a.no_normalize
     script = EpisodeScript.model_validate_json(naming.parsed_script_path(a.series, a.episode).read_text(encoding="utf-8"))
     registry = registry_io.load()
     only = set(a.lines.split(",")) if a.lines else None
-    plan = plan_episode(script, registry, provider, only, a.model_override, normalize)
+    plan = plan_episode(script, registry, provider, only, model_override, normalize)
     lines_by_id = {ln.line_id: ln for _, ln in script.all_lines()}
 
     todo = [(r, o) for r, o in plan if a.force or not is_cached(r, o)]
@@ -120,19 +132,16 @@ def run_episode(a: argparse.Namespace) -> int:
         print(json.dumps({"ok": True, "dry_run": True, "provider": provider, "planned": len(plan), "to_render": len(todo), "characters": chars}))
         return 0
 
-    primary = get_provider(provider)
-    fallback_name = settings.tts_fallback_provider if (not a.no_fallback and settings.tts_fallback_provider != provider) else None
-    fallback = None
+    engine = get_provider(provider)
 
     def render(req: TtsRequest, out: Path) -> tuple[str, dict, str]:
-        nonlocal fallback
         out.parent.mkdir(parents=True, exist_ok=True)
         t0 = time.time()
         try:
-            info = primary.synthesize(req, out)
+            info = engine.synthesize(req, out)
             used = req
         except ProviderError as e:
-            if e.status == 402 and "voice" in str(e).lower():
+            if provider == "elevenlabs" and e.status == 402 and "voice" in str(e).lower():
                 # Account tier rejects this voice (library/PVC voice on Free tier). Degrade to a
                 # premade placeholder of the same gender so the run completes; QA flags the stem.
                 line = lines_by_id[req.line_id]
@@ -141,31 +150,20 @@ def run_episode(a: argparse.Namespace) -> int:
                 alt = pv.fallback_voice_id or placeholder_voice(profile.gender or guess_gender(profile.voice_description, profile.persona))
                 alt_req = TtsRequest(provider=req.provider, model_id=req.model_id, voice_id=alt, text=req.text,
                                      settings=req.settings, line_id=req.line_id)
-                info = primary.synthesize(alt_req, out)
+                info = engine.synthesize(alt_req, out)
                 info["voice_fallback"] = {"requested": req.voice_id, "used": alt, "reason": str(e)[:160]}
-                used = alt_req
-                write_meta(out, used, info, time.time() - t0)
-                log_run(a.series, a.episode, used, info)
+                write_meta(out, alt_req, info, time.time() - t0)
+                log_run(a.series, a.episode, alt_req, info)
                 return req.line_id, info, f"{provider} (placeholder voice)"
-            if not (e.retryable and fallback_name):
-                raise
-            line = lines_by_id[req.line_id]
-            try:
-                fb_req = build_request(line, registry, fallback_name, None, normalize)
-            except KeyError:
-                raise e from None
-            if fallback is None:
-                fallback = get_provider(fallback_name)
-            info = fallback.synthesize(fb_req, out)
-            info["fallback_from"] = f"{req.provider}:{e}"
-            used = fb_req
+            raise
         write_meta(out, used, info, time.time() - t0)
         log_run(a.series, a.episode, used, info)
         return req.line_id, info, used.provider
 
+    workers = a.concurrency if a.concurrency else default_concurrency(provider)
     rendered, failed, fell_back = 0, [], []
     placeholder_hits: set[str] = set()
-    with ThreadPoolExecutor(max_workers=max(1, a.concurrency)) as pool:
+    with ThreadPoolExecutor(max_workers=max(1, workers)) as pool:
         futures = {pool.submit(render, r, o): r.line_id for r, o in todo}
         for fut in as_completed(futures):
             lid = futures[fut]
@@ -178,25 +176,29 @@ def run_episode(a: argparse.Namespace) -> int:
             rendered += 1
             if used_provider != provider:
                 fell_back.append(lid)
-                if "placeholder voice" in used_provider and "voice_fallback" in info:
+                if "voice_fallback" in info:
                     placeholder_hits.add(info["voice_fallback"]["requested"])
             print(f"{lid}: {info.get('duration_ms')} ms, {info.get('characters_billed')} chars, {used_provider}", file=sys.stderr)
 
     if placeholder_hits:
         print(f"WARNING: account tier rejected voice(s) {sorted(placeholder_hits)}; rendered with placeholder premade voices. "
               f"Upgrade the ElevenLabs plan and re-run with --force to use the real Voice IPs.", file=sys.stderr)
-    print(json.dumps({"ok": not failed, "provider": provider, "planned": len(plan), "rendered": rendered,
-                      "cached": len(plan) - len(todo), "failed": sorted(failed), "fell_back": sorted(fell_back),
+    print(json.dumps({"ok": not failed, "provider": provider, "model": model_override or "registry", "planned": len(plan),
+                      "rendered": rendered, "cached": len(plan) - len(todo), "failed": sorted(failed), "fell_back": sorted(fell_back),
                       "placeholder_voices": sorted(placeholder_hits)}))
     return 0 if not failed else 2
 
 
 def run_one(a: argparse.Namespace) -> int:
-    s = {"stability": a.stability, "similarity_boost": a.similarity_boost, "use_speaker_boost": a.speaker_boost}
-    if a.style is not None:
-        s["style"] = a.style
+    model_id = a.model_id or DEFAULT_MODEL[a.provider]
+    if a.provider == "gemini":
+        s = {"style": a.direction} if a.direction else {}
+    else:
+        s = {"stability": a.stability, "similarity_boost": a.similarity_boost, "use_speaker_boost": a.speaker_boost}
+        if a.style is not None:
+            s["style"] = a.style
     text = normalize_vi(a.text) if not a.no_normalize else a.text
-    req = TtsRequest(provider=a.provider, model_id=a.model_id, voice_id=a.voice_id, text=text, settings=s)
+    req = TtsRequest(provider=a.provider, model_id=model_id, voice_id=a.voice_id, text=text, settings=s)
     if a.dry_run:
         print(json.dumps(req.as_dict(), ensure_ascii=False, indent=2))
         return 0
@@ -204,7 +206,7 @@ def run_one(a: argparse.Namespace) -> int:
     t0 = time.time()
     info = get_provider(a.provider).synthesize(req, out)
     write_meta(out, req, info, time.time() - t0)
-    print(json.dumps({"ok": True, "out": a.out, **{k: v for k, v in info.items() if k != "alignment"}}))
+    print(json.dumps({"ok": True, "out": a.out, **{k: v for k, v in info.items() if k not in ("alignment", "prompt")}}))
     return 0
 
 
@@ -216,25 +218,25 @@ def main(argv: list[str] | None = None) -> int:
     ep.add_argument("--series", required=True)
     ep.add_argument("--episode", type=int, required=True)
     ep.add_argument("--provider", choices=PROVIDER_NAMES)
-    ep.add_argument("--model-override", help="force a model_id for this run, e.g. eleven_multilingual_v2")
+    ep.add_argument("--model-override", help="force a model_id for this run, e.g. eleven_multilingual_v2 or gemini-3.1-flash-tts-preview")
     ep.add_argument("--lines", help="comma-separated line_ids to (re)render")
     ep.add_argument("--force", action="store_true")
     ep.add_argument("--dry-run", action="store_true")
     ep.add_argument("--no-normalize", action="store_true")
-    ep.add_argument("--no-fallback", action="store_true")
-    ep.add_argument("--concurrency", type=int, default=3)
+    ep.add_argument("--concurrency", type=int, default=None, help="default: 2 for ElevenLabs, 1 for Gemini")
     ep.set_defaults(fn=run_episode)
 
     one = sub.add_parser("one", help="synthesize a single text (voice audition)")
     one.add_argument("--provider", choices=PROVIDER_NAMES, default="elevenlabs")
-    one.add_argument("--voice-id", required=True)
+    one.add_argument("--voice-id", required=True, help="ElevenLabs voice_id or Gemini voice name")
     one.add_argument("--text", required=True)
     one.add_argument("--out", required=True)
-    one.add_argument("--model-id", default="eleven_v3")
+    one.add_argument("--model-id", default=None)
     one.add_argument("--stability", type=float, default=0.5)
     one.add_argument("--similarity-boost", type=float, default=0.75)
     one.add_argument("--style", type=float, default=None)
     one.add_argument("--speaker-boost", action="store_true")
+    one.add_argument("--direction", help="Gemini: natural-language acting direction (Vietnamese)")
     one.add_argument("--no-normalize", action="store_true")
     one.add_argument("--dry-run", action="store_true")
     one.set_defaults(fn=run_one)

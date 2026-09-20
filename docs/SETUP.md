@@ -40,15 +40,17 @@ linked pages before budgeting.
     so **Creator** covers one series per month including ~2x re-rolls; Pro if you iterate heavily.
   - PVC requires ~30 min of clean recordings per voice and a verification step; plan a few days.
 
-### `MINIMAX_API_KEY` and `MINIMAX_GROUP_ID` (fallback provider, optional until Phase 2 step 2)
-- **Get it:** https://platform.minimax.io (international platform; the `.chat` domain is the China
-  region) -> sign up -> "API Keys" -> create. The **GroupId** is shown in the account/organization
-  settings page and is required in the request URL.
-- **Free tier:** new accounts typically receive a small trial credit; no permanent free tier.
-- **Paid:** pay-as-you-go per character, see https://platform.minimax.io/docs (pricing page).
-  `speech-02-hd` is priced higher than `speech-02-turbo`; both are on the order of tens of dollars
-  per 1M characters, so a 30-episode series costs a few dollars. Voice cloning is a separate,
-  per-voice fee.
+### Gemini TTS (second engine, uses `GEMINI_API_KEY`)
+- **Models:** `gemini-2.5-flash-preview-tts` (default), `gemini-3.1-flash-tts-preview`, `gemini-2.5-pro-preview-tts` (paid only).
+- **Free tier:** the two Flash TTS models are "Free of charge" on the Gemini API free tier, with low
+  per-minute request caps, so the voice stage runs serially. Paid: $0.50-1 per 1M text tokens in and
+  $10-20 per 1M audio tokens out (a 60 s episode is roughly 3-4k audio tokens, so cents per episode).
+  Reference: https://ai.google.dev/gemini-api/docs/pricing and https://ai.google.dev/gemini-api/docs/speech-generation
+- **Voices:** 30 fixed prebuilt voices addressed by name (Leda, Orus, Charon, ...), multilingual, not
+  Vietnamese-native; no cloning, no library, so they cannot be exclusive IP assets. Use Gemini for free
+  pipeline and retention tests; keep ElevenLabs for the real Voice IPs.
+- **No MiniMax.** Removed 2026-09-20: Vietnamese is supported but there is no free API tier and HD
+  pricing ($100 per 1M characters) is 3-6x ElevenLabs Creator.
 
 ## Findings from the first live run (2026-09-20)
 
@@ -56,6 +58,8 @@ linked pages before budgeting.
 - **Network:** on this machine IPv6 to `generativelanguage.googleapis.com` fails (TLS EOF). The client pins IPv4; set `AI_AUDIO_FORCE_IPV4=false` to disable elsewhere.
 - **ElevenLabs Free tier:** API key scopes omit `user_read`/`models_read` (fine). Library voices such as *Thuy Duong - Vietnamese* return 402 via API on Free; only premade voices work. `wav_44100` output needs Pro; the adapter falls back to `mp3_44100_128`. Five episodes cost ~6,100 characters of the 10,000/month free quota.
 - **Upgrade path:** Creator (~$22/mo) unlocks library voices and Professional Voice Cloning; that is the minimum for real Vietnamese Voice IPs.
+- **ElevenLabs 402 on Ngan/Duong (2026-09-20):** the exact response is `paid_plan_required: Free users cannot use library voices via the API`; both voices are correctly added to My Voices, every endpoint/model variant fails the same way, so only the plan tier matters. The API key also lacks `user_read`, so quota cannot be read; regenerate it with `user_read` + `models_read` after upgrading.
+- **Gemini TTS (2026-09-20):** both Flash TTS models render Vietnamese on the free tier in ~6 s per line; a transcript check confirmed the direction prefix is not spoken.
 
 ## Not needed
 

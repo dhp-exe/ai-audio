@@ -466,8 +466,8 @@ class SeriesBible(BaseModel):
 
 
 class ProviderVoice(BaseModel):
-    voice_id: str
-    model_id: str = Field(description="e.g. 'eleven_v3', 'eleven_multilingual_v2', 'speech-02-hd'")
+    voice_id: str = Field(description="ElevenLabs voice_id, or a Gemini prebuilt voice name (e.g. 'Leda').")
+    model_id: str = Field(description="e.g. 'eleven_v3', 'eleven_multilingual_v2', 'gemini-2.5-flash-preview-tts'")
     voice_url: str | None = Field(None, description="Vendor page for the voice, for humans.")
     fallback_voice_id: str | None = Field(None, description="Premade voice used when the account tier rejects voice_id (HTTP 402).")
     default_settings: dict[str, float | int | str | bool] = Field(default_factory=dict)

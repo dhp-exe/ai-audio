@@ -55,8 +55,9 @@ class ProviderError(RuntimeError):
 # ---- audio helpers ---------------------------------------------------------------------
 
 
-def to_stem_wav(audio_bytes: bytes, out: Path, *, src_suffix: str) -> None:
-    """Write provider audio (wav/mp3/pcm...) as the canonical stem: WAV 44.1 kHz / 16-bit / mono."""
+def to_stem_wav(audio_bytes: bytes, out: Path, *, src_suffix: str, pcm_rate: int = 44100) -> None:
+    """Write provider audio (wav/mp3/pcm...) as the canonical stem: WAV 44.1 kHz / 16-bit / mono.
+    Raw PCM input is assumed s16le mono at `pcm_rate` Hz (ElevenLabs pcm_44100, Gemini 24 kHz)."""
     out.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.NamedTemporaryFile(suffix=src_suffix, delete=False) as tmp:
         tmp.write(audio_bytes)
@@ -64,7 +65,7 @@ def to_stem_wav(audio_bytes: bytes, out: Path, *, src_suffix: str) -> None:
     try:
         cmd = ["ffmpeg", "-v", "error", "-y"]
         if src_suffix == ".pcm":
-            cmd += ["-f", "s16le", "-ar", "44100", "-ac", "1"]
+            cmd += ["-f", "s16le", "-ar", str(pcm_rate), "-ac", "1"]
         cmd += ["-i", str(tmp_path), "-ar", "44100", "-ac", "1", "-c:a", "pcm_s16le", str(out)]
         subprocess.run(cmd, check=True)
     finally:

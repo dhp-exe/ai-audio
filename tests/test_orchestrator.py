@@ -38,6 +38,18 @@ def test_job_graph_shape(sandbox):
     assert sum(1 for j in jobs.values() if j.episode) == 3 * len(STAGES)
     assert "--episodes" in jobs["outline"].cmd and "30" in jobs["outline"].cmd
     assert jobs["ep02.draft"].cmd[-2:] == ["--only", "2"]
+    assert jobs["ep01.voice"].cmd[-2:] == ["--provider", "elevenlabs"] and "--model-override" not in jobs["ep01.voice"].cmd
+    assert jobs["ep01.direct"].cmd[-2:] == ["--provider", "elevenlabs"]
+
+
+def test_engine_and_resume_params(sandbox):
+    p = RunParams(series_id="s", episodes=10, tts_provider="gemini", tts_model="gemini-3.1-flash-tts-preview", only=[4, 9, 42])
+    assert p.episode_numbers() == [4, 9]
+    jobs = Orchestrator(p, None).build_jobs()
+    assert sorted({j.episode for j in jobs.values() if j.episode}) == [4, 9]
+    assert jobs["ep04.voice"].cmd[-4:] == ["--provider", "gemini", "--model-override", "gemini-3.1-flash-tts-preview"]
+    with pytest.raises(ValueError):
+        RunParams(series_id="s", tts_provider="minimax")
 
 
 def test_run_success_and_placeholder_cast(sandbox):
@@ -62,7 +74,9 @@ def test_run_success_and_placeholder_cast(sandbox):
     reg = json.loads((sandbox / "library" / "voice-ips.json").read_text())
     added = next(c for c in reg["characters"] if c["character_id"] == "ong-trum")
     assert added["is_ip_asset"] is False and "elevenlabs" in added["providers"]
+    assert added["providers"]["elevenlabs"]["voice_id"] != "v1"  # never shares a voice with the cast
     assert run.notes and "ong-trum" in run.notes[0]
+    assert run.casting[0]["voice"] == "v1" if run.casting else True
     state = json.loads(run.state_path().read_text())
     assert state["status"] == "done" and len(state["jobs"]) == 2 + 2 * len(STAGES)
 
@@ -86,3 +100,27 @@ def test_failure_skips_downstream(sandbox):
     assert s["ep01.voice"] == "failed" and s["ep01.assemble"] == "skipped" and s["ep01.qa"] == "skipped"
     assert s["ep02.qa"] == "done"
     assert "402" in run.jobs["ep01.voice"].error
+
+
+def test_cast_on_gemini_auto_assigns_ip_actor(sandbox):
+    """linh has no Gemini voice: the cast job adds one (an addition, no unlock) and notes it; the
+    pending role gets a different Gemini voice."""
+    sid = "g"
+
+    def runner(job):
+        if job.stage == "outline":
+            _bible(sid, ["linh", "ong-trum"], pending=["ong-trum"])
+            return 0, '{"ok": true}'
+        return 0, '{"ok": true}'
+
+    o = Orchestrator(RunParams(series_id=sid, episodes=2, produce=1, tts_provider="gemini"), story="x" * 60, runner=runner)
+    run = o.start()
+    o.wait(30)
+    assert run.status == "done", run.error
+    reg = {c["character_id"]: c for c in json.loads((sandbox / "library" / "voice-ips.json").read_text())["characters"]}
+    linh_v, trum_v = reg["linh"]["providers"]["gemini"]["voice_id"], reg["ong-trum"]["providers"]["gemini"]["voice_id"]
+    assert linh_v and trum_v and linh_v != trum_v
+    assert reg["linh"]["providers"]["gemini"]["model_id"] == "gemini-2.5-flash-preview-tts"
+    assert reg["linh"]["providers"]["elevenlabs"]["voice_id"] == "v1"  # untouched
+    assert any("auto-assigned" in n for n in run.notes)
+    assert run.jobs["cast"].summary["auto_voiced"] == ["linh"] and run.jobs["cast"].summary["placeholders"] == ["ong-trum"]

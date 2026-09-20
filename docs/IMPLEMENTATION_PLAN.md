@@ -10,7 +10,7 @@ Architect on 2026-09-20 and are recorded below and in `CLAUDE.md`.
 | D1 | Vietnamese-first `vi-VN`; lightweight normalizer (numbers, currency, time, dates, contractions, punctuation, NFC) before TTS | `pipeline/text/vi_normalize.py`, `AI_AUDIO_NORMALIZE_VI` |
 | D2 | Hybrid: human `story_raw.txt` -> `episodize` (Gemini) -> `series.json` + 30 raw scripts of 90-120 s | `.claude/skills/episodize` |
 | D3 | First-person POV; no house narrator. `type: monologue` on the protagonist, alias `protagonist`, tags `[internal monologue]`/`[introspective]` | `schema.py` (LineType, PROTAGONIST_ALIAS), `parse_script.py` |
-| D4 | No STS. TTS: ElevenLabs `eleven_v3` primary (chosen over `multilingual_v2`/`flash_v2_5` for tag-driven acting; v2 kept as same-voice fallback), MiniMax `speech-02-hd` provider fallback | `generate_voice.py`, `voice-ips.json` `model_id` |
+| D4 | No STS. Two TTS engines chosen per run: ElevenLabs `eleven_v3` (Voice IPs; v2 same-voice fallback) and Gemini TTS (free tier, prebuilt voices). MiniMax removed 2026-09-20. | `generate_voice.py --provider`, `voice-ips.json` providers |
 | D5/D6 | `ENABLE_BGM=false`, `ENABLE_SFX=false`; speech-only concat with 300-500 ms padding | `config.py`, `assemble_audio.py` |
 | D7 | Local disk; sidecar JSON; global locked `library/voice-ips.json` | `naming.registry_path()`, `voice_registry.py --unlock` |
 | D8 | Stereo -16 LUFS / -1.5 dBTP; WAV + MP3 192 kbps | `assemble_audio.render_voice_only` |
@@ -71,7 +71,7 @@ Goal: `story_raw.txt` -> 30 validated `EpisodeScript` JSONs with no manual JSON 
 Exit criteria: 30 consecutive episodes parse with zero validation failures; a writer approves the
 raw scripts of episodes 1-5 with only line-level edits.
 
-## Phase 2: TTS integration and Voice IP anchoring (ElevenLabs v3 + MiniMax)
+## Phase 2: TTS integration and Voice IP anchoring (ElevenLabs v3 + Gemini TTS)
 
 Goal: every line renders to a correctly named, cached, normalized Vietnamese stem on the fixed voice.
 

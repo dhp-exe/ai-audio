@@ -67,6 +67,11 @@ def auditions_dir() -> Path:
     return LIBRARY_DIR / "auditions"
 
 
+def previews_dir() -> Path:
+    """Cached ~5 s voice previews for the Characters page: <actor>_<provider>.wav (+ .meta.json)."""
+    return LIBRARY_DIR / "previews"
+
+
 def series_bible_path(series_id: str) -> Path:
     return series_root(series_id) / "series.json"
 

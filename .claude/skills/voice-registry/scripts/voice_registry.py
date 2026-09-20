@@ -22,6 +22,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[4]))
 
 from pipeline import naming  # noqa: E402
 from pipeline import registry as registry_io  # noqa: E402
+from pipeline.providers.catalog import DEFAULT_MODEL, PROVIDER_NAMES, gemini_voice  # noqa: E402
 from pipeline.registry import RegistryLocked  # noqa: E402
 from pipeline.schema import CharacterProfile, EpisodeScript, ProviderVoice, SeriesBible, VoiceRegistry  # noqa: E402
 
@@ -37,7 +38,10 @@ def cmd_init(a: argparse.Namespace) -> int:
 
 def cmd_add(a: argparse.Namespace) -> int:
     reg = registry_io.load()
-    voice = ProviderVoice(voice_id=a.voice_id, model_id=a.model_id, voice_url=a.voice_url, fallback_voice_id=a.fallback_voice_id,
+    if a.provider == "gemini" and not gemini_voice(a.voice_id):
+        raise SystemExit(f"{a.voice_id!r} is not a Gemini prebuilt voice name (see pipeline/providers/catalog.py)")
+    voice = ProviderVoice(voice_id=a.voice_id, model_id=a.model_id or DEFAULT_MODEL[a.provider], voice_url=a.voice_url,
+                          fallback_voice_id=a.fallback_voice_id,
                           default_settings=json.loads(a.default_settings) if a.default_settings else {})
     existing = next((c for c in reg.characters if c.character_id == a.character_id), None)
     if existing:
@@ -109,9 +113,9 @@ def main(argv: list[str] | None = None) -> int:
     s.add_argument("--age")
     s.add_argument("--tags", help="comma-separated casting tags")
     s.add_argument("--language", default="vi-VN")
-    s.add_argument("--provider", default="elevenlabs", choices=["elevenlabs", "minimax"])
-    s.add_argument("--voice-id", required=True)
-    s.add_argument("--model-id", default="eleven_v3")
+    s.add_argument("--provider", default="elevenlabs", choices=PROVIDER_NAMES)
+    s.add_argument("--voice-id", required=True, help="ElevenLabs voice_id, or a Gemini voice name such as Leda")
+    s.add_argument("--model-id", default=None, help="default: eleven_v3 / gemini-2.5-flash-preview-tts")
     s.add_argument("--voice-url")
     s.add_argument("--fallback-voice-id", help="premade voice used when the plan rejects voice_id (402)")
     s.add_argument("--default-settings", help='JSON, e.g. \'{"stability": 0.5}\'')

@@ -17,7 +17,7 @@ python .claude/skills/parse-script/scripts/parse_script.py --series demo --episo
 python .claude/skills/parse-script/scripts/parse_script.py --series demo --episodes 1-30 --force      # batch
 ```
 
-Flags: `--model` (default `AI_AUDIO_LLM_MODEL`), `--provider elevenlabs|minimax` (whether audio
+Flags: `--model` (default `AI_AUDIO_LLM_MODEL`), `--provider elevenlabs|gemini` (whether audio
 tags are emitted), `--force`.
 
 ## Rules the Director follows (system prompt)

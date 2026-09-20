@@ -60,12 +60,14 @@ pipeline/                 shared Python package
   naming.py               the only place paths and stem names are built
   config.py               .env-backed settings (models, padding, loudness, flags)
   llm/gemini_client.py    generate_structured(system, user, schema) → (instance, usage)
-  providers/              TTS adapters: base.py, elevenlabs.py, minimax.py, mapping.py
+  providers/              TTS engines: catalog.py (models, Gemini voices), base.py, elevenlabs.py, gemini_tts.py, mapping.py
+  previews.py             cached ~5 s voice previews per actor/engine (library/previews/)
+  stories.py              story library index (progress per series, remaining episodes)
   text/vi_normalize.py    Vietnamese text normalizer for TTS
   orchestrator.py         job graph runner (CLI: python -m pipeline.orchestrator)
   webui/                  FastAPI app + single HTML page (python -m pipeline.webui)
 .claude/skills/<name>/    one skill per stage: SKILL.md (how to use) + scripts/<name>.py (CLI)
-library/voice-ips.json    global, locked Voice IP registry
+library/voice-ips.json    global, locked Voice IP registry (ElevenLabs voice_id and Gemini voice name per actor)
 series/<id>/              everything about one series (inputs, intermediates, outputs, logs, run state)
 tests/                    pytest, no network; fixtures under tests/fixtures/
 ```
@@ -165,8 +167,9 @@ fails with exit 2 and nothing is written downstream.
 
 Skill: `.claude/skills/voice-registry`, and the **Characters** page of the web client; both go
 through `pipeline/registry.py`. `library/voice-ips.json` holds one entry per actor: display name,
-personality, voice description, gender, age, casting tags, and per-provider
-`{voice_id, model_id, voice_url, fallback_voice_id}`. It is `locked`: changing an IP asset's voice
+personality, voice description, gender, age, casting tags, and one voice per engine:
+`elevenlabs: {voice_id, model_id, voice_url, fallback_voice_id}` and `gemini: {voice_id (prebuilt name), model_id}`.
+The Characters page shows a ▶ preview per engine (rendered once through `pipeline/previews.py`, then cached). It is `locked`: changing an IP asset's voice
 needs unlock (CLI `--unlock`, API `?unlock=true`) and is appended to a changelog. This file is the
 business asset the whole thesis rests on (same voice across 30 episodes and across series).
 
@@ -183,8 +186,8 @@ flowchart LR
     L[Line] --> N[vi_normalize<br/>NFC · numbers · đồng · giờ · dates · ko→không · punctuation]
     N --> T{model}
     T -- eleven_v3 --> K[keep tags<br/>+ introspective for monologue]
-    T -- multilingual_v2 / MiniMax --> S[strip tags]
-    L --> M[mapping.settings_for_line<br/>intensity → stability / similarity / style / emotion]
+    T -- multilingual_v2 / Gemini --> S[strip tags]
+    L --> M[mapping.settings_for_line<br/>ElevenLabs: intensity → stability / similarity / style<br/>Gemini: Vietnamese acting direction]
     K & S & M --> H[content hash]
     H --> C{sidecar hash<br/>matches?}
     C -- yes --> SKIP[skip]
@@ -198,9 +201,12 @@ Provider adapters live in `pipeline/providers/`. Vendor rules learned live and e
 FFmpeg; Free tier cannot use library voices via the API. The character alignment returned by
 `convert_with_timestamps` is stored for later subtitle and lip-sync work.
 
-Concurrency: a small thread pool (2) inside the skill; the orchestrator additionally serializes the
-voice stage across episodes. On a retryable provider error the line can be re-tried on the
-fallback provider (MiniMax) if the character has a voice there.
+Two engines, chosen per run: **ElevenLabs** (the Voice IPs; paid) and **Gemini TTS** (free tier;
+30 prebuilt voices by name; the Director's emotion/intensity/pace/volume/tags become a Vietnamese
+direction prefixed to the text, which the model does not read aloud). A character keeps one voice for
+the whole run; there is no cross-engine fallback. Concurrency: thread pool of 2 for ElevenLabs, serial
+for Gemini (free-tier rate limits); the orchestrator additionally serializes the voice stage across
+episodes.
 
 Cost control: the hash covers provider, model, voice, final text and settings. Editing one line and
 re-running touches one stem. `--dry-run` prints payloads and the character count before spending.
@@ -245,7 +251,7 @@ every transition.
 
 ```mermaid
 flowchart LR
-    O[outline] --> C[cast<br/>assign placeholder voices to new roles]
+    O[outline] --> C[cast<br/>one voice per role on the run's engine<br/>placeholders for new roles]
     C --> D1[ep01.draft] --> P1[ep01.direct] --> V1[ep01.voice] --> A1[ep01.assemble] --> Q1[ep01.qa]
     C --> D2[ep02.draft] --> P2[ep02.direct] --> V2[ep02.voice] --> A2[ep02.assemble] --> Q2[ep02.qa]
     C --> D3[…]
@@ -253,8 +259,10 @@ flowchart LR
 ```
 
 Rules: episodes run in parallel up to `parallel` (default 2) for the LLM stages; the voice stage
-holds a lock so only one episode talks to ElevenLabs at a time; a failed job skips the rest of
-that episode but other episodes continue; the run is `done` only if no job failed.
+holds a lock so only one episode talks to the TTS engine at a time; a failed job skips the rest of
+that episode but other episodes continue; the run is `done` only if no job failed. A run can target a
+subset of episodes (`only=[...]`), which is how the Library continues an unfinished series: the outline
+and existing drafts are kept, stems are cached by hash, masters and QA are recomputed.
 
 The web client (`python -m pipeline.webui`, http://127.0.0.1:8765) is a FastAPI app with one
 page:
@@ -266,7 +274,7 @@ sequenceDiagram
     participant O as Orchestrator thread
     participant F as series/<id>/pipeline_run.json
 
-    B->>A: POST /api/runs {title, length, genre, setting, roles[+actor], script, episodes, produce, min_sec, max_sec}
+    B->>A: POST /api/runs {title, length, genre, setting, roles[+actor], script, episodes, produce, min_sec, max_sec, tts_provider, tts_model}
     A->>O: Orchestrator(params, story).start()
     A-->>B: run_id
     loop every 1.5 s
@@ -278,9 +286,14 @@ sequenceDiagram
     B->>A: GET /api/series/{id}/master/{ep}.mp3 (audio player)
 ```
 
-The page has two views. **Characters** lists the Voice IP registry as cards with edit, audition
-and delete, and an add/edit form (unlock checkbox for locked voices). **Pipeline** has the
-sectioned story form and the run board: the casting table (role → actor, who assigned it, why),
+The page has three views and a light/dark theme (system default, toggle in the header).
+**Library** lists every series with progress (mastered / planned), the engine used, the cast, the
+episode table with inline players and QA, "continue N more episodes" (engine switchable), "edit
+story & re-run" and delete. **Characters** lists the Voice IP registry as cards with a ▶ preview
+per engine (rendered once, cached), edit and delete, and an add/edit form with the Gemini voice
+picker (unlock checkbox for locked voices). **New story** has the sectioned story form (one IP per
+role: a picked actor disappears from the other dropdowns; the API rejects duplicates too), the engine
+and model switch, and the run board: the casting table (role → actor, who assigned it, why),
 one row per episode and one chip per stage (pending → running → done / warn /
 failed / skipped), the outline and cast jobs on a series row, an inline player once a master
 exists, the QA verdict, and any job's live log on click. Runs survive a server restart in read-only
@@ -320,6 +333,7 @@ form because the state file is on disk.
 | Gemini outline | once per series | ~1k in / ~4k out tokens |
 | Gemini draft | 1-3 per episode | ~1.5k in / ~1.5k out tokens each |
 | Gemini direct | 1 per episode | ~2k in / ~2.5k out tokens |
-| ElevenLabs TTS | 1 per line, cached | ~1,000-1,500 characters per episode |
+| ElevenLabs TTS | 1 per line, cached | ~1,000-1,500 characters per episode (1 credit each on v3) |
+| Gemini TTS | 1 per line, cached | ~50 tokens in / ~200-300 audio tokens out per line; free tier, else $10-20 per 1M audio tokens |
 
 All of it is logged to `series/<id>/run.log.jsonl` with the stage, episode, tokens or characters.

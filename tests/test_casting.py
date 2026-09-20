@@ -4,7 +4,14 @@ import pytest
 
 from pipeline import naming
 from pipeline import registry as registry_io
-from pipeline.casting import apply_role_tags, extract_actor_tag, guess_gender, parse_roles_text, placeholder_voice
+from pipeline.casting import (
+    apply_role_tags,
+    duplicate_actor_pins,
+    extract_actor_tag,
+    guess_gender,
+    parse_roles_text,
+    placeholder_voice,
+)
 from pipeline.registry import RegistryLocked
 from pipeline.schema import CharacterProfile, ProviderVoice, RoleCast, SeriesBible, StoryRole, VoiceRegistry, slugify_id
 
@@ -49,6 +56,17 @@ def test_guess_gender_and_placeholder():
     assert guess_gender("Nữ, 23 tuổi, trong trẻo") == "female"
     assert guess_gender("Nam, trầm, tổng giám đốc") == "male"
     assert placeholder_voice("female", 0) != placeholder_voice("female", 1)
+    # Gemini pool, gendered, and never a voice already in use
+    g0 = placeholder_voice("female", 0, "gemini")
+    assert g0 == "Aoede" and placeholder_voice("female", 0, "gemini", exclude={"aoede"}) == "Callirrhoe"
+    assert placeholder_voice("male", 0, "gemini") == "Puck"
+    assert placeholder_voice("female", 0, "elevenlabs", exclude={"cgSgspJ2msm6clMCkdW9"}) == "pFZP5JQG7iQjIQuC4Bku"
+
+
+def test_duplicate_actor_pins():
+    roles = [StoryRole(name="A", actor_id="ngan"), StoryRole(name="B", actor_id="ngan"), StoryRole(name="C", actor_id="duong"), StoryRole(name="D")]
+    assert duplicate_actor_pins(roles) == {"ngan": ["A", "B"]}
+    assert duplicate_actor_pins(roles[2:]) == {}
 
 
 def test_registry_lock(reg):

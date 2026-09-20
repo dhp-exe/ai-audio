@@ -1,0 +1,20 @@
+{
+  "hash": "07e1fae73aaf70c67e88ed8ae68c56f9c87d02aa7cd0dc7779faae4e39ec13db",
+  "request": {
+    "provider": "gemini",
+    "model_id": "gemini-2.5-flash-preview-tts",
+    "voice_id": "Orus",
+    "text": "Xin chào, tôi là Dương. Có một chuyện tôi chưa từng kể với ai.",
+    "settings": {
+      "style": "Nói tiếng Việt, giọng tự nhiên, ấm áp, tự giới thiệu mình, nhịp nhanh vừa phải, không ngắt nghỉ lâu"
+    },
+    "line_id": null
+  },
+  "requested_voice": "Orus",
+  "placeholder": false,
+  "reason": null,
+  "rendered_at": "2026-09-20T09:51:01+00:00",
+  "duration_ms": 3611,
+  "characters_billed": 62,
+  "tokens_out": 90
+}

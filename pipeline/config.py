@@ -24,16 +24,12 @@ class Settings:
     # keys
     gemini_api_key: str | None
     elevenlabs_api_key: str | None
-    minimax_api_key: str | None
-    minimax_group_id: str | None
     # LLM (D10)
     llm_model: str
     llm_temperature: float
     # TTS (D4)
-    tts_provider: str
-    tts_model: str
-    tts_fallback_provider: str
-    tts_fallback_model: str
+    tts_provider: str  # elevenlabs | gemini
+    tts_model: str | None  # None = provider default (catalog.DEFAULT_MODEL)
     # assembly (D5, D6, D8, D9)
     enable_bgm: bool
     enable_sfx: bool
@@ -61,14 +57,10 @@ def get_settings() -> Settings:
     return Settings(
         gemini_api_key=os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY"),
         elevenlabs_api_key=os.getenv("ELEVENLABS_API_KEY"),
-        minimax_api_key=os.getenv("MINIMAX_API_KEY"),
-        minimax_group_id=os.getenv("MINIMAX_GROUP_ID"),
         llm_model=os.getenv("AI_AUDIO_LLM_MODEL", "gemini-3.1-flash-lite"),
         llm_temperature=float(os.getenv("AI_AUDIO_LLM_TEMPERATURE", "0.4")),
         tts_provider=os.getenv("AI_AUDIO_TTS_PROVIDER", "elevenlabs"),
-        tts_model=os.getenv("AI_AUDIO_TTS_MODEL", "eleven_v3"),
-        tts_fallback_provider=os.getenv("AI_AUDIO_TTS_FALLBACK_PROVIDER", "minimax"),
-        tts_fallback_model=os.getenv("AI_AUDIO_TTS_FALLBACK_MODEL", "speech-02-hd"),
+        tts_model=os.getenv("AI_AUDIO_TTS_MODEL") or None,
         enable_bgm=_bool("ENABLE_BGM", False),
         enable_sfx=_bool("ENABLE_SFX", False),
         padding_ms=int(os.getenv("AI_AUDIO_PADDING_MS", "400")),

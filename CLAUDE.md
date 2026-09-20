@@ -18,7 +18,7 @@ fixed Virtual Actor IPs, so we can test audience retention cheaply before paying
 | D1 | **Vietnamese-first** (`vi-VN`). All prompts and content in Vietnamese. `pipeline/text/vi_normalize.py` runs before TTS (NFC, numbers, currency, time, dates, chat contractions, punctuation). |
 | D2 | **Hybrid upstream.** Director fills overview + characters + script (web form -> `story.json`); `episodize` casts roles onto Voice IP actors and produces `series.json` + N raw scripts (segment mode keeps the pasted dialogue verbatim; write mode expands a treatment). |
 | D3 | **No third-person narrator.** Inner voice is first person on the protagonist: `type: monologue`, alias `character_id: "protagonist"` resolved to the real id; tag `[internal monologue]` / `[introspective]`. |
-| D4 | **No speech-to-speech.** TTS primary ElevenLabs `eleven_v3` (best expressiveness, audio tags, Vietnamese), same-voice fallback `eleven_multilingual_v2`; provider fallback MiniMax `speech-02-hd`. |
+| D4 | **No speech-to-speech.** Two TTS engines, picked per run in the web client (`tts_provider`): **ElevenLabs** `eleven_v3` (the Voice IPs; paid; same-voice fallback `eleven_multilingual_v2`) and **Gemini TTS** `gemini-2.5-flash-preview-tts` (free tier; 30 prebuilt voices addressed by name; style by Vietnamese direction). No other provider (MiniMax removed 2026-09-20). |
 | D5/D6 | **BGM and SFX disabled** (`ENABLE_BGM=false`, `ENABLE_SFX=false`). Assembly = clean speech concat with 300-500 ms padding. |
 | D7 | **Local disk + sidecar JSON.** Voice IPs locked in `library/voice-ips.json` (global across series). |
 | D8 | Stereo master **-16 LUFS / -1.5 dBTP**, WAV + **MP3 192 kbps**. |
@@ -42,7 +42,7 @@ story_raw.txt (human)
 [2] voice-registry library/voice-ips.json: character_id -> voice_id per provider (locked)
    |
    v
-[3] generate-voice vi_normalize -> ElevenLabs v3 (MiniMax fallback) -> stems/epNN/*.wav + .meta.json
+[3] generate-voice vi_normalize -> ElevenLabs v3 | Gemini TTS (per run) -> stems/epNN/*.wav + .meta.json
    |
    v
 [5] assemble-audio timeline (measured durations + padding) -> FFmpeg concat + loudnorm -> masters/epNN_master.wav|mp3
@@ -71,13 +71,16 @@ ai-audio/
     naming.py                    <- all paths and stem names (never hand-build)
     config.py                    <- .env-backed Settings
     llm/gemini_client.py         <- generate_structured(system, user, schema) -> (instance, usage)
-    providers/                   <- base.py (TtsRequest, wav helpers), elevenlabs.py, minimax.py, mapping.py (intensity -> settings)
+    providers/                   <- base.py (TtsRequest, wav helpers), catalog.py (engines/models/Gemini voices), elevenlabs.py, gemini_tts.py, mapping.py (intensity -> settings | Gemini direction)
+    previews.py                  <- cached ~5 s voice previews per actor and engine (library/previews/)
+    stories.py                   <- story library index: progress per series, remaining episodes, delete
     text/vi_normalize.py         <- Vietnamese TTS text normalizer
     orchestrator.py              <- CI-style job graph over the skill CLIs; state in series/<id>/pipeline_run.json
-    webui/                       <- FastAPI + one HTML page: paste story, pick episodes/length, watch the run (python -m pipeline.webui)
+    webui/                       <- FastAPI + one HTML page (light/dark): Library, New story + run board, Characters (python -m pipeline.webui)
   .claude/skills/<skill>/        <- SKILL.md + scripts/<skill>.py (anthropics/skills layout)
   library/
-    voice-ips.json               <- LOCKED global Voice IP registry
+    voice-ips.json               <- LOCKED global Voice IP registry (per actor: elevenlabs voice_id + gemini voice name)
+    previews/                    <- <actor>_<engine>.wav previews (+ .meta.json cache)
   series/<series_id>/
     story.json                   <- sectioned input: overview, roles (+ actor assignment), script
     story_raw.txt                <- same, rendered as text
@@ -101,14 +104,14 @@ ai-audio/
 |---|---|---|
 | Language | Python 3.11+ | `.venv` + `pip install -e .[dev]`; FFmpeg/ffprobe on PATH |
 | LLM | `google-genai`, `gemini-3.1-flash-lite` | `pipeline.llm.gemini_client.generate_structured`; `response_mime_type=application/json` + Pydantic `response_schema`; response text re-validated with Pydantic (regex/cross-field rules are client-side). Retries on 429/500/503 and transport errors; 180 s timeout; IPv4 pinned (`AI_AUDIO_FORCE_IPV4`) because this network's IPv6 path resets TLS. |
-| TTS primary | `elevenlabs` SDK, `eleven_v3` via `pipeline/providers/elevenlabs.py` | tags `[sighs] [whispers] [internal monologue]`; **stability discrete 0.0/0.5/1.0**; v3 rejects `language_code` and `previous_text`/`next_text`; `wav_44100` is Pro-tier only, adapter falls back to `mp3_44100_128` + ffmpeg; `convert_with_timestamps` alignment stored in sidecar |
+| TTS engine 1 (Voice IPs) | `elevenlabs` SDK, `eleven_v3` via `pipeline/providers/elevenlabs.py` | tags `[sighs] [whispers] [internal monologue]`; **stability discrete 0.0/0.5/1.0**; v3 rejects `language_code` and `previous_text`/`next_text`; `wav_44100` is Pro-tier only, adapter falls back to `mp3_44100_128` + ffmpeg; `convert_with_timestamps` alignment stored in sidecar |
 | TTS same-voice fallback | `eleven_multilingual_v2` | continuous stability/style; no tags |
-| TTS provider fallback | MiniMax `speech-02-hd` via `pipeline/providers/minimax.py` (HTTP, not yet exercised live) | `voice_setting.emotion`; tags stripped |
+| TTS engine 2 (free) | Gemini TTS via `pipeline/providers/gemini_tts.py` (`google-genai`, same client as the LLM) | models `gemini-2.5-flash-preview-tts` (default), `gemini-3.1-flash-tts-preview`, `gemini-2.5-pro-preview-tts`; voice = one of 30 prebuilt names; direction prefixed as `"<style>:\n<text>"` (verified: direction is not spoken); 24 kHz PCM resampled to 44.1 k; serial (free-tier RPM) |
 | Normalization | `pipeline.text.vi_normalize` | on by default (`AI_AUDIO_NORMALIZE_VI`) |
 | Mixing | FFmpeg `filter_complex` (apad + concat) then **two-pass** `loudnorm` | pydub dropped; single-pass landed 1.3 LU off, two-pass hits -16.0 exactly |
 | State | sidecar JSON + `run.log.jsonl` | no database |
-| Web client | FastAPI + uvicorn, `python -m pipeline.webui` (port 8765) | start a run from a pasted story; CI-style board; per-job logs; inline players. Approve/reject buttons are Phase 4. |
-| Keys | `.env`: `GEMINI_API_KEY`, `ELEVENLABS_API_KEY`, `MINIMAX_API_KEY`, `MINIMAX_GROUP_ID` | see docs/SETUP.md |
+| Web client | FastAPI + uvicorn, `python -m pipeline.webui` (port 8765) | **Library** (every series, progress, listen, continue N more episodes, delete), **New story** (sectioned form, engine + model switch, CI-style board, logs, players), **Characters** (IP cards with a ▶ preview per engine, add/edit with Gemini voice picker, unlock). Light/dark theme. Approve/reject buttons are Phase 4. |
+| Keys | `.env`: `GEMINI_API_KEY` (LLM + Gemini TTS), `ELEVENLABS_API_KEY` | see docs/SETUP.md |
 
 ## Conventions
 
@@ -149,15 +152,17 @@ Line numbers restart at 001 per scene; episodes/scenes 2 digits, lines 3. Helper
 
 ### Emotional intensity -> TTS settings
 
-| intensity | v3 `stability` | v3 `similarity_boost` | multilingual_v2 `stability` / `style` | MiniMax `emotion` |
+| intensity | v3 `stability` | v3 `similarity_boost` | multilingual_v2 `stability` / `style` | Gemini direction |
 |---|---|---|---|---|
-| 1-3 | 0.5 | 0.80 | 0.70 / 0.15 | from `emotion` |
-| 4-6 | 0.5 | 0.75 | 0.50 / 0.30 | from `emotion` |
-| 7-8 | 0.0 | 0.65 | 0.40 / 0.40 | from `emotion` |
-| 9-10 | 0.0 | 0.55 | 0.30 / 0.50 | from `emotion` |
+| 1-3 | 0.5 | 0.80 | 0.70 / 0.15 | `giọng <emotion> (nhẹ)` |
+| 4-6 | 0.5 | 0.75 | 0.50 / 0.30 | `giọng <emotion> (vừa phải)` |
+| 7-8 | 0.0 | 0.65 | 0.40 / 0.40 | `giọng <emotion> (mạnh)` |
+| 9-10 | 0.0 | 0.55 | 0.30 / 0.50 | `giọng <emotion> (rất mạnh, cao trào)` |
 
 Monologue lines: v3 gets `[introspective]` if the Director left no monologue tag; v2 gets stability
--0.1 / style +0.1; MiniMax speed x0.95. Implemented in `generate_voice.settings_for_line`.
+-0.1 / style +0.1; Gemini gets "độc thoại nội tâm, mic gần" in the direction. Gemini's direction (`mapping.gemini_style`) is
+`"Nói tiếng Việt, giọng <emotion> (<intensity word>), [monologue], <pace>, <volume>, <tag hints>, <acoustic_direction>"`;
+tags are stripped from the text and folded into it. Implemented in `pipeline/providers/mapping.py`.
 
 ## AI Director output contract
 
@@ -247,12 +252,15 @@ Removed: `sts-override` (D4). Run any script with `--help`.
 
 ```bash
 python -m pipeline.webui                                   # browser client at http://127.0.0.1:8765
-python -m pipeline.orchestrator --series s1 --story story.txt --episodes 30 --produce 5 --min-sec 50 --max-sec 70
+python -m pipeline.orchestrator --series s1 --story story.txt --episodes 30 --produce 5 --min-sec 50 --max-sec 70 --tts gemini
+python -m pipeline.orchestrator --series s1 --only 6-10 --tts elevenlabs                   # continue an existing series
 ```
 
 The orchestrator runs the skill CLIs as jobs (outline -> cast -> per-episode draft -> direct -> voice -> assemble -> qa),
-up to 2 episodes in parallel for LLM stages and one at a time for TTS. Roles the outline invents get placeholder premade
-voices (one-off, flagged in the run notes) so a run never blocks on casting. Full walkthrough: `docs/ARCHITECTURE.md`.
+up to 2 episodes in parallel for LLM stages and one at a time for TTS. The engine is a run parameter; the cast job gives
+every actor a voice on that engine (one voice per role, never shared): roles the outline invents get placeholder voices
+(one-off, flagged in the run notes) and IP actors missing a voice on the engine get one auto-assigned. `--only` / the
+Library's "Continue" produce the remaining episodes of an existing series. Full walkthrough: `docs/ARCHITECTURE.md`.
 
 ## Roles vs actors
 

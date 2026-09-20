@@ -1,0 +1,5 @@
+$ /Users/dohuuphuoc/ai-audio/.venv/bin/python /Users/dohuuphuoc/ai-audio/.claude/skills/episodize/scripts/episodize.py --series hop-dong --outline-only --episodes 3 --min-sec 50 --max-sec 70
+
+{"ok": true, "outline": false, "mode": "segment", "drafted": [], "skipped": [], "new_characters": [], "dry_run": false}
+
+[exit 0]

@@ -7,7 +7,7 @@ Anything the model leaves as a role name/slug is remapped after the call.
 
 CLI
     parse_script.py --series <id> (--episode <n> | --episodes 1-30) [--model ...]
-                    [--provider elevenlabs|minimax] [--dry-run] [--validate-only] [--force]
+                    [--provider elevenlabs|gemini] [--dry-run] [--validate-only] [--force]
 
 Exit codes: 0 ok, 1 usage/config error, 2 schema validation failed, 3 blocked/truncated.
 """
@@ -52,11 +52,15 @@ TAG_RULES_ELEVENLABS = (
     + ", ".join(f"[{t}]" for t in sorted(APPROVED_AUDIO_TAGS))
     + ". Tối đa hai tag mỗi dòng. Dòng monologue nên bắt đầu bằng [internal monologue] hoặc [introspective]."
 )
-TAG_RULES_MINIMAX = "Máy đọc là MiniMax. KHÔNG dùng tag trong ngoặc vuông; thể hiện cách diễn qua emotion, pace, volume, dấu câu và acoustic_direction."
+TAG_RULES_GEMINI = (
+    "Máy đọc là Gemini TTS: tag trong ngoặc vuông sẽ được đổi thành chỉ dẫn diễn xuất chứ không đọc lên, nên CHỈ dùng các tag sau, "
+    "tối đa hai tag mỗi dòng: " + ", ".join(f"[{t}]" for t in sorted(APPROVED_AUDIO_TAGS))
+    + ". Hãy viết acoustic_direction thật cụ thể (nhịp, âm lượng, cảm xúc) vì máy đọc dựa vào đó."
+)
 
 
 def build_prompt(raw: str, bible: SeriesBible, registry: VoiceRegistry, episode: int, provider: str) -> tuple[str, str]:
-    tag_rules = TAG_RULES_ELEVENLABS if provider == "elevenlabs" else TAG_RULES_MINIMAX
+    tag_rules = TAG_RULES_ELEVENLABS if provider == "elevenlabs" else TAG_RULES_GEMINI
     rows = []
     for r in bible.roles:
         actor = registry.get(r.actor_id) if r.actor_id in registry.ids() else None
@@ -139,7 +143,7 @@ def main(argv: list[str] | None = None) -> int:
     g.add_argument("--episode", type=int)
     g.add_argument("--episodes", help="range, e.g. 1-30 or 2,5")
     ap.add_argument("--model", default=None)
-    ap.add_argument("--provider", choices=["elevenlabs", "minimax"], default=None)
+    ap.add_argument("--provider", choices=["elevenlabs", "gemini"], default=None)
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--validate-only", action="store_true")
     ap.add_argument("--force", action="store_true")

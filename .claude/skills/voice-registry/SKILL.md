@@ -1,6 +1,6 @@
 ---
 name: voice-registry
-description: Manage the global, locked Voice IP registry (library/voice-ips.json) of actors: display name, personality, voice description, gender/age/tags for casting, and per-provider voice ids (ElevenLabs voice_id, model, voice link, fallback premade voice). The web client's Characters page edits the same file through pipeline.registry. Use to add/list/validate actors or to change a locked voice with --unlock.
+description: Manage the global, locked Voice IP registry (library/voice-ips.json) of actors: display name, personality, voice description, gender/age/tags for casting, and one voice per engine (ElevenLabs voice_id + model + link + fallback premade voice; Gemini TTS prebuilt voice name + model). The web client's Characters page edits the same file through pipeline.registry. Use to add/list/validate actors or to change a locked voice with --unlock.
 ---
 
 # voice-registry (Voice IP anchoring)
@@ -14,6 +14,7 @@ python .claude/skills/voice-registry/scripts/voice_registry.py add --character-i
     --gender female --age 23 --tags cute,innocent --persona "..." --voice-description "..." \
     --provider elevenlabs --voice-id a3AkyqGG4v8Pg7SWQ0Y3 --model-id eleven_v3 \
     --voice-url https://elevenlabs.io/voices/a3AkyqGG4v8Pg7SWQ0Y3 --fallback-voice-id cgSgspJ2msm6clMCkdW9
+python .claude/skills/voice-registry/scripts/voice_registry.py add --character-id ngan --provider gemini --voice-id Leda        # adds the Gemini voice (an addition needs no unlock)
 python .claude/skills/voice-registry/scripts/voice_registry.py add --character-id ngan --provider elevenlabs --voice-id NEW --unlock
 python .claude/skills/voice-registry/scripts/voice_registry.py validate --series s1 [--episode 1]
 ```

@@ -60,11 +60,12 @@ class Usage:
 REQUEST_TIMEOUT_MS = 180_000  # a hung call was observed in the wild; never wait forever
 
 
-def _client():
+def make_client(api_key: str | None = None):
+    """Shared google-genai client (LLM and Gemini TTS): timeout and IPv4 pin in one place."""
     from google import genai
     from google.genai import types
 
-    key = get_settings().require("gemini_api_key")
+    key = api_key or get_settings().require("gemini_api_key")
     client_args: dict = {}
     if os.getenv("AI_AUDIO_FORCE_IPV4", "true").strip().lower() in ("1", "true", "yes", "on"):
         # httpx does not do happy-eyeballs; on networks with a broken IPv6 path the TLS handshake
@@ -105,7 +106,7 @@ def generate_structured(
     if thinking_budget is not None:
         config_kwargs["thinking_config"] = types.ThinkingConfig(thinking_budget=thinking_budget)
 
-    client = _client()
+    client = make_client()
     t0 = time.time()
     last_err: Exception | None = None
     for attempt in range(retries + 1):

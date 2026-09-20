@@ -7,13 +7,19 @@ Job graph for one run (N episodes planned, K episodes produced):
                     └──> ...
 
 Episodes run in parallel up to `max_parallel_episodes` (LLM stages), but the `voice` stage holds a
-lock so only one episode talks to ElevenLabs at a time.
+lock so only one episode talks to the TTS engine at a time.
+
+The TTS engine is a run parameter (`tts_provider`: elevenlabs | gemini, `tts_model`): the Director
+and the voice stage receive it, and the cast job makes sure every actor has a voice on it.
+
+Resuming: `only=[6, 7, 8]` produces just those episodes of an existing series (outline and drafts
+that already exist are kept; stems are cached by hash), which is how the Library "continue" works.
 
 State is written to series/<id>/pipeline_run.json after every change so the web UI (or a CLI
 `--watch`) can render it, and per-job stdout/stderr go to series/<id>/logs/<job_id>.log.
 
 CLI:  python -m pipeline.orchestrator --series demo --story story.txt --episodes 30 --produce 5 \
-          --min-sec 50 --max-sec 70
+          --min-sec 50 --max-sec 70 --tts gemini
 """
 
 from __future__ import annotations
@@ -25,15 +31,16 @@ import subprocess
 import sys
 import threading
 import time
+from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict, dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Callable
 
 from pipeline import naming
 from pipeline import registry as registry_io
 from pipeline.casting import guess_gender, placeholder_voice
+from pipeline.providers.catalog import DEFAULT_MODEL, PROVIDER_LABEL, PROVIDER_NAMES
 from pipeline.schema import CharacterProfile, ProviderVoice, SeriesBible, StoryInput
 
 SKILLS = naming.REPO_ROOT / ".claude" / "skills"
@@ -74,6 +81,20 @@ class RunParams:
     max_sec: int = 70
     max_parallel_episodes: int = 2
     force: bool = False
+    tts_provider: str = "elevenlabs"
+    tts_model: str | None = None
+    only: list[int] | None = None  # explicit episode numbers to produce (resume); overrides `produce`
+
+    def __post_init__(self) -> None:
+        if self.tts_provider not in PROVIDER_NAMES:
+            raise ValueError(f"tts_provider must be one of {PROVIDER_NAMES}, got {self.tts_provider!r}")
+        self.tts_model = self.tts_model or None
+
+    def episode_numbers(self) -> list[int]:
+        if self.only:
+            return sorted({n for n in self.only if 1 <= n <= self.episodes})
+        produce = self.produce or self.episodes
+        return list(range(1, min(produce, self.episodes) + 1))
 
 
 class Run:
@@ -151,13 +172,14 @@ class Orchestrator:
             outline_args.append("--redo-outline")
         jobs["outline"] = Job("outline", "outline", None, self._skill("episodize", "episodize.py", *outline_args))
         jobs["cast"] = Job("cast", "cast", None, ["<internal:ensure_voices>"])
-        produce = p.produce or p.episodes
-        for n in range(1, min(produce, p.episodes) + 1):
+        tts = ["--provider", p.tts_provider]
+        voice_args = [*tts, *(["--model-override", p.tts_model] if p.tts_model else [])]
+        for n in p.episode_numbers():
             e = f"ep{n:02d}"
             force = ["--force"] if p.force else []
             jobs[f"{e}.draft"] = Job(f"{e}.draft", "draft", n, self._skill("episodize", "episodize.py", "--series", s, "--only", str(n), *force))
-            jobs[f"{e}.direct"] = Job(f"{e}.direct", "direct", n, self._skill("parse-script", "parse_script.py", "--series", s, "--episode", str(n), "--force"))
-            jobs[f"{e}.voice"] = Job(f"{e}.voice", "voice", n, self._skill("generate-voice", "generate_voice.py", "--series", s, "--episode", str(n), "--concurrency", "2"))
+            jobs[f"{e}.direct"] = Job(f"{e}.direct", "direct", n, self._skill("parse-script", "parse_script.py", "--series", s, "--episode", str(n), "--force", *tts))
+            jobs[f"{e}.voice"] = Job(f"{e}.voice", "voice", n, self._skill("generate-voice", "generate_voice.py", "--series", s, "--episode", str(n), *voice_args))
             jobs[f"{e}.assemble"] = Job(f"{e}.assemble", "assemble", n, self._skill("assemble-audio", "assemble_audio.py", "--series", s, "--episode", str(n)))
             jobs[f"{e}.qa"] = Job(f"{e}.qa", "qa", n, self._skill("qa-audio", "qa_audio.py", "--series", s, "--episode", str(n)))
         return jobs
@@ -189,7 +211,8 @@ class Orchestrator:
             self._update()
             if not self._exec(run.jobs["outline"]):
                 raise RuntimeError("outline failed")
-            self._exec(run.jobs["cast"])
+            if not self._exec(run.jobs["cast"]):
+                raise RuntimeError("cast failed")
             episodes = sorted({j.episode for j in run.jobs.values() if j.episode})
             with ThreadPoolExecutor(max_workers=max(1, self.params.max_parallel_episodes)) as pool:
                 list(pool.map(self._episode_pipeline, episodes))
@@ -286,20 +309,30 @@ class Orchestrator:
     def _internal(self, job: Job) -> tuple[int, str]:
         log = self._log_file(job)
         out: list[str] = []
-        if job.cmd[0] == "<internal:ensure_voices>":
-            out = self.ensure_voices()
+        code = 0
+        try:
+            if job.cmd[0] == "<internal:ensure_voices>":
+                out = self.ensure_voices()
+        except Exception as e:  # noqa: BLE001
+            out.append(f"{type(e).__name__}: {e}")
+            code = 1
         log.write_text("\n".join(out) + "\n", encoding="utf-8")
-        return 0, "\n".join(out)
+        return code, "\n".join(out)
 
     def ensure_voices(self) -> list[str]:
-        """Give every cast member a voice on the default provider. Roles the outline could not cast
-        (pending_characters) get one-off registry entries with placeholder premade voices."""
+        """Give every cast member a voice on the run's TTS engine, never sharing one voice between two
+        roles. Roles the outline could not cast (pending_characters) get one-off registry entries with
+        placeholder voices; IP actors that lack a voice on this engine get one auto-assigned (an
+        addition, so the lock is not involved) and the run notes say so."""
         bible = SeriesBible.model_validate_json(naming.series_bible_path(self.params.series_id).read_text(encoding="utf-8"))
         reg = registry_io.load()
-        provider = reg.default_provider
-        model_id = os.getenv("AI_AUDIO_TTS_MODEL", "eleven_v3")
-        lines: list[str] = []
-        added: list[str] = []
+        provider = self.params.tts_provider
+        model_id = self.params.tts_model or DEFAULT_MODEL[provider]
+        lines: list[str] = [f"engine: {PROVIDER_LABEL[provider]} / {model_id}"]
+        placeholders: list[str] = []
+        auto_voiced: list[str] = []
+        used_voices = {reg.get(cid).providers[provider].voice_id for cid in bible.cast
+                       if cid in reg.ids() and provider in reg.get(cid).providers}
         counters = {"female": 0, "male": 0}
         pending = {nc.character_id: nc for nc in bible.pending_characters}
         for cid in bible.cast:
@@ -308,30 +341,40 @@ class Orchestrator:
                 continue
             nc = pending.get(cid)
             existing = reg.get(cid) if cid in reg.ids() else None
-            gender = (existing.gender if existing and existing.gender else None) or guess_gender(nc.voice_description if nc else "", nc.persona if nc else "")
-            voice_id = placeholder_voice(gender, counters[gender])
+            gender = (existing.gender if existing and existing.gender else None) or guess_gender(
+                (existing.voice_description if existing else None) or (nc.voice_description if nc else ""),
+                (existing.persona if existing else None) or (nc.persona if nc else ""))
+            voice_id = placeholder_voice(gender, counters[gender], provider, exclude=used_voices)
             counters[gender] += 1
+            used_voices.add(voice_id)
             voice = ProviderVoice(voice_id=voice_id, model_id=model_id)
             if existing:
                 registry_io.set_provider_voice(cid, provider, voice)
+                auto_voiced.append(cid)
+                lines.append(f"{cid}: no {provider} voice -> auto-assigned {voice_id} (edit in the Characters page)")
             else:
                 registry_io.upsert(CharacterProfile(
                     character_id=cid, display_name=(nc.display_name if nc else cid), persona=(nc.persona if nc else ""),
-                    voice_description=f"PLACEHOLDER ({gender} premade {voice_id}). Target: {nc.voice_description if nc else 'n/a'}",
+                    voice_description=f"PLACEHOLDER ({gender} {provider} {voice_id}). Target: {nc.voice_description if nc else 'n/a'}",
                     gender=gender, providers={provider: voice}, is_ip_asset=False))
-            added.append(cid)
-            lines.append(f"{cid}: no voice -> placeholder {gender} {voice_id} (one-off; replace in the Characters page)")
+                placeholders.append(cid)
+                lines.append(f"{cid}: no voice -> placeholder {gender} {voice_id} (one-off; replace in the Characters page)")
         reg = registry_io.load()
         self.run.casting = [
             {"role": r.role_name, "type": r.role_type, "actor": r.actor_id, "assigned_by": r.assigned_by, "reason": r.reason,
-             "actor_name": reg.get(r.actor_id).display_name if r.actor_id in reg.ids() else None}
+             "actor_name": reg.get(r.actor_id).display_name if r.actor_id in reg.ids() else None,
+             "voice": reg.get(r.actor_id).providers[provider].voice_id
+             if r.actor_id in reg.ids() and provider in reg.get(r.actor_id).providers else None}
             for r in bible.roles
         ]
         for c in self.run.casting:
-            lines.append(f"casting: {c['role']} -> {c['actor']} ({c['assigned_by']}) {c['reason']}")
-        if added:
-            self.run.notes.append(f"Placeholder voices assigned to: {', '.join(added)}. Replace them in the Characters page before publishing.")
-        lines.append(json.dumps({"ok": True, "cast": bible.cast, "placeholders": added}, ensure_ascii=False))
+            lines.append(f"casting: {c['role']} -> {c['actor']} ({c['assigned_by']}) voice {c['voice']} {c['reason']}")
+        if placeholders:
+            self.run.notes.append(f"Placeholder voices assigned to: {', '.join(placeholders)}. Replace them in the Characters page before publishing.")
+        if auto_voiced:
+            self.run.notes.append(f"{PROVIDER_LABEL[provider]} voice auto-assigned to: {', '.join(auto_voiced)}. Pick a preferred one in the Characters page.")
+        lines.append(json.dumps({"ok": True, "provider": provider, "model": model_id, "cast": bible.cast, "placeholders": placeholders,
+                                 "auto_voiced": auto_voiced}, ensure_ascii=False))
         return lines
 
 
@@ -357,13 +400,26 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--story", type=Path, help="story text (.txt) or StoryInput (.json); omitted = existing series/<id>/story.*")
     ap.add_argument("--episodes", type=int, default=30)
     ap.add_argument("--produce", type=int, default=None)
+    ap.add_argument("--only", help="episode numbers to produce, e.g. 6-10 or 3,7 (resume an existing series)")
     ap.add_argument("--min-sec", type=int, default=50)
     ap.add_argument("--max-sec", type=int, default=70)
     ap.add_argument("--parallel", type=int, default=2)
+    ap.add_argument("--tts", choices=PROVIDER_NAMES, default=None, help="TTS engine (default AI_AUDIO_TTS_PROVIDER)")
+    ap.add_argument("--tts-model", default=None)
     ap.add_argument("--force", action="store_true")
     a = ap.parse_args(argv)
+    from pipeline.config import get_settings
+
+    settings = get_settings()
+    only = None
+    if a.only:
+        only = []
+        for part in a.only.split(","):
+            lo, _, hi = part.partition("-")
+            only.extend(range(int(lo), int(hi or lo) + 1))
     params = RunParams(series_id=a.series, episodes=a.episodes, produce=a.produce, min_sec=a.min_sec, max_sec=a.max_sec,
-                       max_parallel_episodes=a.parallel, force=a.force)
+                       max_parallel_episodes=a.parallel, force=a.force, tts_provider=a.tts or settings.tts_provider,
+                       tts_model=a.tts_model or settings.tts_model, only=only)
     story: StoryInput | str | None = None
     if a.story:
         text = a.story.read_text(encoding="utf-8")

@@ -1,20 +1,20 @@
 {
-  "hash": "7fe8d85bbd9dea2cee84196864dc7a29d02e64fa518066bcda7d8c06bfa7f344",
+  "hash": "6f5cdd8f45f4aa1160fcf7028f0ac2402250125b4d33ca34540eaf93b4a5315e",
   "request": {
     "provider": "gemini",
     "model_id": "gemini-3.1-flash-tts-preview",
-    "voice_id": "Charon",
+    "voice_id": "Puck",
     "text": "Xin chào, tôi là Minh Khôi. Có một chuyện tôi chưa từng kể với ai.",
     "settings": {
       "style": "Nói tiếng Việt, giọng tự nhiên, ấm áp, tự giới thiệu mình, nhịp nhanh vừa phải, không ngắt nghỉ lâu"
     },
     "line_id": null
   },
-  "requested_voice": "Charon",
+  "requested_voice": "Puck",
   "placeholder": false,
   "reason": null,
-  "rendered_at": "2026-09-20T10:03:42+00:00",
-  "duration_ms": 4120,
+  "rendered_at": "2026-09-20T12:08:16+00:00",
+  "duration_ms": 4400,
   "characters_billed": 66,
-  "tokens_out": 132
+  "tokens_out": 141
 }

@@ -1,20 +1,20 @@
 {
-  "hash": "1736b08cbe2fac25f69de896e67605bb61496e685d7e4f84f6a62cbbf73f52dc",
+  "hash": "68ac6d51155aebb03e74892e13d634681c8c72ffe2256956fbf0765b4a88638d",
   "request": {
     "provider": "gemini",
     "model_id": "gemini-3.1-flash-tts-preview",
-    "voice_id": "Erinome",
+    "voice_id": "Kore",
     "text": "Xin chào, tôi là Linh. Có một chuyện tôi chưa từng kể với ai.",
     "settings": {
       "style": "Nói tiếng Việt, giọng tự nhiên, ấm áp, tự giới thiệu mình, nhịp nhanh vừa phải, không ngắt nghỉ lâu"
     },
     "line_id": null
   },
-  "requested_voice": "Erinome",
+  "requested_voice": "Kore",
   "placeholder": false,
   "reason": null,
-  "rendered_at": "2026-09-20T10:03:37+00:00",
-  "duration_ms": 4840,
+  "rendered_at": "2026-09-20T12:08:11+00:00",
+  "duration_ms": 4280,
   "characters_billed": 61,
-  "tokens_out": 155
+  "tokens_out": 137
 }

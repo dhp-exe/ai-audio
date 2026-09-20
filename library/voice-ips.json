@@ -5,11 +5,17 @@
     {
       "character_id": "linh",
       "display_name": "Linh",
-      "persona": "27 tuổi, kiến trúc sư trẻ ở Sài Gòn. Kín đáo, hài hước khô khan, trung thành đến mức dại dột.",
-      "voice_description": "PLACEHOLDER: Sarah, EN premade, driven in Vietnamese by v3. After upgrading the ElevenLabs plan switch to Thuy Duong MfXXiGR0HCVHHuMqcUJM (vi, northern) or a PVC. Target: nữ, giữa 20, giọng miền Nam, hơi khàn.",
+      "persona": "Nữ 27 tuổi, sắc sảo và độc lập. Hài hước khô khan, hay mỉa mai nhẹ, nói thẳng, ít khi để lộ cảm xúc nhưng trung thành tuyệt đối với người mình chọn. Phản ứng nhanh, đối đáp gọn, giọng điệu bình tĩnh ngay cả khi tức giận; chỉ mềm giọng trong những khoảnh khắc riêng tư. Hợp vai: chị gái/bạn thân lạnh lùng, đối thủ thông minh, người phụ nữ tự chủ.",
+      "voice_description": "Nữ, giọng alto hơi khàn, ấm ở âm trầm, nhịp nói nhanh và dứt khoát, ngắt câu sắc; giọng miền Nam, không ngọt. Khác Ngân (cao, trong, ngây thơ): Linh trầm hơn, tỉnh táo và khô hơn. ElevenLabs hiện là placeholder Sarah (EN premade) cho đến khi có giọng Việt; Gemini: Kore (firm).",
       "gender": "female",
       "age": "27",
-      "tags": [],
+      "tags": [
+        "sharp",
+        "witty",
+        "independent",
+        "sarcastic",
+        "cool"
+      ],
       "language": "vi-VN",
       "providers": {
         "elevenlabs": {
@@ -20,7 +26,7 @@
           "default_settings": {}
         },
         "gemini": {
-          "voice_id": "Erinome",
+          "voice_id": "Kore",
           "model_id": "gemini-3.1-flash-tts-preview",
           "voice_url": "https://ai.google.dev/gemini-api/docs/speech-generation#voices",
           "fallback_voice_id": null,
@@ -32,11 +38,17 @@
     {
       "character_id": "minh-khoi",
       "display_name": "Minh Khôi",
-      "persona": "31 tuổi, vị hôn phu cũ của Linh, nay điều hành công ty logistics của gia đình. Quyến rũ, lảng tránh, xấu hổ.",
-      "voice_description": "PLACEHOLDER: George (EN storyteller) driven in Vietnamese by v3 until a Vietnamese male PVC exists. Target: nam, đầu 30, giọng Hà Nội mềm, trầm ấm.",
+      "persona": "Nam 29 tuổi, quyến rũ kiểu tinh nghịch, nói nhiều, hay đùa để lảng tránh chuyện nghiêm túc. Nồng nhiệt, dễ mến, hơi bốc đồng, cười trước rồi mới nghĩ; khi bị dồn vào chân tường thì giọng chùng xuống và thật lòng. Hợp vai: người yêu cũ khó quên, bạn thân tấu hài, anh chàng nhà giàu phóng khoáng, kẻ quyến rũ có nỗi buồn giấu kín.",
+      "voice_description": "Nam, giọng tenor sáng và ấm, tươi, nhịp nhanh, nhiều biến hóa cao độ, hay bật cười giữa câu; giọng Hà Nội mềm. Khác Dương (trầm, điềm tĩnh, ít lời): Khôi cao hơn, nhanh hơn và cảm xúc lộ ra ngoài. ElevenLabs hiện là placeholder George (EN premade) cho đến khi có giọng Việt; Gemini: Puck (upbeat).",
       "gender": "male",
-      "age": "31",
-      "tags": [],
+      "age": "29",
+      "tags": [
+        "charming",
+        "playful",
+        "warm",
+        "talkative",
+        "boyish"
+      ],
       "language": "vi-VN",
       "providers": {
         "elevenlabs": {
@@ -47,7 +59,7 @@
           "default_settings": {}
         },
         "gemini": {
-          "voice_id": "Charon",
+          "voice_id": "Puck",
           "model_id": "gemini-3.1-flash-tts-preview",
           "voice_url": "https://ai.google.dev/gemini-api/docs/speech-generation#voices",
           "fallback_voice_id": null,
@@ -131,6 +143,10 @@
     "2026-09-20 added duong (IP asset)",
     "2026-09-20 removed MiniMax entries; added Gemini TTS voices: linh=Erinome, minh-khoi=Charon, ong-trum=Algenib, ngan=Leda, duong=Orus",
     "2026-09-20 gemini model for all actors: gemini-2.5-flash-preview-tts -> gemini-3.1-flash-tts-preview (default)",
-    "2026-09-20 removed ong-trum"
+    "2026-09-20 removed ong-trum",
+    "2026-09-20 updated linh",
+    "2026-09-20 updated linh (gemini: Erinome@gemini-3.1-flash-tts-preview -> Kore@gemini-3.1-flash-tts-preview)",
+    "2026-09-20 updated minh-khoi (gemini: Charon@gemini-3.1-flash-tts-preview -> Puck@gemini-3.1-flash-tts-preview)",
+    "2026-09-20 redefined linh and minh-khoi as distinct IPs (sharp/dry vs playful/warm) to contrast ngan and duong"
   ]
 }

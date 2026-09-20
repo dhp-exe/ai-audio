@@ -1,0 +1,17 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Generated audio is large and reproducible from scripts + registry. Keep out of git.
+series/*/stems/
+series/*/masters/
+series/*/timelines/
+library/bgm/
+library/sfx/
+*.wav
+*.mp3
+!series/*/reference/*.wav

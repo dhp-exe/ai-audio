@@ -1,0 +1,408 @@
+{
+  "series_id": "demo",
+  "language": "vi-VN",
+  "title": "Đêm Mưa Ở Sài Gòn",
+  "logline": "Một kiến trúc sư bị hôn phu bỏ rơi ba năm trước buộc phải thiết kế lại chính nhà thờ nơi họ từng định tổ chức đám cưới, chỉ để phát hiện ra một âm mưu đen tối đằng sau sự biến mất của anh.",
+  "premise": "Linh, một kiến trúc sư độc lập, nhận lời thiết kế trụ sở mới cho công ty của Minh Khôi - người đàn ông đã bỏ rơi cô ngay trước ngày cưới. Công trình tại nhà thờ cũ quận 3 trở thành cầu nối để cô khám phá ra rằng Khôi đã hy sinh hạnh phúc của họ để bảo vệ cô khỏi một tổ chức cho vay nặng lãi nguy hiểm.",
+  "tone": "Trầm mặc, kịch tính, đầy hoài niệm và căng thẳng.",
+  "genre": [
+    "Tình cảm",
+    "Đô thị hiện đại",
+    "Huyền bí"
+  ],
+  "protagonist_id": "linh",
+  "cast": [
+    "linh",
+    "minh-khoi",
+    "ong-trum"
+  ],
+  "cast_notes": [
+    {
+      "character_id": "linh",
+      "role": "protagonist",
+      "arc": "Từ một người phụ nữ tổn thương, khép kín, cô dần lấy lại sự tự tin và lòng can đảm để đối mặt với quá khứ và bảo vệ những gì mình trân trọng."
+    },
+    {
+      "character_id": "minh-khoi",
+      "role": "antagonist",
+      "arc": "Người đàn ông mang gánh nặng nợ nần và sự hối hận, cố gắng chuộc lỗi trong âm thầm nhưng lại đẩy người yêu cũ vào vòng nguy hiểm."
+    },
+    {
+      "character_id": "ong-trum",
+      "role": "supporting",
+      "arc": "Kẻ phản diện thao túng, sử dụng dự án nhà thờ làm vỏ bọc cho các hoạt động phi pháp, luôn giám sát nhất cử nhất động của Linh và Khôi."
+    }
+  ],
+  "pending_characters": [],
+  "episode_format": {
+    "count": 30,
+    "min_duration_sec": 90,
+    "max_duration_sec": 120,
+    "ends_on_cliffhanger": true
+  },
+  "episodes": [
+    {
+      "number": 1,
+      "title": "Cuộc gọi lúc nửa đêm",
+      "logline": "Ba năm im lặng, một cuộc điện thoại từ số máy cũ làm đảo lộn cuộc sống của Linh.",
+      "key_beats": [
+        "Linh đang làm việc muộn trong văn phòng nhỏ",
+        "Điện thoại đổ chuông, giọng nói quen thuộc vang lên",
+        "Khôi đề nghị một dự án với mức phí gấp 4 lần",
+        "Linh từ chối nhưng Khôi nhắc đến địa điểm là nhà thờ cũ"
+      ],
+      "cliffhanger": "Khôi nói: 'Nếu em không làm, họ sẽ không để em yên đâu'."
+    },
+    {
+      "number": 2,
+      "title": "Gặp lại ở nơi đổ nát",
+      "logline": "Linh đến nhà thờ cũ và đối mặt với Khôi lần đầu tiên sau ba năm.",
+      "key_beats": [
+        "Linh bước vào nhà thờ, ký ức đám cưới ùa về",
+        "Khôi đứng đợi trong bóng tối",
+        "Sự lạnh lùng của Linh đối đầu với vẻ hối lỗi của Khôi",
+        "Khôi đưa bản vẽ cũ"
+      ],
+      "cliffhanger": "Linh phát hiện một vết máu khô trên bản vẽ của Khôi."
+    },
+    {
+      "number": 3,
+      "title": "Bản hợp đồng máu",
+      "logline": "Linh nhận ra dự án này không đơn giản là kiến trúc.",
+      "key_beats": [
+        "Linh kiểm tra pháp lý của dự án",
+        "Cô phát hiện công ty của Khôi đang trên bờ vực phá sản",
+        "Khôi xuất hiện, yêu cầu cô không được hỏi thêm",
+        "Linh quyết định điều tra"
+      ],
+      "cliffhanger": "Một chiếc xe đen bám theo Linh khi cô rời nhà thờ."
+    },
+    {
+      "number": 4,
+      "title": "Bóng đen sau lưng",
+      "logline": "Linh bị đe dọa bởi những kẻ lạ mặt.",
+      "key_beats": [
+        "Linh bị chặn đường ở hẻm nhỏ",
+        "Kẻ lạ mặt nhắc tên Ông Trùm",
+        "Linh chạy thoát về nhà",
+        "Cô gọi cho Khôi nhưng anh không bắt máy"
+      ],
+      "cliffhanger": "Có tiếng gõ cửa lúc 3 giờ sáng."
+    },
+    {
+      "number": 5,
+      "title": "Sự thật về ba năm trước",
+      "logline": "Linh tìm thấy một bức thư cũ trong ngăn kéo của Khôi tại nhà thờ.",
+      "key_beats": [
+        "Linh đột nhập vào văn phòng tạm của Khôi",
+        "Cô tìm thấy bức thư đe dọa từ ba năm trước",
+        "Cô hiểu ra lý do Khôi bỏ rơi mình",
+        "Khôi bất ngờ xuất hiện"
+      ],
+      "cliffhanger": "Khôi nói: 'Em không nên đọc thứ đó'."
+    },
+    {
+      "number": 6,
+      "title": "Đối diện với Ông Trùm",
+      "logline": "Linh lần đầu gặp mặt kẻ đứng sau mọi chuyện.",
+      "key_beats": [
+        "Ông Trùm mời Linh đến dùng trà",
+        "Sự lịch sự giả tạo của hắn",
+        "Hắn đe dọa sự nghiệp của Linh",
+        "Linh giữ vững lập trường"
+      ],
+      "cliffhanger": "Ông Trùm đặt một tấm ảnh đám cưới cũ lên bàn."
+    },
+    {
+      "number": 7,
+      "title": "Trò chơi tâm lý",
+      "logline": "Linh và Khôi phải diễn kịch trước mặt thuộc hạ của Ông Trùm.",
+      "key_beats": [
+        "Họ phải đóng vai cặp đôi đang yêu",
+        "Sự căng thẳng khi chạm mặt",
+        "Linh nhận ra Khôi vẫn còn yêu mình",
+        "Một kế hoạch được vạch ra"
+      ],
+      "cliffhanger": "Khôi thì thầm vào tai Linh: 'Đừng tin bất cứ ai'."
+    },
+    {
+      "number": 8,
+      "title": "Bản vẽ bí mật",
+      "logline": "Linh phát hiện ra căn hầm bí mật dưới nhà thờ.",
+      "key_beats": [
+        "Linh đo đạc diện tích nhà thờ",
+        "Cô tìm thấy lối đi ẩn sau bàn thờ",
+        "Tiếng động lạ từ dưới hầm",
+        "Linh suýt bị phát hiện"
+      ],
+      "cliffhanger": "Cô nhìn thấy những kiện hàng cấm trong hầm."
+    },
+    {
+      "number": 9,
+      "title": "Đêm mưa định mệnh",
+      "logline": "Một trận mưa lớn khiến Linh bị kẹt lại nhà thờ cùng Khôi.",
+      "key_beats": [
+        "Mưa xối xả, điện bị cắt",
+        "Linh và Khôi phải trú ẩn trong phòng nhỏ",
+        "Họ đối diện với những tổn thương cũ",
+        "Sự gần gũi trở lại"
+      ],
+      "cliffhanger": "Khôi hôn Linh trong bóng tối."
+    },
+    {
+      "number": 10,
+      "title": "Ranh giới mong manh",
+      "logline": "Linh hoang mang giữa tình cảm và sự thật.",
+      "key_beats": [
+        "Linh tỉnh dậy, Khôi đã đi",
+        "Cô tự hỏi liệu mình có đang bị lợi dụng",
+        "Cô tìm thấy bằng chứng Khôi đang hợp tác với cảnh sát",
+        "Linh cảm thấy nhẹ nhõm"
+      ],
+      "cliffhanger": "Cảnh sát đến nhà thờ và bắt giữ Khôi."
+    },
+    {
+      "number": 11,
+      "title": "Người hùng hay tội phạm",
+      "logline": "Linh cố gắng tìm cách minh oan cho Khôi.",
+      "key_beats": [
+        "Linh đến đồn cảnh sát",
+        "Khôi từ chối gặp cô",
+        "Linh tìm luật sư",
+        "Cô phát hiện luật sư cũng là người của Ông Trùm"
+      ],
+      "cliffhanger": "Linh bị tước quyền thiết kế dự án."
+    },
+    {
+      "number": 12,
+      "title": "Đơn độc chiến đấu",
+      "logline": "Linh một mình đối đầu với thế lực của Ông Trùm.",
+      "key_beats": [
+        "Văn phòng của Linh bị lục soát",
+        "Cô mất hết dữ liệu dự án",
+        "Linh quyết định dùng trí tuệ để chống lại",
+        "Cô tìm đến những người bạn cũ"
+      ],
+      "cliffhanger": "Một người bạn thân phản bội cô."
+    },
+    {
+      "number": 13,
+      "title": "Mảnh ghép cuối cùng",
+      "logline": "Linh tìm thấy bản thiết kế gốc của nhà thờ.",
+      "key_beats": [
+        "Linh lục lại hồ sơ cũ của cha",
+        "Cô phát hiện nhà thờ có lối thoát hiểm bí mật",
+        "Cô lên kế hoạch giải cứu Khôi",
+        "Linh chuẩn bị vũ khí tự vệ"
+      ],
+      "cliffhanger": "Cô nghe thấy tiếng súng nổ gần nhà thờ."
+    },
+    {
+      "number": 14,
+      "title": "Cuộc giải cứu",
+      "logline": "Linh đột nhập vào nơi Khôi bị giam giữ.",
+      "key_beats": [
+        "Linh cải trang thành nhân viên giao hàng",
+        "Cô vượt qua vòng bảo vệ",
+        "Linh tìm thấy Khôi trong tình trạng bị thương",
+        "Họ cùng nhau trốn thoát"
+      ],
+      "cliffhanger": "Xe của họ bị chặn lại bởi xe của Ông Trùm."
+    },
+    {
+      "number": 15,
+      "title": "Đường cùng",
+      "logline": "Linh và Khôi bị dồn vào chân tường.",
+      "key_beats": [
+        "Cuộc rượt đuổi nghẹt thở",
+        "Họ chạy vào một khu chung cư cũ",
+        "Khôi yêu cầu Linh bỏ chạy",
+        "Linh từ chối"
+      ],
+      "cliffhanger": "Khôi bị trúng đạn."
+    },
+    {
+      "number": 16,
+      "title": "Giữa ranh giới sinh tử",
+      "logline": "Linh đưa Khôi đi cấp cứu trong bí mật.",
+      "key_beats": [
+        "Linh tìm đến một bác sĩ tư",
+        "Khôi được phẫu thuật trong điều kiện thiếu thốn",
+        "Linh chăm sóc Khôi",
+        "Cô nhận ra mình không thể rời bỏ anh"
+      ],
+      "cliffhanger": "Khôi tỉnh lại và nói: 'Chúng ta phải kết thúc việc này'."
+    },
+    {
+      "number": 17,
+      "title": "Kế hoạch phản công",
+      "logline": "Linh và Khôi lên kế hoạch lật đổ Ông Trùm.",
+      "key_beats": [
+        "Họ thu thập bằng chứng từ hầm nhà thờ",
+        "Linh dùng kỹ năng kiến trúc để tạo bẫy",
+        "Họ liên lạc với báo chí",
+        "Sự chuẩn bị kỹ lưỡng"
+      ],
+      "cliffhanger": "Ông Trùm đã biết kế hoạch của họ."
+    },
+    {
+      "number": 18,
+      "title": "Cái bẫy giăng sẵn",
+      "logline": "Linh dụ Ông Trùm đến nhà thờ.",
+      "key_beats": [
+        "Linh gửi tin nhắn giả cho Ông Trùm",
+        "Ông Trùm đến nhà thờ với đám tay sai",
+        "Linh kích hoạt hệ thống âm thanh và ánh sáng",
+        "Sự hoảng loạn của phe phản diện"
+      ],
+      "cliffhanger": "Linh bị bắt làm con tin."
+    },
+    {
+      "number": 19,
+      "title": "Sự hy sinh",
+      "logline": "Khôi xuất hiện để cứu Linh.",
+      "key_beats": [
+        "Khôi đối đầu với Ông Trùm",
+        "Cuộc ẩu đả diễn ra",
+        "Linh tìm cách thoát thân",
+        "Khôi bị thương nặng hơn"
+      ],
+      "cliffhanger": "Nhà thờ bắt đầu cháy."
+    },
+    {
+      "number": 20,
+      "title": "Ngọn lửa thiêu rụi quá khứ",
+      "logline": "Linh và Khôi thoát ra khỏi nhà thờ đang cháy.",
+      "key_beats": [
+        "Họ chạy ra ngoài trong gang tấc",
+        "Cảnh sát ập đến",
+        "Ông Trùm bị bắt",
+        "Linh nhìn nhà thờ đổ nát"
+      ],
+      "cliffhanger": "Một kẻ lạ mặt khác xuất hiện, đứng sau Ông Trùm."
+    },
+    {
+      "number": 21,
+      "title": "Kẻ đứng sau bóng tối",
+      "logline": "Linh nhận ra Ông Trùm chỉ là quân cờ.",
+      "key_beats": [
+        "Linh thẩm vấn Ông Trùm trong tù",
+        "Hắn tiết lộ về một thế lực lớn hơn",
+        "Linh cảm thấy bất an",
+        "Cô quyết định tiếp tục điều tra"
+      ],
+      "cliffhanger": "Linh nhận được một phong bì chứa ảnh cô và Khôi."
+    },
+    {
+      "number": 22,
+      "title": "Lời đe dọa mới",
+      "logline": "Linh bị theo dõi mọi lúc mọi nơi.",
+      "key_beats": [
+        "Linh thay đổi nơi ở",
+        "Cô luôn đề cao cảnh giác",
+        "Khôi cố gắng bảo vệ cô",
+        "Sự căng thẳng giữa hai người"
+      ],
+      "cliffhanger": "Khôi biến mất một lần nữa."
+    },
+    {
+      "number": 23,
+      "title": "Đi tìm Khôi",
+      "logline": "Linh lần theo dấu vết của Khôi.",
+      "key_beats": [
+        "Linh tìm đến những nơi Khôi từng đến",
+        "Cô phát hiện Khôi đang thâm nhập vào tổ chức mới",
+        "Linh lo lắng cho anh",
+        "Cô quyết định hỗ trợ từ xa"
+      ],
+      "cliffhanger": "Linh tìm thấy điện thoại của Khôi bị vứt bỏ."
+    },
+    {
+      "number": 24,
+      "title": "Sự phản bội của lòng tin",
+      "logline": "Linh phát hiện ra người đứng sau là người quen cũ.",
+      "key_beats": [
+        "Linh đối diện với kẻ đứng sau",
+        "Đó là người bạn thân của Khôi",
+        "Sự thất vọng tột cùng",
+        "Linh bị bắt giữ"
+      ],
+      "cliffhanger": "Linh bị nhốt trong một căn phòng trống không lối thoát."
+    },
+    {
+      "number": 25,
+      "title": "Trí tuệ của kiến trúc sư",
+      "logline": "Linh dùng kiến thức để thoát thân.",
+      "key_beats": [
+        "Linh quan sát cấu trúc căn phòng",
+        "Cô tìm thấy điểm yếu của tường",
+        "Linh thoát ra ngoài",
+        "Cô tìm đường về thành phố"
+      ],
+      "cliffhanger": "Cô thấy Khôi đang bị tra tấn qua camera an ninh."
+    },
+    {
+      "number": 26,
+      "title": "Cuộc chiến cuối cùng",
+      "logline": "Linh quay lại để cứu Khôi.",
+      "key_beats": [
+        "Linh đột nhập vào trụ sở của kẻ phản diện",
+        "Cô vô hiệu hóa hệ thống an ninh",
+        "Linh giải cứu Khôi",
+        "Hai người cùng nhau chiến đấu"
+      ],
+      "cliffhanger": "Kẻ phản diện rút súng nhắm vào Linh."
+    },
+    {
+      "number": 27,
+      "title": "Khoảnh khắc quyết định",
+      "logline": "Khôi đỡ đạn cho Linh.",
+      "key_beats": [
+        "Tiếng súng vang lên",
+        "Khôi ngã xuống",
+        "Linh gào khóc",
+        "Sự giận dữ bùng nổ trong Linh"
+      ],
+      "cliffhanger": "Linh cầm lấy vũ khí của kẻ phản diện."
+    },
+    {
+      "number": 28,
+      "title": "Công lý được thực thi",
+      "logline": "Linh đối mặt với kẻ phản diện.",
+      "key_beats": [
+        "Linh không giết hắn mà giao cho cảnh sát",
+        "Cô dùng bằng chứng đã thu thập được",
+        "Kẻ phản diện bị bắt",
+        "Khôi được đưa đi cấp cứu"
+      ],
+      "cliffhanger": "Bác sĩ nói tình trạng của Khôi rất nguy kịch."
+    },
+    {
+      "number": 29,
+      "title": "Chờ đợi trong hy vọng",
+      "logline": "Linh túc trực bên giường bệnh của Khôi.",
+      "key_beats": [
+        "Linh hồi tưởng lại những ngày tháng qua",
+        "Cô nhận ra giá trị của tình yêu",
+        "Khôi dần ổn định",
+        "Họ nói chuyện về tương lai"
+      ],
+      "cliffhanger": "Khôi nắm tay Linh và nói: 'Anh muốn xây lại nhà thờ'."
+    },
+    {
+      "number": 30,
+      "title": "Khởi đầu mới",
+      "logline": "Linh và Khôi cùng nhau xây dựng lại mọi thứ theo cách của riêng họ.",
+      "key_beats": [
+        "Nhà thờ được xây lại thành trung tâm cộng đồng",
+        "Linh và Khôi hạnh phúc bên nhau",
+        "Quá khứ được khép lại",
+        "Linh mỉm cười nhìn về phía trước"
+      ],
+      "cliffhanger": "Linh nhìn vào bản vẽ mới, mỉm cười: 'Đây mới là bắt đầu'."
+    }
+  ],
+  "changelog": [
+    "2026-09-20 episodize outline (gemini-3.1-flash-lite)"
+  ]
+}

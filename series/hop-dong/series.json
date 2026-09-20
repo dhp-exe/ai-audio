@@ -1,0 +1,109 @@
+{
+  "series_id": "hop-dong",
+  "language": "vi-VN",
+  "title": "Bản Hợp Đồng Định Mệnh",
+  "logline": "Tô Mạn trở lại làm việc tại tập đoàn Hoàng Gia, nơi cô tái ngộ người bạn thanh mai trúc mã Giang Thần, chỉ để khám phá ra những bí mật đen tối đằng sau bản hợp đồng định mệnh giữa gia đình họ.",
+  "premise": "Tô Mạn, một nhân viên mới, vô tình rơi vào lưới tình và những âm mưu quyền lực khi phát hiện ra mình là người thừa kế bí ẩn của tập đoàn Hoàng Gia, trong khi người bạn cũ Giang Thần dường như đang che giấu một sự thật đau lòng từ 9 năm trước.",
+  "tone": "Lãng mạn, kịch tính, căng thẳng, bí ẩn.",
+  "genre": [
+    "Ngôn tình",
+    "Tổng tài",
+    "Thanh mai trúc mã"
+  ],
+  "overview": {
+    "title": "Bản Hợp Đồng Định Mệnh",
+    "total_minutes": 30,
+    "genre": "Ngôn tình Tổng tài, thanh mai trúc mã, oan gia ngõ hẹp",
+    "setting": "Hiện đại, thành phố lớn tại Trung Quốc"
+  },
+  "mode": "segment",
+  "protagonist_id": "ngan",
+  "protagonist_role": "Tô Mạn",
+  "roles": [
+    {
+      "role_name": "Giang Thần",
+      "role_type": "protagonist",
+      "actor_id": "duong",
+      "assigned_by": "user",
+      "reason": "Giọng nam trầm ấm, uy quyền, phù hợp với hình tượng tổng giám đốc lạnh lùng."
+    },
+    {
+      "role_name": "Tô Mạn",
+      "role_type": "protagonist",
+      "actor_id": "ngan",
+      "assigned_by": "user",
+      "reason": "Giọng nữ trẻ trung, thông minh, bướng bỉnh, phù hợp với nhân vật chính."
+    },
+    {
+      "role_name": "Lý Minh",
+      "role_type": "supporting",
+      "actor_id": "minh-khoi",
+      "assigned_by": "ai",
+      "reason": "Giọng nam trầm ấm, đáng tin cậy, phù hợp với vai trợ lý thân cận."
+    },
+    {
+      "role_name": "Trần Vy",
+      "role_type": "antagonist",
+      "actor_id": "linh",
+      "assigned_by": "ai",
+      "reason": "Giọng nữ sắc sảo, có chút khàn, phù hợp với vai phản diện đố kỵ."
+    }
+  ],
+  "cast": [
+    "duong",
+    "ngan",
+    "minh-khoi",
+    "linh"
+  ],
+  "pending_characters": [],
+  "episode_format": {
+    "count": 3,
+    "min_duration_sec": 50,
+    "max_duration_sec": 70,
+    "ends_on_cliffhanger": true
+  },
+  "episodes": [
+    {
+      "number": 1,
+      "title": "Ngày Đầu Tiên Định Mệnh",
+      "logline": "Tô Mạn bắt đầu công việc tại tập đoàn Hoàng Gia và ngay lập tức bị Giang Thần triệu tập, khơi gợi lại ký ức 9 năm trước.",
+      "key_beats": [
+        "Tô Mạn vào làm tại Hoàng Gia",
+        "Trần Vy gây khó dễ",
+        "Lý Minh thông báo Giang Thần muốn gặp",
+        "Cuộc đối đầu giữa Tô Mạn và Giang Thần trong phòng tổng giám đốc"
+      ],
+      "cliffhanger": "Giang Thần lạnh lùng ra lệnh cho Tô Mạn phải báo cáo trực tiếp cho anh vào 7 giờ sáng mỗi ngày, khơi lại nỗi đau quá khứ.",
+      "source_span": "Cảnh 1 - Cảnh 2"
+    },
+    {
+      "number": 2,
+      "title": "Bí Mật Chôn Giấu",
+      "logline": "Sự nghi ngờ của đồng nghiệp tăng cao khi Tô Mạn liên tục gặp riêng Giang Thần, dẫn đến một cuộc đối thoại bãi đỗ xe đầy sóng gió.",
+      "key_beats": [
+        "Trần Vy nghi ngờ Tô Mạn đi cửa sau",
+        "Lý Minh nhắc nhở Trần Vy về dự án trễ",
+        "Giang Thần bắt gặp Tô Mạn ở bãi đỗ xe",
+        "Giang Thần tiết lộ lý do anh tìm kiếm cô suốt 2 năm"
+      ],
+      "cliffhanger": "Giang Thần tiết lộ rằng 9 năm trước, bố anh đã ép mẹ Tô Mạn ký một bản hợp đồng khiến cô phải bỏ đi.",
+      "source_span": "Cảnh 3 - Cảnh 4"
+    },
+    {
+      "number": 3,
+      "title": "Sự Thật Phơi Bày",
+      "logline": "Tô Mạn phát hiện ra mình là người thừa kế của tập đoàn Hoàng Gia, trong khi một âm mưu mới đang nhắm vào cô.",
+      "key_beats": [
+        "Tô Mạn lục lại giấy tờ cũ của mẹ",
+        "Phát hiện bản hợp đồng chuyển nhượng đứng tên mình",
+        "Nhận ra Giang Thần đã giấu sự thật suốt 9 năm",
+        "Lý Minh gọi điện cảnh báo khẩn cấp"
+      ],
+      "cliffhanger": "Lý Minh cảnh báo Tô Mạn không được tin vào bất cứ giấy tờ nào vì Trần Vy đang âm mưu chiếm đoạt hồ sơ mang tên cô.",
+      "source_span": "Cảnh 5"
+    }
+  ],
+  "changelog": [
+    "2026-09-20 episodize outline (gemini-3.1-flash-lite, mode=segment)"
+  ]
+}

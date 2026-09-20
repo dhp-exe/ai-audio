@@ -1,0 +1,190 @@
+{
+  "schema_version": "1.0",
+  "language": "vi-VN",
+  "series_id": "demo",
+  "episode_number": 2,
+  "title": "Trở lại nơi bắt đầu",
+  "logline": "Linh đối mặt với Minh Khôi tại nhà thờ bỏ hoang, nơi những bí mật đen tối về món nợ của anh dần lộ diện.",
+  "target_duration_sec": 120,
+  "characters_used": [
+    "linh",
+    "minh-khoi"
+  ],
+  "scenes": [
+    {
+      "scene_id": "sc01",
+      "title": "Trước cổng nhà thờ",
+      "location": "Cổng nhà thờ bỏ hoang",
+      "time_of_day": "night",
+      "ambience_tag": null,
+      "ambience_level": 0.0,
+      "bgm": null,
+      "lines": [
+        {
+          "line_id": "ep02_sc01_l001",
+          "type": "monologue",
+          "character_id": "linh",
+          "text": "Ba năm. Cánh cổng sắt này vẫn rỉ sét như cách anh rời bỏ cuộc đời tôi. Tôi không nên đến đây.",
+          "tts_text": "[introspective] Ba năm. Cánh cổng sắt này vẫn rỉ sét như cách anh rời bỏ cuộc đời tôi. Tôi không nên đến đây.",
+          "emotion": "sad",
+          "emotional_intensity": 5,
+          "acoustic_direction": "giọng trầm, chậm, hơi thở đều",
+          "pace": "slow",
+          "volume": "soft",
+          "pause_after_ms": 400,
+          "sfx": []
+        },
+        {
+          "line_id": "ep02_sc01_l002",
+          "type": "monologue",
+          "character_id": "linh",
+          "text": "Nhưng cái cách anh nói qua điện thoại, nó không giống một lời mời làm việc. Nó giống một lời cầu cứu.",
+          "tts_text": "[introspective] Nhưng cái cách anh nói qua điện thoại, nó không giống một lời mời làm việc. Nó giống một lời cầu cứu.",
+          "emotion": "fearful",
+          "emotional_intensity": 6,
+          "acoustic_direction": "giọng run nhẹ, nhấn mạnh từ cầu cứu",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 500,
+          "sfx": []
+        }
+      ]
+    },
+    {
+      "scene_id": "sc02",
+      "title": "Bên trong gian chính nhà thờ",
+      "location": "Gian chính nhà thờ",
+      "time_of_day": "night",
+      "ambience_tag": null,
+      "ambience_level": 0.0,
+      "bgm": null,
+      "lines": [
+        {
+          "line_id": "ep02_sc02_l001",
+          "type": "dialogue",
+          "character_id": "minh-khoi",
+          "text": "Anh biết em sẽ đến. Linh, cảm ơn em.",
+          "tts_text": "Anh biết em sẽ đến. Linh, cảm ơn em.",
+          "emotion": "tender",
+          "emotional_intensity": 4,
+          "acoustic_direction": "giọng trầm, vang, từ xa",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 300,
+          "sfx": []
+        },
+        {
+          "line_id": "ep02_sc02_l002",
+          "type": "dialogue",
+          "character_id": "linh",
+          "text": "Đừng cảm ơn. Tôi đến đây vì bản vẽ, không phải vì anh. Tại sao lại là nơi này, Khôi?",
+          "tts_text": "Đừng cảm ơn. Tôi đến đây vì bản vẽ, không phải vì anh. Tại sao lại là nơi này, Khôi?",
+          "emotion": "sarcastic",
+          "emotional_intensity": 6,
+          "acoustic_direction": "lạnh lùng, sắc bén",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 400,
+          "sfx": []
+        },
+        {
+          "line_id": "ep02_sc02_l003",
+          "type": "dialogue",
+          "character_id": "minh-khoi",
+          "text": "Vì đây là nơi duy nhất họ không thể chạm tới... hoặc ít nhất là nơi anh từng muốn chúng ta bắt đầu một gia đình.",
+          "tts_text": "Vì đây là nơi duy nhất họ không thể chạm tới... hoặc ít nhất là nơi anh từng muốn chúng ta bắt đầu một gia đình.",
+          "emotion": "sad",
+          "emotional_intensity": 7,
+          "acoustic_direction": "đau đớn, nghẹn ngào",
+          "pace": "slow",
+          "volume": "soft",
+          "pause_after_ms": 500,
+          "sfx": []
+        },
+        {
+          "line_id": "ep02_sc02_l004",
+          "type": "dialogue",
+          "character_id": "linh",
+          "text": "Gia đình? Anh biến mất không một lời giải thích, rồi giờ gọi tôi đến một đống đổ nát để nói về chuyện cũ sao?",
+          "tts_text": "Gia đình? Anh biến mất không một lời giải thích, rồi giờ gọi tôi đến một đống đổ nát để nói về chuyện cũ sao?",
+          "emotion": "sarcastic",
+          "emotional_intensity": 8,
+          "acoustic_direction": "cười nhạt, giọng khinh khỉnh",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 400,
+          "sfx": []
+        },
+        {
+          "line_id": "ep02_sc02_l005",
+          "type": "dialogue",
+          "character_id": "minh-khoi",
+          "text": "Em không hiểu đâu! Nếu em không giúp anh sửa lại bản thiết kế này theo yêu cầu của họ, cả hai chúng ta đều không còn đường lui.",
+          "tts_text": "[shouting] Em không hiểu đâu! Nếu em không giúp anh sửa lại bản thiết kế này theo yêu cầu của họ, cả hai chúng ta đều không còn đường lui.",
+          "emotion": "desperate",
+          "emotional_intensity": 9,
+          "acoustic_direction": "gắt gỏng, hoảng loạn",
+          "pace": "fast",
+          "volume": "loud",
+          "pause_after_ms": 1500,
+          "sfx": []
+        }
+      ]
+    },
+    {
+      "scene_id": "sc03",
+      "title": "Sân nhà thờ",
+      "location": "Sân nhà thờ",
+      "time_of_day": "night",
+      "ambience_tag": null,
+      "ambience_level": 0.0,
+      "bgm": null,
+      "lines": [
+        {
+          "line_id": "ep02_sc03_l001",
+          "type": "monologue",
+          "character_id": "linh",
+          "text": "Một chiếc xe đen bóng loáng đỗ xịch trước cổng. Đèn pha chiếu thẳng vào mặt tôi, chói lòa.",
+          "tts_text": "[internal monologue] Một chiếc xe đen bóng loáng đỗ xịch trước cổng. Đèn pha chiếu thẳng vào mặt tôi, chói lòa.",
+          "emotion": "fearful",
+          "emotional_intensity": 7,
+          "acoustic_direction": "giọng run, hồi hộp",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 300,
+          "sfx": []
+        },
+        {
+          "line_id": "ep02_sc03_l002",
+          "type": "dialogue",
+          "character_id": "minh-khoi",
+          "text": "Chết tiệt. Hắn đến sớm hơn dự kiến.",
+          "tts_text": "[whispers] Chết tiệt. Hắn đến sớm hơn dự kiến.",
+          "emotion": "fearful",
+          "emotional_intensity": 9,
+          "acoustic_direction": "thì thầm, run rẩy",
+          "pace": "fast",
+          "volume": "whisper",
+          "pause_after_ms": 400,
+          "sfx": []
+        },
+        {
+          "line_id": "ep02_sc03_l003",
+          "type": "monologue",
+          "character_id": "linh",
+          "text": "Cánh cửa xe mở ra. Một người đàn ông bước xuống, dáng vẻ lịch lãm nhưng nụ cười thì lạnh lẽo đến gai người. Ông Trùm.",
+          "tts_text": "[internal monologue] Cánh cửa xe mở ra. Một người đàn ông bước xuống, dáng vẻ lịch lãm nhưng nụ cười thì lạnh lẽo đến gai người. Ông Trùm.",
+          "emotion": "fearful",
+          "emotional_intensity": 10,
+          "acoustic_direction": "giọng run, căng thẳng tột độ",
+          "pace": "slow",
+          "volume": "soft",
+          "pause_after_ms": 1500,
+          "sfx": []
+        }
+      ]
+    }
+  ],
+  "cliffhanger": "Một chiếc xe đen đỗ lại, người đàn ông bước xuống, đó là Ông Trùm.",
+  "director_notes": "Tập 2 tập trung vào sự căng thẳng leo thang giữa Linh và Minh Khôi. Cần chú ý sự chuyển đổi cảm xúc của Minh Khôi từ van nài sang hoảng loạn khi Ông Trùm xuất hiện. Giọng của Ông Trùm nên được xử lý ở tập sau với sự lịch lãm nhưng đầy đe dọa."
+}

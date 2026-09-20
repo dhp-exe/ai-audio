@@ -1,0 +1,204 @@
+{
+  "schema_version": "1.0",
+  "language": "vi-VN",
+  "series_id": "demo",
+  "episode_number": 1,
+  "title": "Cuộc gọi lúc nửa đêm",
+  "logline": "Linh nhận được cuộc gọi từ người yêu cũ sau ba năm im lặng, kéo cô vào một âm mưu nguy hiểm liên quan đến dự án nhà thờ bỏ hoang.",
+  "target_duration_sec": 120,
+  "characters_used": [
+    "linh",
+    "minh-khoi"
+  ],
+  "scenes": [
+    {
+      "scene_id": "sc01",
+      "title": "Căn hộ của Linh",
+      "location": "Căn hộ của Linh",
+      "time_of_day": "night",
+      "ambience_tag": null,
+      "ambience_level": 0.0,
+      "bgm": null,
+      "lines": [
+        {
+          "line_id": "ep01_sc01_l001",
+          "type": "monologue",
+          "character_id": "linh",
+          "text": "Ba năm rồi. Mình cứ tưởng quên được cái cảm giác chờ đợi này, nhưng tiếng mưa Sài Gòn vẫn cứ khiến lòng mình chùng xuống.",
+          "tts_text": "[introspective] Ba năm rồi. Mình cứ tưởng quên được cái cảm giác chờ đợi này, nhưng tiếng mưa Sài Gòn vẫn cứ khiến lòng mình chùng xuống.",
+          "emotion": "sad",
+          "emotional_intensity": 4,
+          "acoustic_direction": "giọng trầm, chậm, mic gần",
+          "pace": "slow",
+          "volume": "soft",
+          "pause_after_ms": 400,
+          "sfx": []
+        },
+        {
+          "line_id": "ep01_sc01_l002",
+          "type": "monologue",
+          "character_id": "linh",
+          "text": "Bản vẽ nhà thờ này... tại sao mình lại nhận nó nhỉ? Cảm giác như có một sợi dây vô hình đang kéo mình về phía quá khứ.",
+          "tts_text": "[introspective] Bản vẽ nhà thờ này... tại sao mình lại nhận nó nhỉ? Cảm giác như có một sợi dây vô hình đang kéo mình về phía quá khứ.",
+          "emotion": "sad",
+          "emotional_intensity": 5,
+          "acoustic_direction": "thì thầm, đầy trăn trở",
+          "pace": "normal",
+          "volume": "soft",
+          "pause_after_ms": 500,
+          "sfx": []
+        }
+      ]
+    },
+    {
+      "scene_id": "sc02",
+      "title": "Căn hộ của Linh - Cuộc gọi",
+      "location": "Căn hộ của Linh",
+      "time_of_day": "night",
+      "ambience_tag": null,
+      "ambience_level": 0.0,
+      "bgm": null,
+      "lines": [
+        {
+          "line_id": "ep01_sc02_l001",
+          "type": "monologue",
+          "character_id": "linh",
+          "text": "Số máy lạ? Giờ này ai còn gọi cho mình?",
+          "tts_text": "[internal monologue] Số máy lạ? Giờ này ai còn gọi cho mình?",
+          "emotion": "fearful",
+          "emotional_intensity": 3,
+          "acoustic_direction": "giọng ngạc nhiên, cảnh giác",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 300,
+          "sfx": []
+        },
+        {
+          "line_id": "ep01_sc02_l002",
+          "type": "dialogue",
+          "character_id": "linh",
+          "text": "Alo, ai đó?",
+          "tts_text": "[hesitates] Alo, ai đó?",
+          "emotion": "fearful",
+          "emotional_intensity": 3,
+          "acoustic_direction": "giọng run, dè chừng",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 300,
+          "sfx": []
+        },
+        {
+          "line_id": "ep01_sc02_l003",
+          "type": "dialogue",
+          "character_id": "minh-khoi",
+          "text": "Linh, là anh đây. Đừng cúp máy, làm ơn.",
+          "tts_text": "Linh, là anh đây. Đừng cúp máy, làm ơn.",
+          "emotion": "desperate",
+          "emotional_intensity": 7,
+          "acoustic_direction": "giọng khàn đặc, đầy vẻ lo âu",
+          "pace": "fast",
+          "volume": "normal",
+          "pause_after_ms": 300,
+          "sfx": []
+        },
+        {
+          "line_id": "ep01_sc02_l004",
+          "type": "dialogue",
+          "character_id": "linh",
+          "text": "Khôi? Anh... anh lấy tư cách gì mà gọi cho tôi sau ba năm im lặng? Anh nghĩ tôi vẫn là cô gái khờ khạo đợi anh ở sân bay sao?",
+          "tts_text": "Khôi? Anh... anh lấy tư cách gì mà gọi cho tôi sau ba năm im lặng? Anh nghĩ tôi vẫn là cô gái khờ khạo đợi anh ở sân bay sao?",
+          "emotion": "angry",
+          "emotional_intensity": 8,
+          "acoustic_direction": "giọng run rẩy, nghẹn ngào",
+          "pace": "normal",
+          "volume": "loud",
+          "pause_after_ms": 400,
+          "sfx": []
+        },
+        {
+          "line_id": "ep01_sc02_l005",
+          "type": "dialogue",
+          "character_id": "minh-khoi",
+          "text": "Anh biết anh nợ em một lời giải thích, nhưng bây giờ không phải lúc. Anh đang ở trong một tình thế không thể xoay xở được nữa.",
+          "tts_text": "Anh biết anh nợ em một lời giải thích, nhưng bây giờ không phải lúc. Anh đang ở trong một tình thế không thể xoay xở được nữa.",
+          "emotion": "desperate",
+          "emotional_intensity": 7,
+          "acoustic_direction": "vội vã, gấp gáp",
+          "pace": "fast",
+          "volume": "normal",
+          "pause_after_ms": 300,
+          "sfx": []
+        },
+        {
+          "line_id": "ep01_sc02_l006",
+          "type": "dialogue",
+          "character_id": "linh",
+          "text": "Tình thế? Anh vẫn luôn giỏi tìm lý do cho sự hèn nhát của mình. Tôi không quan tâm anh đang ở đâu hay làm gì.",
+          "tts_text": "[sarcastic] Tình thế? Anh vẫn luôn giỏi tìm lý do cho sự hèn nhát của mình. Tôi không quan tâm anh đang ở đâu hay làm gì.",
+          "emotion": "sarcastic",
+          "emotional_intensity": 6,
+          "acoustic_direction": "giọng lạnh lùng, dứt khoát",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 500,
+          "sfx": []
+        }
+      ]
+    },
+    {
+      "scene_id": "sc03",
+      "title": "Căn hộ của Linh - Cao trào",
+      "location": "Căn hộ của Linh",
+      "time_of_day": "night",
+      "ambience_tag": null,
+      "ambience_level": 0.0,
+      "bgm": null,
+      "lines": [
+        {
+          "line_id": "ep01_sc03_l001",
+          "type": "dialogue",
+          "character_id": "minh-khoi",
+          "text": "Linh, nghe anh. Dự án nhà thờ cũ mà em đang nhận, đó không phải là sự trùng hợp. Anh cần em thiết kế lại cấu trúc đó để che giấu những thứ mà bọn họ không được phép tìm thấy.",
+          "tts_text": "Linh, nghe anh. Dự án nhà thờ cũ mà em đang nhận, đó không phải là sự trùng hợp. Anh cần em thiết kế lại cấu trúc đó để che giấu những thứ mà bọn họ không được phép tìm thấy.",
+          "emotion": "fearful",
+          "emotional_intensity": 8,
+          "acoustic_direction": "giọng trầm xuống, đầy khẩn thiết",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 300,
+          "sfx": []
+        },
+        {
+          "line_id": "ep01_sc03_l002",
+          "type": "dialogue",
+          "character_id": "linh",
+          "text": "Anh đang nói cái gì vậy? Anh đang dính vào chuyện gì thế Khôi?",
+          "tts_text": "Anh đang nói cái gì vậy? Anh đang dính vào chuyện gì thế Khôi?",
+          "emotion": "fearful",
+          "emotional_intensity": 7,
+          "acoustic_direction": "giọng nghi ngờ, bàng hoàng",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 300,
+          "sfx": []
+        },
+        {
+          "line_id": "ep01_sc03_l003",
+          "type": "dialogue",
+          "character_id": "minh-khoi",
+          "text": "Em là người duy nhất có thể cứu anh, tại nơi chúng ta đã không thể kết hôn.",
+          "tts_text": "[pause] Em là người duy nhất có thể cứu anh, tại nơi chúng ta đã không thể kết hôn.",
+          "emotion": "desperate",
+          "emotional_intensity": 10,
+          "acoustic_direction": "giọng run lên, nghẹn ngào, đầy ám ảnh",
+          "pace": "slow",
+          "volume": "soft",
+          "pause_after_ms": 1500,
+          "sfx": []
+        }
+      ]
+    }
+  ],
+  "cliffhanger": "Em là người duy nhất có thể cứu anh, tại nơi chúng ta đã không thể kết hôn.",
+  "director_notes": "Tập 1 tập trung vào sự căng thẳng giữa Linh và Khôi. Giọng của Khôi cần thể hiện sự tuyệt vọng tột cùng ở cuối tập. Linh giữ thái độ hoài nghi nhưng dần bị cuốn vào nỗi sợ hãi."
+}

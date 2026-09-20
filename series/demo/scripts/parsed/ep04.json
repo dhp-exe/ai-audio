@@ -1,0 +1,218 @@
+{
+  "schema_version": "1.0",
+  "language": "vi-VN",
+  "series_id": "demo",
+  "episode_number": 4,
+  "title": "Bóng đen sau lưng",
+  "logline": "Linh bị đe dọa bởi những kẻ lạ mặt liên quan đến công trình của Khôi, khiến cô rơi vào vòng xoáy nguy hiểm giữa sự thật và nỗi sợ hãi.",
+  "target_duration_sec": 120,
+  "characters_used": [
+    "linh",
+    "ong-trum"
+  ],
+  "scenes": [
+    {
+      "scene_id": "sc01",
+      "title": "Hẻm nhỏ gần nhà thờ cũ",
+      "location": "Hẻm nhỏ",
+      "time_of_day": "night",
+      "ambience_tag": null,
+      "ambience_level": 0.0,
+      "bgm": null,
+      "lines": [
+        {
+          "line_id": "ep04_sc01_l001",
+          "type": "monologue",
+          "character_id": "linh",
+          "text": "Cảm giác bị theo dõi chưa bao giờ sai. Chiếc xe đen đó đã bám theo mình từ lúc rời khỏi nhà thờ. Tim mình đập mạnh như muốn nhảy ra khỏi lồng ngực.",
+          "tts_text": "[internal monologue] Cảm giác bị theo dõi chưa bao giờ sai. Chiếc xe đen đó đã bám theo mình từ lúc rời khỏi nhà thờ. Tim mình đập mạnh như muốn nhảy ra khỏi lồng ngực.",
+          "emotion": "fearful",
+          "emotional_intensity": 7,
+          "acoustic_direction": "giọng dồn dập, hơi thở gấp",
+          "pace": "fast",
+          "volume": "normal",
+          "pause_after_ms": 400,
+          "sfx": []
+        },
+        {
+          "line_id": "ep04_sc01_l002",
+          "type": "dialogue",
+          "character_id": "linh",
+          "text": "Ai đó? Anh là ai? Tại sao lại chặn đường tôi?",
+          "tts_text": "[hesitates] Ai đó? Anh là ai? Tại sao lại chặn đường tôi?",
+          "emotion": "fearful",
+          "emotional_intensity": 8,
+          "acoustic_direction": "giọng run rẩy, cao độ hơi chới với",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 400,
+          "sfx": []
+        },
+        {
+          "line_id": "ep04_sc01_l003",
+          "type": "dialogue",
+          "character_id": "ong-trum",
+          "text": "Cô Linh, kiến trúc sư tài năng. Ông Trùm gửi lời nhắn, đừng quá tò mò về những bản vẽ ở nhà thờ đó. Đôi khi, biết quá nhiều lại là một cái tội.",
+          "tts_text": "Cô Linh, kiến trúc sư tài năng. Ông Trùm gửi lời nhắn, đừng quá tò mò về những bản vẽ ở nhà thờ đó. Đôi khi, biết quá nhiều lại là một cái tội.",
+          "emotion": "neutral",
+          "emotional_intensity": 6,
+          "acoustic_direction": "giọng lạnh lùng, trầm đục, nhấn mạnh từng chữ",
+          "pace": "slow",
+          "volume": "normal",
+          "pause_after_ms": 400,
+          "sfx": []
+        },
+        {
+          "line_id": "ep04_sc01_l004",
+          "type": "dialogue",
+          "character_id": "linh",
+          "text": "Tôi chỉ là người làm thuê. Chuyện của Khôi không liên quan đến tôi. Tránh ra, nếu không tôi sẽ báo cảnh sát.",
+          "tts_text": "Tôi chỉ là người làm thuê. Chuyện của Khôi không liên quan đến tôi. Tránh ra, nếu không tôi sẽ báo cảnh sát.",
+          "emotion": "angry",
+          "emotional_intensity": 7,
+          "acoustic_direction": "cố gắng gồng mình để tỏ ra cứng rắn",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 400,
+          "sfx": []
+        },
+        {
+          "line_id": "ep04_sc01_l005",
+          "type": "dialogue",
+          "character_id": "ong-trum",
+          "text": "Cảnh sát sao? Cô cứ thử xem. Nhớ lấy, mọi bước chân của cô đều nằm trong tầm mắt của chúng tôi. Đừng để mình phải trả giá thay cho kẻ khác.",
+          "tts_text": "[sarcastic] Cảnh sát sao? Cô cứ thử xem. Nhớ lấy, mọi bước chân của cô đều nằm trong tầm mắt của chúng tôi. Đừng để mình phải trả giá thay cho kẻ khác.",
+          "emotion": "disgusted",
+          "emotional_intensity": 9,
+          "acoustic_direction": "giọng cười nhạt, đe dọa sát mic",
+          "pace": "slow",
+          "volume": "normal",
+          "pause_after_ms": 1500,
+          "sfx": []
+        }
+      ]
+    },
+    {
+      "scene_id": "sc02",
+      "title": "Căn hộ của Linh",
+      "location": "Phòng ngủ",
+      "time_of_day": "night",
+      "ambience_tag": null,
+      "ambience_level": 0.0,
+      "bgm": null,
+      "lines": [
+        {
+          "line_id": "ep04_sc02_l001",
+          "type": "monologue",
+          "character_id": "linh",
+          "text": "Mình đã chạy thục mạng về đến nhà. Khóa chặt cửa, kéo rèm, nhưng sự sợ hãi vẫn bủa vây. Tại sao Khôi lại kéo mình vào cái hố sâu này? Anh ấy đang giấu mình điều gì?",
+          "tts_text": "[introspective] Mình đã chạy thục mạng về đến nhà. Khóa chặt cửa, kéo rèm, nhưng sự sợ hãi vẫn bủa vây. Tại sao Khôi lại kéo mình vào cái hố sâu này? Anh ấy đang giấu mình điều gì?",
+          "emotion": "fearful",
+          "emotional_intensity": 7,
+          "acoustic_direction": "thở dốc, giọng run",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 400,
+          "sfx": []
+        },
+        {
+          "line_id": "ep04_sc02_l002",
+          "type": "dialogue",
+          "character_id": "linh",
+          "text": "Khôi, làm ơn bắt máy đi. Em cần biết chuyện gì đang xảy ra. Anh nói đi, tại sao họ lại nhắc đến tên anh?",
+          "tts_text": "[sad] Khôi, làm ơn bắt máy đi. Em cần biết chuyện gì đang xảy ra. Anh nói đi, tại sao họ lại nhắc đến tên anh?",
+          "emotion": "desperate",
+          "emotional_intensity": 9,
+          "acoustic_direction": "giọng nghẹn ngào, tuyệt vọng",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 400,
+          "sfx": []
+        },
+        {
+          "line_id": "ep04_sc02_l003",
+          "type": "monologue",
+          "character_id": "linh",
+          "text": "Không có tín hiệu. Chỉ là tiếng tút dài vô tận. Khôi, anh đã bỏ rơi em một lần, đừng để lần này trở thành vĩnh viễn vì những bí mật chết người đó.",
+          "tts_text": "[introspective] Không có tín hiệu. Chỉ là tiếng tút dài vô tận. Khôi, anh đã bỏ rơi em một lần, đừng để lần này trở thành vĩnh viễn vì những bí mật chết người đó.",
+          "emotion": "sad",
+          "emotional_intensity": 8,
+          "acoustic_direction": "giọng trầm, buồn bã",
+          "pace": "slow",
+          "volume": "soft",
+          "pause_after_ms": 400,
+          "sfx": []
+        },
+        {
+          "line_id": "ep04_sc02_l004",
+          "type": "monologue",
+          "character_id": "linh",
+          "text": "Mình không thể ngồi yên chờ đợi. Nếu Khôi không nói, mình sẽ tự tìm ra sự thật ngay tại công trường đó vào sáng mai.",
+          "tts_text": "[internal monologue] Mình không thể ngồi yên chờ đợi. Nếu Khôi không nói, mình sẽ tự tìm ra sự thật ngay tại công trường đó vào sáng mai.",
+          "emotion": "neutral",
+          "emotional_intensity": 6,
+          "acoustic_direction": "giọng cương quyết",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 1500,
+          "sfx": []
+        }
+      ]
+    },
+    {
+      "scene_id": "sc03",
+      "title": "Căn hộ của Linh",
+      "location": "Phòng ngủ",
+      "time_of_day": "night",
+      "ambience_tag": null,
+      "ambience_level": 0.0,
+      "bgm": null,
+      "lines": [
+        {
+          "line_id": "ep04_sc03_l001",
+          "type": "monologue",
+          "character_id": "linh",
+          "text": "Mọi thứ im lặng đến mức mình nghe thấy cả tiếng thở của chính mình. Có lẽ mình đã quá đa nghi, có lẽ bọn chúng chỉ muốn dọa mình thôi.",
+          "tts_text": "[introspective] Mọi thứ im lặng đến mức mình nghe thấy cả tiếng thở của chính mình. Có lẽ mình đã quá đa nghi, có lẽ bọn chúng chỉ muốn dọa mình thôi.",
+          "emotion": "neutral",
+          "emotional_intensity": 4,
+          "acoustic_direction": "thì thầm, không gian tĩnh lặng",
+          "pace": "slow",
+          "volume": "whisper",
+          "pause_after_ms": 400,
+          "sfx": []
+        },
+        {
+          "line_id": "ep04_sc03_l002",
+          "type": "dialogue",
+          "character_id": "linh",
+          "text": "Ai đó? Là ai đang ở ngoài cửa vào giờ này?",
+          "tts_text": "[whispers] Ai đó? Là ai đang ở ngoài cửa vào giờ này?",
+          "emotion": "fearful",
+          "emotional_intensity": 8,
+          "acoustic_direction": "giọng run, thì thầm",
+          "pace": "normal",
+          "volume": "whisper",
+          "pause_after_ms": 400,
+          "sfx": []
+        },
+        {
+          "line_id": "ep04_sc03_l003",
+          "type": "dialogue",
+          "character_id": "linh",
+          "text": "Tiếng gõ cửa... lại là tiếng gõ cửa đó. Ba giờ sáng, ai lại đến vào lúc này?",
+          "tts_text": "[gasps] Tiếng gõ cửa... lại là tiếng gõ cửa đó. Ba giờ sáng, ai lại đến vào lúc này?",
+          "emotion": "fearful",
+          "emotional_intensity": 10,
+          "acoustic_direction": "giọng nghẹn lại, run rẩy cực độ",
+          "pace": "slow",
+          "volume": "normal",
+          "pause_after_ms": 1500,
+          "sfx": []
+        }
+      ]
+    }
+  ],
+  "cliffhanger": "Tiếng gõ cửa lúc 3 giờ sáng.",
+  "director_notes": "Tập phim tập trung vào sự căng thẳng leo thang. Nhân vật Linh cần thể hiện sự chuyển biến từ sợ hãi sang quyết tâm, sau đó là hoảng loạn tột độ ở cuối. Các đoạn monologue cần đọc chậm, rõ chữ, tạo cảm giác như suy nghĩ đang chạy trong đầu nhân vật."
+}

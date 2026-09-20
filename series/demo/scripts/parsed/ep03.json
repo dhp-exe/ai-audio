@@ -1,0 +1,166 @@
+{
+  "schema_version": "1.0",
+  "language": "vi-VN",
+  "series_id": "demo",
+  "episode_number": 3,
+  "title": "Hợp đồng máu",
+  "logline": "Linh đối mặt với Khôi tại nhà thờ bỏ hoang và nhận ra sự thật kinh hoàng về bản hợp đồng, trước khi chạm trán kẻ đứng sau tất cả.",
+  "target_duration_sec": 120,
+  "characters_used": [
+    "linh",
+    "minh-khoi",
+    "ong-trum"
+  ],
+  "scenes": [
+    {
+      "scene_id": "sc01",
+      "title": "Đối chất tại nhà thờ",
+      "location": "Nhà thờ bỏ hoang",
+      "time_of_day": "night",
+      "ambience_tag": null,
+      "ambience_level": 0.0,
+      "bgm": null,
+      "lines": [
+        {
+          "line_id": "ep03_sc01_l001",
+          "type": "monologue",
+          "character_id": "linh",
+          "text": "Những con số trong bản hợp đồng này không giống với bất kỳ dự án kiến trúc nào mình từng làm. Chi phí vật liệu thấp đến vô lý, nhưng phí bảo hiểm lại cao ngất ngưởng. Đây không phải là xây dựng, đây là một sự dàn dựng.",
+          "tts_text": "[internal monologue] Những con số trong bản hợp đồng này không giống với bất kỳ dự án kiến trúc nào mình từng làm. Chi phí vật liệu thấp đến vô lý, nhưng phí bảo hiểm lại cao ngất ngưởng. Đây không phải là xây dựng, đây là một sự dàn dựng.",
+          "emotion": "fearful",
+          "emotional_intensity": 5,
+          "acoustic_direction": "giọng trầm, suy tư, mic gần",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 500,
+          "sfx": []
+        },
+        {
+          "line_id": "ep03_sc01_l002",
+          "type": "dialogue",
+          "character_id": "linh",
+          "text": "Khôi, anh giải thích đi. Tại sao một công trình tôn giáo lại cần điều khoản bảo mật liên quan đến vận chuyển hàng hóa quốc tế? Anh đang dùng tôi để rửa tiền cho ai?",
+          "tts_text": "Khôi, anh giải thích đi. Tại sao một công trình tôn giáo lại cần điều khoản bảo mật liên quan đến vận chuyển hàng hóa quốc tế? Anh đang dùng tôi để rửa tiền cho ai?",
+          "emotion": "sarcastic",
+          "emotional_intensity": 7,
+          "acoustic_direction": "lạnh lùng, sắc bén",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 400,
+          "sfx": []
+        },
+        {
+          "line_id": "ep03_sc01_l003",
+          "type": "dialogue",
+          "character_id": "minh-khoi",
+          "text": "Linh, em đừng hỏi nữa. Chỉ cần ký vào đó, mọi chuyện sẽ ổn. Anh không thể để em dính vào chuyện này, nhưng anh cũng không còn đường lui.",
+          "tts_text": "[hesitates] Linh, em đừng hỏi nữa. Chỉ cần ký vào đó, mọi chuyện sẽ ổn. Anh không thể để em dính vào chuyện này, nhưng anh cũng không còn đường lui.",
+          "emotion": "desperate",
+          "emotional_intensity": 8,
+          "acoustic_direction": "giọng run rẩy, nghẹn ngào",
+          "pace": "slow",
+          "volume": "normal",
+          "pause_after_ms": 500,
+          "sfx": []
+        },
+        {
+          "line_id": "ep03_sc01_l004",
+          "type": "monologue",
+          "character_id": "linh",
+          "text": "Anh ấy nhìn mình, đôi mắt vẫn là người đàn ông mình từng yêu, nhưng giờ chỉ còn sự tuyệt vọng. Mình biết, nếu mình quay lưng đi, Khôi sẽ chết. Hoặc tệ hơn, anh ấy sẽ biến mất mãi mãi.",
+          "tts_text": "[introspective] Anh ấy nhìn mình, đôi mắt vẫn là người đàn ông mình từng yêu, nhưng giờ chỉ còn sự tuyệt vọng. Mình biết, nếu mình quay lưng đi, Khôi sẽ chết. Hoặc tệ hơn, anh ấy sẽ biến mất mãi mãi.",
+          "emotion": "sad",
+          "emotional_intensity": 6,
+          "acoustic_direction": "thì thầm, trầm buồn",
+          "pace": "slow",
+          "volume": "whisper",
+          "pause_after_ms": 1000,
+          "sfx": []
+        }
+      ]
+    },
+    {
+      "scene_id": "sc02",
+      "title": "Sự xuất hiện của Ông Trùm",
+      "location": "Sân nhà thờ",
+      "time_of_day": "night",
+      "ambience_tag": null,
+      "ambience_level": 0.0,
+      "bgm": null,
+      "lines": [
+        {
+          "line_id": "ep03_sc02_l001",
+          "type": "dialogue",
+          "character_id": "linh",
+          "text": "Tôi sẽ ký. Nhưng tôi muốn biết ai là người thực sự đứng sau dự án này.",
+          "tts_text": "Tôi sẽ ký. Nhưng tôi muốn biết ai là người thực sự đứng sau dự án này.",
+          "emotion": "neutral",
+          "emotional_intensity": 4,
+          "acoustic_direction": "thì thầm, quả quyết",
+          "pace": "normal",
+          "volume": "whisper",
+          "pause_after_ms": 300,
+          "sfx": []
+        },
+        {
+          "line_id": "ep03_sc02_l002",
+          "type": "dialogue",
+          "character_id": "minh-khoi",
+          "text": "Linh, không! Em không hiểu mình đang đối mặt với cái gì đâu. Đi đi, ngay bây giờ!",
+          "tts_text": "[shouting] Linh, không! Em không hiểu mình đang đối mặt với cái gì đâu. Đi đi, ngay bây giờ!",
+          "emotion": "fearful",
+          "emotional_intensity": 9,
+          "acoustic_direction": "hoảng hốt, gấp gáp",
+          "pace": "fast",
+          "volume": "loud",
+          "pause_after_ms": 500,
+          "sfx": []
+        },
+        {
+          "line_id": "ep03_sc02_l003",
+          "type": "dialogue",
+          "character_id": "ong-trum",
+          "text": "Chào cô kiến trúc sư. Cô có vẻ rất tò mò về những bức tường đổ nát này nhỉ?",
+          "tts_text": "Chào cô kiến trúc sư. Cô có vẻ rất tò mò về những bức tường đổ nát này nhỉ?",
+          "emotion": "neutral",
+          "emotional_intensity": 5,
+          "acoustic_direction": "giọng trầm, chậm rãi, uy quyền",
+          "pace": "slow",
+          "volume": "normal",
+          "pause_after_ms": 400,
+          "sfx": []
+        },
+        {
+          "line_id": "ep03_sc02_l004",
+          "type": "dialogue",
+          "character_id": "linh",
+          "text": "Tôi chỉ làm công việc của mình. Bản hợp đồng này, tôi cần sự minh bạch.",
+          "tts_text": "Tôi chỉ làm công việc của mình. Bản hợp đồng này, tôi cần sự minh bạch.",
+          "emotion": "neutral",
+          "emotional_intensity": 5,
+          "acoustic_direction": "cố gắng giữ bình tĩnh",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 400,
+          "sfx": []
+        },
+        {
+          "line_id": "ep03_sc02_l005",
+          "type": "dialogue",
+          "character_id": "ong-trum",
+          "text": "Minh bạch là thứ xa xỉ ở cái thành phố này. Đừng làm anh ấy thất vọng, cô kiến trúc sư.",
+          "tts_text": "[whispers] Minh bạch là thứ xa xỉ ở cái thành phố này. Đừng làm anh ấy thất vọng, cô kiến trúc sư.",
+          "emotion": "fearful",
+          "emotional_intensity": 10,
+          "acoustic_direction": "tiến sát lại gần, giọng đe dọa",
+          "pace": "slow",
+          "volume": "whisper",
+          "pause_after_ms": 1500,
+          "sfx": []
+        }
+      ]
+    }
+  ],
+  "cliffhanger": "Ông Trùm thì thầm vào tai Linh: 'Đừng làm anh ấy thất vọng, cô kiến trúc sư'.",
+  "director_notes": "Tập phim tập trung vào sự căng thẳng leo thang. Giọng của Ông Trùm cần sự điềm tĩnh đáng sợ, đối lập với sự hoảng loạn của Minh Khôi. Dòng monologue của Linh cần sự chiêm nghiệm sâu sắc."
+}

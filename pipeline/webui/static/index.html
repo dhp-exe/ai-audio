@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Audio AI Pipeline</title>
+<style>
+  :root { --bg:#0f1115; --panel:#171a21; --line:#262a33; --text:#e6e8ee; --muted:#8b93a7; --accent:#6ea8fe;
+          --pending:#3a3f4b; --running:#d9a400; --done:#2ea043; --warn:#d29922; --failed:#f85149; --skipped:#555b68; }
+  * { box-sizing:border-box }
+  body { margin:0; background:var(--bg); color:var(--text); font:14px/1.45 -apple-system, Segoe UI, Inter, sans-serif }
+  header { padding:10px 20px; border-bottom:1px solid var(--line); display:flex; gap:18px; align-items:center }
+  header h1 { font-size:16px; margin:0 } header .cfg { color:var(--muted); font-size:12px; margin-left:auto }
+  nav a { color:var(--muted); text-decoration:none; padding:6px 10px; border-radius:6px; font-weight:600 }
+  nav a.on { color:var(--text); background:var(--panel) }
+  main { display:grid; grid-template-columns: 420px 1fr; min-height:calc(100vh - 46px) }
+  aside { border-right:1px solid var(--line); padding:16px; background:var(--panel); overflow:auto }
+  section { padding:16px 20px; overflow:auto }
+  h2 { font-size:13px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); margin:16px 0 6px }
+  h2:first-child { margin-top:0 }
+  label { display:block; font-size:12px; color:var(--muted); margin:8px 0 4px }
+  input, textarea, select { width:100%; background:#0c0e12; color:var(--text); border:1px solid var(--line); border-radius:6px; padding:8px; font:inherit }
+  textarea { resize:vertical }
+  .row { display:grid; grid-template-columns:1fr 1fr; gap:10px } .row3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px }
+  button { background:var(--accent); color:#0b1020; border:0; border-radius:6px; padding:10px 14px; font-weight:600; cursor:pointer; margin-top:14px; width:100% }
+  button.secondary { background:transparent; color:var(--muted); border:1px solid var(--line); width:auto; padding:6px 10px; margin:0; font-weight:500 }
+  button.danger { border-color:var(--failed); color:var(--failed) }
+  button:disabled { opacity:.5; cursor:default }
+  .hint { color:var(--muted); font-size:12px; margin-top:6px }
+  .err { color:var(--failed); font-size:12px; margin-top:8px; white-space:pre-wrap }
+  .ok { color:var(--done); font-size:12px; margin-top:8px }
+  .runbar { display:flex; align-items:center; gap:12px; margin-bottom:12px; flex-wrap:wrap }
+  .status { padding:3px 10px; border-radius:999px; font-size:12px; font-weight:600; background:var(--pending) }
+  .status.running { background:var(--running); color:#111 } .status.done { background:var(--done) } .status.failed { background:var(--failed) } .status.cancelled { background:var(--skipped) }
+  .progress { height:6px; background:var(--line); border-radius:3px; overflow:hidden; flex:1; min-width:160px }
+  .progress > div { height:100%; background:var(--done); width:0; transition:width .4s }
+  table { border-collapse:separate; border-spacing:0; width:100%; font-size:13px }
+  th { text-align:left; color:var(--muted); font-weight:500; padding:6px 8px; border-bottom:1px solid var(--line); position:sticky; top:0; background:var(--bg) }
+  td { padding:6px 8px; border-bottom:1px solid var(--line); vertical-align:middle }
+  .chip { display:inline-flex; align-items:center; gap:6px; padding:4px 9px; border-radius:6px; background:var(--pending); cursor:pointer; min-width:92px; font-size:12px; border:1px solid transparent }
+  .chip:hover { border-color:var(--accent) } .chip.sel { border-color:var(--accent) }
+  .chip .dot { width:8px; height:8px; border-radius:50%; background:#777 }
+  .chip.running .dot { background:var(--running); animation:pulse 1s infinite } .chip.done .dot { background:var(--done) }
+  .chip.warn .dot { background:var(--warn) } .chip.failed .dot { background:var(--failed) } .chip.skipped .dot { background:var(--skipped) }
+  .chip small { color:var(--muted) }
+  @keyframes pulse { 50% { opacity:.3 } }
+  audio { height:30px; width:230px; vertical-align:middle }
+  .qa { font-size:12px; color:var(--muted) }
+  .notes { background:#2b2410; border:1px solid #5a4a12; color:#f0d27a; padding:8px 10px; border-radius:6px; font-size:12px; margin:8px 0 }
+  pre.log { background:#0c0e12; border:1px solid var(--line); border-radius:6px; padding:12px; font:12px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; max-height:340px; overflow:auto; white-space:pre-wrap; margin-top:12px }
+  .logbar { display:flex; justify-content:space-between; align-items:center; margin-top:16px }
+  .stage-head { display:flex; gap:6px; align-items:center }
+  details summary { cursor:pointer; color:var(--muted); font-size:12px; margin-top:10px }
+  .small { font-size:12px; color:var(--muted) } .small b { color:var(--text); font-weight:500 }
+  .role { display:grid; grid-template-columns: 1fr 2fr 130px 28px; gap:6px; align-items:start; margin-bottom:6px }
+  .role textarea { min-height:34px } .role .x { background:transparent; border:1px solid var(--line); color:var(--muted); border-radius:6px; margin:0; padding:6px 0; width:28px }
+  .cards { display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:12px }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:12px }
+  .card h3 { margin:0 0 4px; font-size:14px } .card .id { color:var(--muted); font-size:12px; font-family:ui-monospace, Menlo, monospace }
+  .card p { margin:6px 0; font-size:12px; color:var(--muted) } .card .v { font-family:ui-monospace, Menlo, monospace; font-size:11px }
+  .badge { display:inline-block; padding:1px 7px; border-radius:999px; font-size:11px; background:var(--pending); margin-left:6px }
+  .badge.ip { background:#1f3a5f; color:#9cc4ff } .badge.one { background:#3a2f1f; color:#e2b96f }
+  .card .actions { display:flex; gap:6px; margin-top:8px; flex-wrap:wrap }
+  .cast { display:grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap:8px; margin:8px 0 12px }
+  .cast div { background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:6px 10px; font-size:12px }
+  @media (max-width: 900px) { main { grid-template-columns:1fr } aside { border-right:0; border-bottom:1px solid var(--line) } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Audio AI Pipeline</h1>
+  <nav><a href="#pipeline" id="nav-pipeline" class="on">Pipeline</a><a href="#characters" id="nav-characters">Characters</a></nav>
+  <span class="cfg" id="cfg">loading config…</span>
+</header>
+
+<!-- ========================= PIPELINE VIEW ========================= -->
+<main id="view-pipeline">
+  <aside>
+    <form id="form">
+      <h2>1 · Overview</h2>
+      <label>Story name</label><input id="title" placeholder='Bản Hợp Đồng Định Mệnh' required>
+      <div class="row3">
+        <div><label>Length (min)</label><input id="total_minutes" type="number" min="1" placeholder="30"></div>
+        <div style="grid-column: span 2"><label>Genre</label><input id="genre" placeholder="Ngôn tình tổng tài, thanh mai trúc mã"></div>
+      </div>
+      <label>Setting</label><input id="setting" placeholder="Hiện đại, thành phố lớn">
+
+      <h2>2 · Characters in the story</h2>
+      <div id="roles"></div>
+      <button class="secondary" type="button" id="addrole">+ add character</button>
+      <div class="hint">Pick a Voice IP per character, or leave "AI chooses" and the casting model matches the description to the registry. You can also type <code>/ngan</code> in a name or description.</div>
+      <details><summary>…or paste a character list (one per line: <i>Name (note): description</i>)</summary>
+        <textarea id="roles_text" style="min-height:90px" placeholder="Giang Thần (Nam chính): 28 tuổi, Tổng giám đốc… /duong&#10;Tô Mạn (Nữ chính): 24 tuổi, hoạt bát… /ngan"></textarea>
+      </details>
+
+      <h2>3 · Script</h2>
+      <textarea id="script" style="min-height:220px" placeholder="Dán toàn bộ kịch bản, cảnh theo cảnh…" required></textarea>
+      <div class="hint" id="scripthint"></div>
+
+      <h2>4 · Production</h2>
+      <div class="row3">
+        <div><label>Episodes</label><input id="episodes" type="number" min="1" max="99" value="30"></div>
+        <div><label>Min s / ep</label><input id="min_sec" type="number" min="20" value="50"></div>
+        <div><label>Max s / ep</label><input id="max_sec" type="number" min="20" value="70"></div>
+      </div>
+      <div class="row3">
+        <div><label>Produce now</label><input id="produce" type="number" min="1" max="99" value="5"></div>
+        <div><label>Parallel</label><input id="parallel" type="number" min="1" max="4" value="2"></div>
+        <div><label>Series id</label><input id="series_id" placeholder="auto"></div>
+      </div>
+      <label><input type="checkbox" id="force" style="width:auto"> overwrite if the series id already exists</label>
+      <button id="start" type="submit">Start pipeline</button>
+      <div class="hint">Outline+casting is one LLM call; each produced episode = 1-3 draft calls + 1 direction call, then TTS (~1,000-1,500 ElevenLabs characters per 60 s).</div>
+      <div class="err" id="formerr"></div>
+    </form>
+    <details><summary>Previous runs</summary><div id="prev" class="small"></div></details>
+  </aside>
+  <section>
+    <div id="empty" class="hint">No run selected. Fill in the story and start the pipeline, or pick a previous run.</div>
+    <div id="run" style="display:none">
+      <div class="runbar">
+        <span class="status" id="rstatus">pending</span>
+        <strong id="rtitle"></strong>
+        <span class="hint" id="rmeta"></span>
+        <div class="progress"><div id="bar"></div></div>
+        <button class="secondary" id="cancel">Cancel</button>
+      </div>
+      <div id="notes"></div>
+      <div id="error" class="err"></div>
+      <div id="casting" class="cast"></div>
+      <table><thead><tr id="thead"></tr></thead><tbody id="tbody"></tbody></table>
+      <div class="logbar"><span class="hint" id="logtitle">Click any job to see its log</span><button class="secondary" id="refreshlog">refresh log</button></div>
+      <pre class="log" id="log"></pre>
+    </div>
+  </section>
+</main>
+
+<!-- ========================= CHARACTERS VIEW ========================= -->
+<main id="view-characters" style="display:none">
+  <aside>
+    <form id="cform">
+      <h2 id="ctitle">Add character IP</h2>
+      <div class="row">
+        <div><label>id (lowercase, no spaces)</label><input id="c_id" pattern="[a-z][a-z0-9-]{0,23}" placeholder="ngan" required></div>
+        <div><label>Display name</label><input id="c_name" placeholder="Ngân" required></div>
+      </div>
+      <div class="row3">
+        <div><label>Gender</label><select id="c_gender"><option value="">—</option><option value="female">female</option><option value="male">male</option><option value="other">other</option></select></div>
+        <div><label>Age</label><input id="c_age" placeholder="23"></div>
+        <div><label>Tags (comma)</label><input id="c_tags" placeholder="cute, innocent"></div>
+      </div>
+      <label>Personality</label><textarea id="c_persona" style="min-height:70px" placeholder="Tính cách, cách nói chuyện…"></textarea>
+      <label>Voice description</label><textarea id="c_voice" style="min-height:50px" placeholder="Nữ, 23, trong trẻo, ngọt…"></textarea>
+      <h2>ElevenLabs</h2>
+      <div class="row"><div><label>voice_id</label><input id="c_el_voice" placeholder="a3AkyqGG4v8Pg7SWQ0Y3"></div><div><label>model</label><input id="c_el_model" value="eleven_v3"></div></div>
+      <div class="row"><div><label>voice link</label><input id="c_el_url" placeholder="https://elevenlabs.io/voices/…"></div><div><label>fallback premade voice_id</label><input id="c_el_fallback" placeholder="used if plan rejects voice"></div></div>
+      <h2>MiniMax (optional)</h2>
+      <div class="row"><div><label>voice_id</label><input id="c_mm_voice"></div><div><label>model</label><input id="c_mm_model" value="speech-02-hd"></div></div>
+      <label><input type="checkbox" id="c_ip" style="width:auto" checked> IP asset (locked; recurring across series)</label>
+      <label><input type="checkbox" id="c_unlock" style="width:auto"> unlock: allow changing a locked voice</label>
+      <button id="csave" type="submit">Save character</button>
+      <button class="secondary" type="button" id="cnew" style="margin-top:8px">clear / new</button>
+      <div class="err" id="cerr"></div><div class="ok" id="cok"></div>
+    </form>
+  </aside>
+  <section>
+    <div class="runbar"><strong>Voice IP registry</strong><span class="hint" id="cmeta"></span></div>
+    <div class="cards" id="cards"></div>
+    <details><summary>Changelog</summary><pre class="log" id="clog"></pre></details>
+  </section>
+</main>
+
+<script>
+const $ = (id) => document.getElementById(id);
+let current = null, timer = null, selJob = null, ACTORS = [];
+const STAGES = ["draft","direct","voice","assemble","qa"];
+
+async function api(path, opts) {
+  const r = await fetch(path, opts);
+  if (!r.ok) { let t = await r.text(); try { const j = JSON.parse(t); t = typeof j.detail === "string" ? j.detail : JSON.stringify(j.detail) } catch {} throw new Error(t); }
+  const ct = r.headers.get("content-type") || "";
+  return ct.includes("json") ? r.json() : r.text();
+}
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+/* ---------------- navigation ---------------- */
+function showView(name) {
+  $("view-pipeline").style.display = name === "pipeline" ? "" : "none";
+  $("view-characters").style.display = name === "characters" ? "" : "none";
+  $("nav-pipeline").classList.toggle("on", name === "pipeline");
+  $("nav-characters").classList.toggle("on", name === "characters");
+  if (name === "characters") loadCharacters();
+}
+window.addEventListener("hashchange", () => showView(location.hash === "#characters" ? "characters" : "pipeline"));
+
+/* ---------------- pipeline form ---------------- */
+function actorOptions(sel) {
+  return `<option value="">AI chooses</option>` + ACTORS.map(a => `<option value="${a.character_id}" ${sel===a.character_id?"selected":""}>${esc(a.display_name)} (${a.character_id}${a.gender?", "+a.gender:""}${a.age?", "+a.age:""})</option>`).join("");
+}
+function addRole(name = "", desc = "", actor = "") {
+  const div = document.createElement("div"); div.className = "role";
+  div.innerHTML = `<input class="rname" placeholder="Tô Mạn" value="${esc(name)}"><textarea class="rdesc" placeholder="24 tuổi, hoạt bát, thông minh…">${esc(desc)}</textarea><select class="ractor">${actorOptions(actor)}</select><button type="button" class="x" title="remove">×</button>`;
+  div.querySelector(".x").onclick = () => div.remove();
+  $("roles").appendChild(div);
+}
+$("addrole").onclick = () => addRole();
+function readRoles() {
+  return [...document.querySelectorAll("#roles .role")].map(d => ({ name: d.querySelector(".rname").value.trim(), description: d.querySelector(".rdesc").value.trim(), actor_id: d.querySelector(".ractor").value || null })).filter(r => r.name);
+}
+function scriptHint() {
+  const w = $("script").value.trim().split(/\s+/).filter(Boolean).length;
+  const eps = +$("episodes").value || 1, mn = +$("min_sec").value || 50;
+  const need = Math.round(eps * mn * 3.3);
+  $("scripthint").textContent = w ? `${w} words · ${eps} episodes × ${mn}s need ≈ ${need} words → ${w >= need*0.5 ? "segment mode (keeps your dialogue)" : "write mode (expands a treatment)"}` : "";
+}
+["script","episodes","min_sec"].forEach(id => $(id).addEventListener("input", scriptHint));
+$("total_minutes").addEventListener("input", () => { const m = +$("total_minutes").value; if (m) { const avg = ((+$("min_sec").value||50) + (+$("max_sec").value||70)) / 2; $("episodes").value = Math.max(1, Math.min(99, Math.round(m*60/avg))); scriptHint(); } });
+
+async function loadConfig() {
+  const c = await api("/api/config");
+  ACTORS = c.actors;
+  $("cfg").textContent = `LLM ${c.llm_model} · TTS ${c.tts_provider}/${c.tts_model} · keys: gemini ${c.keys.gemini?"✓":"✗"} elevenlabs ${c.keys.elevenlabs?"✓":"✗"}`;
+  $("produce").value = c.defaults.produce;
+  if (!document.querySelector("#roles .role")) { addRole(); addRole(); }
+  const runs = await api("/api/runs");
+  const all = [...runs.active, ...runs.persisted].sort((a,b)=> (b.created_at||"").localeCompare(a.created_at||""));
+  $("prev").innerHTML = all.map(r => `<div><a href="#" data-run="${r.run_id}"><b>${r.run_id}</b></a> · ${r.status} · ${r.params.episodes} eps</div>`).join("") || "none";
+  $("prev").querySelectorAll("a").forEach(a => a.onclick = (e) => { e.preventDefault(); location.hash = "#pipeline"; watch(a.dataset.run); });
+  if (runs.active.length) watch(runs.active[0].run_id);
+  else if (all.length && !current) watch(all[0].run_id);
+}
+
+$("form").onsubmit = async (e) => {
+  e.preventDefault(); $("formerr").textContent = ""; $("start").disabled = true;
+  try {
+    const body = { title: $("title").value, total_minutes: +$("total_minutes").value || null, genre: $("genre").value, setting: $("setting").value,
+      roles: readRoles(), roles_text: $("roles_text").value, script: $("script").value,
+      series_id: $("series_id").value || null, episodes: +$("episodes").value, produce: +$("produce").value || null,
+      min_sec: +$("min_sec").value, max_sec: +$("max_sec").value, parallel: +$("parallel").value, force: $("force").checked };
+    const run = await api("/api/runs", { method:"POST", headers:{"content-type":"application/json"}, body: JSON.stringify(body) });
+    watch(run.run_id);
+  } catch (err) { $("formerr").textContent = err.message; }
+  $("start").disabled = false;
+};
+$("cancel").onclick = async () => { if (current) try { await api(`/api/runs/${current}/cancel`, {method:"POST"}); } catch (e) { alert(e.message) } };
+$("refreshlog").onclick = () => selJob && showLog(selJob);
+
+/* ---------------- run board ---------------- */
+function watch(runId) {
+  current = runId; selJob = null; $("log").textContent = ""; $("logtitle").textContent = "Click any job to see its log";
+  $("empty").style.display = "none"; $("run").style.display = "block";
+  if (timer) clearInterval(timer);
+  tick(); timer = setInterval(tick, 1500);
+}
+async function tick() {
+  if (!current) return;
+  let run; try { run = await api(`/api/runs/${current}`); } catch (e) { $("error").textContent = e.message; return; }
+  render(run);
+  if (["done","failed","cancelled"].includes(run.status)) { clearInterval(timer); timer = null; if (selJob) showLog(selJob); }
+}
+function fmtDur(j) {
+  if (!j.started_at) return "";
+  const end = j.finished_at ? new Date(j.finished_at) : new Date();
+  const s = Math.max(0, (end - new Date(j.started_at)) / 1000);
+  return s < 60 ? `${s.toFixed(0)}s` : `${Math.floor(s/60)}m${(s%60).toFixed(0)}s`;
+}
+function summaryText(j) {
+  const s = j.summary || {};
+  if (j.stage === "draft" && s.drafted) return s.drafted.length ? "drafted" : "kept";
+  if (j.stage === "direct" && s.lines) return `${s.lines} lines`;
+  if (j.stage === "voice" && s.planned != null) return `${s.rendered}/${s.planned} stems${s.placeholder_voices?.length ? " ⚠ placeholder" : ""}`;
+  if (j.stage === "assemble" && s.total_ms) return `${(s.total_ms/1000).toFixed(0)}s master`;
+  if (j.stage === "qa" && s.failed_checks) return s.failed_checks.length ? `⚠ ${s.failed_checks.join(",")}` : `✓ ${s.review_lines} to review`;
+  if (j.stage === "outline" && s.ok) return `${s.mode || ""}${s.new_characters?.length ? " · +"+s.new_characters.length+" uncast" : ""}`;
+  if (j.stage === "cast" && s.placeholders) return s.placeholders.length ? `${s.placeholders.length} placeholder` : "all voiced";
+  return "";
+}
+function chip(j) {
+  if (!j) return "";
+  const sel = selJob === j.id ? " sel" : "";
+  return `<span class="chip ${j.status}${sel}" data-job="${j.id}" title="${esc(j.error||"")}"><span class="dot"></span>${j.status}<small>${fmtDur(j)}</small><small>${summaryText(j)}</small></span>`;
+}
+function render(run) {
+  $("rstatus").textContent = run.status; $("rstatus").className = "status " + run.status;
+  $("rtitle").textContent = run.run_id;
+  const jobs = run.jobs, byId = Object.fromEntries(jobs.map(j => [j.id, j]));
+  const finished = jobs.filter(j => ["done","warn","failed","skipped"].includes(j.status)).length;
+  $("bar").style.width = `${jobs.length ? 100*finished/jobs.length : 0}%`;
+  $("rmeta").textContent = `${finished}/${jobs.length} jobs · ${run.params.episodes} episodes planned · ${run.params.produce || run.params.episodes} produced · ${run.params.min_sec}-${run.params.max_sec}s`;
+  $("cancel").style.display = ["pending","running"].includes(run.status) ? "" : "none";
+  $("notes").innerHTML = (run.notes||[]).map(n => `<div class="notes">${esc(n)}</div>`).join("");
+  $("error").textContent = run.error || "";
+  $("casting").innerHTML = (run.casting||[]).map(c => `<div><b>${esc(c.role)}</b> <span class="badge">${c.type}</span> → <b>${esc(c.actor_name||c.actor)}</b> <span class="small">(${c.actor}, ${c.assigned_by})</span><br><span class="small">${esc(c.reason)}</span></div>`).join("");
+  $("thead").innerHTML = `<th>Episode</th>${STAGES.map(s => `<th>${s === "qa" ? "QA" : s[0].toUpperCase()+s.slice(1)}</th>`).join("")}<th>Output</th>`;
+  const eps = [...new Set(jobs.filter(j => j.episode).map(j => j.episode))].sort((a,b)=>a-b);
+  let rows = `<tr><td><b>Series</b></td><td colspan="2"><span class="stage-head">Outline ${chip(byId.outline)}</span></td><td colspan="3"><span class="stage-head">Cast ${chip(byId.cast)}</span></td><td></td></tr>`;
+  for (const n of eps) {
+    const e = `ep${String(n).padStart(2,"0")}`, asm = byId[`${e}.assemble`], qa = byId[`${e}.qa`];
+    let out = "";
+    if (asm && asm.status === "done") out = `<audio controls preload="none" src="/api/series/${run.series_id}/master/${n}.mp3"></audio>`;
+    if (qa && qa.summary && qa.summary.failed_checks) out += ` <span class="qa">${qa.summary.failed_checks.length ? "QA: " + qa.summary.failed_checks.join(", ") : "QA pass"}</span>`;
+    rows += `<tr><td><b>${e}</b></td>${STAGES.map(s => `<td>${chip(byId[`${e}.${s}`])}</td>`).join("")}<td>${out}</td></tr>`;
+  }
+  $("tbody").innerHTML = rows;
+  document.querySelectorAll(".chip").forEach(c => c.onclick = () => showLog(c.dataset.job));
+}
+async function showLog(jobId) {
+  selJob = jobId;
+  document.querySelectorAll(".chip").forEach(c => c.classList.toggle("sel", c.dataset.job === jobId));
+  $("logtitle").textContent = `Log: ${jobId}`;
+  try { $("log").textContent = await api(`/api/runs/${current}/jobs/${jobId}/log`); $("log").scrollTop = $("log").scrollHeight; }
+  catch (e) { $("log").textContent = e.message; }
+}
+
+/* ---------------- characters ---------------- */
+let editing = null;
+async function loadCharacters() {
+  const d = await api("/api/characters");
+  $("cmeta").textContent = `${d.characters.length} characters · ${d.locked ? "locked" : "unlocked"} · default provider ${d.default_provider}`;
+  $("clog").textContent = (d.changelog||[]).join("\n") || "(empty)";
+  $("cards").innerHTML = d.characters.map(c => {
+    const el = c.providers.elevenlabs, mm = c.providers.minimax;
+    return `<div class="card"><h3>${esc(c.display_name)} <span class="badge ${c.is_ip_asset?"ip":"one"}">${c.is_ip_asset?"IP asset":"one-off"}</span></h3>
+      <div class="id">${c.character_id}${c.gender?" · "+c.gender:""}${c.age?" · "+esc(c.age):""}${c.tags?.length?" · "+esc(c.tags.join(", ")):""}</div>
+      <p><b>Personality:</b> ${esc(c.persona)}</p><p><b>Voice:</b> ${esc(c.voice_description)}</p>
+      <p class="v">elevenlabs: ${el ? esc(el.voice_id)+" @ "+esc(el.model_id) + (el.voice_url?` <a href="${esc(el.voice_url)}" target="_blank" style="color:var(--accent)">link</a>`:"") + (el.fallback_voice_id?` · fallback ${esc(el.fallback_voice_id)}`:"") : "—"}<br>minimax: ${mm ? esc(mm.voice_id)+" @ "+esc(mm.model_id) : "—"}</p>
+      <div class="actions"><button class="secondary" data-edit="${c.character_id}">edit</button><button class="secondary" data-aud="${c.character_id}">audition (spends credits)</button><button class="secondary danger" data-del="${c.character_id}">delete</button></div>
+      <div class="small" id="aud-${c.character_id}"></div></div>`;
+  }).join("");
+  $("cards").querySelectorAll("[data-edit]").forEach(b => b.onclick = () => fillForm(d.characters.find(c => c.character_id === b.dataset.edit)));
+  $("cards").querySelectorAll("[data-del]").forEach(b => b.onclick = () => delChar(b.dataset.del));
+  $("cards").querySelectorAll("[data-aud]").forEach(b => b.onclick = () => auditionChar(b.dataset.aud));
+  const cfg = await api("/api/config"); ACTORS = cfg.actors;
+  document.querySelectorAll("#roles .ractor").forEach(s => { const v = s.value; s.innerHTML = actorOptions(v); });
+}
+function fillForm(c) {
+  editing = c.character_id; $("ctitle").textContent = `Edit ${c.display_name}`; $("c_id").value = c.character_id; $("c_id").readOnly = true;
+  $("c_name").value = c.display_name; $("c_gender").value = c.gender || ""; $("c_age").value = c.age || ""; $("c_tags").value = (c.tags||[]).join(", ");
+  $("c_persona").value = c.persona || ""; $("c_voice").value = c.voice_description || "";
+  const el = c.providers.elevenlabs || {}, mm = c.providers.minimax || {};
+  $("c_el_voice").value = el.voice_id || ""; $("c_el_model").value = el.model_id || "eleven_v3"; $("c_el_url").value = el.voice_url || ""; $("c_el_fallback").value = el.fallback_voice_id || "";
+  $("c_mm_voice").value = mm.voice_id || ""; $("c_mm_model").value = mm.model_id || "speech-02-hd";
+  $("c_ip").checked = !!c.is_ip_asset; $("c_unlock").checked = false; $("cerr").textContent = ""; $("cok").textContent = "";
+  window.scrollTo(0, 0);
+}
+$("cnew").onclick = () => { editing = null; $("cform").reset(); $("c_id").readOnly = false; $("ctitle").textContent = "Add character IP"; $("c_el_model").value = "eleven_v3"; $("c_mm_model").value = "speech-02-hd"; $("c_ip").checked = true; $("cerr").textContent = ""; $("cok").textContent = ""; };
+$("cform").onsubmit = async (e) => {
+  e.preventDefault(); $("cerr").textContent = ""; $("cok").textContent = "";
+  const providers = {};
+  if ($("c_el_voice").value.trim()) providers.elevenlabs = { voice_id: $("c_el_voice").value, model_id: $("c_el_model").value, voice_url: $("c_el_url").value || null, fallback_voice_id: $("c_el_fallback").value || null };
+  if ($("c_mm_voice").value.trim()) providers.minimax = { voice_id: $("c_mm_voice").value, model_id: $("c_mm_model").value };
+  const body = { character_id: $("c_id").value.trim(), display_name: $("c_name").value.trim(), persona: $("c_persona").value, voice_description: $("c_voice").value,
+    gender: $("c_gender").value || null, age: $("c_age").value || null, tags: $("c_tags").value.split(",").map(s=>s.trim()).filter(Boolean), is_ip_asset: $("c_ip").checked, providers };
+  try {
+    const r = editing ? await api(`/api/characters/${editing}?unlock=${$("c_unlock").checked}`, { method:"PUT", headers:{"content-type":"application/json"}, body: JSON.stringify(body) })
+                      : await api("/api/characters", { method:"POST", headers:{"content-type":"application/json"}, body: JSON.stringify(body) });
+    $("cok").textContent = "Saved: " + r.changelog; if (!editing) $("cnew").click(); loadCharacters();
+  } catch (err) { $("cerr").textContent = err.message; }
+};
+async function delChar(id) {
+  if (!confirm(`Delete ${id}? (IP assets need unlock)`)) return;
+  try { await api(`/api/characters/${id}?unlock=${$("c_unlock").checked}`, { method:"DELETE" }); loadCharacters(); } catch (e) { alert(e.message); }
+}
+async function auditionChar(id) {
+  const el = $(`aud-${id}`); el.textContent = "rendering…";
+  try { const r = await api(`/api/characters/${id}/audition`, { method:"POST", headers:{"content-type":"application/json"}, body: JSON.stringify({}) });
+    el.innerHTML = `<audio controls src="${r.url}"></audio> ${r.characters_billed} chars`; }
+  catch (e) { el.textContent = e.message; }
+}
+
+showView(location.hash === "#characters" ? "characters" : "pipeline");
+loadConfig().catch(e => { $("cfg").textContent = "config error: " + e.message; });
+</script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+{
+  "checks": {
+    "stems_complete": {
+      "ok": true,
+      "missing": []
+    },
+    "duration": {
+      "ok": true,
+      "seconds": 97.9,
+      "target": 120
+    },
+    "loudness": {
+      "ok": true,
+      "integrated_lufs": -16.0,
+      "true_peak_dbtp": -4.8,
+      "target_lufs": -16.0,
+      "target_tp": -1.5
+    },
+    "clipping": {
+      "ok": null,
+      "todo": true
+    },
+    "silence": {
+      "ok": null,
+      "todo": true
+    }
+  },
+  "review_lines": [
+    "ep04_sc01_l001",
+    "ep04_sc01_l005",
+    "ep04_sc02_l001",
+    "ep04_sc02_l002",
+    "ep04_sc02_l003",
+    "ep04_sc03_l003"
+  ],
+  "human": null,
+  "generated_at": "2026-09-20T05:29:07+00:00"
+}

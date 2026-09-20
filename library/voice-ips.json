@@ -1,0 +1,132 @@
+{
+  "locked": true,
+  "default_provider": "elevenlabs",
+  "characters": [
+    {
+      "character_id": "linh",
+      "display_name": "Linh",
+      "persona": "27 tuổi, kiến trúc sư trẻ ở Sài Gòn. Kín đáo, hài hước khô khan, trung thành đến mức dại dột.",
+      "voice_description": "PLACEHOLDER (Free tier): Sarah, EN premade, driven in Vietnamese by v3. On Creator+ switch to Thuy Duong MfXXiGR0HCVHHuMqcUJM (vi, northern) or a PVC. Target: nữ, giữa 20, giọng miền Nam, hơi khàn.",
+      "gender": "female",
+      "age": "27",
+      "tags": [],
+      "language": "vi-VN",
+      "providers": {
+        "elevenlabs": {
+          "voice_id": "EXAVITQu4vr4xnSDxMaL",
+          "model_id": "eleven_v3",
+          "voice_url": null,
+          "fallback_voice_id": "EXAVITQu4vr4xnSDxMaL",
+          "default_settings": {}
+        },
+        "minimax": {
+          "voice_id": "REPLACE_WITH_MINIMAX_VOICE_ID",
+          "model_id": "speech-02-hd",
+          "voice_url": null,
+          "fallback_voice_id": null,
+          "default_settings": {}
+        }
+      },
+      "is_ip_asset": true
+    },
+    {
+      "character_id": "minh-khoi",
+      "display_name": "Minh Khôi",
+      "persona": "31 tuổi, vị hôn phu cũ của Linh, nay điều hành công ty logistics của gia đình. Quyến rũ, lảng tránh, xấu hổ.",
+      "voice_description": "PLACEHOLDER: George (EN storyteller) driven in Vietnamese by v3 until a Vietnamese male PVC exists. Target: nam, đầu 30, giọng Hà Nội mềm, trầm ấm.",
+      "gender": "male",
+      "age": "31",
+      "tags": [],
+      "language": "vi-VN",
+      "providers": {
+        "elevenlabs": {
+          "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+          "model_id": "eleven_v3",
+          "voice_url": null,
+          "fallback_voice_id": "JBFqnCBsd6RMkjVDRZzb",
+          "default_settings": {}
+        }
+      },
+      "is_ip_asset": true
+    },
+    {
+      "character_id": "ong-trum",
+      "display_name": "Ông Trùm",
+      "persona": "Kẻ cho vay nặng lãi khét tiếng đứng sau dự án nhà thờ. Lịch sự bề ngoài, đe dọa ngầm.",
+      "voice_description": "PLACEHOLDER: Bill (EN, old, crisp) driven in Vietnamese by v3. Target: nam, trung niên, giọng trầm, chậm rãi, uy quyền.",
+      "gender": "male",
+      "age": "50s",
+      "tags": [],
+      "language": "vi-VN",
+      "providers": {
+        "elevenlabs": {
+          "voice_id": "pqHfZKP75CvOlQylNhV4",
+          "model_id": "eleven_v3",
+          "voice_url": null,
+          "fallback_voice_id": "pqHfZKP75CvOlQylNhV4",
+          "default_settings": {}
+        }
+      },
+      "is_ip_asset": true
+    },
+    {
+      "character_id": "ngan",
+      "display_name": "Ngân",
+      "persona": "Cô gái 23 tuổi, dễ thương, trong sáng và ngây thơ. Nói năng nhẹ nhàng, hay ngập ngừng khi xúc động, dễ tin người.",
+      "voice_description": "Nữ, trẻ, giọng miền Trung nhẹ, trong trẻo, ngọt, năng lượng tươi sáng (ElevenLabs 'Ngan - Authentic and Bubbly Female Voice').",
+      "gender": "female",
+      "age": "23",
+      "tags": [
+        "cute",
+        "pure",
+        "innocent",
+        "bubbly"
+      ],
+      "language": "vi-VN",
+      "providers": {
+        "elevenlabs": {
+          "voice_id": "a3AkyqGG4v8Pg7SWQ0Y3",
+          "model_id": "eleven_v3",
+          "voice_url": "https://elevenlabs.io/voices/a3AkyqGG4v8Pg7SWQ0Y3",
+          "fallback_voice_id": "cgSgspJ2msm6clMCkdW9",
+          "default_settings": {}
+        }
+      },
+      "is_ip_asset": true
+    },
+    {
+      "character_id": "duong",
+      "display_name": "Dương",
+      "persona": "Nam 30 tuổi, giọng tổng giám đốc: trầm, điềm tĩnh, quyền uy, ít lời; ấm lên khi nói với người anh quan tâm.",
+      "voice_description": "Nam, giọng trầm, miền Nam, kể chuyện chậm rãi và chắc (ElevenLabs 'Trieu Duong').",
+      "gender": "male",
+      "age": "30",
+      "tags": [
+        "deep",
+        "ceo",
+        "authoritative",
+        "calm"
+      ],
+      "language": "vi-VN",
+      "providers": {
+        "elevenlabs": {
+          "voice_id": "UsgbMVmY3U59ijwK5mdh",
+          "model_id": "eleven_v3",
+          "voice_url": "https://elevenlabs.io/voices/UsgbMVmY3U59ijwK5mdh",
+          "fallback_voice_id": "nPczCjzI2devNBz1zQrb",
+          "default_settings": {}
+        }
+      },
+      "is_ip_asset": true
+    }
+  ],
+  "changelog": [
+    "2026-09-20 linh/elevenlabs: REPLACE_WITH_ELEVENLABS_VOICE_ID@eleven_v3 -> MfXXiGR0HCVHHuMqcUJM@eleven_v3",
+    "2026-09-20 minh-khoi/elevenlabs: REPLACE_WITH_ELEVENLABS_VOICE_ID@eleven_v3 -> JBFqnCBsd6RMkjVDRZzb@eleven_v3",
+    "2026-09-20 added ong-trum (IP asset) on elevenlabs",
+    "2026-09-20 linh/elevenlabs: MfXXiGR0HCVHHuMqcUJM@eleven_v3 -> EXAVITQu4vr4xnSDxMaL@eleven_v3",
+    "2026-09-20 added gender/age/fallback metadata to linh, minh-khoi, ong-trum",
+    "2026-09-20 added ngan (IP asset)",
+    "2026-09-20 added duong (IP asset)"
+  ]
+}

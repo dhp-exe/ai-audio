@@ -1,0 +1,736 @@
+{
+  "run_id": "demo-20260920-045551",
+  "series_id": "demo",
+  "status": "done",
+  "error": null,
+  "created_at": "2026-09-20T04:55:51+00:00",
+  "finished_at": "2026-09-20T05:20:00+00:00",
+  "params": {
+    "series_id": "demo",
+    "episodes": 30,
+    "produce": 5,
+    "min_sec": 90,
+    "max_sec": 120,
+    "max_parallel_episodes": 2,
+    "force": false
+  },
+  "stages": [
+    "outline",
+    "cast",
+    "draft",
+    "direct",
+    "voice",
+    "assemble",
+    "qa"
+  ],
+  "notes": [
+    "Reconstructed from the manual CLI run on 2026-09-20; placeholder voices assigned to: ong-trum."
+  ],
+  "jobs": [
+    {
+      "id": "outline",
+      "stage": "outline",
+      "episode": null,
+      "cmd": [
+        "/Users/dohuuphuoc/ai-audio/.venv/bin/python",
+        "/Users/dohuuphuoc/ai-audio/.claude/skills/episodize/scripts/episodize.py",
+        "--series",
+        "demo",
+        "--outline-only",
+        "--episodes",
+        "30",
+        "--min-sec",
+        "90",
+        "--max-sec",
+        "120"
+      ],
+      "status": "done",
+      "started_at": "2026-09-20T04:55:51+00:00",
+      "finished_at": "2026-09-20T04:55:51+00:00",
+      "exit_code": null,
+      "log_path": "/Users/dohuuphuoc/ai-audio/series/demo/logs/outline.log",
+      "summary": {
+        "ok": true,
+        "outline": true,
+        "new_characters": [
+          "ong-trum"
+        ]
+      },
+      "error": null,
+      "label": "Outline"
+    },
+    {
+      "id": "cast",
+      "stage": "cast",
+      "episode": null,
+      "cmd": [
+        "<internal:ensure_voices>"
+      ],
+      "status": "done",
+      "started_at": "2026-09-20T04:55:51+00:00",
+      "finished_at": "2026-09-20T04:55:51+00:00",
+      "exit_code": null,
+      "log_path": "/Users/dohuuphuoc/ai-audio/series/demo/logs/cast.log",
+      "summary": {
+        "ok": true,
+        "cast": [
+          "linh",
+          "minh-khoi",
+          "ong-trum"
+        ],
+        "placeholders": [
+          "ong-trum"
+        ]
+      },
+      "error": null,
+      "label": "Cast"
+    },
+    {
+      "id": "ep01.draft",
+      "stage": "draft",
+      "episode": 1,
+      "cmd": [
+        "/Users/dohuuphuoc/ai-audio/.venv/bin/python",
+        "/Users/dohuuphuoc/ai-audio/.claude/skills/episodize/scripts/episodize.py",
+        "--series",
+        "demo",
+        "--only",
+        "1"
+      ],
+      "status": "done",
+      "started_at": "2026-09-20T04:55:51+00:00",
+      "finished_at": "2026-09-20T04:55:51+00:00",
+      "exit_code": null,
+      "log_path": "/Users/dohuuphuoc/ai-audio/series/demo/logs/ep01.draft.log",
+      "summary": {
+        "ok": true,
+        "drafted": [
+          1
+        ]
+      },
+      "error": null,
+      "label": "Draft"
+    },
+    {
+      "id": "ep01.direct",
+      "stage": "direct",
+      "episode": 1,
+      "cmd": [
+        "/Users/dohuuphuoc/ai-audio/.venv/bin/python",
+        "/Users/dohuuphuoc/ai-audio/.claude/skills/parse-script/scripts/parse_script.py",
+        "--series",
+        "demo",
+        "--episode",
+        "1",
+        "--force"
+      ],
+      "status": "done",
+      "started_at": "2026-09-20T04:55:51+00:00",
+      "finished_at": "2026-09-20T04:55:51+00:00",
+      "exit_code": null,
+      "log_path": "/Users/dohuuphuoc/ai-audio/series/demo/logs/ep01.direct.log",
+      "summary": {
+        "ok": true,
+        "lines": 11,
+        "scenes": 3
+      },
+      "error": null,
+      "label": "Direct"
+    },
+    {
+      "id": "ep01.voice",
+      "stage": "voice",
+      "episode": 1,
+      "cmd": [
+        "/Users/dohuuphuoc/ai-audio/.venv/bin/python",
+        "/Users/dohuuphuoc/ai-audio/.claude/skills/generate-voice/scripts/generate_voice.py",
+        "--series",
+        "demo",
+        "--episode",
+        "1",
+        "--concurrency",
+        "2"
+      ],
+      "status": "done",
+      "started_at": "2026-09-20T04:55:51+00:00",
+      "finished_at": "2026-09-20T04:55:51+00:00",
+      "exit_code": null,
+      "log_path": "/Users/dohuuphuoc/ai-audio/series/demo/logs/ep01.voice.log",
+      "summary": {
+        "ok": true,
+        "planned": 11,
+        "rendered": 11,
+        "cached": 0
+      },
+      "error": null,
+      "label": "Voice"
+    },
+    {
+      "id": "ep01.assemble",
+      "stage": "assemble",
+      "episode": 1,
+      "cmd": [
+        "/Users/dohuuphuoc/ai-audio/.venv/bin/python",
+        "/Users/dohuuphuoc/ai-audio/.claude/skills/assemble-audio/scripts/assemble_audio.py",
+        "--series",
+        "demo",
+        "--episode",
+        "1"
+      ],
+      "status": "done",
+      "started_at": "2026-09-20T04:55:51+00:00",
+      "finished_at": "2026-09-20T04:55:51+00:00",
+      "exit_code": null,
+      "log_path": "/Users/dohuuphuoc/ai-audio/series/demo/logs/ep01.assemble.log",
+      "summary": {
+        "ok": true,
+        "total_ms": 72020
+      },
+      "error": null,
+      "label": "Assemble"
+    },
+    {
+      "id": "ep01.qa",
+      "stage": "qa",
+      "episode": 1,
+      "cmd": [
+        "/Users/dohuuphuoc/ai-audio/.venv/bin/python",
+        "/Users/dohuuphuoc/ai-audio/.claude/skills/qa-audio/scripts/qa_audio.py",
+        "--series",
+        "demo",
+        "--episode",
+        "1"
+      ],
+      "status": "done",
+      "started_at": "2026-09-20T04:55:51+00:00",
+      "finished_at": "2026-09-20T04:55:51+00:00",
+      "exit_code": null,
+      "log_path": "/Users/dohuuphuoc/ai-audio/series/demo/logs/ep01.qa.log",
+      "summary": {
+        "ok": true,
+        "failed_checks": [],
+        "review_lines": 1
+      },
+      "error": null,
+      "label": "QA"
+    },
+    {
+      "id": "ep02.draft",
+      "stage": "draft",
+      "episode": 2,
+      "cmd": [
+        "/Users/dohuuphuoc/ai-audio/.venv/bin/python",
+        "/Users/dohuuphuoc/ai-audio/.claude/skills/episodize/scripts/episodize.py",
+        "--series",
+        "demo",
+        "--only",
+        "2"
+      ],
+      "status": "done",
+      "started_at": "2026-09-20T04:55:51+00:00",
+      "finished_at": "2026-09-20T04:55:51+00:00",
+      "exit_code": null,
+      "log_path": "/Users/dohuuphuoc/ai-audio/series/demo/logs/ep02.draft.log",
+      "summary": {
+        "ok": true,
+        "drafted": [
+          2
+        ]
+      },
+      "error": null,
+      "label": "Draft"
+    },
+    {
+      "id": "ep02.direct",
+      "stage": "direct",
+      "episode": 2,
+      "cmd": [
+        "/Users/dohuuphuoc/ai-audio/.venv/bin/python",
+        "/Users/dohuuphuoc/ai-audio/.claude/skills/parse-script/scripts/parse_script.py",
+        "--series",
+        "demo",
+        "--episode",
+        "2",
+        "--force"
+      ],
+      "status": "done",
+      "started_at": "2026-09-20T04:55:51+00:00",
+      "finished_at": "2026-09-20T04:55:51+00:00",
+      "exit_code": null,
+      "log_path": "/Users/dohuuphuoc/ai-audio/series/demo/logs/ep02.direct.log",
+      "summary": {
+        "ok": true,
+        "lines": 10,
+        "scenes": 3
+      },
+      "error": null,
+      "label": "Direct"
+    },
+    {
+      "id": "ep02.voice",
+      "stage": "voice",
+      "episode": 2,
+      "cmd": [
+        "/Users/dohuuphuoc/ai-audio/.venv/bin/python",
+        "/Users/dohuuphuoc/ai-audio/.claude/skills/generate-voice/scripts/generate_voice.py",
+        "--series",
+        "demo",
+        "--episode",
+        "2",
+        "--concurrency",
+        "2"
+      ],
+      "status": "done",
+      "started_at": "2026-09-20T04:55:51+00:00",
+      "finished_at": "2026-09-20T04:55:51+00:00",
+      "exit_code": null,
+      "log_path": "/Users/dohuuphuoc/ai-audio/series/demo/logs/ep02.voice.log",
+      "summary": {
+        "ok": true,
+        "planned": 10,
+        "rendered": 10,
+        "cached": 0
+      },
+      "error": null,
+      "label": "Voice"
+    },
+    {
+      "id": "ep02.assemble",
+      "stage": "assemble",
+      "episode": 2,
+      "cmd": [
+        "/Users/dohuuphuoc/ai-audio/.venv/bin/python",
+        "/Users/dohuuphuoc/ai-audio/.claude/skills/assemble-audio/scripts/assemble_audio.py",
+        "--series",
+        "demo",
+        "--episode",
+        "2"
+      ],
+      "status": "done",
+      "started_at": "2026-09-20T04:55:51+00:00",
+      "finished_at": "2026-09-20T04:55:51+00:00",
+      "exit_code": null,
+      "log_path": "/Users/dohuuphuoc/ai-audio/series/demo/logs/ep02.assemble.log",
+      "summary": {
+        "ok": true,
+        "total_ms": 66680
+      },
+      "error": null,
+      "label": "Assemble"
+    },
+    {
+      "id": "ep02.qa",
+      "stage": "qa",
+      "episode": 2,
+      "cmd": [
+        "/Users/dohuuphuoc/ai-audio/.venv/bin/python",
+        "/Users/dohuuphuoc/ai-audio/.claude/skills/qa-audio/scripts/qa_audio.py",
+        "--series",
+        "demo",
+        "--episode",
+        "2"
+      ],
+      "status": "warn",
+      "started_at": "2026-09-20T04:55:51+00:00",
+      "finished_at": "2026-09-20T04:55:51+00:00",
+      "exit_code": null,
+      "log_path": "/Users/dohuuphuoc/ai-audio/series/demo/logs/ep02.qa.log",
+      "summary": {
+        "ok": false,
+        "failed_checks": [
+          "duration"
+        ],
+        "review_lines": 4
+      },
+      "error": null,
+      "label": "QA"
+    },
+    {
+      "id": "ep03.draft",
+      "stage": "draft",
+      "episode": 3,
+      "cmd": [
+        "/Users/dohuuphuoc/ai-audio/.venv/bin/python",
+        "/Users/dohuuphuoc/ai-audio/.claude/skills/episodize/scripts/episodize.py",
+        "--series",
+        "demo",
+        "--only",
+        "3"
+      ],
+      "status": "done",
+      "started_at": "2026-09-20T04:55:51+00:00",
+      "finished_at": "2026-09-20T04:55:51+00:00",
+      "exit_code": null,
+      "log_path": "/Users/dohuuphuoc/ai-audio/series/demo/logs/ep03.draft.log",
+      "summary": {
+        "ok": true,
+        "drafted": [
+          3
+        ]
+      },
+      "error": null,
+      "label": "Draft"
+    },
+    {
+      "id": "ep03.direct",
+      "stage": "direct",
+      "episode": 3,
+      "cmd": [
+        "/Users/dohuuphuoc/ai-audio/.venv/bin/python",
+        "/Users/dohuuphuoc/ai-audio/.claude/skills/parse-script/scripts/parse_script.py",
+        "--series",
+        "demo",
+        "--episode",
+        "3",
+        "--force"
+      ],
+      "status": "done",
+      "started_at": "2026-09-20T04:55:51+00:00",
+      "finished_at": "2026-09-20T04:55:51+00:00",
+      "exit_code": null,
+      "log_path": "/Users/dohuuphuoc/ai-audio/series/demo/logs/ep03.direct.log",
+      "summary": {
+        "ok": true,
+        "lines": 9,
+        "scenes": 2
+      },
+      "error": null,
+      "label": "Direct"
+    },
+    {
+      "id": "ep03.voice",
+      "stage": "voice",
+      "episode": 3,
+      "cmd": [
+        "/Users/dohuuphuoc/ai-audio/.venv/bin/python",
+        "/Users/dohuuphuoc/ai-audio/.claude/skills/generate-voice/scripts/generate_voice.py",
+        "--series",
+        "demo",
+        "--episode",
+        "3",
+        "--concurrency",
+        "2"
+      ],
+      "status": "done",
+      "started_at": "2026-09-20T04:55:51+00:00",
+      "finished_at": "2026-09-20T04:55:51+00:00",
+      "exit_code": null,
+      "log_path": "/Users/dohuuphuoc/ai-audio/series/demo/logs/ep03.voice.log",
+      "summary": {
+        "ok": true,
+        "planned": 9,
+        "rendered": 9,
+        "cached": 0
+      },
+      "error": null,
+      "label": "Voice"
+    },
+    {
+      "id": "ep03.assemble",
+      "stage": "assemble",
+      "episode": 3,
+      "cmd": [
+        "/Users/dohuuphuoc/ai-audio/.venv/bin/python",
+        "/Users/dohuuphuoc/ai-audio/.claude/skills/assemble-audio/scripts/assemble_audio.py",
+        "--series",
+        "demo",
+        "--episode",
+        "3"
+      ],
+      "status": "done",
+      "started_at": "2026-09-20T04:55:51+00:00",
+      "finished_at": "2026-09-20T04:55:51+00:00",
+      "exit_code": null,
+      "log_path": "/Users/dohuuphuoc/ai-audio/series/demo/logs/ep03.assemble.log",
+      "summary": {
+        "ok": true,
+        "total_ms": 72960
+      },
+      "error": null,
+      "label": "Assemble"
+    },
+    {
+      "id": "ep03.qa",
+      "stage": "qa",
+      "episode": 3,
+      "cmd": [
+        "/Users/dohuuphuoc/ai-audio/.venv/bin/python",
+        "/Users/dohuuphuoc/ai-audio/.claude/skills/qa-audio/scripts/qa_audio.py",
+        "--series",
+        "demo",
+        "--episode",
+        "3"
+      ],
+      "status": "done",
+      "started_at": "2026-09-20T04:55:51+00:00",
+      "finished_at": "2026-09-20T04:55:51+00:00",
+      "exit_code": null,
+      "log_path": "/Users/dohuuphuoc/ai-audio/series/demo/logs/ep03.qa.log",
+      "summary": {
+        "ok": true,
+        "failed_checks": [],
+        "review_lines": 2
+      },
+      "error": null,
+      "label": "QA"
+    },
+    {
+      "id": "ep04.draft",
+      "stage": "draft",
+      "episode": 4,
+      "cmd": [
+        "/Users/dohuuphuoc/ai-audio/.venv/bin/python",
+        "/Users/dohuuphuoc/ai-audio/.claude/skills/episodize/scripts/episodize.py",
+        "--series",
+        "demo",
+        "--only",
+        "4"
+      ],
+      "status": "done",
+      "started_at": "2026-09-20T04:55:51+00:00",
+      "finished_at": "2026-09-20T04:55:51+00:00",
+      "exit_code": null,
+      "log_path": "/Users/dohuuphuoc/ai-audio/series/demo/logs/ep04.draft.log",
+      "summary": {
+        "ok": true,
+        "drafted": [
+          4
+        ]
+      },
+      "error": null,
+      "label": "Draft"
+    },
+    {
+      "id": "ep04.direct",
+      "stage": "direct",
+      "episode": 4,
+      "cmd": [
+        "/Users/dohuuphuoc/ai-audio/.venv/bin/python",
+        "/Users/dohuuphuoc/ai-audio/.claude/skills/parse-script/scripts/parse_script.py",
+        "--series",
+        "demo",
+        "--episode",
+        "4",
+        "--force"
+      ],
+      "status": "done",
+      "started_at": "2026-09-20T04:55:51+00:00",
+      "finished_at": "2026-09-20T04:55:51+00:00",
+      "exit_code": null,
+      "log_path": "/Users/dohuuphuoc/ai-audio/series/demo/logs/ep04.direct.log",
+      "summary": {
+        "ok": true,
+        "lines": 12,
+        "scenes": 3
+      },
+      "error": null,
+      "label": "Direct"
+    },
+    {
+      "id": "ep04.voice",
+      "stage": "voice",
+      "episode": 4,
+      "cmd": [
+        "/Users/dohuuphuoc/ai-audio/.venv/bin/python",
+        "/Users/dohuuphuoc/ai-audio/.claude/skills/generate-voice/scripts/generate_voice.py",
+        "--series",
+        "demo",
+        "--episode",
+        "4",
+        "--concurrency",
+        "2"
+      ],
+      "status": "done",
+      "started_at": "2026-09-20T04:55:51+00:00",
+      "finished_at": "2026-09-20T04:55:51+00:00",
+      "exit_code": null,
+      "log_path": "/Users/dohuuphuoc/ai-audio/series/demo/logs/ep04.voice.log",
+      "summary": {
+        "ok": true,
+        "planned": 12,
+        "rendered": 12,
+        "cached": 0
+      },
+      "error": null,
+      "label": "Voice"
+    },
+    {
+      "id": "ep04.assemble",
+      "stage": "assemble",
+      "episode": 4,
+      "cmd": [
+        "/Users/dohuuphuoc/ai-audio/.venv/bin/python",
+        "/Users/dohuuphuoc/ai-audio/.claude/skills/assemble-audio/scripts/assemble_audio.py",
+        "--series",
+        "demo",
+        "--episode",
+        "4"
+      ],
+      "status": "done",
+      "started_at": "2026-09-20T04:55:51+00:00",
+      "finished_at": "2026-09-20T04:55:51+00:00",
+      "exit_code": null,
+      "log_path": "/Users/dohuuphuoc/ai-audio/series/demo/logs/ep04.assemble.log",
+      "summary": {
+        "ok": true,
+        "total_ms": 97900
+      },
+      "error": null,
+      "label": "Assemble"
+    },
+    {
+      "id": "ep04.qa",
+      "stage": "qa",
+      "episode": 4,
+      "cmd": [
+        "/Users/dohuuphuoc/ai-audio/.venv/bin/python",
+        "/Users/dohuuphuoc/ai-audio/.claude/skills/qa-audio/scripts/qa_audio.py",
+        "--series",
+        "demo",
+        "--episode",
+        "4"
+      ],
+      "status": "done",
+      "started_at": "2026-09-20T04:55:51+00:00",
+      "finished_at": "2026-09-20T04:55:51+00:00",
+      "exit_code": null,
+      "log_path": "/Users/dohuuphuoc/ai-audio/series/demo/logs/ep04.qa.log",
+      "summary": {
+        "ok": true,
+        "failed_checks": [],
+        "review_lines": 6
+      },
+      "error": null,
+      "label": "QA"
+    },
+    {
+      "id": "ep05.draft",
+      "stage": "draft",
+      "episode": 5,
+      "cmd": [
+        "/Users/dohuuphuoc/ai-audio/.venv/bin/python",
+        "/Users/dohuuphuoc/ai-audio/.claude/skills/episodize/scripts/episodize.py",
+        "--series",
+        "demo",
+        "--only",
+        "5"
+      ],
+      "status": "done",
+      "started_at": "2026-09-20T04:55:51+00:00",
+      "finished_at": "2026-09-20T04:55:51+00:00",
+      "exit_code": null,
+      "log_path": "/Users/dohuuphuoc/ai-audio/series/demo/logs/ep05.draft.log",
+      "summary": {
+        "ok": true,
+        "drafted": [
+          5
+        ]
+      },
+      "error": null,
+      "label": "Draft"
+    },
+    {
+      "id": "ep05.direct",
+      "stage": "direct",
+      "episode": 5,
+      "cmd": [
+        "/Users/dohuuphuoc/ai-audio/.venv/bin/python",
+        "/Users/dohuuphuoc/ai-audio/.claude/skills/parse-script/scripts/parse_script.py",
+        "--series",
+        "demo",
+        "--episode",
+        "5",
+        "--force"
+      ],
+      "status": "done",
+      "started_at": "2026-09-20T04:55:51+00:00",
+      "finished_at": "2026-09-20T04:55:51+00:00",
+      "exit_code": null,
+      "log_path": "/Users/dohuuphuoc/ai-audio/series/demo/logs/ep05.direct.log",
+      "summary": {
+        "ok": true,
+        "lines": 9,
+        "scenes": 2
+      },
+      "error": null,
+      "label": "Direct"
+    },
+    {
+      "id": "ep05.voice",
+      "stage": "voice",
+      "episode": 5,
+      "cmd": [
+        "/Users/dohuuphuoc/ai-audio/.venv/bin/python",
+        "/Users/dohuuphuoc/ai-audio/.claude/skills/generate-voice/scripts/generate_voice.py",
+        "--series",
+        "demo",
+        "--episode",
+        "5",
+        "--concurrency",
+        "2"
+      ],
+      "status": "done",
+      "started_at": "2026-09-20T04:55:51+00:00",
+      "finished_at": "2026-09-20T04:55:51+00:00",
+      "exit_code": null,
+      "log_path": "/Users/dohuuphuoc/ai-audio/series/demo/logs/ep05.voice.log",
+      "summary": {
+        "ok": true,
+        "planned": 9,
+        "rendered": 9,
+        "cached": 0
+      },
+      "error": null,
+      "label": "Voice"
+    },
+    {
+      "id": "ep05.assemble",
+      "stage": "assemble",
+      "episode": 5,
+      "cmd": [
+        "/Users/dohuuphuoc/ai-audio/.venv/bin/python",
+        "/Users/dohuuphuoc/ai-audio/.claude/skills/assemble-audio/scripts/assemble_audio.py",
+        "--series",
+        "demo",
+        "--episode",
+        "5"
+      ],
+      "status": "done",
+      "started_at": "2026-09-20T04:55:51+00:00",
+      "finished_at": "2026-09-20T04:55:51+00:00",
+      "exit_code": null,
+      "log_path": "/Users/dohuuphuoc/ai-audio/series/demo/logs/ep05.assemble.log",
+      "summary": {
+        "ok": true,
+        "total_ms": 95060
+      },
+      "error": null,
+      "label": "Assemble"
+    },
+    {
+      "id": "ep05.qa",
+      "stage": "qa",
+      "episode": 5,
+      "cmd": [
+        "/Users/dohuuphuoc/ai-audio/.venv/bin/python",
+        "/Users/dohuuphuoc/ai-audio/.claude/skills/qa-audio/scripts/qa_audio.py",
+        "--series",
+        "demo",
+        "--episode",
+        "5"
+      ],
+      "status": "done",
+      "started_at": "2026-09-20T04:55:51+00:00",
+      "finished_at": "2026-09-20T04:55:51+00:00",
+      "exit_code": null,
+      "log_path": "/Users/dohuuphuoc/ai-audio/series/demo/logs/ep05.qa.log",
+      "summary": {
+        "ok": true,
+        "failed_checks": [],
+        "review_lines": 4
+      },
+      "error": null,
+      "label": "QA"
+    }
+  ]
+}

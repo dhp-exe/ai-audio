@@ -1,0 +1,5 @@
+$ /Users/dohuuphuoc/ai-audio/.venv/bin/python /Users/dohuuphuoc/ai-audio/.claude/skills/qa-audio/scripts/qa_audio.py --series demo --episode 1
+
+{"ok": true, "failed_checks": [], "review_lines": 1, "human": null, "path": "/Users/dohuuphuoc/ai-audio/series/demo/qa/ep01_report.json"}
+
+[exit 0]

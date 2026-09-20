@@ -1,0 +1,165 @@
+{
+  "schema_version": "1.0",
+  "language": "vi-VN",
+  "series_id": "demo",
+  "episode_number": 5,
+  "title": "Sự thật về ba năm trước",
+  "logline": "Linh đột nhập vào văn phòng của Khôi tại nhà thờ cũ và vô tình phát hiện ra lý do thực sự khiến anh rời bỏ cô ba năm trước.",
+  "target_duration_sec": 120,
+  "characters_used": [
+    "linh",
+    "minh-khoi"
+  ],
+  "scenes": [
+    {
+      "scene_id": "sc01",
+      "title": "Văn phòng tạm tại nhà thờ",
+      "location": "Văn phòng tạm của Khôi",
+      "time_of_day": "night",
+      "ambience_tag": null,
+      "ambience_level": 0.0,
+      "bgm": null,
+      "lines": [
+        {
+          "line_id": "ep05_sc01_l001",
+          "type": "monologue",
+          "character_id": "linh",
+          "text": "Ba giờ sáng. Tiếng gõ cửa vừa rồi không phải là ảo giác. Mình đã liều lĩnh đột nhập vào đây, ngay giữa tâm bão của những bí mật mà Khôi cố tình chôn giấu. Căn phòng này lạnh lẽo, nồng mùi gỗ mục và thuốc lá. Tại sao anh lại chọn nơi này để làm trụ sở? Có thứ gì đó đang chờ mình ở đây.",
+          "tts_text": "[internal monologue] Ba giờ sáng. Tiếng gõ cửa vừa rồi không phải là ảo giác. Mình đã liều lĩnh đột nhập vào đây, ngay giữa tâm bão của những bí mật mà Khôi cố tình chôn giấu. Căn phòng này lạnh lẽo, nồng mùi gỗ mục và thuốc lá. Tại sao anh lại chọn nơi này để làm trụ sở? Có thứ gì đó đang chờ mình ở đây.",
+          "emotion": "fearful",
+          "emotional_intensity": 5,
+          "acoustic_direction": "giọng nhỏ, hơi thở gấp, không gian vang vọng",
+          "pace": "normal",
+          "volume": "soft",
+          "pause_after_ms": 500,
+          "sfx": []
+        },
+        {
+          "line_id": "ep05_sc01_l002",
+          "type": "dialogue",
+          "character_id": "linh",
+          "text": "Phải nhanh lên thôi. Nếu Khôi quay lại, mình sẽ không có lời giải thích nào thỏa đáng cho việc lục lọi đồ đạc cá nhân của anh ấy cả.",
+          "tts_text": "[whispers] Phải nhanh lên thôi. Nếu Khôi quay lại, mình sẽ không có lời giải thích nào thỏa đáng cho việc lục lọi đồ đạc cá nhân của anh ấy cả.",
+          "emotion": "fearful",
+          "emotional_intensity": 6,
+          "acoustic_direction": "thì thầm, gấp gáp",
+          "pace": "fast",
+          "volume": "whisper",
+          "pause_after_ms": 500,
+          "sfx": []
+        },
+        {
+          "line_id": "ep05_sc01_l003",
+          "type": "monologue",
+          "character_id": "linh",
+          "text": "Ngăn kéo cuối cùng bị khóa chặt. Một chiếc chìa khóa nhỏ rơi ra từ cuốn sổ phác thảo. Đây rồi. Một xấp giấy ố vàng, không phải bản vẽ, mà là những tờ giấy nợ với dấu mộc đỏ chót của tổ chức cho vay nặng lãi. Và một lá thư tay.",
+          "tts_text": "[introspective] Ngăn kéo cuối cùng bị khóa chặt. Một chiếc chìa khóa nhỏ rơi ra từ cuốn sổ phác thảo. Đây rồi. Một xấp giấy ố vàng, không phải bản vẽ, mà là những tờ giấy nợ với dấu mộc đỏ chót của tổ chức cho vay nặng lãi. Và một lá thư tay.",
+          "emotion": "surprised",
+          "emotional_intensity": 7,
+          "acoustic_direction": "giọng run, ngạc nhiên",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 500,
+          "sfx": []
+        },
+        {
+          "line_id": "ep05_sc01_l004",
+          "type": "dialogue",
+          "character_id": "linh",
+          "text": "Gửi Khôi, nếu mày không giao nộp toàn bộ tài sản và cắt đứt với cô kiến trúc sư kia trước ngày cưới, chúng tao sẽ biến cuộc đời cô ta thành địa ngục. Mày biết chúng tao làm được gì mà. Đừng để tình yêu làm mù mắt, thằng ngu.",
+          "tts_text": "[hesitates] Gửi Khôi, nếu mày không giao nộp toàn bộ tài sản và cắt đứt với cô kiến trúc sư kia trước ngày cưới, chúng tao sẽ biến cuộc đời cô ta thành địa ngục. Mày biết chúng tao làm được gì mà. Đừng để tình yêu làm mù mắt, thằng ngu.",
+          "emotion": "sad",
+          "emotional_intensity": 9,
+          "acoustic_direction": "giọng run rẩy, nghẹn ngào",
+          "pace": "slow",
+          "volume": "normal",
+          "pause_after_ms": 1000,
+          "sfx": []
+        },
+        {
+          "line_id": "ep05_sc01_l005",
+          "type": "monologue",
+          "character_id": "linh",
+          "text": "Trời ơi. Ba năm trước, anh ấy không bỏ rơi mình vì hết yêu. Anh ấy đã chọn cách trở thành kẻ tồi tệ nhất trong mắt mình để bảo vệ mình khỏi đám người này. Sự hy sinh này... nó quá tàn nhẫn.",
+          "tts_text": "[internal monologue] Trời ơi. Ba năm trước, anh ấy không bỏ rơi mình vì hết yêu. Anh ấy đã chọn cách trở thành kẻ tồi tệ nhất trong mắt mình để bảo vệ mình khỏi đám người này. Sự hy sinh này... nó quá tàn nhẫn.",
+          "emotion": "sad",
+          "emotional_intensity": 10,
+          "acoustic_direction": "giọng vỡ òa, đau đớn",
+          "pace": "slow",
+          "volume": "normal",
+          "pause_after_ms": 500,
+          "sfx": []
+        }
+      ]
+    },
+    {
+      "scene_id": "sc02",
+      "title": "Cuộc đối đầu",
+      "location": "Văn phòng tạm của Khôi",
+      "time_of_day": "night",
+      "ambience_tag": null,
+      "ambience_level": 0.0,
+      "bgm": null,
+      "lines": [
+        {
+          "line_id": "ep05_sc02_l001",
+          "type": "dialogue",
+          "character_id": "linh",
+          "text": "Khôi? Anh... anh làm gì ở đây vào giờ này?",
+          "tts_text": "[gasps] Khôi? Anh... anh làm gì ở đây vào giờ này?",
+          "emotion": "fearful",
+          "emotional_intensity": 8,
+          "acoustic_direction": "hốt hoảng, giọng run",
+          "pace": "fast",
+          "volume": "normal",
+          "pause_after_ms": 300,
+          "sfx": []
+        },
+        {
+          "line_id": "ep05_sc02_l002",
+          "type": "dialogue",
+          "character_id": "minh-khoi",
+          "text": "Linh, tại sao em lại ở đây? Em có biết mình đang làm gì không?",
+          "tts_text": "Linh, tại sao em lại ở đây? Em có biết mình đang làm gì không?",
+          "emotion": "fearful",
+          "emotional_intensity": 7,
+          "acoustic_direction": "trầm đục, mệt mỏi",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 300,
+          "sfx": []
+        },
+        {
+          "line_id": "ep05_sc02_l003",
+          "type": "dialogue",
+          "character_id": "linh",
+          "text": "Em đã đọc hết rồi. Tất cả những tờ giấy này, những lời đe dọa đó. Tại sao anh lại im lặng chịu đựng tất cả một mình? Anh để em hận anh suốt ba năm qua, anh có biết điều đó đau đớn đến thế nào không?",
+          "tts_text": "[crying] Em đã đọc hết rồi. Tất cả những tờ giấy này, những lời đe dọa đó. Tại sao anh lại im lặng chịu đựng tất cả một mình? Anh để em hận anh suốt ba năm qua, anh có biết điều đó đau đớn đến thế nào không?",
+          "emotion": "desperate",
+          "emotional_intensity": 9,
+          "acoustic_direction": "nức nở, cố gắng bình tĩnh",
+          "pace": "slow",
+          "volume": "normal",
+          "pause_after_ms": 500,
+          "sfx": []
+        },
+        {
+          "line_id": "ep05_sc02_l004",
+          "type": "dialogue",
+          "character_id": "minh-khoi",
+          "text": "Em không nên đọc thứ đó.",
+          "tts_text": "[sighs] Em không nên đọc thứ đó.",
+          "emotion": "sad",
+          "emotional_intensity": 8,
+          "acoustic_direction": "giọng lạnh lùng nhưng run rẩy",
+          "pace": "slow",
+          "volume": "normal",
+          "pause_after_ms": 500,
+          "sfx": []
+        }
+      ]
+    }
+  ],
+  "cliffhanger": "Khôi nói: 'Em không nên đọc thứ đó'.",
+  "director_notes": "Tập phim tập trung vào sự chuyển biến cảm xúc của Linh từ nghi ngờ sang đau đớn tột cùng khi biết sự thật. Khôi cần thể hiện sự bất lực và bảo vệ trong giọng nói ở cảnh cuối."
+}

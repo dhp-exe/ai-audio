@@ -1,0 +1,33 @@
+{
+  "checks": {
+    "stems_complete": {
+      "ok": true,
+      "missing": []
+    },
+    "duration": {
+      "ok": true,
+      "seconds": 72.0,
+      "target": 120
+    },
+    "loudness": {
+      "ok": true,
+      "integrated_lufs": -16.0,
+      "true_peak_dbtp": -4.5,
+      "target_lufs": -16.0,
+      "target_tp": -1.5
+    },
+    "clipping": {
+      "ok": null,
+      "todo": true
+    },
+    "silence": {
+      "ok": null,
+      "todo": true
+    }
+  },
+  "review_lines": [
+    "ep01_sc03_l003"
+  ],
+  "human": null,
+  "generated_at": "2026-09-20T05:57:39+00:00"
+}

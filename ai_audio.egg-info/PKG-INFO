@@ -1,0 +1,19 @@
+Metadata-Version: 2.4
+Name: ai-audio
+Version: 0.2.0
+Summary: Audio-first Vietnamese AI micro-drama production pipeline with fixed Virtual Actor voice IPs
+Requires-Python: >=3.11
+Requires-Dist: google-genai>=1.0
+Requires-Dist: elevenlabs>=2.0
+Requires-Dist: pydantic>=2.7
+Requires-Dist: python-dotenv>=1.0
+Requires-Dist: httpx>=0.27
+Requires-Dist: rich>=13.0
+Provides-Extra: qa
+Requires-Dist: fastapi>=0.110; extra == "qa"
+Requires-Dist: uvicorn>=0.29; extra == "qa"
+Provides-Extra: dev
+Requires-Dist: pytest>=8.0; extra == "dev"
+Requires-Dist: pytest-mock>=3.14; extra == "dev"
+Requires-Dist: ruff>=0.5; extra == "dev"
+Requires-Dist: mypy>=1.10; extra == "dev"

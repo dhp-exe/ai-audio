@@ -1,5 +1,9 @@
-$ /Users/dohuuphuoc/ai-audio/.venv/bin/python /Users/dohuuphuoc/ai-audio/.claude/skills/episodize/scripts/episodize.py --series hop-dong --outline-only --episodes 3 --min-sec 50 --max-sec 70
+$ /Users/dohuuphuoc/ai-audio/.venv/bin/python /Users/dohuuphuoc/ai-audio/.claude/skills/episodize/scripts/episodize.py --series hop-dong --outline-only --episodes 10 --min-sec 50 --max-sec 70 --redo-outline
 
-{"ok": true, "outline": false, "mode": "segment", "drafted": [], "skipped": [], "new_characters": [], "dry_run": false}
+cast: Giang Thần -> duong (user; Chỉ định bởi đạo diễn, chất giọng trầm, điềm tĩnh phù hợp vớ)
+cast: Tô Mạn -> ngan (ai; Giọng trẻ trung, trong trẻo, phù hợp với hình tượng nhân viê)
+cast: Lý Minh -> minh-khoi (ai; Chất giọng linh hoạt, tươi sáng, phù hợp với vai trợ lý thân)
+cast: Trần Vy -> linh (ai; Chất giọng sắc sảo, lạnh lùng, phù hợp với vai diễn phản diệ)
+{"ok": true, "outline": true, "mode": "segment", "drafted": [], "skipped": [], "new_characters": [], "dry_run": false}
 
 [exit 0]

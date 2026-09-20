@@ -3,8 +3,8 @@ duong: ok (gemini:Orus)
 ngan: ok (gemini:Leda)
 minh-khoi: ok (gemini:Puck)
 linh: ok (gemini:Kore)
-casting: Giang Thần -> duong (user) voice Orus Giọng trầm, lạnh lùng, điềm tĩnh phù hợp với hình tượng tổng tài gia trưởng nhưng sâu sắc.
-casting: Tô Mạn -> ngan (ai) voice Leda Giọng trong trẻo, tươi sáng, thể hiện được sự bướng bỉnh và ngây thơ của nhân viên mới.
-casting: Lý Minh -> minh-khoi (ai) voice Puck Chất giọng linh hoạt, tinh nghịch phù hợp với vai trợ lý thân cận, hay tấu hài.
-casting: Trần Vy -> linh (ai) voice Kore Giọng sắc sảo, có chút mỉa mai, rất hợp với vai đồng nghiệp đố kỵ.
+casting: Giang Thần -> duong (user) voice Orus Chỉ định bởi đạo diễn, chất giọng trầm, điềm tĩnh phù hợp với vai tổng tài lạnh lùng.
+casting: Tô Mạn -> ngan (ai) voice Leda Giọng trẻ trung, trong trẻo, phù hợp với hình tượng nhân viên mới hoạt bát và bướng bỉnh.
+casting: Lý Minh -> minh-khoi (ai) voice Puck Chất giọng linh hoạt, tươi sáng, phù hợp với vai trợ lý thân cận hay giúp đỡ nhân vật chính.
+casting: Trần Vy -> linh (ai) voice Kore Chất giọng sắc sảo, lạnh lùng, phù hợp với vai diễn phản diện đố kỵ.
 {"ok": true, "provider": "gemini", "model": "gemini-2.5-flash-preview-tts", "cast": ["duong", "ngan", "minh-khoi", "linh"], "placeholders": [], "auto_voiced": []}

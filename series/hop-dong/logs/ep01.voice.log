@@ -1,6 +1,6 @@
 $ /Users/dohuuphuoc/ai-audio/.venv/bin/python /Users/dohuuphuoc/ai-audio/.claude/skills/generate-voice/scripts/generate_voice.py --series hop-dong --episode 1 --provider gemini --model-override gemini-2.5-flash-preview-tts --batching auto
 
-ep01_sc01_c01: 40131 ms, 678 chars, gemini
+ep01_sc01_c01: 40651 ms, 725 chars, gemini
 {"ok": true, "provider": "gemini", "batching": "scene", "model": "gemini-2.5-flash-preview-tts", "planned": 1, "lines": 8, "rendered": 1, "cached": 0, "failed": [], "fell_back": [], "placeholder_voices": []}
 
 [exit 0]

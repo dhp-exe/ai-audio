@@ -1,5 +1,5 @@
 {
-  "hash": "68ac6d51155aebb03e74892e13d634681c8c72ffe2256956fbf0765b4a88638d",
+  "hash": "f4e688b69d6f4146bd107b4c6e2e50c8b27c7d819a864e1ce46c44d6ab5f9c88",
   "request": {
     "provider": "gemini",
     "model_id": "gemini-3.1-flash-tts-preview",
@@ -13,8 +13,8 @@
   "requested_voice": "Kore",
   "placeholder": false,
   "reason": null,
-  "rendered_at": "2026-09-20T12:08:11+00:00",
-  "duration_ms": 4280,
+  "rendered_at": "2026-09-20T15:25:55+00:00",
+  "duration_ms": 4600,
   "characters_billed": 61,
-  "tokens_out": 137
+  "tokens_out": 148
 }

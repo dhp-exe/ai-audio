@@ -2,9 +2,9 @@
   "series_id": "hop-dong",
   "language": "vi-VN",
   "title": "Bản Hợp Đồng Định Mệnh",
-  "logline": "Cuộc chạm trán oan gia tại bãi đỗ xe khiến Tô Mạn không ngờ rằng kẻ bắt nạt mình lại chính là vị sếp tổng lạnh lùng, khởi đầu cho một mối quan hệ đầy sóng gió.",
-  "premise": "Tô Mạn, một nhân viên mới, vô tình va chạm xe với Giang Thần - vị tổng giám đốc quyền lực và cũng là thanh mai trúc mã cô đã mất liên lạc nhiều năm. Từ những hiểu lầm tại bãi đỗ xe đến sự cạnh tranh khốc liệt tại văn phòng, cả hai dần nhận ra nhau giữa những toan tính và đố kỵ.",
-  "tone": "Lãng mạn, kịch tính, hài hước nhẹ nhàng.",
+  "logline": "Mối tình thanh mai trúc mã bị che giấu sau một bản hợp đồng oái oăm giữa vị tổng tài lạnh lùng và cô nhân viên mới đầy bướng bỉnh.",
+  "premise": "Giang Thần và Tô Mạn là bạn thanh mai trúc mã, nhưng vì nỗi sợ mất cô, Giang Thần đã dùng quyền lực tổng tài để ép cô ký một bản hợp đồng kỳ lạ. Giữa những âm mưu chốn công sở, liệu tình yêu của họ có vượt qua được những hiểu lầm?",
+  "tone": "Lãng mạn, kịch tính, ngọt ngào",
   "genre": [
     "Ngôn tình",
     "Tổng tài",
@@ -25,28 +25,28 @@
       "role_type": "protagonist",
       "actor_id": "duong",
       "assigned_by": "user",
-      "reason": "Giọng trầm, lạnh lùng, điềm tĩnh phù hợp với hình tượng tổng tài gia trưởng nhưng sâu sắc."
+      "reason": "Chỉ định bởi đạo diễn, chất giọng trầm, điềm tĩnh phù hợp với vai tổng tài lạnh lùng."
     },
     {
       "role_name": "Tô Mạn",
       "role_type": "protagonist",
       "actor_id": "ngan",
       "assigned_by": "ai",
-      "reason": "Giọng trong trẻo, tươi sáng, thể hiện được sự bướng bỉnh và ngây thơ của nhân viên mới."
+      "reason": "Giọng trẻ trung, trong trẻo, phù hợp với hình tượng nhân viên mới hoạt bát và bướng bỉnh."
     },
     {
       "role_name": "Lý Minh",
       "role_type": "supporting",
       "actor_id": "minh-khoi",
       "assigned_by": "ai",
-      "reason": "Chất giọng linh hoạt, tinh nghịch phù hợp với vai trợ lý thân cận, hay tấu hài."
+      "reason": "Chất giọng linh hoạt, tươi sáng, phù hợp với vai trợ lý thân cận hay giúp đỡ nhân vật chính."
     },
     {
       "role_name": "Trần Vy",
       "role_type": "antagonist",
       "actor_id": "linh",
       "assigned_by": "ai",
-      "reason": "Giọng sắc sảo, có chút mỉa mai, rất hợp với vai đồng nghiệp đố kỵ."
+      "reason": "Chất giọng sắc sảo, lạnh lùng, phù hợp với vai diễn phản diện đố kỵ."
     }
   ],
   "cast": [
@@ -57,7 +57,7 @@
   ],
   "pending_characters": [],
   "episode_format": {
-    "count": 3,
+    "count": 10,
     "min_duration_sec": 50,
     "max_duration_sec": 70,
     "ends_on_cliffhanger": true
@@ -66,41 +66,122 @@
     {
       "number": 1,
       "title": "Va chạm định mệnh",
-      "logline": "Tô Mạn gây tai nạn nhỏ với một chiếc xe sang trọng trong hầm đỗ xe và bàng hoàng nhận ra đó là vị tổng giám đốc khó tính của công ty mình.",
+      "logline": "Cuộc gặp gỡ không mấy êm đẹp tại bãi đỗ xe khiến Tô Mạn vô tình đắc tội với vị sếp khó tính.",
       "key_beats": [
-        "Tô Mạn va chạm xe trong hầm",
-        "Cuộc tranh cãi nảy lửa với người lạ",
-        "Người lạ tiết lộ danh tính là sếp tổng",
-        "Tô Mạn đối mặt với nguy cơ mất việc"
+        "Va chạm xe trong hầm",
+        "Giang Thần mỉa mai Tô Mạn",
+        "Tô Mạn nhận ra thân phận của Giang Thần"
       ],
-      "cliffhanger": "Giang Thần lạnh lùng hỏi: Cô có muốn mất việc ngay trong ngày đầu tiên không?",
-      "source_span": "Phân cảnh 1"
+      "cliffhanger": "Giang Thần đe dọa Tô Mạn về việc mất việc ngay ngày đầu tiên.",
+      "source_span": "Phân cảnh 1: Từ đầu đến hết cảnh."
     },
     {
       "number": 2,
-      "title": "Ngày đầu ác mộng",
-      "logline": "Tô Mạn đi làm ngày đầu tiên và phát hiện sếp mới chính là kẻ cô đã đắc tội, đồng thời đối mặt với sự hãm hại từ đồng nghiệp.",
+      "title": "Oan gia ngõ hẹp",
+      "logline": "Tô Mạn bàng hoàng khi phát hiện sếp mới chính là người cô vừa đắc tội dưới hầm xe.",
       "key_beats": [
-        "Tô Mạn bàng hoàng nhận ra sếp",
+        "Tô Mạn vào công ty",
         "Giang Thần giao nhiệm vụ khó",
-        "Trần Vy tìm cách hạ bệ Tô Mạn",
-        "Tô Mạn nỗ lực hoàn thành công việc"
+        "Trần Vy bắt đầu gây khó dễ"
       ],
-      "cliffhanger": "Trần Vy đe dọa: Cô nghĩ cô là ai mà dám cạnh tranh với tôi?",
-      "source_span": "Phân cảnh 2 - đầu đến giữa"
+      "cliffhanger": "Trần Vy thách thức Tô Mạn sau khi Giang Thần rời đi.",
+      "source_span": "Phân cảnh 2: Từ đầu đến hết cảnh."
     },
     {
       "number": 3,
-      "title": "Bí mật thanh mai",
-      "logline": "Sự căng thẳng lên đến đỉnh điểm khi Giang Thần bắt đầu nghi ngờ về danh tính thực sự của Tô Mạn, khiến Trần Vy càng thêm điên tiết.",
+      "title": "Ký ức ngủ quên",
+      "logline": "Lý Minh gợi lại quá khứ của hai người, nhưng Giang Thần vẫn giữ thái độ lạnh lùng đầy bí ẩn.",
       "key_beats": [
-        "Giang Thần xem xét tài liệu của Tô Mạn",
-        "Ánh mắt kỳ lạ của Giang Thần",
-        "Sự đố kỵ của Trần Vy bùng phát",
-        "Khoảnh khắc Giang Thần nhận ra bóng hình xưa cũ"
+        "Lý Minh nhắc về kỷ niệm câu cá",
+        "Giang Thần thừa nhận lý do giữ Tô Mạn",
+        "Tô Mạn hoang mang về bản hợp đồng"
       ],
-      "cliffhanger": "Giang Thần tiến lại gần, thì thầm: Chúng ta đã gặp nhau ở đâu đó rồi, phải không?",
-      "source_span": "Phân cảnh 2 - cuối"
+      "cliffhanger": "Tô Mạn tự hỏi liệu mình là người yêu hay chỉ là món đồ chơi của Giang Thần.",
+      "source_span": "Phân cảnh 3: Từ đầu đến hết cảnh."
+    },
+    {
+      "number": 4,
+      "title": "Âm mưu bại lộ",
+      "logline": "Trần Vy ra tay phá hoại dự án của Tô Mạn, đẩy cô vào tình thế tuyệt vọng.",
+      "key_beats": [
+        "Trần Vy lên kế hoạch",
+        "Tài liệu bị hỏng",
+        "Giang Thần xuất hiện"
+      ],
+      "cliffhanger": "Giang Thần ra lệnh cho Lý Minh điều tra kẻ đã động đến người của mình.",
+      "source_span": "Phân cảnh 4: Từ đầu đến câu 'Ai dám động đến người của tôi'."
+    },
+    {
+      "number": 5,
+      "title": "Sự bảo vệ thầm lặng",
+      "logline": "Giang Thần đích thân an ủi Tô Mạn, khiến cô bắt đầu nhìn anh bằng ánh mắt khác.",
+      "key_beats": [
+        "Giang Thần lau nước mắt cho Tô Mạn",
+        "Tô Mạn cảm động",
+        "Mối quan hệ dần thay đổi"
+      ],
+      "cliffhanger": "Tô Mạn bắt đầu đặt câu hỏi về sự quan tâm đặc biệt của Giang Thần.",
+      "source_span": "Phân cảnh 4: Từ câu 'Giang Thần quay sang Tô Mạn' đến hết cảnh."
+    },
+    {
+      "number": 6,
+      "title": "Bức màn bí mật",
+      "logline": "Giang Thần quyết định đối mặt với cảm xúc thật của mình sau những biến cố.",
+      "key_beats": [
+        "Giang Thần suy ngẫm về bản hợp đồng",
+        "Sự hối hận của tổng tài",
+        "Chuẩn bị cho lời thú nhận"
+      ],
+      "cliffhanger": "Giang Thần hẹn Tô Mạn ra một nơi riêng tư.",
+      "source_span": "Phân cảnh 5: Từ đầu đến câu 'Anh yêu em, Tô Mạn'."
+    },
+    {
+      "number": 7,
+      "title": "Lời thú tội muộn màng",
+      "logline": "Giang Thần thú nhận lý do thực sự đằng sau bản hợp đồng định mệnh.",
+      "key_beats": [
+        "Giang Thần xin lỗi",
+        "Lý do gia trưởng được giải thích",
+        "Tô Mạn ngỡ ngàng"
+      ],
+      "cliffhanger": "Tô Mạn hỏi lại: 'Anh sợ em bỏ đi ư?'",
+      "source_span": "Phân cảnh 5: Từ câu 'Tô Mạn ngạc nhiên' đến câu 'Anh yêu em, Tô Mạn'."
+    },
+    {
+      "number": 8,
+      "title": "Vượt qua hiểu lầm",
+      "logline": "Tô Mạn và Giang Thần gỡ bỏ những rào cản cuối cùng trong lòng nhau.",
+      "key_beats": [
+        "Tô Mạn đáp lại tình cảm",
+        "Cái ôm hòa giải",
+        "Sự chứng kiến của Lý Minh"
+      ],
+      "cliffhanger": "Lý Minh mỉm cười từ xa khi thấy họ đến với nhau.",
+      "source_span": "Phân cảnh 5: Từ câu 'Tô Mạn ôm lấy Giang Thần' đến câu 'họ cũng đến được với nhau'."
+    },
+    {
+      "number": 9,
+      "title": "Hủy bỏ ràng buộc",
+      "logline": "Giang Thần đề nghị hủy bỏ bản hợp đồng, mở ra một chương mới cho cả hai.",
+      "key_beats": [
+        "Đề nghị hủy hợp đồng",
+        "Tô Mạn cười khúc khích",
+        "Không khí ngọt ngào"
+      ],
+      "cliffhanger": "Giang Thần thì thầm vào tai Tô Mạn về tương lai.",
+      "source_span": "Phân cảnh 5: Từ câu 'Giang Thần thì thầm' đến câu 'Đồng ý!'."
+    },
+    {
+      "number": 10,
+      "title": "Hạnh phúc viên mãn",
+      "logline": "Bản hợp đồng định mệnh khép lại, tình yêu của họ chính thức bắt đầu.",
+      "key_beats": [
+        "Kết thúc hiểu lầm",
+        "Tương lai tươi sáng",
+        "Lời kết của câu chuyện"
+      ],
+      "cliffhanger": "Lời dẫn kết thúc câu chuyện về tình yêu chân thành.",
+      "source_span": "Phân cảnh 5: Đoạn kết giọng đọc truyện."
     }
   ],
   "changelog": [

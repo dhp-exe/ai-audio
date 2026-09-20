@@ -6,8 +6,8 @@ Job graph for one run (N episodes planned, K episodes produced):
                     └──> ep02.draft ─> ep02.direct ─> ep02.voice ─> ...
                     └──> ...
 
-Episodes run in parallel up to `max_parallel_episodes` (LLM stages), but the `voice` stage holds a
-lock so only one episode talks to the TTS engine at a time.
+Episodes are produced one after another, in order: ep01 through all five stages, then ep02, and so
+on. That keeps vendor rate limits predictable and makes the board easy to read.
 
 The TTS engine is a run parameter (`tts_provider`: elevenlabs | gemini, `tts_model`): the Director
 and the voice stage receive it, and the cast job makes sure every actor has a voice on it.
@@ -32,7 +32,6 @@ import sys
 import threading
 import time
 from collections.abc import Callable
-from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict, dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
@@ -79,7 +78,6 @@ class RunParams:
     produce: int | None = None
     min_sec: int = 50
     max_sec: int = 70
-    max_parallel_episodes: int = 2
     force: bool = False
     tts_provider: str = "elevenlabs"
     tts_model: str | None = None
@@ -147,7 +145,6 @@ class Orchestrator:
         self._runner = runner or self._run_subprocess
         self._on_update = on_update
         self._cancel = threading.Event()
-        self._voice_lock = threading.Lock()
         self._thread: threading.Thread | None = None
 
     def start(self) -> Run:
@@ -215,9 +212,8 @@ class Orchestrator:
                 raise RuntimeError("outline failed")
             if not self._exec(run.jobs["cast"]):
                 raise RuntimeError("cast failed")
-            episodes = sorted({j.episode for j in run.jobs.values() if j.episode})
-            with ThreadPoolExecutor(max_workers=max(1, self.params.max_parallel_episodes)) as pool:
-                list(pool.map(self._episode_pipeline, episodes))
+            for n in sorted({j.episode for j in run.jobs.values() if j.episode}):
+                self._episode_pipeline(n)
             failed = [j.id for j in run.jobs.values() if j.status == "failed"]
             run.status = "failed" if failed else ("cancelled" if self._cancel.is_set() else "done")
             if failed:
@@ -240,11 +236,7 @@ class Orchestrator:
                 job.status = "skipped"
                 self._update()
                 continue
-            if stage == "voice":
-                with self._voice_lock:
-                    ok = self._exec(job)
-            else:
-                ok = self._exec(job)
+            ok = self._exec(job)
             if job.stage == "voice" and job.summary.get("placeholder_voices"):
                 note = (f"{e}: ElevenLabs rejected voice(s) {', '.join(job.summary['placeholder_voices'])} on this plan; "
                         f"rendered with placeholder premade voices. Upgrade the plan and re-run with overwrite to use the real Voice IPs.")
@@ -405,7 +397,6 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--only", help="episode numbers to produce, e.g. 6-10 or 3,7 (resume an existing series)")
     ap.add_argument("--min-sec", type=int, default=50)
     ap.add_argument("--max-sec", type=int, default=70)
-    ap.add_argument("--parallel", type=int, default=2)
     ap.add_argument("--tts", choices=PROVIDER_NAMES, default=None, help="TTS engine (default AI_AUDIO_TTS_PROVIDER)")
     ap.add_argument("--tts-model", default=None)
     ap.add_argument("--force", action="store_true")
@@ -427,7 +418,7 @@ def main(argv: list[str] | None = None) -> int:
         bible = SeriesBible.model_validate_json(naming.series_bible_path(a.series).read_text(encoding="utf-8"))
         episodes = len(bible.episodes) or episodes
     params = RunParams(series_id=a.series, episodes=episodes, produce=a.produce, min_sec=a.min_sec, max_sec=a.max_sec,
-                       max_parallel_episodes=a.parallel, force=a.force, tts_provider=provider, tts_model=model, only=only)
+                       force=a.force, tts_provider=provider, tts_model=model, only=only)
     story: StoryInput | str | None = None
     if a.story:
         text = a.story.read_text(encoding="utf-8")

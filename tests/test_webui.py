@@ -142,6 +142,7 @@ def test_interrupted_run_marked_on_startup(client, tmp_path):
 
 def test_usage_summary(client, monkeypatch):
     from datetime import UTC, datetime
+
     from pipeline import usage
     monkeypatch.setattr(usage, "elevenlabs_subscription", lambda: {"available": False, "reason": "test"})
     usage.record_event("gemini", "gemini-3.1-flash-tts-preview", "quota_daily", status=429,

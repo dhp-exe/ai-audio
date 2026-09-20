@@ -40,7 +40,6 @@ export function StoryForm({ cfg, existing, onStarted }: { cfg: Config; existing?
   const [minSec, setMinSec] = useState(existing?.run?.min_sec ?? cfg.defaults.min_sec);
   const [maxSec, setMaxSec] = useState(existing?.run?.max_sec ?? cfg.defaults.max_sec);
   const [produce, setProduce] = useState(cfg.defaults.produce);
-  const [parallel, setParallel] = useState(cfg.defaults.parallel);
   const [seriesId, setSeriesId] = useState(existing?.series_id ?? "");
   const [force, setForce] = useState(editing);
   const [busy, setBusy] = useState(false);
@@ -63,7 +62,7 @@ export function StoryForm({ cfg, existing, onStarted }: { cfg: Config; existing?
       title, total_minutes: minutes ? +minutes : null, genre, setting,
       roles: roles.filter((r) => r.name.trim()).map((r) => ({ name: r.name.trim(), description: r.description.trim(), actor_id: r.actor_id || null })),
       roles_text: rolesText, script, series_id: seriesId || null, episodes, produce: produce || null, min_sec: minSec, max_sec: maxSec,
-      parallel, force, tts_provider: provider, tts_model: model || null,
+      force, tts_provider: provider, tts_model: model || null,
     };
     try { const run = await api.startRun(body); onStarted(run.run_id); }
     catch (ex) { setErr((ex as Error).message); }
@@ -157,7 +156,6 @@ export function StoryForm({ cfg, existing, onStarted }: { cfg: Config; existing?
         <Field label="Min s / ep"><input className="field" type="number" min={20} value={minSec} onChange={(e) => setMinSec(+e.target.value)} /></Field>
         <Field label="Max s / ep"><input className="field" type="number" min={20} value={maxSec} onChange={(e) => setMaxSec(+e.target.value)} /></Field>
         <Field label="Produce now"><input className="field" type="number" min={1} max={99} value={produce} onChange={(e) => setProduce(+e.target.value)} /></Field>
-        <Field label="Parallel"><input className="field" type="number" min={1} max={4} value={parallel} onChange={(e) => setParallel(+e.target.value)} /></Field>
         <Field label="Series id"><input className="field font-mono" value={seriesId} onChange={(e) => setSeriesId(e.target.value)} placeholder="auto" readOnly={editing} /></Field>
       </div>
       {!editing && (

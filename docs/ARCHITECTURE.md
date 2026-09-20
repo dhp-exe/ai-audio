@@ -258,14 +258,13 @@ every transition.
 flowchart LR
     O[outline] --> C[cast<br/>one voice per role on the run's engine<br/>placeholders for new roles]
     C --> D1[ep01.draft] --> P1[ep01.direct] --> V1[ep01.voice] --> A1[ep01.assemble] --> Q1[ep01.qa]
-    C --> D2[ep02.draft] --> P2[ep02.direct] --> V2[ep02.voice] --> A2[ep02.assemble] --> Q2[ep02.qa]
-    C --> D3[…]
-    V1 -. voice lock: one episode at a time .- V2
+    Q1 --> D2[ep02.draft] --> P2[ep02.direct] --> V2[ep02.voice] --> A2[ep02.assemble] --> Q2[ep02.qa]
+    Q2 --> D3[…]
 ```
 
-Rules: episodes run in parallel up to `parallel` (default 2) for the LLM stages; the voice stage
-holds a lock so only one episode talks to the TTS engine at a time; a failed job skips the rest of
-that episode but other episodes continue; the run is `done` only if no job failed. A run can target a
+Rules: episodes are produced one after another in order (one episode's five stages complete before the
+next starts); a failed job skips the rest of that episode but the following episodes continue; the run
+is `done` only if no job failed. A run can target a
 subset of episodes (`only=[...]`), which is how the Library continues an unfinished series: the outline
 and existing drafts are kept, stems are cached by hash, masters and QA are recomputed.
 

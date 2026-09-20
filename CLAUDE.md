@@ -260,7 +260,7 @@ python -m pipeline.orchestrator --series s1 --only 6-10 --tts elevenlabs        
 ```
 
 The orchestrator runs the skill CLIs as jobs (outline -> cast -> per-episode draft -> direct -> voice -> assemble -> qa),
-up to 2 episodes in parallel for LLM stages and one at a time for TTS. The engine is a run parameter; the cast job gives
+one episode at a time, in order. The engine is a run parameter; the cast job gives
 every actor a voice on that engine (one voice per role, never shared): roles the outline invents get placeholder voices
 (one-off, flagged in the run notes) and IP actors missing a voice on the engine get one auto-assigned. `--only` / the
 Library's "Continue" produce the remaining episodes of an existing series. Full walkthrough: `docs/ARCHITECTURE.md`.

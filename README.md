@@ -40,31 +40,29 @@ Related documents: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) (stage internals
 
 ## 1. How it works at a glance
 
+What you do, and what the studio does for you, from the first paste to the finished episodes:
+
 ```mermaid
-flowchart LR
-    U([Director]) -->|fills Overview · Characters · Script<br/>picks engine, episodes, length| WEB[Web client<br/>web/ · Next.js]
-    WEB -->|POST /api/runs| API[FastAPI backend<br/>pipeline/webui]
-    API --> ORCH[Orchestrator<br/>pipeline/orchestrator.py]
-    ORCH -->|1 call| OUT[Outline + casting<br/>Gemini LLM]
-    OUT --> CAST[Cast job<br/>one voice per role on the chosen engine]
-    CAST --> DRAFT[Draft episode<br/>Gemini LLM]
-    DRAFT --> DIR[AI Director<br/>Gemini LLM]
-    DIR --> TTS[Voice<br/>ElevenLabs or Gemini TTS<br/>one request per line]
-    TTS --> MIX[Assemble<br/>FFmpeg concat + loudness]
-    MIX --> QA[QA checks]
-    QA --> M[(series/&lt;id&gt;/masters/epNN_master.mp3)]
-    M -->|players, progress, continue| WEB
-    REG[(library/voice-ips.json<br/>Character IP registry)] --> OUT
-    REG --> TTS
+flowchart TD
+    A([You paste your story:<br/>overview, characters, script]) --> B([You choose the voice engine and model,<br/>how many episodes and how long])
+    B --> C([Start producing])
+    C --> D[The AI plans the series<br/>and splits the story into episodes]
+    D --> E[The AI casts every character:<br/>your pinned Character IPs stay,<br/>the rest get the best-fitting voice]
+    E --> F[Episode by episode…]
+    F --> G[Write the episode script]
+    G --> H[Direct every line:<br/>emotion, pace, pauses]
+    H --> I[Voice every line<br/>with the cast's voices]
+    I --> J[Mix into one episode<br/>at broadcast loudness]
+    J --> K[Quality check]
+    K -->|next episode| F
+    K --> L([Listen in the Library,<br/>continue the rest whenever you like])
 ```
 
-In words: the director pastes a story and describes its characters in the browser, optionally
-pinning a Character IP to a role. One LLM call plans the episodes and casts every role onto a
-registry actor. For each episode the pipeline drafts a screenplay, has an AI Director annotate every
-line (emotion, intensity, pace, tags), renders each line with the actor's voice on the selected
-engine, concatenates and normalizes the stems into a master, and runs QA checks. The web client
-shows the run like a CI board and keeps every story in a library from which production can be
-continued later.
+In words: you describe the story and its characters, optionally pin a Character IP to a role, pick
+the voice engine, and press start. The studio plans the episodes and casts the remaining roles from
+your Character IPs, then produces the episodes one after another: script, direction, voices, mix,
+check. Finished episodes appear in the Library with a player, and production can be continued from
+where it stopped.
 
 ## 2. Architecture
 
@@ -89,7 +87,7 @@ flowchart TB
 
     subgraph Backend["python -m pipeline.webui · :8765"]
         A[FastAPI routes<br/>/api/*]
-        O[Orchestrator thread<br/>job graph, 2 episodes in parallel,<br/>voice stage serialized]
+        O[Orchestrator thread<br/>job graph, one episode at a time]
         A -->|start / resume / cancel| O
     end
 
@@ -150,7 +148,8 @@ Design rules that hold everywhere:
 | 6 | Assemble | `epNN.assemble` | stems, parsed script | Timeline from measured durations (Director pauses clamped to 300–500 ms, 800 ms between scenes, 500 ms tail), FFmpeg concat, two-pass loudnorm to -16 LUFS / -1.5 dBTP stereo, MP3 192 kbps. | `timelines/epNN_timeline.json`, `masters/epNN_master.wav`, `.mp3` |
 | 7 | QA | `epNN.qa` | master, stems | Stems complete, duration versus target, loudness and true peak; a list of lines a human should listen to first; optional human verdict. Failed checks show as a warning, not a failure. | `qa/epNN_report.json` |
 
-Continuing a series later ("Continue producing" in the Library, or `--only` on the CLI) runs the
+Episodes are produced one at a time, in order: all five stages of episode 1 finish before episode 2
+starts. Continuing a series later ("Continue producing" in the Library, or `--only` on the CLI) runs the
 same graph for the remaining episode numbers: the outline and existing drafts are kept, stems come
 from cache, masters and QA are recomputed.
 
@@ -289,7 +288,7 @@ an IP pinned twice, unknown model or engine, missing key), `423` registry locked
 
 | method and path | body | purpose |
 |---|---|---|
-| `POST /api/runs` | `title`, `total_minutes?`, `genre`, `setting`, `roles[] {name, description, actor_id?}`, `roles_text`, `script` (≥ 50 chars), `episodes` (1–99), `produce?`, `min_sec`, `max_sec`, `parallel` (1–4), `force`, `series_id?`, `tts_provider`, `tts_model?` | Writes the story, starts a run in a background thread, returns the run state. One run at a time. |
+| `POST /api/runs` | `title`, `total_minutes?`, `genre`, `setting`, `roles[] {name, description, actor_id?}`, `roles_text`, `script` (≥ 50 chars), `episodes` (1–99), `produce?`, `min_sec`, `max_sec`, `force`, `series_id?`, `tts_provider`, `tts_model?` | Writes the story, starts a run in a background thread, returns the run state. One run at a time. |
 | `GET /api/runs` | — | `active[]` (in memory) and `persisted[]` (from state files). |
 | `GET /api/runs/{run_id}` | — | Run state: `status` (`pending`, `running`, `done`, `failed`, `cancelled`), `params`, `casting[]`, `notes[]`, `jobs[]` (id, stage, episode, status `pending`/`running`/`done`/`warn`/`failed`/`skipped`, timestamps, summary, error). |
 | `POST /api/runs/{run_id}/cancel` | — | Stops after the current jobs. |
@@ -301,7 +300,7 @@ an IP pinned twice, unknown model or engine, missing key), `423` registry locked
 |---|---|---|
 | `GET /api/library` | — | `series[]`: id, title, genre, mode, planned / drafted / directed / produced counts, QA counts, `remaining[]`, `status` (`new`, `in_progress`, `complete`), last `run` (id, status, engine, model, lengths), `roles[]`, `active_run`. |
 | `GET /api/series/{id}` | — | Everything above plus `story` (the StoryInput), `bible` (premise, tone, mode, protagonist), `episodes[]` (draft, direct, stems, master_url, duration, qa), `run_state`. |
-| `POST /api/series/{id}/resume` | `next?` (produce the next N episodes without a master), `episodes?[]`, `tts_provider?`, `tts_model?`, `parallel`, `force` | Starts a run for the remaining episodes. Engine and model default to the last run's. |
+| `POST /api/series/{id}/resume` | `next?` (produce the next N episodes without a master), `episodes?[]`, `tts_provider?`, `tts_model?`, `force` | Starts a run for the remaining episodes. Engine and model default to the last run's. |
 | `DELETE /api/series/{id}` | — | Removes the series folder. Refused while a run is active for it. |
 | `GET /api/series/{id}/master/{ep}.mp3` | — | The master as `audio/mpeg`. |
 | `GET /api/series/{id}/episode/{ep}` | — | Parsed script, QA report, episode plan and roles. |
@@ -333,7 +332,7 @@ Run any of them with `--help`.
 | Voice | `python .claude/skills/generate-voice/scripts/generate_voice.py --series s1 --episode 1 --provider gemini` | `--model-override`, `--lines id,…`, `--force`, `--concurrency`; `one --voice-id … --text … --out …` for a single clip |
 | Assemble | `python .claude/skills/assemble-audio/scripts/assemble_audio.py --series s1 --episode 1` | `--timeline-only`, `--render-only`, `--padding-ms`, `--fixed-padding`, `--scene-gap-ms`, `--lufs`, `--true-peak` |
 | QA | `python .claude/skills/qa-audio/scripts/qa_audio.py --series s1 --episode 1` | `--verdict approved\|rejected --reviewer name --notes …`, `--transcribe` |
-| Whole run | `python -m pipeline.orchestrator --series s1 --story story.txt --episodes 30 --produce 5 --tts gemini` | `--only 6-10` (continue), `--tts-model`, `--parallel`, `--force`, `--min-sec`, `--max-sec` |
+| Whole run | `python -m pipeline.orchestrator --series s1 --story story.txt --episodes 30 --produce 5 --tts gemini` | `--only 6-10` (continue), `--tts-model`, `--force`, `--min-sec`, `--max-sec` |
 
 Fixing one bad line: edit `scripts/parsed/epNN.json`, run `generate-voice --lines <line_id> --force`,
 then `assemble-audio` and `qa-audio`. Fixing the writing: edit `scripts/raw/epNN.txt` and re-run from

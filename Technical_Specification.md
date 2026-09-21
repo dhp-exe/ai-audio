@@ -400,15 +400,21 @@ retention-testing funnel whose value depends on comparable outputs.
 
 ```mermaid
 flowchart LR
-    V[voice] --> M[measure each unit/segment<br/>duration vs expected · clipping · silence · STT transcript · header leak]
-    M --> J{judge needed?}
-    J -- peak lines, WER borderline --> LLMJ[Gemini audio judge<br/>"is the delivery <emotion> at <intensity>? is text verbatim?"]
-    J -- clear pass/fail --> P
-    LLMJ --> P[policy table → action]
-    P -- re-render (budget left) --> V
-    P -- pass --> A[assemble]
-    P -- give up --> H[human queue<br/>review_lines + reason]
-    A --> Q[qa master checks]
+    V["Voice"] --> M["Measure each unit/segment<br/>duration vs expected · clipping · silence · STT transcript · header leak"]
+
+    M --> J{"Judge needed?"}
+
+    J -- "Peak lines, WER borderline" --> LLMJ["Gemini audio judge<br/>Is the delivery emotion at intensity?<br/>Is text verbatim?"]
+
+    J -- "Clear pass/fail" --> P["Policy table → action"]
+
+    LLMJ --> P
+
+    P -- "Re-render (budget left)" --> V
+    P -- "Pass" --> A["Assemble"]
+    P -- "Give up" --> H["Human queue<br/>review_lines + reason"]
+
+    A --> Q["QA master checks"]
 ```
 
 Measurements (all deterministic, FFmpeg-based or a cheap LLM call):

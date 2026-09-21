@@ -5,7 +5,7 @@ __pycache__/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
-
+.DS_Store
 # Generated audio is large and reproducible from scripts + registry. Keep out of git.
 series/*/stems/
 series/*/masters/

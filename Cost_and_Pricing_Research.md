@@ -14,7 +14,7 @@
 - **Gemini TTS is the cheapest by far**: about $0.50 to $0.95 per 30-minute day ($14 to $28 a month) once billing is enabled. Its free tier cannot sustain the daily target (10 requests per day per model).
 - **ElevenLabs is the most expressive and the only one with our Character IP voices**, at about $3.20 per day. A daily cadence needs the **Pro plan ($99/month)**; depending on how the plan allowance is counted (see 3.1) the real monthly cost is $99 to about $165.
 - **MiniMax sits in the middle** ($1.90 to $3.20 per day, $58 to $96 a month pay as you go) with the best explicit pause control and the cheapest voice cloning, but it is **not integrated in the pipeline today** (adapter removed 2026-09-20).
-- **Optimal setup**: produce the daily retention-test episodes on **Gemini 2.5 Flash TTS (paid tier)** and re-voice the series that win on **ElevenLabs Pro**. Expected spend: about $20 a month while testing, plus about $100 per winning series-month. Details in section 8.
+- **Optimal setup**: produce the daily episodes on **Gemini 2.5 Flash TTS (paid tier)**, about $14 a month. Each series is rendered exactly once, on one engine chosen before production starts; ElevenLabs Pro is reserved for a series that must launch on the Character IP voices from its first episode. Details in section 8.
 
 ---
 
@@ -107,7 +107,7 @@ What matters for our micro-dramas: Vietnamese support, how delivery is directed 
 Two facts that change model choices:
 
 - **ElevenLabs Multilingual v2 does not list Vietnamese.** It is currently our same-voice fallback model. Flash v2.5 does support Vietnamese and costs half; it should be the fallback.
-- **Voice identity is the product.** Only ElevenLabs (now) and MiniMax (cheaply) can carry a cloned Character IP voice. Gemini's 30 fixed voices are fine for testing but cannot become an IP asset. This is why the recommendation separates a *test* tier from a *final* tier.
+- **Voice identity is the product.** Only ElevenLabs (now) and MiniMax (cheaply) can carry a cloned Character IP voice. Gemini's 30 fixed voices are fine for daily production but cannot become an IP asset. This is why the engine is chosen per series before production starts: a series is rendered once, on one engine, and never rendered again on another.
 
 ---
 
@@ -135,19 +135,23 @@ How the Gemini figures are computed: 1,800 s × 25 tokens = 45,000 audio tokens 
 
 | Scenario | What runs where | Monthly TTS cost |
 |---|---|---|
+Every series is rendered once; the scenarios differ only in which engine is chosen before production.
+
+| Scenario | What runs where | Monthly TTS cost |
+|---|---|---|
 | A. All Gemini | every episode on 2.5 Flash TTS (or 3.1) | $14 to $28 |
-| B. **Test on Gemini, re-voice winners on ElevenLabs** | daily episodes on Gemini; one series in four re-voiced on v3 | $14 + ≈ $25 to $40 of Pro allowance used, but Pro is $99 flat: **≈ $115** all-in, or $14 in months with no winner if Pro is paused |
-| C. All ElevenLabs v3 | every episode on the IP voices | $99 to $165 |
-| D. All MiniMax turbo | every episode, cloned voices | $58 (+ one-time $1.50 per voice) |
-| E. Mixed roles | leads on ElevenLabs v3, supporting roles on Gemini | ≈ $55 to $70 |
+| B. All ElevenLabs v3 | every episode on the IP voices | $99 to $165 |
+| C. All MiniMax turbo | every episode, cloned voices | $58 (+ one-time $1.50 per voice) |
+| D. Mixed roles | leads on ElevenLabs v3, supporting roles on Gemini, in the same series | ≈ $55 to $70 |
+| E. Per-series choice | most series on Gemini; a series that must launch on IP voices produced on ElevenLabs from episode 1 | $14 to $28 in Gemini-only months; $99 to $165 in a month with an ElevenLabs series |
 
 ---
 
 ## 6. Vendor-by-vendor verdict
 
-**ElevenLabs.** Best acting range and the only engine that already hosts our IP voices and the professional cloning the voice track needs. Costs about 3.5 to 7 times Gemini. Buy Pro only when a series is worth its IP voices; Creator ($22, 220k characters) covers about 7 daily episodes per month plus PVC and is the right plan for the cloning experiments themselves.
+**ElevenLabs.** Best acting range and the only engine that already hosts our IP voices and the professional cloning the voice track needs. Costs about 3.5 to 7 times Gemini. Buy Pro only for a month in which a series is produced on its IP voices from the first episode; Creator ($22, 220k characters) covers about 7 daily episodes per month plus PVC and is the right plan for the cloning experiments themselves.
 
-**Gemini TTS.** Cheapest production path by an order of magnitude and already the pipeline's default with scene batching. Limits: preview models, 30 fixed voices, two speakers per request, no cloning, quotas that require billing to be useful. Right choice for the retention-test funnel where volume matters more than voice identity. Prefer 2.5 Flash TTS at half the price unless listening tests show 3.1's voices win.
+**Gemini TTS.** Cheapest production path by an order of magnitude and already the pipeline's default with scene batching. Limits: preview models, 30 fixed voices, two speakers per request, no cloning, quotas that require billing to be useful. Right choice for the daily production where volume matters more than voice identity. Prefer 2.5 Flash TTS at half the price unless listening tests show 3.1's voices win.
 
 **MiniMax.** Worth keeping on the list for two features nobody else offers at this price: exact inline pauses and $1.50 voice cloning. It would suit the cloning track as a low-cost home for custom voices if ElevenLabs PVC proves too expensive per slot. Cost of adoption is one adapter and re-validation of the emotion mapping; not needed for the current plan.
 
@@ -166,11 +170,11 @@ How the Gemini figures are computed: 1,800 s × 25 tokens = 45,000 audio tokens 
 ## 8. Recommendation
 
 1. **Enable billing on the Gemini project now** and run the daily 30-minute cadence on **gemini-2.5-flash-preview-tts** with scene batching. Budget: about $14 a month (about $28 if 3.1 Flash is preferred after a listening test). This unblocks the daily target immediately with no code change.
-2. **Take ElevenLabs Creator ($22) for the voice-cloning track** (Professional Voice Cloning, library voices, 220k characters for auditions) and **upgrade to Pro ($99) only in months when a winning series is re-voiced**. Switch the same-voice fallback from Multilingual v2 to Flash v2.5.
+2. **Take ElevenLabs Creator ($22) for the voice-cloning track** (Professional Voice Cloning, library voices, 220k characters for auditions) and **upgrade to Pro ($99) only for a month in which a series is produced on the IP voices from its first episode**. Switch the same-voice fallback from Multilingual v2 to Flash v2.5.
 3. **Do not reinstate MiniMax now.** Revisit if the cloning track needs many cheap custom voices or if exact inline pauses become a quality requirement; the adapter cost is small.
-4. Add the "re-voice a finished series on another engine" action to the Library so scenario B is one click and scripts, direction and timelines are reused.
+4. **Decide the engine per series before production and never render a series twice.** Re-voicing a finished series on another engine would double its TTS spend; the pipeline's hash cache already guarantees that an unchanged episode is never re-rendered on the same engine.
 
-Expected steady-state spend under this plan: **about $20 a month while testing, about $120 in a month with one winning series re-voiced**, versus $100 to $165 a month for producing everything on ElevenLabs.
+Expected steady-state spend under this plan: **about $14 to $28 a month** for daily production on Gemini, rising to $99 to $165 only in a month with an ElevenLabs series, versus $100 to $165 every month for producing everything on ElevenLabs.
 
 ---
 

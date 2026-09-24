@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Skill(claude-api)",
-      "Skill(claude-api:*)"
+      "Skill(claude-api:*)",
+      "WebFetch(domain:app.v1ron.com)"
     ]
   }
 }

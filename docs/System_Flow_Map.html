@@ -1,0 +1,710 @@
+<title>Inkloom Pipeline Map</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #0b0b12;
+    --panel: #12121c;
+    --panel-2: #181826;
+    --text: #e8e8f2;
+    --muted: #8d8fa6;
+    --line: #26263a;
+    --accent: #8b5cf6;
+    --accent-ink: #ffffff;
+    --core: #8b5cf6;  --core-soft: #1e1638;
+    --db: #34d399;    --db-soft: #0f2a1e;
+    --cache: #f87171; --cache-soft: #2a1215;
+    --domain: #2dd4bf; --domain-soft: #0e2a2e;
+    --ext: #f59e0b;   --ext-soft: #2a1d0a;
+    --dev: #9ca3af;   --dev-soft: #1a1a22;
+    --edge-line: #9a9cb8;
+    --cluster: #10101a;
+    --cluster-line: #2c2c44;
+    --font: "IBM Plex Sans", "Segoe UI", Roboto, system-ui, sans-serif;
+    --mono: "IBM Plex Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      color-scheme: light;
+      --bg: #f4f4f8; --panel: #ffffff; --panel-2: #eeeef4; --text: #17172a; --muted: #5d5f78; --line: #d6d7e3;
+      --accent: #6d3fe0; --accent-ink: #ffffff;
+      --core: #6d3fe0; --core-soft: #ebe4ff; --db: #15803d; --db-soft: #dcf5e6; --cache: #c0392b; --cache-soft: #fbe3e1;
+      --domain: #0f766e; --domain-soft: #d9f3f0; --ext: #b45309; --ext-soft: #fdebd0; --dev: #6b7280; --dev-soft: #e8e9ee;
+      --edge-line: #5d5f78; --cluster: #f9f9fc; --cluster-line: #cfd0de;
+    }
+  }
+  :root[data-theme="light"] {
+    color-scheme: light;
+    --bg: #f4f4f8; --panel: #ffffff; --panel-2: #eeeef4; --text: #17172a; --muted: #5d5f78; --line: #d6d7e3;
+    --accent: #6d3fe0; --accent-ink: #ffffff;
+    --core: #6d3fe0; --core-soft: #ebe4ff; --db: #15803d; --db-soft: #dcf5e6; --cache: #c0392b; --cache-soft: #fbe3e1;
+    --domain: #0f766e; --domain-soft: #d9f3f0; --ext: #b45309; --ext-soft: #fdebd0; --dev: #6b7280; --dev-soft: #e8e9ee;
+    --edge-line: #5d5f78; --cluster: #f9f9fc; --cluster-line: #cfd0de;
+  }
+  html, body { height: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--font); font-size: 14px; line-height: 1.5; overflow: hidden; }
+  .app { height: 100%; display: flex; flex-direction: column; }
+  header.bar { flex: 0 0 auto; display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-bottom: 1px solid var(--line); background: var(--panel); }
+  .brand { display: flex; align-items: baseline; gap: 10px; white-space: nowrap; }
+  .brand b { font-size: 18px; letter-spacing: .02em; }
+  .brand span { color: var(--muted); font-size: 13px; }
+  .tabs { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; flex: 1 1 auto; min-width: 0; padding: 2px; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab { flex: 0 0 auto; border: 1px solid var(--line); background: transparent; color: var(--text); font: inherit; font-size: 13px; padding: 6px 12px; border-radius: 6px; cursor: pointer; }
+  .tab[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .zoom { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+  .zoom button { border: 1px solid var(--line); background: transparent; color: var(--text); font: inherit; width: 32px; height: 30px; border-radius: 6px; cursor: pointer; }
+  .zoom button:hover { background: var(--panel-2); }
+  .zoom button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .zoom .pct { min-width: 44px; text-align: center; color: var(--muted); font-variant-numeric: tabular-nums; font-size: 13px; }
+  main { flex: 1 1 auto; position: relative; min-height: 0; }
+  .view { position: absolute; inset: 0; }
+  .view[hidden] { display: none !important; }
+  .canvas { position: absolute; inset: 0; overflow: hidden; cursor: grab; touch-action: none; background:
+    radial-gradient(circle at 1px 1px, var(--line) 1px, transparent 1.2px) 0 0 / 28px 28px; }
+  .canvas.dragging { cursor: grabbing; }
+  .stage { position: absolute; left: 0; top: 0; width: max-content; transform-origin: 0 0; will-change: transform; }
+  .stage svg { display: block; max-width: none; height: auto; }
+  .stage .err { color: var(--cache); font-family: var(--mono); font-size: 12px; white-space: pre-wrap; padding: 16px; }
+  .brief { position: absolute; left: 16px; top: 12px; max-width: min(520px, calc(100% - 32px)); background: color-mix(in srgb, var(--panel) 88%, transparent); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; font-size: 13px; pointer-events: none; backdrop-filter: blur(4px); }
+  .brief h2 { margin: 0 0 4px; font-size: 14px; font-weight: 600; }
+  .brief p { margin: 0; color: var(--muted); }
+  .legend { position: absolute; left: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); background: color-mix(in srgb, var(--panel) 92%, transparent); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; display: grid; gap: 6px; font-size: 13px; pointer-events: none; }
+  .legend .sw { display: flex; align-items: center; gap: 8px; }
+  .legend .sw i { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+  .hint { position: absolute; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); color: var(--muted); font-size: 12px; pointer-events: none; }
+  @media (max-width: 640px) { .legend { display: none; } .brief { top: 8px; } .brand span { display: none; } }
+  /* reference view */
+  .ref { position: absolute; inset: 0; overflow: auto; padding: 20px 16px 48px; }
+  .ref .inner { max-width: 1080px; margin: 0 auto; display: grid; gap: 32px; }
+  .ref h2 { font-size: 18px; margin: 0 0 4px; }
+  .ref p { margin: 6px 0; max-width: 72ch; color: var(--muted); }
+  .tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; }
+  th, td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+  tr:last-child td { border-bottom: 0; }
+  th { color: var(--muted); font-weight: 600; font-size: 11.5px; letter-spacing: .05em; text-transform: uppercase; white-space: nowrap; background: var(--panel-2); }
+  code { font-family: var(--mono); font-size: 12px; background: var(--panel-2); padding: 1px 5px; border-radius: 3px; }
+  .pill { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 12px; font-weight: 500; border: 1px solid; }
+  .pill.core { color: var(--core); border-color: var(--core); background: var(--core-soft); }
+  .pill.db { color: var(--db); border-color: var(--db); background: var(--db-soft); }
+  .pill.cache { color: var(--cache); border-color: var(--cache); background: var(--cache-soft); }
+  .pill.domain { color: var(--domain); border-color: var(--domain); background: var(--domain-soft); }
+  .pill.ext { color: var(--ext); border-color: var(--ext); background: var(--ext-soft); }
+  .pill.dev { color: var(--dev); border-color: var(--dev); background: var(--dev-soft); }
+  ol.rules { padding-left: 20px; margin: 8px 0; max-width: 78ch; }
+  ol.rules li { margin-bottom: 6px; }
+  @media (prefers-reduced-motion: reduce) { .stage { transition: none; } }
+</style>
+
+<div class="app">
+  <header class="bar">
+    <div class="brand"><b>Inkloom</b><span>AI Audio Pipeline · production map on v1ron OS</span></div>
+    <div class="tabs" role="tablist" aria-label="Views">
+      <button class="tab" role="tab" id="tab-arch" aria-controls="view-arch" aria-selected="true" data-view="arch">Architecture</button>
+      <button class="tab" role="tab" id="tab-v1ron" aria-controls="view-v1ron" aria-selected="false" data-view="v1ron">v1ron Wiring</button>
+      <button class="tab" role="tab" id="tab-run" aria-controls="view-run" aria-selected="false" data-view="run">Run Flow</button>
+      <button class="tab" role="tab" id="tab-agents" aria-controls="view-agents" aria-selected="false" data-view="agents">Agent Pipeline</button>
+      <button class="tab" role="tab" id="tab-daily" aria-controls="view-daily" aria-selected="false" data-view="daily">Daily Schedule</button>
+      <button class="tab" role="tab" id="tab-ref" aria-controls="view-ref" aria-selected="false" data-view="ref">Reference</button>
+    </div>
+    <div class="zoom" id="zoom-controls">
+      <button id="zoom-in" type="button" title="Zoom in" aria-label="Zoom in">+</button>
+      <span class="pct" id="zoom-pct">100%</span>
+      <button id="zoom-out" type="button" title="Zoom out" aria-label="Zoom out">−</button>
+      <button id="zoom-fit" type="button" title="Fit to screen" aria-label="Fit to screen">⤢</button>
+      <button id="zoom-reset" type="button" title="Reset" aria-label="Reset zoom">⟳</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="view" id="view-arch" role="tabpanel" aria-labelledby="tab-arch" data-diagram="arch">
+      <div class="canvas"><div class="stage"></div></div>
+      <div class="brief"><h2>Production architecture</h2><p>Browser and agents enter through Cloudflare and the existing GCE nginx proxy; the audio domain stack runs on our Mac mini; core v1ron services stay on v1ronmaster; paid vendors are reached only from workers.</p></div>
+      <div class="legend" aria-hidden="true">
+        <div class="sw"><i style="background: var(--core)"></i>Core app / MCP</div>
+        <div class="sw"><i style="background: var(--db)"></i>Database</div>
+        <div class="sw"><i style="background: var(--cache)"></i>Cache / Redis</div>
+        <div class="sw"><i style="background: var(--domain)"></i>Domain stack: audio</div>
+        <div class="sw"><i style="background: var(--ext)"></i>External / vendor</div>
+        <div class="sw"><i style="background: var(--dev)"></i>Edge / ops</div>
+      </div>
+      <div class="hint">Scroll to zoom · Drag to pan</div>
+    </section>
+
+    <section class="view" id="view-v1ron" role="tabpanel" aria-labelledby="tab-v1ron" data-diagram="v1ron" hidden>
+      <div class="canvas"><div class="stage"></div></div>
+      <div class="brief"><h2>How the audio stack wires into v1ron</h2><p>Same shape as the accounting domain: service, MCP and database. Three seams to the core: the v1ron_mcp gateway, v1ron_redis events, and v1ron_media for approved masters. v1ron_cron fires the daily run.</p></div>
+      <div class="legend" aria-hidden="true">
+        <div class="sw"><i style="background: var(--core)"></i>Core app / MCP</div>
+        <div class="sw"><i style="background: var(--db)"></i>Database</div>
+        <div class="sw"><i style="background: var(--cache)"></i>Cache / Redis</div>
+        <div class="sw"><i style="background: var(--domain)"></i>Domain stack</div>
+        <div class="sw"><i style="background: var(--ext)"></i>External</div>
+      </div>
+      <div class="hint">Scroll to zoom · Drag to pan</div>
+    </section>
+
+    <section class="view" id="view-run" role="tabpanel" aria-labelledby="tab-run" data-diagram="run" hidden>
+      <div class="canvas"><div class="stage"></div></div>
+      <div class="brief"><h2>Starting a run from the browser</h2><p>audio-service validates, records and enqueues; a worker does the paid work; the browser follows over Server-Sent Events and plays audio through presigned URLs.</p></div>
+      <div class="hint">Scroll to zoom · Drag to pan</div>
+    </section>
+
+    <section class="view" id="view-agents" role="tabpanel" aria-labelledby="tab-agents" data-diagram="agents" hidden>
+      <div class="canvas"><div class="stage"></div></div>
+      <div class="brief"><h2>Worker pipeline with the three agents</h2><p>AI Scene Planner, AI Director Agent and AI QA Agent, each bounded by schemas, budgets and a human gate before publication.</p></div>
+      <div class="hint">Scroll to zoom · Drag to pan</div>
+    </section>
+
+    <section class="view" id="view-daily" role="tabpanel" aria-labelledby="tab-daily" data-diagram="daily" hidden>
+      <div class="canvas"><div class="stage"></div></div>
+      <div class="brief"><h2>Daily production schedule</h2><p>v1ron_cron triggers the plan at 02:00 Ho Chi Minh time; the quota planner decides what fits; every TTS request passes a shared token bucket and lands in the ledger.</p></div>
+      <div class="hint">Scroll to zoom · Drag to pan</div>
+    </section>
+
+    <section class="view ref" id="view-ref" role="tabpanel" aria-labelledby="tab-ref" hidden>
+      <div class="inner">
+        <div>
+          <h2>Domains and edge</h2>
+          <p>Cloudflare provides DNS, TLS and WAF only. The GCE nginx proxy is the single public origin, as it already is for v1ron_app.</p>
+          <div class="tablewrap"><table>
+            <thead><tr><th>Host</th><th>Resolves to</th><th>Purpose</th><th>TLS and caching</th></tr></thead>
+            <tbody>
+              <tr><td><code>inkloom.com</code>, <code>www</code></td><td>Cloudflare DNS → GCE nginx proxy 34.143.227.97 → relay → Traefik (Mac mini) → <code>audio-service</code></td><td>Public catalogue and the operator web client</td><td>Edge TLS 1.3, HSTS; origin certificate on the GCE proxy</td></tr>
+              <tr><td><code>api.inkloom.com</code></td><td>same path, <code>/api/*</code></td><td>JSON API and Server-Sent Events</td><td>WAF 60 requests/min per IP; CORS limited to inkloom.com</td></tr>
+              <tr><td><code>media.inkloom.com</code></td><td>Cloudflare DNS → GCE MinIO (media) bucket</td><td>Approved masters and previews</td><td>CDN cached; unreleased objects only via 1-hour presigned URLs</td></tr>
+              <tr><td><code>audio.v1ron.com</code></td><td>GCE nginx proxy → Traefik (Mac mini)</td><td>Same stack reached from inside v1ron OS</td><td>as above</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+
+        <div>
+          <h2>MCP tools exposed to v1ron</h2>
+          <p><code>audio-mcp :3250</code> is registered through the Domain Enable flow and reached by <code>v1ron_mcp :8001</code> over the gateway edge.</p>
+          <div class="tablewrap"><table>
+            <thead><tr><th>Tool</th><th>Does</th><th>Backed by</th></tr></thead>
+            <tbody>
+              <tr><td><code>audio.create_series</code></td><td>accepts a StoryInput (overview, roles with optional pinned actors, script), engine policy and tier</td><td><code>POST /api/runs</code></td></tr>
+              <tr><td><code>audio.start_run</code> / <code>audio.continue_series</code></td><td>produce N episodes or continue an existing series</td><td><code>POST /api/runs</code>, <code>POST /api/series/{id}/resume</code></td></tr>
+              <tr><td><code>audio.run_status</code></td><td>jobs, casting, notes, errors for a run</td><td><code>GET /api/runs/{id}</code></td></tr>
+              <tr><td><code>audio.list_library</code>, <code>audio.get_episode</code></td><td>progress per series; script, QA and presigned master URL per episode</td><td><code>GET /api/library</code>, <code>GET /api/series/{id}/episode/{ep}</code></td></tr>
+              <tr><td><code>audio.approve_episode</code></td><td>records the human verdict and triggers publication to v1ron_media</td><td><code>POST /api/series/{id}/episode/{ep}/verdict</code></td></tr>
+              <tr><td><code>audio.usage</code></td><td>per-model usage, limits, budgets, resets</td><td><code>GET /api/usage</code></td></tr>
+            </tbody>
+          </table></div>
+        </div>
+
+        <div>
+          <h2>Data plane</h2>
+          <div class="tablewrap"><table>
+            <thead><tr><th>Store</th><th>Holds</th><th>Today's equivalent</th><th>Lifecycle</th></tr></thead>
+            <tbody>
+              <tr><td><span class="pill db">audio-db</span> <code>series</code>, <code>episodes</code></td><td>story input, bible, engine policy, per-episode status, master pointer</td><td><code>story.json</code>, <code>series.json</code></td><td>keep</td></tr>
+              <tr><td><span class="pill db">audio-db</span> <code>runs</code>, <code>jobs</code></td><td>orchestrator state, per-job status, summaries, log pointers</td><td><code>pipeline_run.json</code>, <code>logs/</code></td><td>keep</td></tr>
+              <tr><td><span class="pill db">audio-db</span> <code>characters</code>, <code>voices</code>, <code>voice_identities</code></td><td>Character IP registry, per-engine voices, lock and changelog, identity envelopes</td><td><code>library/voice-ips.json</code></td><td>keep, audited</td></tr>
+              <tr><td><span class="pill db">audio-db</span> <code>stems</code></td><td>hash index: unit id, content hash, object key, duration, cost</td><td><code>*.meta.json</code></td><td>keep</td></tr>
+              <tr><td><span class="pill db">audio-db</span> <code>qa_reports</code>, <code>review_attempts</code>, <code>review_queue</code></td><td>QA agent results, remediation history, human verdicts</td><td><code>qa/epNN_report.json</code></td><td>keep</td></tr>
+              <tr><td><span class="pill db">audio-db</span> <code>usage_ledger</code>, <code>vendor_events</code>, <code>budgets</code></td><td>every paid call, 429/402 events, daily and monthly caps</td><td><code>run.log.jsonl</code>, <code>usage-events.jsonl</code></td><td>keep</td></tr>
+              <tr><td><span class="pill db">audio-db</span> <code>publications</code>, <code>retention_events</code></td><td>where each master was published and listener retention</td><td>plan only</td><td>keep</td></tr>
+              <tr><td><span class="pill domain">audio-minio</span> <code>series/&lt;id&gt;/</code></td><td>story, bible, scripts, <code>stems/epNN/</code> with sidecars and <code>render.json</code>, timelines, masters, qa</td><td><code>series/&lt;id&gt;/</code> on disk</td><td>stems deleted 90 days after approval; masters versioned</td></tr>
+              <tr><td><span class="pill domain">audio-minio</span> <code>library/</code></td><td>previews, probes, <code>cache/&lt;sha256&gt;.wav</code> content-addressed stem cache</td><td><code>library/previews/</code></td><td>cache LRU 180 days</td></tr>
+              <tr><td><span class="pill ext">GCE MinIO (media)</span> <code>inkloom-public/</code></td><td>approved masters and previews at media.inkloom.com</td><td>none</td><td>keep, CDN cached</td></tr>
+              <tr><td><span class="pill cache">audio-redis</span> <code>q:*</code></td><td>job queues with priorities and dead-letter lists</td><td>orchestrator threads</td><td>none</td></tr>
+              <tr><td><span class="pill cache">audio-redis</span> <code>bucket:gemini:&lt;model&gt;:rpm/rpd</code>, <code>bucket:elevenlabs:concurrency</code></td><td>provider token buckets shared by all workers</td><td>per-process concurrency</td><td>rolling</td></tr>
+              <tr><td><span class="pill cache">audio-redis</span> <code>run:&lt;id&gt;:state</code>, <code>preview:*</code></td><td>live run snapshot for SSE, preview pointers</td><td>in-memory run registry</td><td>24 h / none</td></tr>
+              <tr><td><span class="pill cache">v1ron_redis</span> channel <code>audio.events</code></td><td>OS-wide notifications from the audio stack</td><td>none</td><td>ephemeral</td></tr>
+              <tr><td><span class="pill core">v1ron_app</span> SSO</td><td>users and roles; the audio stack stores only user ids</td><td>none</td><td>v1ron</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+
+        <div>
+          <h2>Component inventory</h2>
+          <div class="tablewrap"><table>
+            <thead><tr><th>Component</th><th>Role</th><th>Where</th><th>Scaling</th><th>Cost per month</th></tr></thead>
+            <tbody>
+              <tr><td><span class="pill dev">Cloudflare DNS, TLS, WAF</span></td><td>edge for inkloom.com</td><td>Cloudflare</td><td>managed</td><td>$0 to $20</td></tr>
+              <tr><td><span class="pill dev">GCE nginx proxy, GCE MinIO (media)</span></td><td>public origin, public media bucket</td><td>GCE 34.143.227.97 (existing)</td><td>existing</td><td>existing v1ron cost; about 3 GB of media per month</td></tr>
+              <tr><td><span class="pill domain">Mac mini</span> Apple silicon, 32 GB RAM, 1 TB SSD recommended</td><td>audio domain host</td><td>office LAN 192.168.1.10</td><td>one machine; a second Mac mini can join as extra workers</td><td>one-time about $1,500 to $2,000</td></tr>
+              <tr><td><span class="pill dev">Traefik</span></td><td>LAN reverse proxy and TLS</td><td>container on the Mac mini</td><td>1</td><td>$0</td></tr>
+              <tr><td><span class="pill domain">audio-service :8150</span></td><td>API, web client, SSE, presigned URLs, quota planner</td><td>container</td><td>1 to 2</td><td>$0</td></tr>
+              <tr><td><span class="pill domain">audio-mcp :3250</span></td><td>MCP tools for the v1ron gateway</td><td>container</td><td>1</td><td>$0</td></tr>
+              <tr><td><span class="pill domain">audio-worker</span></td><td>all stages, agents, FFmpeg</td><td>4 containers by default</td><td>queue depth, CPU</td><td>$0</td></tr>
+              <tr><td><span class="pill db">audio-db</span> Postgres 16</td><td>system of record</td><td>container with volume</td><td>1</td><td>$0</td></tr>
+              <tr><td><span class="pill cache">audio-redis</span></td><td>queues, buckets, live state</td><td>container</td><td>1</td><td>$0</td></tr>
+              <tr><td><span class="pill domain">audio-minio</span></td><td>S3-compatible object store</td><td>container with volume</td><td>1</td><td>$0</td></tr>
+              <tr><td><span class="pill dev">restic</span></td><td>nightly database dump and bucket snapshot to GCE MinIO</td><td>container</td><td>1</td><td>storage only</td></tr>
+              <tr><td><span class="pill dev">Grafana, Loki, Prometheus, Uptime Kuma</span></td><td>logs, metrics, alerts</td><td>containers on the Mac mini or v1ronmaster</td><td>1</td><td>$0</td></tr>
+              <tr><td><span class="pill ext">Google Gemini API</span></td><td>LLM for planner, director and judge; TTS; audio understanding</td><td>vendor</td><td>pay as you go</td><td>$14 to $28 for one 30-minute story per day</td></tr>
+              <tr><td><span class="pill ext">ElevenLabs API</span></td><td>TTS v3, Text to Dialogue, voice cloning</td><td>vendor</td><td>Creator or Pro</td><td>$22 or $99 in months it is used</td></tr>
+              <tr><td><span class="pill ext">MiniMax</span></td><td>optional TTS and cloning</td><td>vendor</td><td>pay as you go</td><td>not integrated</td></tr>
+              <tr><td><span class="pill ext">Docker Hub, GitHub</span></td><td>images and source, release.sh</td><td>existing</td><td>existing</td><td>existing</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+
+        <div>
+          <h2>Security and reliability</h2>
+          <ol class="rules">
+            <li>TLS end to end: Cloudflare to the GCE proxy with an origin certificate; GCE proxy to the Mac mini over the existing relay (WireGuard or Tailscale recommended); Traefik terminates LAN TLS.</li>
+            <li>Identity: v1ron SSO tokens verified by audio-service; roles director, reviewer, viewer. Registry changes need director role and the unlock flag; every change lands in the changelog table.</li>
+            <li>Vendor keys live only in audio-worker as Docker secrets; the browser and audio-mcp never see them.</li>
+            <li>Media: unreleased masters and stems only through 1-hour presigned MinIO URLs issued by audio-service; approved masters replicated to the public GCE bucket.</li>
+            <li>Budgets: daily and monthly caps; the QA agent's remediation budget and the quota planner refuse work that would exceed them; the Usage page and the audio.usage tool show both.</li>
+            <li>Reliability: jobs are idempotent and hash-cached, so a crashed worker's job is re-queued and resumes without re-spending; queues have dead-letter lists with alerts; audio-service holds no state.</li>
+            <li>Backups and hardware: nightly restic snapshots to GCE MinIO; MinIO versioning on masters and the library; a UPS on the Mac mini; compose file and .env.example in GitHub so the host can be rebuilt from images in under an hour.</li>
+          </ol>
+        </div>
+
+        <div>
+          <h2>Migration from the current single-machine setup</h2>
+          <div class="tablewrap"><table>
+            <thead><tr><th>Today</th><th>Production</th></tr></thead>
+            <tbody>
+              <tr><td><code>python -m pipeline.webui</code> serving the web export and the API on port 8765</td><td>audio-service container on 8150 behind Traefik, same FastAPI routes plus SSO check and SSE</td></tr>
+              <tr><td>Orchestrator threads inside the API process</td><td>audio-worker containers pulling queue jobs; the job graph keeps its ids and summaries</td></tr>
+              <tr><td><code>series/&lt;id&gt;/</code> on disk</td><td>audio-minio bucket <code>series/&lt;id&gt;/</code> with the same names behind a storage adapter in <code>pipeline/naming.py</code></td></tr>
+              <tr><td><code>library/voice-ips.json</code></td><td><code>characters</code>, <code>voices</code>, <code>voice_identities</code> tables; the lock rule moves into the API</td></tr>
+              <tr><td><code>run.log.jsonl</code>, <code>usage-events.jsonl</code></td><td><code>usage_ledger</code>, <code>vendor_events</code> tables; the Usage page reads SQL</td></tr>
+              <tr><td>Per-process provider concurrency</td><td>audio-redis token buckets shared by all workers</td></tr>
+              <tr><td>Stem hash in sidecar files</td><td><code>stems</code> table plus the content-addressed cache in MinIO</td></tr>
+              <tr><td>Human verdict via CLI or UI</td><td>Review queue page backed by <code>review_queue</code>, with the QA agent's reason attached</td></tr>
+              <tr><td>No integration with v1ron</td><td>audio-mcp registered in Domain Enable; v1ron_cron trigger; audio.events on v1ron_redis; masters registered with v1ron_media</td></tr>
+            </tbody>
+          </table></div>
+          <p>The file contracts, the Pydantic models and the deterministic names, do not change. That is what makes this a storage and deployment migration rather than a rewrite.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  var DIAGRAMS = {
+    arch: [
+      'flowchart TB',
+      '  subgraph L1["1 · Internet"]',
+      '    B["Browser / API client<br/>inkloom.com"]',
+      '    AG["v1ron agents and skills<br/>Story Research Agent"]',
+      '  end',
+      '  subgraph L2["2 · Edge: Cloudflare + GCE 34.143.227.97"]',
+      '    CF["Cloudflare DNS + TLS 1.3 + WAF<br/>inkloom.com, api, media"]',
+      '    GCE["GCE nginx proxy<br/>public origin, relay to LAN"]',
+      '    GM["GCE MinIO (media)<br/>media.inkloom.com bucket"]',
+      '  end',
+      '  subgraph L3a["3 · Prod Server 192.168.1.8 (v1ronmaster), v1ron_net"]',
+      '    APP["v1ron_app :8000<br/>panel, SSO"]',
+      '    MCP["v1ron_mcp :8001<br/>MCP gateway"]',
+      '    CRON["v1ron_cron<br/>daily trigger 02:00"]',
+      '    VRED[("v1ron_redis<br/>pub/sub events")]',
+      '    VMED["v1ron_media :8080<br/>media registry"]',
+      '  end',
+      '  subgraph L3b["3 · Build and release"]',
+      '    GH["GitHub<br/>source, release.sh"]',
+      '    DH["Docker Hub<br/>audio-* images"]',
+      '  end',
+      '  subgraph L4["4 · Audio Server 192.168.1.10 (v1ronaudio), Mac mini, Domain Stack: audio"]',
+      '    TR["Traefik :80/:443<br/>LAN entry, TLS"]',
+      '    SVC["audio-service :8150<br/>FastAPI API + web client + SSE"]',
+      '    AMCP["audio-mcp :3250<br/>MCP tools for the OS"]',
+      '    ARED[("audio-redis<br/>job queues, token buckets, run state")]',
+      '    WRK["audio-worker x4<br/>Scene Planner, Director Agent, QA Agent<br/>FFmpeg native on Apple silicon"]',
+      '    ADB[("audio-db :5432<br/>Postgres")]',
+      '    AMIN[("audio-minio :9000<br/>S3 store: stems, masters, previews, cache")]',
+      '    SEC["Docker secrets<br/>vendor keys only in workers"]',
+      '    BK["restic<br/>nightly backup"]',
+      '  end',
+      '  subgraph L5["5 · External AI providers"]',
+      '    GEM["Google Gemini API<br/>LLM, TTS, audio understanding"]',
+      '    EL["ElevenLabs API<br/>TTS v3, Text to Dialogue, subscription"]',
+      '    MM["MiniMax, optional<br/>TTS, voice cloning"]',
+      '  end',
+      '  subgraph L6["6 · Operations, self-hosted"]',
+      '    OBS["Grafana + Loki + Prometheus<br/>Uptime Kuma"]',
+      '  end',
+      '  B -->|HTTPS 443| CF',
+      '  CF --> GCE',
+      '  CF -->|media.inkloom.com| GM',
+      '  B <-->|SSO, JWT| APP',
+      '  AG -->|MCP| MCP',
+      '  GCE -->|relay| TR',
+      '  TR --> SVC',
+      '  MCP -->|gateway REST| AMCP',
+      '  AMCP --> SVC',
+      '  CRON -->|02:00 POST /api/plan/run-today| SVC',
+      '  GH -->|release.sh push| DH',
+      '  DH -->|docker pull| TR',
+      '  SVC <--> ADB',
+      '  SVC -->|enqueue| ARED',
+      '  ARED -->|dequeue| WRK',
+      '  WRK <--> ADB',
+      '  WRK <--> AMIN',
+      '  SEC -.-> WRK',
+      '  AMIN -.-> BK',
+      '  VRED <-->|audio.events pub/sub| WRK',
+      '  VMED <-->|register approved masters| WRK',
+      '  GM <-->|replicate masters, previews| AMIN',
+      '  GM <-.->|nightly backup| BK',
+      '  GM <-->|serves| VMED',
+      '  WRK -->|HTTPS| GEM',
+      '  WRK -->|HTTPS| EL',
+      '  WRK -.->|if enabled| MM',
+      '  SVC -.->|logs, metrics| OBS',
+      '  WRK -.->|logs, metrics| OBS',
+      '  class APP,MCP,CRON,VMED core',
+      '  class ADB db',
+      '  class VRED,ARED cache',
+      '  class SVC,AMCP,WRK,AMIN,TR domain',
+      '  class GEM,EL,MM,DH,GH,GM ext',
+      '  class B,AG,CF,GCE,OBS,SEC,BK dev'
+    ].join('\n'),
+
+    v1ron: [
+      'flowchart LR',
+      '  SK["Story Research Agent<br/>v1ron skill"]',
+      '  subgraph Core["Prod Server 192.168.1.8 (v1ronmaster), v1ron_net"]',
+      '    APP["v1ron_app :8000<br/>panel, SSO"] -->|REST| MCP["v1ron_mcp :8001<br/>MCP gateway"]',
+      '    CRON["v1ron_cron"]',
+      '    VRED[("v1ron_redis<br/>cache, pub/sub")]',
+      '    VMED["v1ron_media :8080"]',
+      '    VDB[("v1ron_db :5432")]',
+      '    APP --- VDB',
+      '    APP --- VRED',
+      '  end',
+      '  subgraph Acc["Domain Stack: accounting (existing, same v1ron_net)"]',
+      '    ASV["accounting-service :8141"] -->|REST| AM["accounting-mcp :3241"] --> AD[("accounting-db")]',
+      '  end',
+      '  subgraph Aud["Domain Stack: audio (new), Audio Server 192.168.1.10, Mac mini"]',
+      '    SVC["audio-service :8150<br/>API + web client"] -->|REST| AMC["audio-mcp :3250"]',
+      '    AMC --> ADB[("audio-db :5432")]',
+      '    SVC --> ARED[("audio-redis<br/>queues, token buckets")] --> WRK["audio-worker x4<br/>agents + FFmpeg"]',
+      '    WRK --> AMIN[("audio-minio :9000")]',
+      '  end',
+      '  GM["GCE MinIO (media)<br/>media.inkloom.com"]',
+      '  SK --> MCP',
+      '  MCP -->|gateway| AM',
+      '  MCP -->|gateway REST over LAN| AMC',
+      '  CRON -->|02:00 POST /api/plan/run-today| SVC',
+      '  WRK -->|publish audio.events| VRED',
+      '  WRK -->|register approved masters| VMED',
+      '  AMIN -->|replicate| GM',
+      '  VMED --> GM',
+      '  class APP,MCP,CRON,VMED core',
+      '  class VDB,AD,ADB db',
+      '  class VRED,ARED cache',
+      '  class ASV,AM,SVC,AMC,WRK,AMIN domain',
+      '  class SK,GM ext'
+    ].join('\n'),
+
+    run: [
+      'sequenceDiagram',
+      '  autonumber',
+      '  participant B as Browser',
+      '  participant CF as Cloudflare',
+      '  participant GCE as GCE nginx proxy',
+      '  participant TR as Traefik on Mac mini',
+      '  participant S as audio-service 8150',
+      '  participant APP as v1ron_app SSO',
+      '  participant DB as audio-db',
+      '  participant MIN as audio-minio',
+      '  participant RD as audio-redis',
+      '  participant W as audio-worker',
+      '  participant VR as v1ron_redis',
+      '  B->>CF: GET inkloom.com over HTTPS',
+      '  CF->>GCE: origin request',
+      '  GCE->>TR: relay',
+      '  TR->>S: GET /',
+      '  S-->>B: web client',
+      '  B->>APP: sign in with SSO',
+      '  APP-->>B: JWT, role director',
+      '  B->>S: POST /api/runs with StoryInput, engine, model, batching, budget',
+      '  S->>APP: verify JWT',
+      '  S->>DB: insert series, run, jobs as pending',
+      '  S->>MIN: put series/{id}/story.json',
+      '  S->>RD: enqueue run',
+      '  S-->>B: 201 with run_id',
+      '  B->>S: GET /api/runs/{id}/events, SSE',
+      '  RD-->>W: run job',
+      '  W->>DB: job started',
+      '  S-->>B: event job.started',
+      '  Note over W: outline, cast, then per episode draft, direct, voice, review, assemble, qa',
+      '  W->>MIN: stems, timelines, masters, qa reports',
+      '  W->>DB: job done, ledger rows, qa rows',
+      '  W->>VR: publish audio.events episode.mastered',
+      '  S-->>B: event episode.mastered with master_url',
+      '  B->>S: GET /api/series/{id}/master/{ep}.mp3',
+      '  S-->>B: 302 to audio-minio presigned URL'
+    ].join('\n'),
+
+    agents: [
+      'flowchart TB',
+      '  subgraph In["Inputs"]',
+      '    SI["StoryInput<br/>web form, or audio.create_series via v1ron_mcp"]',
+      '    REG["Character IP registry<br/>voices per engine, identity envelopes"]',
+      '    BUD["Budget and quota plan for today"]',
+      '  end',
+      '  subgraph SP["AI Scene Planner, Gemini LLM"]',
+      '    SP1["Cast roles to IP actors<br/>one actor per role, pins kept"] --> SP2["Episode plan<br/>30 x 50-70 s, cliffhangers, tension curve"] --> SP3["Scene plan per episode<br/>beats, speakers, conversation-unit hints"]',
+      '  end',
+      '  subgraph EP["Per episode, in order"]',
+      '    DR["Draft<br/>verbatim segment or written dialogue"]',
+      '    subgraph DA["AI Director Agent"]',
+      '      D1["Direct<br/>emotion, intensity, pace, cues"] --> D2["Modulate<br/>anchor + envelope per voice"] --> D3["Render plan<br/>conversation units per engine"] --> D4["Compile<br/>cue-aware Vietnamese normalizer"] --> D5["Voice<br/>ElevenLabs or Gemini TTS<br/>hash cache, token bucket"]',
+      '    end',
+      '    subgraph QA["AI QA Agent"]',
+      '      Q1["Measure<br/>duration, clipping, silence, leak"] --> Q2["Transcribe and judge<br/>Gemini audio: WER, delivery, identity"] --> Q3{"Policy table<br/>and budget"}',
+      '    end',
+      '    AS["Assemble<br/>timeline, two-pass loudnorm -16 LUFS"] --> QM["Master checks"] --> HQ["Human review queue<br/>approve or reject"]',
+      '  end',
+      '  SI --> SP1',
+      '  REG --> SP1',
+      '  BUD --> SP1',
+      '  SP3 --> DR --> D1',
+      '  D5 --> Q1',
+      '  Q3 -->|pass| AS',
+      '  Q3 -->|re-render within budget| D3',
+      '  Q3 -->|give up| HQ',
+      '  HQ -->|approved| PUB["Publish<br/>v1ron_media, GCE MinIO, media.inkloom.com"]',
+      '  class SP1,SP2,SP3,D1,D2,D3,D4,D5,Q1,Q2,Q3 core',
+      '  class SI,REG,BUD,DR,AS,QM domain',
+      '  class HQ,PUB ext'
+    ].join('\n'),
+
+    daily: [
+      'flowchart LR',
+      '  CR["v1ron_cron<br/>02:00 Asia/Ho_Chi_Minh"] -->|POST /api/plan/run-today| QP["Quota planner in audio-service<br/>limits from ledger + vendor endpoints<br/>engine policy per series"]',
+      '  QP -->|fits| RUN["Create today\'s run<br/>30 episodes, engine, model, budget"]',
+      '  QP -->|does not fit| ALERT["audio.events budget.short<br/>v1ron notifies, run shrinks"]',
+      '  RUN --> Q[("audio-redis queue")]',
+      '  Q --> W["audio-worker"]',
+      '  W --> TB{"Provider token bucket<br/>Gemini RPM and RPD, ElevenLabs concurrency"}',
+      '  TB -->|token| TTS["TTS request"]',
+      '  TB -->|wait| TB',
+      '  TTS --> LED[("usage_ledger in audio-db")]',
+      '  LED --> USAGE["Usage page and audio.usage tool"]',
+      '  class CR core',
+      '  class QP,RUN,W,TB,TTS,USAGE domain',
+      '  class Q cache',
+      '  class LED db',
+      '  class ALERT ext'
+    ].join('\n')
+  };
+
+  function css(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+  function isDark() {
+    var t = document.documentElement.getAttribute('data-theme');
+    if (t === 'dark') return true;
+    if (t === 'light') return false;
+    return !(window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches);
+  }
+  function classDefs() {
+    var text = css('--text');
+    return [
+      'classDef core fill:' + css('--core-soft') + ',stroke:' + css('--core') + ',color:' + text,
+      'classDef db fill:' + css('--db-soft') + ',stroke:' + css('--db') + ',color:' + text,
+      'classDef cache fill:' + css('--cache-soft') + ',stroke:' + css('--cache') + ',color:' + text,
+      'classDef domain fill:' + css('--domain-soft') + ',stroke:' + css('--domain') + ',color:' + text,
+      'classDef ext fill:' + css('--ext-soft') + ',stroke:' + css('--ext') + ',color:' + text,
+      'classDef dev fill:' + css('--dev-soft') + ',stroke:' + css('--dev') + ',color:' + text
+    ].join('\n');
+  }
+  function initMermaid() {
+    var dark = isDark();
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: 'base',
+      securityLevel: 'loose',
+      fontFamily: '"IBM Plex Sans", "Segoe UI", Roboto, system-ui, sans-serif',
+      flowchart: { curve: 'basis', nodeSpacing: 34, rankSpacing: 44, padding: 12 },
+      sequence: { actorMargin: 28, messageMargin: 30, mirrorActors: false },
+      themeVariables: {
+        fontSize: '13px',
+        background: css('--bg'),
+        primaryColor: css('--panel-2'),
+        primaryTextColor: css('--text'),
+        primaryBorderColor: css('--line'),
+        lineColor: css('--edge-line'),
+        textColor: css('--text'),
+        clusterBkg: css('--cluster'),
+        clusterBorder: css('--cluster-line'),
+        edgeLabelBackground: css('--panel'),
+        actorBkg: css('--core-soft'),
+        actorBorder: css('--core'),
+        actorTextColor: css('--text'),
+        actorLineColor: css('--cluster-line'),
+        signalColor: css('--text'),
+        signalTextColor: css('--text'),
+        noteBkgColor: css('--ext-soft'),
+        noteTextColor: css('--text'),
+        noteBorderColor: css('--ext'),
+        labelBoxBkgColor: css('--panel'),
+        labelTextColor: css('--text'),
+        sequenceNumberColor: dark ? '#0b0b12' : '#ffffff',
+        tertiaryColor: css('--panel-2')
+      }
+    });
+  }
+
+  // ---- pan / zoom viewports -------------------------------------------------
+  var viewports = {};
+  var active = 'arch';
+  var pctEl = document.getElementById('zoom-pct');
+
+  function makeViewport(section) {
+    var canvas = section.querySelector('.canvas');
+    var stage = section.querySelector('.stage');
+    var vp = { canvas: canvas, stage: stage, s: 1, tx: 0, ty: 0, rendered: false, pointers: {}, pinch: null };
+    function apply() {
+      stage.style.transform = 'translate(' + vp.tx + 'px,' + vp.ty + 'px) scale(' + vp.s + ')';
+      if (viewports[active] === vp) pctEl.textContent = Math.round(vp.s * 100) + '%';
+    }
+    vp.apply = apply;
+    vp.zoomAt = function (factor, cx, cy) {
+      var ns = Math.min(4, Math.max(0.15, vp.s * factor));
+      var k = ns / vp.s;
+      vp.tx = cx - (cx - vp.tx) * k;
+      vp.ty = cy - (cy - vp.ty) * k;
+      vp.s = ns;
+      apply();
+    };
+    vp.fit = function () {
+      var svg = stage.querySelector('svg');
+      if (!svg) return;
+      var w = vp.w || svg.getBoundingClientRect().width / vp.s || 1;
+      var h = vp.h || svg.getBoundingClientRect().height / vp.s || 1;
+      var cw = canvas.clientWidth, ch = canvas.clientHeight;
+      var pad = 40;
+      var s = Math.min((cw - pad * 2) / w, (ch - pad * 2 - 90) / h, 1.6);
+      vp.s = Math.max(0.15, s);
+      vp.tx = (cw - w * vp.s) / 2;
+      vp.ty = Math.max(pad + 70, (ch - h * vp.s) / 2);
+      apply();
+    };
+    vp.reset = function () { vp.s = 1; vp.tx = 40; vp.ty = 110; apply(); };
+
+    canvas.addEventListener('wheel', function (e) {
+      e.preventDefault();
+      var r = canvas.getBoundingClientRect();
+      var factor = e.ctrlKey ? Math.exp(-e.deltaY * 0.01) : Math.exp(-e.deltaY * 0.0018);
+      vp.zoomAt(factor, e.clientX - r.left, e.clientY - r.top);
+    }, { passive: false });
+
+    canvas.addEventListener('pointerdown', function (e) {
+      canvas.setPointerCapture(e.pointerId);
+      vp.pointers[e.pointerId] = { x: e.clientX, y: e.clientY };
+      var ids = Object.keys(vp.pointers);
+      if (ids.length === 1) { vp.drag = { x: e.clientX, y: e.clientY, tx: vp.tx, ty: vp.ty }; canvas.classList.add('dragging'); }
+      if (ids.length === 2) {
+        var a = vp.pointers[ids[0]], b = vp.pointers[ids[1]];
+        vp.pinch = { d: Math.hypot(a.x - b.x, a.y - b.y) };
+        vp.drag = null;
+      }
+    });
+    canvas.addEventListener('pointermove', function (e) {
+      if (!vp.pointers[e.pointerId]) return;
+      vp.pointers[e.pointerId] = { x: e.clientX, y: e.clientY };
+      var ids = Object.keys(vp.pointers);
+      if (ids.length === 2 && vp.pinch) {
+        var a = vp.pointers[ids[0]], b = vp.pointers[ids[1]];
+        var d = Math.hypot(a.x - b.x, a.y - b.y);
+        var r = canvas.getBoundingClientRect();
+        vp.zoomAt(d / vp.pinch.d, (a.x + b.x) / 2 - r.left, (a.y + b.y) / 2 - r.top);
+        vp.pinch.d = d;
+      } else if (vp.drag) {
+        vp.tx = vp.drag.tx + (e.clientX - vp.drag.x);
+        vp.ty = vp.drag.ty + (e.clientY - vp.drag.y);
+        apply();
+      }
+    });
+    function up(e) {
+      delete vp.pointers[e.pointerId];
+      if (Object.keys(vp.pointers).length < 2) vp.pinch = null;
+      if (Object.keys(vp.pointers).length === 0) { vp.drag = null; canvas.classList.remove('dragging'); }
+    }
+    canvas.addEventListener('pointerup', up);
+    canvas.addEventListener('pointercancel', up);
+    canvas.addEventListener('dblclick', function (e) {
+      var r = canvas.getBoundingClientRect();
+      vp.zoomAt(1.5, e.clientX - r.left, e.clientY - r.top);
+    });
+    return vp;
+  }
+
+  var counter = 0;
+  function render(key) {
+    var vp = viewports[key];
+    if (!vp || !window.mermaid) return Promise.resolve();
+    var src = DIAGRAMS[key] + '\n' + classDefs();
+    var id = 'd-' + key + '-' + (++counter);
+    return mermaid.render(id, src).then(function (out) {
+      vp.stage.innerHTML = out.svg;
+      var svg = vp.stage.querySelector('svg');
+      if (svg) {
+        var vb = svg.viewBox && svg.viewBox.baseVal;
+        if (vb && vb.width && vb.height) {
+          svg.setAttribute('width', Math.ceil(vb.width));
+          svg.setAttribute('height', Math.ceil(vb.height));
+          vp.w = vb.width; vp.h = vb.height;
+        }
+        svg.style.maxWidth = 'none';
+        svg.style.width = vp.w ? vp.w + 'px' : '';
+        svg.style.height = vp.h ? vp.h + 'px' : '';
+      }
+      vp.rendered = true;
+      vp.fit();
+    }).catch(function (err) {
+      vp.stage.innerHTML = '<div class="err">Diagram failed to render: ' + String(err && err.message || err) + '</div>';
+    });
+  }
+
+  function show(key) {
+    active = key;
+    document.querySelectorAll('.tab').forEach(function (t) { t.setAttribute('aria-selected', String(t.dataset.view === key)); });
+    document.querySelectorAll('.view').forEach(function (v) { v.hidden = v.id !== 'view-' + key; });
+    document.getElementById('zoom-controls').style.visibility = key === 'ref' ? 'hidden' : 'visible';
+    try { localStorage.setItem('inkloom-map-tab', key); } catch (e) {}
+    var vp = viewports[key];
+    if (vp) {
+      if (!vp.rendered) render(key); else { vp.fit(); }
+    }
+  }
+
+  document.querySelectorAll('.view[data-diagram]').forEach(function (sec) { viewports[sec.dataset.diagram] = makeViewport(sec); });
+  document.querySelectorAll('.tab').forEach(function (t) { t.addEventListener('click', function () { show(t.dataset.view); }); });
+  document.getElementById('zoom-in').addEventListener('click', function () { var vp = viewports[active]; if (vp) vp.zoomAt(1.25, vp.canvas.clientWidth / 2, vp.canvas.clientHeight / 2); });
+  document.getElementById('zoom-out').addEventListener('click', function () { var vp = viewports[active]; if (vp) vp.zoomAt(0.8, vp.canvas.clientWidth / 2, vp.canvas.clientHeight / 2); });
+  document.getElementById('zoom-fit').addEventListener('click', function () { var vp = viewports[active]; if (vp) vp.fit(); });
+  document.getElementById('zoom-reset').addEventListener('click', function () { var vp = viewports[active]; if (vp) vp.reset(); });
+  window.addEventListener('keydown', function (e) {
+    if (e.target && /input|textarea|select/i.test(e.target.tagName)) return;
+    var vp = viewports[active]; if (!vp) return;
+    if (e.key === '+' || e.key === '=') vp.zoomAt(1.25, vp.canvas.clientWidth / 2, vp.canvas.clientHeight / 2);
+    else if (e.key === '-') vp.zoomAt(0.8, vp.canvas.clientWidth / 2, vp.canvas.clientHeight / 2);
+    else if (e.key === '0') vp.fit();
+  });
+
+  function rerenderAll() {
+    initMermaid();
+    Object.keys(viewports).forEach(function (k) { if (viewports[k].rendered) render(k); });
+  }
+  var resizeTimer = null;
+  window.addEventListener('resize', function () { clearTimeout(resizeTimer); resizeTimer = setTimeout(function () { var vp = viewports[active]; if (vp && vp.rendered) vp.fit(); }, 150); });
+  try {
+    window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', rerenderAll);
+    new MutationObserver(rerenderAll).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  } catch (e) {}
+
+  initMermaid();
+  var start = 'arch';
+  try { var saved = localStorage.getItem('inkloom-map-tab'); if (saved && (DIAGRAMS[saved] || saved === 'ref')) start = saved; } catch (e) {}
+  show(start);
+})();
+</script>

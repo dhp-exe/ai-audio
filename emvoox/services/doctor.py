@@ -88,7 +88,12 @@ def live_checks() -> list[dict]:
 
             ids = OpenAICompatLlm("wavespeed").list_models()
             pick = [m for m in ids if any(k in m for k in ("gemini", "claude", "gpt"))][:12]
-            out.append(_check("live.wavespeed.llm", "WaveSpeed LLM models", bool(ids), f"{len(ids)} model(s); e.g. {', '.join(pick) or ', '.join(ids[:8])}"))
+            if ids:
+                out.append(_check("live.wavespeed.llm", "WaveSpeed LLM models", True, f"{len(ids)} model(s); e.g. {', '.join(pick) or ', '.join(ids[:8])}"))
+            else:  # the gateway accepts the key but returns an empty list: ids are vendor/model as on the vendor's own API
+                out.append(_check("live.wavespeed.llm", "WaveSpeed LLM gateway", None,
+                                  "key accepted; the gateway does not list its models. Verified ids (2026-10-03): google/gemini-3.1-flash-lite, "
+                                  "google/gemini-3.6-flash, anthropic/claude-sonnet-5, openai/gpt-5-mini, deepseek/deepseek-chat"))
         except Exception as e:  # noqa: BLE001
             out.append(_check("live.wavespeed.llm", "WaveSpeed LLM models", False, f"{type(e).__name__}: {str(e)[:160]}"))
     if not out:

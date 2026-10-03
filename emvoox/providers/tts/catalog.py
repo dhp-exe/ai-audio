@@ -6,7 +6,8 @@ provider/model/voice choice means the same thing everywhere.
     gemini      Gemini TTS: 30 prebuilt voices addressed by name; multi-speaker scene batching.
     elevenlabs  ElevenLabs direct: account voices (premade, library, cloned) by voice_id.
     wavespeed   WaveSpeed.ai gateway: one key, model path picks the vendor (ElevenLabs v3 accepts
-                any ElevenLabs voice id; MiniMax accepts system and cloned voice ids).
+                any ElevenLabs voice id; MiniMax accepts system and cloned voice ids; Gemini 3.8
+                TTS takes the Gemini prebuilt voice names and two-speaker dialogue requests).
     mock        Offline tone generator for tests and the demo. Never shown unless enabled.
 """
 
@@ -91,6 +92,11 @@ WAVESPEED_MODELS: list[ModelInfo] = [
      "note": "Same engine as Eleven v3; voice = preset name or any ElevenLabs voice id (cloned voices included). Billed per character by WaveSpeed."},
     {"id": "minimax/speech-2.6-hd", "label": "MiniMax Speech 2.6 HD (via WaveSpeed)", "tags": False,
      "note": "emotion / speed / pitch / volume parameters; voice = system voice id or a voice cloned with minimax/voice-clone."},
+    {"id": "google/gemini-3.8-flash/text-to-speech", "label": "Gemini 3.8 Flash TTS (via WaveSpeed)", "tags": False,
+     "note": "Gemini prebuilt voices (each actor's Gemini voice), style instructions, two-speaker dialogue batching. "
+             "Billed $0.05 per request per started 1,000 characters, so batching matters; no cloned voices."},
+    {"id": "google/gemini-3.8-flash-lite/text-to-speech", "label": "Gemini 3.8 Flash-Lite TTS (via WaveSpeed)", "tags": False,
+     "note": "Same request shape as Gemini 3.8 Flash TTS at $0.04 per request per started 1,000 characters."},
 ]
 MOCK_MODELS: list[ModelInfo] = [
     {"id": "mock-tone", "label": "Offline tone (no API)", "tags": False, "note": "Synthetic tones instead of speech. For tests and the demo only."},
@@ -108,9 +114,19 @@ def model_ids(provider: str) -> list[str]:
     return [m["id"] for m in MODELS.get(provider, [])]
 
 
-def supports_scene_batching(provider: str) -> bool:
-    """Multi-speaker conversation requests (one request for a run of lines)."""
-    return provider == "gemini"
+def voice_family(provider: str, model_id: str | None = None) -> str:
+    """Whose voice ids (and delivery controls) a provider/model speaks: 'gemini' (prebuilt voice names,
+    style direction), 'elevenlabs' (account voice ids), or the provider itself. WaveSpeed follows the
+    vendor of its model path."""
+    if provider != "wavespeed":
+        return provider
+    vendor = (model_id or DEFAULT_MODEL["wavespeed"]).split("/")[0]
+    return {"google": "gemini", "elevenlabs": "elevenlabs"}.get(vendor, "wavespeed")
+
+
+def supports_scene_batching(provider: str, model_id: str | None = None) -> bool:
+    """Multi-speaker conversation requests (one request for a run of lines). For WaveSpeed pass the model."""
+    return provider == "gemini" or (provider == "wavespeed" and model_id is not None and voice_family(provider, model_id) == "gemini")
 
 
 def supports_tags(provider: str, model_id: str) -> bool:
@@ -132,7 +148,7 @@ def catalog(include_mock: bool = False) -> dict:
         "providers": [
             {"id": p, "label": PROVIDER_LABEL[p], "models": MODELS[p], "default_model": DEFAULT_MODEL[p],
              "voices": GEMINI_VOICES if p == "gemini" else None, "billing": BILLING[p], "key_env": KEY_ENV[p],
-             "scene_batching": supports_scene_batching(p), "free_voice_id": p != "gemini"}
+             "scene_batching": any(supports_scene_batching(p, m["id"]) for m in MODELS[p]), "free_voice_id": p != "gemini"}
             for p in PROVIDER_NAMES if include_mock or p != "mock"
         ]
     }

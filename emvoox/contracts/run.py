@@ -29,6 +29,7 @@ class ResearchParams(BaseModel):
     platforms: list[str] = Field(default_factory=list)
     use_browser: bool | None = Field(None, description="None = EMVOOX_RESEARCH_USE_BROWSER.")
     focus: str = Field("", description="Optional steer, e.g. a theme category or audience.")
+    guide: str = Field("", description="Free-text instruction for the research, e.g. what to look for on the platforms.")
 
 
 class RunParams(BaseModel):

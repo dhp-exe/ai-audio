@@ -30,10 +30,10 @@ proven offline, so the first paid run only tests the vendors. Then:
 
 1. Add the key to `.env` and restart the server. Optionally make WaveSpeed the default:
    `EMVOOX_LLM_PROVIDER=wavespeed` and `EMVOOX_TTS_PROVIDER=wavespeed`.
-2. `python -m emvoox doctor --live` (cheap GETs, no generation). It shows the balance, the speech models the key can
-   reach and a sample of LLM model ids. Pick the LLM id from that list and set `EMVOOX_LLM_MODEL` (format
-   `vendor/model`, e.g. a Gemini Flash Lite id; the default `google/gemini-3.1-flash-lite` is a guess until the doctor
-   confirms it).
+2. `python -m emvoox doctor --live` (cheap GETs, no generation). It shows the balance and the speech models the key can
+   reach. The LLM gateway does not list its models; ids are `vendor/model`. Verified on our key (2026-10-03):
+   `google/gemini-3.1-flash-lite` (the default when `EMVOOX_LLM_MODEL` is empty), `google/gemini-3.6-flash`,
+   `anthropic/claude-sonnet-5`, `openai/gpt-5-mini`, `deepseek/deepseek-chat`.
 3. Produce **one** short episode first:
    `python -m emvoox run --series test1 --story story.txt --episodes 10 --produce 1 --llm wavespeed --tts wavespeed`
    (or New production in the UI with WaveSpeed selected and "Produce now" = 1). Expect a few cents: ~6-8 LLM calls
@@ -52,7 +52,11 @@ on WaveSpeed until one is plugged in.
 - LLM: `https://llm.wavespeed.ai/v1`, OpenAI Chat Completions protocol, 90+ models (Gemini, Claude, GPT, DeepSeek…),
   pay per token.
 - Speech: `elevenlabs/eleven-v3` ($0.20 / 1k characters per the model page; voice = preset or any ElevenLabs voice id),
-  `minimax/speech-2.6-hd` (emotion / speed / pitch / volume; voice cloning via `minimax/voice-clone`, 10-30 s sample).
+  `minimax/speech-2.6-hd` (emotion / speed / pitch / volume; voice cloning via `minimax/voice-clone`, 10-30 s sample),
+  `google/gemini-3.8-flash/text-to-speech` and `google/gemini-3.8-flash-lite/text-to-speech` (Gemini prebuilt voices, so
+  each actor's Gemini voice; no cloned voices). Gemini TTS is billed **per request per started 1,000 characters**
+  ($0.05 / $0.04; 100 characters cost the same as 1,000), so the engine sends two-speaker runs of lines as one dialogue
+  request. Select it per run in the UI or with `EMVOOX_TTS_MODEL=google/gemini-3.8-flash/text-to-speech`.
 
 ### `GEMINI_API_KEY` (LLM + Gemini TTS)
 - https://aistudio.google.com/apikey. Free tier: Gemini TTS is **10 requests per day per model** and ~3 per minute

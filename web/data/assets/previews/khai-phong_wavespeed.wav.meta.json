@@ -1,0 +1,21 @@
+{
+  "hash": "a2192027611278cfe6cf40ad6649f6593cc81d66c20bea0b691d3cf09253b92b",
+  "request": {
+    "provider": "wavespeed",
+    "model_id": "google/gemini-3.8-flash/text-to-speech",
+    "voice_id": "Iapetus",
+    "text": "Xin chào, tôi là Khải Phong. Có một chuyện tôi chưa từng kể với ai.",
+    "settings": {
+      "style": "Nói tiếng Việt, giọng tự nhiên, ấm áp, tự giới thiệu mình, nhịp nhanh vừa phải, không ngắt nghỉ lâu"
+    },
+    "line_id": null
+  },
+  "requested_voice": "Iapetus",
+  "placeholder": false,
+  "reason": null,
+  "rendered_at": "2026-10-03T13:38:29+00:00",
+  "duration_ms": 4240,
+  "characters_billed": 166,
+  "tokens_out": null,
+  "ledgered": true
+}

@@ -7,7 +7,8 @@ from typing import Literal
 
 from pydantic import BaseModel, Field, model_validator
 
-PLATFORMS: tuple[str, ...] = ("dramabox", "reelshort", "tiktok", "douyin", "youtube", "local")
+PLATFORMS: tuple[str, ...] = ("dramabox", "reelshort", "tiktok", "google", "youtube", "douyin", "local")
+TOP_GENRES = 3  # the brief documents the three most trending genres; a human picks one
 
 
 class ThemeCategory(str, Enum):
@@ -50,8 +51,12 @@ class ContentInsight(BaseModel):
 
 
 class TrendCandidate(BaseModel):
-    """A story direction proposed from the insights, rated on three axes (1-10 each)."""
+    """One trending genre found in the scan, with the evidence for it and a story direction the
+    Script Writer can use, rated on three axes (1-10 each)."""
 
+    genre: str = Field("", description="The trending short-drama genre, as audiences call it (e.g. 'Tổng tài - hôn nhân hợp đồng').")
+    evidence: str = Field("", description="What in the scanned data shows this genre is trending: titles, counts, platforms.")
+    platforms: list[str] = Field(default_factory=list, description="Platforms where the genre was observed.")
     topic: str = Field(description="Working title or one-line story direction, in Vietnamese.")
     theme_category: ThemeCategory
     target_audience: str
@@ -106,3 +111,49 @@ class TrendBrief(BaseModel):
     sources: list[str] = Field(default_factory=list, description="Seed files and URLs that were scanned.")
     platforms: list[str] = Field(default_factory=list)
     notes: str = ""
+    genre: str = Field("", description="Trending genre of the selected candidate.")
+    guide: str = Field("", description="The research guide the editor gave the agent.")
+    selected: int = Field(0, ge=0, description="Index in `candidates` of the genre the editor picked; the top-level fields mirror it.")
+    scan_id: str | None = Field(None, description="The scan that produced this brief (progress, screenshots).")
+
+    def with_selected(self, index: int) -> TrendBrief:
+        """The same brief with candidate ``index`` as the direction handed to the Script Writer."""
+        if not 0 <= index < len(self.candidates):
+            raise ValueError(f"candidate {index} does not exist (the brief has {len(self.candidates)})")
+        c = self.candidates[index]
+        return self.model_copy(update={
+            "selected": index, "topic": c.topic, "target_audience": c.target_audience, "theme_category": c.theme_category, "hook": c.hook,
+            "premise": c.premise, "anti_trope_angle": c.anti_trope_angle, "reference_titles": list(c.reference_titles), "score": c.score, "genre": c.genre})
+
+
+class ScanStep(BaseModel):
+    """One source the Market Scan skill read (or tried to), as shown live in the web client."""
+
+    platform: str
+    url: str = ""
+    label: str = ""
+    status: Literal["pending", "running", "ok", "blocked", "error"] = "pending"
+    title: str = ""
+    chars: int = 0
+    excerpt: str = Field("", description="First lines of the text that was read.")
+    screenshot: str | None = Field(None, description="File name of the page screenshot under the scan's folder.")
+    detail: str = Field("", description="Why the source was blocked or failed.")
+    elapsed_s: float = 0.0
+
+
+class ScanState(BaseModel):
+    """Progress of one Market Research run: Market Scan -> Content Analyze -> Trend Ranking."""
+
+    scan_id: str
+    status: Literal["running", "done", "failed"] = "running"
+    phase: Literal["scan", "analyze", "rank", "done"] = "scan"
+    created_at: str
+    finished_at: str | None = None
+    guide: str = ""
+    focus: str = ""
+    use_browser: bool = False
+    platforms: list[str] = Field(default_factory=list)
+    steps: list[ScanStep] = Field(default_factory=list)
+    log: list[str] = Field(default_factory=list)
+    brief_id: str | None = None
+    error: str | None = None

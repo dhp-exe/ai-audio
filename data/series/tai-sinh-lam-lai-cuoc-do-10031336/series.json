@@ -1,0 +1,556 @@
+{
+  "series_id": "tai-sinh-lam-lai-cuoc-do-10031336",
+  "language": "vi-VN",
+  "title": "Ván Cờ Nghịch Mệnh",
+  "logline": "Sau khi tái sinh về thời điểm trước bi kịch, Lâm An bước vào cuộc chơi quyền lực đầy rẫy cạm bẫy, nơi cô phải đối đầu với người chồng phản bội và kẻ thao túng đứng sau cái chết của chính mình.",
+  "premise": "Lâm An tỉnh dậy 5 năm trước ngày cô bị sát hại. Với ký ức về tương lai, cô quyết định không làm quân cờ cho bất kỳ ai, mà trở thành người cầm lái ván cờ sinh tử để tiêu diệt những kẻ đã hủy hoại gia đình mình.",
+  "tone": "Căng thẳng, sắc lạnh, kịch tính, đầy rẫy những màn đấu trí tâm lý.",
+  "genre": [
+    "Tâm lý",
+    "Giật gân",
+    "Báo thù"
+  ],
+  "overview": {
+    "title": "Ván Cờ Nghịch Mệnh",
+    "total_minutes": 45,
+    "genre": "Tâm lý - Giật gân - Báo thù",
+    "setting": "Thành phố tài chính hiện đại, các buổi tiệc thượng lưu và văn phòng tập đoàn."
+  },
+  "mode": "write",
+  "protagonist_id": "lam-an",
+  "protagonist_role": "Lâm An",
+  "roles": [
+    {
+      "role_name": "Lâm An",
+      "role_type": "protagonist",
+      "description": "27 tuổi (tâm hồn 32). Từng là tiểu thư ngây thơ, sau khi tái sinh trở nên sắc sảo, tính toán. Mục tiêu: Hủy hoại kẻ thù, bảo vệ gia sản. Động cơ: Nỗi đau bị phản bội và sự thật về cái chết kiếp trước.",
+      "actor_id": "lam-an",
+      "assigned_by": "placeholder",
+      "reason": "không còn Voice IP phù hợp; dùng giọng tạm"
+    },
+    {
+      "role_name": "Khải Phong",
+      "role_type": "antagonist",
+      "description": "30 tuổi. Tổng tài lạnh lùng, bí ẩn. Mục tiêu: Kiểm soát thị trường tài chính. Động cơ: Che giấu việc anh từng là người đứng sau gián tiếp gây ra sự sụp đổ của gia đình Lâm An kiếp trước để thực hiện tham vọng riêng.",
+      "actor_id": "khai-phong",
+      "assigned_by": "placeholder",
+      "reason": "không còn Voice IP phù hợp; dùng giọng tạm"
+    },
+    {
+      "role_name": "Minh Tuấn",
+      "role_type": "antagonist",
+      "description": "28 tuổi. Chồng cũ kiếp trước của Lâm An. Kẻ cơ hội, tàn nhẫn. Mục tiêu: Chiếm đoạt tập đoàn Lâm gia. Động cơ: Sự tự ti về xuất thân khiến hắn muốn vươn lên bằng mọi giá.",
+      "actor_id": "minh-tuan",
+      "assigned_by": "placeholder",
+      "reason": "không còn Voice IP phù hợp; dùng giọng tạm"
+    },
+    {
+      "role_name": "Thanh Vy",
+      "role_type": "supporting",
+      "description": "27 tuổi. Bạn thân kiếp trước, kẻ chủ mưu sát hại Lâm An. Mục tiêu: Thay thế vị trí của Lâm An. Động cơ: Lòng đố kỵ bệnh hoạn tích tụ từ nhỏ.",
+      "actor_id": "thanh-vy",
+      "assigned_by": "placeholder",
+      "reason": "không còn Voice IP phù hợp; dùng giọng tạm"
+    }
+  ],
+  "cast": [
+    "lam-an",
+    "khai-phong",
+    "minh-tuan",
+    "thanh-vy"
+  ],
+  "trend_brief_id": "rebirth-20261003-132206",
+  "theme_category": "rebirth_butterfly_effect",
+  "pending_characters": [],
+  "episode_format": {
+    "count": 30,
+    "min_duration_sec": 60,
+    "max_duration_sec": 120,
+    "ends_on_cliffhanger": true
+  },
+  "episodes": [
+    {
+      "number": 1,
+      "title": "Tỉnh giấc từ cõi chết",
+      "logline": "Lâm An tỉnh dậy trong ngày đính hôn định mệnh và quyết định thay đổi lịch sử.",
+      "key_beats": [
+        "Lâm An tỉnh dậy trong phòng trang điểm",
+        "Nhìn thấy Minh Tuấn qua gương",
+        "Quyết định không bước ra lễ đài",
+        "Đối mặt với cha mình",
+        "Công khai vạch trần Minh Tuấn",
+        "Minh Tuấn bàng hoàng trước thái độ của cô"
+      ],
+      "cliffhanger": "Lâm An cầm micro bước ra sân khấu, thay vì đồng ý đính hôn, cô tuyên bố Minh Tuấn đang biển thủ công quỹ.",
+      "source_span": "",
+      "hook_score": 8
+    },
+    {
+      "number": 2,
+      "title": "Vết nứt đầu tiên",
+      "logline": "Sự kiện đính hôn đổ vỡ khiến Minh Tuấn rơi vào thế khó, nhưng hắn bắt đầu nghi ngờ Lâm An.",
+      "key_beats": [
+        "Minh Tuấn bị trục xuất khỏi buổi tiệc",
+        "Lâm An đối mặt với sự giận dữ của cha",
+        "Thanh Vy tiếp cận an ủi Minh Tuấn",
+        "Lâm An nhận ra sự liên kết sớm của hai kẻ phản bội",
+        "Lâm An tìm đến Khải Phong",
+        "Khải Phong đón nhận cô với ánh mắt khó hiểu"
+      ],
+      "cliffhanger": "Khải Phong thì thầm vào tai Lâm An: 'Tôi đã đợi khoảnh khắc cô từ bỏ hắn từ lâu rồi'.",
+      "source_span": "",
+      "hook_score": 8
+    },
+    {
+      "number": 3,
+      "title": "Liên minh nguy hiểm",
+      "logline": "Lâm An bắt đầu tiếp cận Khải Phong để xây dựng lá chắn bảo vệ mình.",
+      "key_beats": [
+        "Lâm An đề nghị hợp tác với Khải Phong",
+        "Khải Phong yêu cầu cô cung cấp thông tin nội bộ Lâm gia",
+        "Lâm An thử lòng Khải Phong",
+        "Thanh Vy bắt đầu theo dõi Lâm An",
+        "Lâm An phát hiện Khải Phong biết rõ mọi thói quen của mình",
+        "Sự nghi ngờ nảy sinh"
+      ],
+      "cliffhanger": "Lâm An tìm thấy một bức ảnh cũ trong ví Khải Phong, đó là bức ảnh cô ở kiếp trước.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 4,
+      "title": "Bóng ma quá khứ",
+      "logline": "Lâm An bắt đầu điều tra Khải Phong và nhận ra anh ta không đơn giản là một đối tác.",
+      "key_beats": [
+        "Lâm An giả vờ như không thấy bức ảnh",
+        "Khải Phong đưa ra một hợp đồng tài chính mạo hiểm",
+        "Minh Tuấn và Thanh Vy âm thầm lập kế hoạch trả đũa",
+        "Lâm An phát hiện Khải Phong đang theo dõi mọi bước đi của cô",
+        "Cô bắt đầu tung tin giả để đánh lạc hướng",
+        "Khải Phong lộ sơ hở nhỏ"
+      ],
+      "cliffhanger": "Lâm An nghe thấy Khải Phong nói chuyện điện thoại về cái chết của cô ở kiếp trước.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 5,
+      "title": "Trò chơi của kẻ săn mồi",
+      "logline": "Cuộc chiến tài chính bắt đầu, Lâm An nhận ra mình đang bị kẹt giữa hai con sói.",
+      "key_beats": [
+        "Minh Tuấn tấn công cổ phiếu Lâm gia",
+        "Lâm An dùng kiến thức tương lai để chặn đứng",
+        "Khải Phong khen ngợi sự nhạy bén của cô",
+        "Lâm An nhận ra Khải Phong đang cố tình để cô làm bia đỡ đạn",
+        "Thanh Vy tìm cách hãm hại Lâm An tại sự kiện từ thiện",
+        "Lâm An lật ngược tình thế"
+      ],
+      "cliffhanger": "Thanh Vy bị bắt quả tang đang cài thiết bị nghe lén vào túi xách của Lâm An.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 6,
+      "title": "Mặt nạ rơi xuống",
+      "logline": "Lâm An đối mặt với Thanh Vy, buộc cô ta phải khai ra kẻ đứng sau.",
+      "key_beats": [
+        "Lâm An tra khảo Thanh Vy trong phòng kín",
+        "Thanh Vy đổ lỗi cho Minh Tuấn",
+        "Lâm An không tin, cô biết Thanh Vy mới là kẻ chủ mưu",
+        "Khải Phong xuất hiện cắt ngang cuộc đối thoại",
+        "Lâm An nhận ra Khải Phong đang bảo vệ Thanh Vy",
+        "Sự thật về mối quan hệ giữa họ"
+      ],
+      "cliffhanger": "Khải Phong nói: 'Đừng chạm vào cô ta, cô ta vẫn còn giá trị sử dụng'.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 7,
+      "title": "Độc kế",
+      "logline": "Lâm An bắt đầu giả vờ yếu đuối để Khải Phong mất cảnh giác.",
+      "key_beats": [
+        "Lâm An giả vờ suy sụp vì áp lực",
+        "Khải Phong đến an ủi cô",
+        "Lâm An lén lấy chìa khóa két sắt của Khải Phong",
+        "Minh Tuấn tìm cách liên lạc với Lâm An để cầu hòa",
+        "Lâm An đồng ý gặp mặt",
+        "Cô chuẩn bị một cái bẫy lớn"
+      ],
+      "cliffhanger": "Lâm An phát hiện nhật ký của Khải Phong trong két sắt, ghi chép chi tiết về tương lai.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 8,
+      "title": "Sự thật kinh hoàng",
+      "logline": "Lâm An đọc được những dòng nhật ký chứng minh Khải Phong đã biết cô tái sinh.",
+      "key_beats": [
+        "Lâm An đọc nhật ký trong run rẩy",
+        "Khải Phong đã theo dõi cô từ kiếp trước",
+        "Cô hiểu ra mình chỉ là quân cờ trong kế hoạch của anh",
+        "Minh Tuấn đến điểm hẹn",
+        "Lâm An phải giữ bình tĩnh để không lộ tẩy",
+        "Cô quyết định chơi ván bài tất tay"
+      ],
+      "cliffhanger": "Khải Phong bất ngờ bước vào phòng khi cô chưa kịp cất nhật ký.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 9,
+      "title": "Diễn kịch trên bờ vực",
+      "logline": "Lâm An đối mặt với Khải Phong trong tình thế ngàn cân treo sợi tóc.",
+      "key_beats": [
+        "Lâm An giả vờ đang tìm tài liệu công ty",
+        "Khải Phong nghi ngờ nhưng không có bằng chứng",
+        "Cô đưa ra một lý do hợp lý về việc muốn giúp anh",
+        "Khải Phong tạm tin",
+        "Lâm An bắt đầu dàn dựng vụ bê bối tài chính",
+        "Cô gửi bằng chứng giả cho Minh Tuấn"
+      ],
+      "cliffhanger": "Minh Tuấn rơi vào bẫy, hắn bắt đầu tấn công Khải Phong dựa trên thông tin giả.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 10,
+      "title": "Đấu đá nội bộ",
+      "logline": "Khải Phong và Minh Tuấn đối đầu trực diện, Lâm An đứng ngoài quan sát.",
+      "key_beats": [
+        "Các cổ đông bắt đầu hoang mang",
+        "Khải Phong phải dùng vốn riêng để cứu vãn",
+        "Minh Tuấn hả hê vì tưởng mình thắng",
+        "Lâm An bí mật thu thập bằng chứng phạm tội của cả hai",
+        "Thanh Vy nhận ra điều bất thường",
+        "Cô ta bắt đầu nghi ngờ Lâm An"
+      ],
+      "cliffhanger": "Thanh Vy phát hiện Lâm An đã thay đổi toàn bộ mật mã bảo mật của tập đoàn.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 11,
+      "title": "Bẫy chồng bẫy",
+      "logline": "Thanh Vy cố gắng phơi bày bộ mặt thật của Lâm An với Khải Phong.",
+      "key_beats": [
+        "Thanh Vy gặp Khải Phong",
+        "Cô ta đưa ra bằng chứng Lâm An đang thao túng",
+        "Khải Phong cười nhạt, anh đã biết từ lâu",
+        "Lâm An nghe lén được cuộc trò chuyện",
+        "Cô nhận ra mình cần phải hành động nhanh hơn",
+        "Một vụ tai nạn được dàn dựng"
+      ],
+      "cliffhanger": "Xe của Lâm An bị mất phanh trên đường cao tốc.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 12,
+      "title": "Sống sót trong gang tấc",
+      "logline": "Lâm An thoát chết và nhận ra kẻ thù đã không còn kiên nhẫn.",
+      "key_beats": [
+        "Lâm An thoát khỏi xe trước khi lao xuống vực",
+        "Cô biết đây là hành động của Thanh Vy",
+        "Lâm An giả vờ bị thương nặng để nằm viện",
+        "Khải Phong đến thăm với vẻ mặt giả tạo",
+        "Lâm An nhận ra anh ta đang muốn cô chết để chiếm đoạt di chúc",
+        "Cô bắt đầu liên lạc với cảnh sát"
+      ],
+      "cliffhanger": "Lâm An phát hiện y tá chăm sóc mình là người của Minh Tuấn.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 13,
+      "title": "Bệnh viện là chiến trường",
+      "logline": "Lâm An phải đối phó với sát thủ ngay trong bệnh viện.",
+      "key_beats": [
+        "Lâm An dùng thuốc gây mê đánh bại y tá",
+        "Cô trốn thoát khỏi bệnh viện",
+        "Minh Tuấn điên cuồng tìm kiếm cô",
+        "Lâm An liên lạc với một người bạn cũ trong giới truyền thông",
+        "Cô bắt đầu tung bằng chứng về vụ tai nạn",
+        "Dư luận bắt đầu chĩa mũi dùi vào Minh Tuấn"
+      ],
+      "cliffhanger": "Khải Phong xuất hiện và đưa cô vào một căn nhà an toàn.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 14,
+      "title": "Lồng giam của sói",
+      "logline": "Lâm An bị Khải Phong giam giữ dưới danh nghĩa bảo vệ.",
+      "key_beats": [
+        "Lâm An nhận ra mình bị cô lập",
+        "Khải Phong muốn cô ký giấy chuyển nhượng cổ phần",
+        "Lâm An từ chối",
+        "Cô bắt đầu tìm cách phá khóa căn nhà",
+        "Khải Phong tiết lộ lý do anh ta cần cô",
+        "Anh ta cần cô để mở khóa tài khoản bí mật của Lâm gia"
+      ],
+      "cliffhanger": "Lâm An phát hiện ra Khải Phong đang giữ cha mình làm con tin.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 15,
+      "title": "Cứu viện",
+      "logline": "Lâm An phải tìm cách cứu cha mình mà không để Khải Phong phát hiện.",
+      "key_beats": [
+        "Lâm An giả vờ hợp tác với Khải Phong",
+        "Cô yêu cầu được gặp cha",
+        "Khải Phong đồng ý nhưng kèm điều kiện",
+        "Lâm An lén để lại tín hiệu cho cảnh sát",
+        "Minh Tuấn tìm đến nơi giam giữ",
+        "Một cuộc đụng độ giữa hai phe xảy ra"
+      ],
+      "cliffhanger": "Lâm An tận dụng hỗn loạn để giải cứu cha mình.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 16,
+      "title": "Chạy trốn",
+      "logline": "Lâm An và cha chạy trốn khỏi sự truy đuổi của cả Khải Phong và Minh Tuấn.",
+      "key_beats": [
+        "Cuộc rượt đuổi nghẹt thở trong đêm",
+        "Lâm An bị thương",
+        "Cha cô tiết lộ một bí mật về tập đoàn",
+        "Họ trốn vào một khách sạn nhỏ",
+        "Lâm An liên lạc với luật sư riêng",
+        "Cô chuẩn bị hồ sơ kiện cả hai tập đoàn"
+      ],
+      "cliffhanger": "Khải Phong tìm thấy nơi ẩn náu của họ.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 17,
+      "title": "Đối mặt",
+      "logline": "Lâm An đối mặt với Khải Phong, không còn sự giả tạo.",
+      "key_beats": [
+        "Lâm An đứng trước mặt Khải Phong",
+        "Cô vạch trần mọi tội ác của anh",
+        "Khải Phong không còn che giấu sự tàn nhẫn",
+        "Minh Tuấn bất ngờ xuất hiện",
+        "Cả ba đối đầu trong một căn phòng",
+        "Lâm An giữ bình tĩnh dù bị đe dọa"
+      ],
+      "cliffhanger": "Minh Tuấn rút súng nhắm vào Khải Phong.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 18,
+      "title": "Tiếng súng vang lên",
+      "logline": "Một phát súng thay đổi cục diện ván cờ.",
+      "key_beats": [
+        "Phát súng trượt mục tiêu",
+        "Cảnh sát ập đến",
+        "Lâm An đã báo cảnh sát từ trước",
+        "Minh Tuấn bị bắt",
+        "Khải Phong trốn thoát",
+        "Lâm An cảm thấy nhẹ nhõm nhưng chưa kết thúc"
+      ],
+      "cliffhanger": "Khải Phong để lại một tin nhắn: 'Trò chơi chỉ mới bắt đầu'.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 19,
+      "title": "Tàn dư",
+      "logline": "Lâm An bắt đầu dọn dẹp đống đổ nát sau vụ bắt giữ Minh Tuấn.",
+      "key_beats": [
+        "Minh Tuấn bị thẩm vấn",
+        "Lâm An lấy lại quyền điều hành tập đoàn",
+        "Cô đối mặt với sự phản đối của hội đồng quản trị",
+        "Thanh Vy vẫn còn tự do",
+        "Lâm An tìm cách triệt hạ Thanh Vy",
+        "Cô phát hiện Thanh Vy đang nắm giữ bằng chứng chống lại Khải Phong"
+      ],
+      "cliffhanger": "Thanh Vy đề nghị hợp tác với Lâm An để hạ bệ Khải Phong.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 20,
+      "title": "Kẻ thù của kẻ thù",
+      "logline": "Lâm An cân nhắc lời đề nghị của Thanh Vy.",
+      "key_beats": [
+        "Lâm An gặp Thanh Vy",
+        "Cô biết Thanh Vy đang lừa dối",
+        "Lâm An giả vờ đồng ý",
+        "Cô cài bẫy để Thanh Vy tự lộ sơ hở",
+        "Thanh Vy tin rằng mình đã thắng",
+        "Lâm An bắt đầu thu thập bằng chứng từ Thanh Vy"
+      ],
+      "cliffhanger": "Thanh Vy vô tình tiết lộ nơi Khải Phong đang ẩn náu.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 21,
+      "title": "Truy cùng diệt tận",
+      "logline": "Lâm An lên kế hoạch bắt giữ Khải Phong.",
+      "key_beats": [
+        "Lâm An chuẩn bị lực lượng",
+        "Cô không tin vào cảnh sát hoàn toàn",
+        "Cô tự mình đến nơi ẩn náu của Khải Phong",
+        "Khải Phong đã đợi sẵn",
+        "Anh ta không còn muốn chiến đấu",
+        "Anh ta muốn một cuộc đối thoại cuối cùng"
+      ],
+      "cliffhanger": "Khải Phong tiết lộ lý do thực sự khiến anh ta ám ảnh với cô.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 22,
+      "title": "Lời thú tội",
+      "logline": "Khải Phong kể về nỗi đau của anh trong quá khứ.",
+      "key_beats": [
+        "Khải Phong kể về gia đình anh bị Lâm gia hủy hoại",
+        "Lâm An nhận ra cha mình cũng có lỗi",
+        "Sự thật về quá khứ dần sáng tỏ",
+        "Lâm An cảm thấy mâu thuẫn",
+        "Cô phải chọn giữa công lý và sự thật",
+        "Khải Phong yêu cầu cô tha thứ"
+      ],
+      "cliffhanger": "Lâm An từ chối và giao nộp anh cho cảnh sát.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 23,
+      "title": "Sự sụp đổ của đế chế",
+      "logline": "Khải Phong bị bắt, đế chế tài chính của anh sụp đổ.",
+      "key_beats": [
+        "Cổ phiếu của Khải Phong lao dốc",
+        "Lâm An thu mua lại các tài sản quan trọng",
+        "Cô củng cố quyền lực tại Lâm gia",
+        "Thanh Vy cố gắng tẩu thoát",
+        "Lâm An chặn đứng Thanh Vy tại sân bay",
+        "Thanh Vy bị bắt giữ"
+      ],
+      "cliffhanger": "Lâm An nhận được một lá thư từ trong tù của Minh Tuấn.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 24,
+      "title": "Bức thư từ ngục tối",
+      "logline": "Minh Tuấn đe dọa Lâm An từ trong tù.",
+      "key_beats": [
+        "Lá thư chứa đựng thông tin về một người đứng sau nữa",
+        "Lâm An nghi ngờ có một thế lực lớn hơn",
+        "Cô bắt đầu điều tra lại toàn bộ hồ sơ",
+        "Cô phát hiện ra cha mình cũng có liên quan",
+        "Sự thật về cái chết của mẹ cô",
+        "Lâm An cảm thấy bị phản bội bởi chính gia đình"
+      ],
+      "cliffhanger": "Cha cô thừa nhận đã biết về kế hoạch của Minh Tuấn từ đầu.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 25,
+      "title": "Sự thật trần trụi",
+      "logline": "Lâm An đối mặt với cha mình về những bí mật gia đình.",
+      "key_beats": [
+        "Cuộc tranh cãi nảy lửa giữa hai cha con",
+        "Cha cô giải thích lý do ông im lặng",
+        "Lâm An không thể tha thứ",
+        "Cô quyết định tách khỏi Lâm gia",
+        "Cô bắt đầu xây dựng đế chế riêng",
+        "Cô đối mặt với sự cô độc"
+      ],
+      "cliffhanger": "Lâm An bị sa thải khỏi chính tập đoàn của mình bởi hội đồng quản trị do cha cô giật dây.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 26,
+      "title": "Trắng tay",
+      "logline": "Lâm An mất tất cả, phải bắt đầu lại từ đầu.",
+      "key_beats": [
+        "Cô rời khỏi nhà với hai bàn tay trắng",
+        "Cô không còn quyền lực",
+        "Cô tìm đến những người từng bị cô giúp đỡ",
+        "Họ quay lưng lại với cô",
+        "Lâm An nhận ra thế giới này chỉ có lợi ích",
+        "Cô bắt đầu một kế hoạch mới từ con số 0"
+      ],
+      "cliffhanger": "Khải Phong gửi cho cô một khoản tiền lớn từ trong tù.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 27,
+      "title": "Sự trỗi dậy",
+      "logline": "Lâm An dùng số tiền của Khải Phong để bắt đầu lại.",
+      "key_beats": [
+        "Cô thành lập một công ty khởi nghiệp",
+        "Cô dùng kiến thức tương lai để đầu tư",
+        "Cô bắt đầu lấy lại vị thế",
+        "Cha cô bắt đầu lo sợ",
+        "Ông ta tìm cách phá hoại cô",
+        "Lâm An đã chuẩn bị sẵn phương án đối phó"
+      ],
+      "cliffhanger": "Công ty của Lâm An trở thành đối thủ trực tiếp của Lâm gia.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 28,
+      "title": "Đòn quyết định",
+      "logline": "Lâm An tung đòn chí mạng vào tập đoàn Lâm gia.",
+      "key_beats": [
+        "Cô công khai bằng chứng tham nhũng của cha",
+        "Cổ phiếu Lâm gia rơi tự do",
+        "Cha cô mất quyền kiểm soát",
+        "Lâm An mua lại tập đoàn",
+        "Cô chính thức trở thành người đứng đầu",
+        "Cô cảm thấy trống rỗng"
+      ],
+      "cliffhanger": "Cô nhìn vào gương và thấy mình giống hệt kẻ thù cô từng căm ghét.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 29,
+      "title": "Cái giá của quyền lực",
+      "logline": "Lâm An đứng trên đỉnh cao nhưng cô đơn tột cùng.",
+      "key_beats": [
+        "Cô nắm giữ mọi thứ",
+        "Không còn ai bên cạnh",
+        "Cô thăm Khải Phong trong tù",
+        "Họ nói chuyện như những người bạn cũ",
+        "Lâm An hiểu rằng cô đã chiến thắng nhưng cũng đã mất đi nhân tính",
+        "Cô quyết định buông bỏ quá khứ"
+      ],
+      "cliffhanger": "Cô nhận được tin cha mình đã qua đời trong sự cô độc.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 30,
+      "title": "Ván cờ kết thúc",
+      "logline": "Lâm An nhìn lại hành trình của mình và chọn con đường riêng.",
+      "key_beats": [
+        "Lâm An tổ chức tang lễ cho cha",
+        "Cô từ chức và trao lại quyền lực cho những người xứng đáng",
+        "Cô rời bỏ thành phố",
+        "Cô tìm thấy sự bình yên ở một nơi xa",
+        "Những bóng ma quá khứ dần tan biến",
+        "Lâm An bắt đầu một cuộc đời mới"
+      ],
+      "cliffhanger": "Lâm An mỉm cười khi nhìn thấy một người giống hệt cô ở kiếp trước đang bắt đầu một cuộc chơi mới.",
+      "source_span": "",
+      "hook_score": null
+    }
+  ],
+  "changelog": [
+    "2026-10-03 outline (google/gemini-3.1-flash-lite, mode=write)"
+  ]
+}

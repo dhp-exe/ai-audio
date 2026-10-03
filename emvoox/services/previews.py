@@ -14,6 +14,7 @@ from emvoox import paths
 from emvoox.casting import guess_gender, placeholder_voice
 from emvoox.contracts.production import CharacterProfile
 from emvoox.providers.tts import DEFAULT_MODEL, ProviderError, TtsRequest, get_provider
+from emvoox.providers.tts.catalog import voice_family
 from emvoox.repositories import Repositories, now_iso
 from emvoox.telemetry.ledger import Ledger
 from emvoox.text.vi_normalize import normalize_vi
@@ -39,7 +40,7 @@ def voice_preview_name(provider: str, voice_id: str, model_id: str) -> str:
 def preview_settings(provider: str, model_id: str) -> dict:
     if provider == "elevenlabs":
         return dict(EL_SETTINGS)
-    if provider == "gemini":
+    if voice_family(provider, model_id) == "gemini":
         return {"style": GEMINI_STYLE}
     if provider == "wavespeed" and model_id.startswith("elevenlabs/"):
         return {"stability": 0.5}

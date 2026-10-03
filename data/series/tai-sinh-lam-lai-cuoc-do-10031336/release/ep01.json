@@ -1,0 +1,47 @@
+{
+  "series_id": "tai-sinh-lam-lai-cuoc-do-10031336",
+  "episode_number": 1,
+  "title": "Tỉnh giấc từ cõi chết",
+  "state": "awaiting_approval",
+  "qa_status": "PASS",
+  "qa_score": 100,
+  "qa_attempts": 0,
+  "reason": "QA passed; waiting for a human to listen and approve.",
+  "duration_ms": 74980,
+  "master_mp3": "series/tai-sinh-lam-lai-cuoc-do-10031336/masters/ep01_master.mp3",
+  "master_wav": "series/tai-sinh-lam-lai-cuoc-do-10031336/masters/ep01_master.wav",
+  "metadata": {
+    "title": "Ván Cờ Nghịch Mệnh | Tập 1: Tỉnh giấc từ cõi chết",
+    "description": "Lâm An tỉnh dậy trong ngày đính hôn định mệnh, 5 năm trước khi bi kịch xảy ra. Với ký ức về tương lai, cô quyết định bước ra khỏi bóng tối để bắt đầu ván cờ báo thù đầy kịch tính. Nghe tập tiếp theo trong danh sách phát. Giọng đọc trong video được tạo bằng AI.",
+    "tags": [
+      "Ván Cờ Nghịch Mệnh",
+      "truyện audio",
+      "Mặc Khải",
+      "Emvoox",
+      "truyện tâm lý",
+      "truyện giật gân",
+      "truyện báo thù",
+      "audiobook",
+      "truyện hay",
+      "nghe truyện"
+    ],
+    "hashtags": [
+      "#VanCoNghichMenh",
+      "#TruyenAudio",
+      "#MacKhai",
+      "#TruyenBaoThu"
+    ],
+    "playlist_title": "Ván Cờ Nghịch Mệnh",
+    "thumbnail_text": "Tỉnh lại trước 5 năm",
+    "language": "vi",
+    "category": "Entertainment",
+    "made_for_kids": false,
+    "contains_synthetic_media": true,
+    "generated_by": "llm"
+  },
+  "decision": null,
+  "exported": [],
+  "publish": {},
+  "created_at": "2026-10-03T13:37:19+00:00",
+  "updated_at": "2026-10-03T13:37:19+00:00"
+}

@@ -76,7 +76,7 @@ class RenderUnit(BaseModel):
     model_id: str
     voice_id: str = Field(description="Voice for a line; the chunk id for a multi-speaker conversation.")
     text: str
-    settings: dict[str, float | int | str | bool] = Field(default_factory=dict)
+    settings: dict[str, float | int | str | bool | list[str]] = Field(default_factory=dict)
     speaker_voices: list[tuple[str, str]] = Field(default_factory=list, description="(label, voice) pairs of a multi-speaker request.")
     stem: str = Field(description="Stem file name under stems/epNN/.")
     pause_after_ms: int = Field(400, ge=0, le=5000)

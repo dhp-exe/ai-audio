@@ -23,6 +23,21 @@ DEFAULT_LLM_MODEL = {
     "anthropic": "claude-opus-5",
     "mock": "mock-llm",
 }
+# Suggestions shown in the web client's model field (any id the provider accepts can still be typed).
+# WaveSpeed's gateway does not list its models; these ids answered on our key on 2026-10-03.
+LLM_MODEL_SUGGESTIONS: dict[str, list[dict[str, str]]] = {
+    "wavespeed": [
+        {"id": "google/gemini-3.1-flash-lite", "note": "default: fast and cheapest; the one tested with the agents"},
+        {"id": "google/gemini-3.6-flash", "note": "stronger writing, thinks before answering; slower and costlier"},
+        {"id": "anthropic/claude-sonnet-5", "note": "strongest writing of the list; highest cost"},
+        {"id": "openai/gpt-5-mini", "note": "mid-priced alternative"},
+        {"id": "deepseek/deepseek-chat", "note": "low cost alternative"},
+    ],
+    "gemini": [{"id": "gemini-3.1-flash-lite", "note": "default"}, {"id": "gemini-3.6-flash", "note": "thinking model"}],
+    "openai": [{"id": "gpt-5-mini", "note": "default"}],
+    "anthropic": [{"id": "claude-opus-5", "note": "default"}, {"id": "claude-sonnet-5", "note": "faster, cheaper"}],
+    "mock": [],
+}
 
 
 def _env(name: str, default: str | None = None) -> str | None:
@@ -119,7 +134,7 @@ def get_settings() -> Settings:
         if tts_model not in model_ids(tts_provider):
             tts_model = None  # a model of another engine (e.g. a legacy eleven_v3 default) never leaks into this one
     return Settings(
-        data_dir=Path(_env("DATA_DIR") or (REPO_ROOT / "data")).expanduser().resolve(),
+        data_dir=_data_dir(_env("DATA_DIR")),
         storage_backend=(_env("STORAGE", "local") or "local").lower(),
         doc_store=(_env("DOC_STORE", "json") or "json").lower(),
         gemini_api_key=os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY") or None,
@@ -155,6 +170,13 @@ def get_settings() -> Settings:
         halt_on_qa_fail=_bool(_env("HALT_ON_QA_FAIL"), True),
         research_use_browser=_bool(_env("RESEARCH_USE_BROWSER"), False),
     )
+
+
+def _data_dir(value: str | None) -> Path:
+    """A relative EMVOOX_DATA_DIR (the template's ./data) means "under the repository", wherever the engine is started from;
+    resolving it against the shell's working directory once sent a server started in web/ to an empty web/data store."""
+    p = Path(value).expanduser() if value else REPO_ROOT / "data"
+    return (p if p.is_absolute() else REPO_ROOT / p).resolve()
 
 
 def reset_settings() -> None:

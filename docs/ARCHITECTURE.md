@@ -38,7 +38,7 @@ flowchart TB
 
   subgraph Providers["Providers (emvoox/providers)"]
     LLM["LLM: Gemini · WaveSpeed LLM · OpenAI-compatible · Claude · mock"]
-    TTS["TTS: Gemini TTS · ElevenLabs · WaveSpeed (ElevenLabs v3, MiniMax) · mock"]
+    TTS["TTS: Gemini TTS · ElevenLabs · WaveSpeed (ElevenLabs v3, MiniMax, Gemini 3.8 TTS) · mock"]
     BR["Browser automation (Playwright, optional)"]
   end
   Fleet --> Providers
@@ -76,15 +76,22 @@ repositories, LLM client, telemetry ledger, run parameters, a log sink, a cancel
 
 ### 2.1 Market Research Agent (`market_research.py`)
 - **Market Scan**: observations from text pasted into the run, every `.md/.txt/.json` under `data/inputs/trends/`, and
-  (when `use_browser` / `EMVOOX_RESEARCH_USE_BROWSER`) the visible text of public listing pages on DramaBox, ReelShort
-  and TikTok through headless Chromium (Playwright, optional extra). No per-site selectors: the page text goes to the
-  model, so a redesign of a site does not break the scan. Login walls and bot checks are skipped and logged.
-- **Content Analyze**: one LLM call → `MarketAnalysis` (insights per reference title; 3-5 story directions, each rated
-  1-10 on audience fit, momentum and production fit, and tagged with one of the three Mặc Khải content lines:
-  `urban_ceo` Đô thị - Tổng tài, `intellectual_slap_anti_trope` Vả mặt - Ngược tra, `rebirth_butterfly_effect` Tái sinh).
-- **Trend Ranking**: deterministic score `0.45·audience_fit + 0.30·momentum + 0.25·production_fit`; candidates on the
-  editor's `focus` line rank first. The best becomes the `TrendBrief` (topic, target audience, format spec, theme, hook,
-  premise, anti-trope angle, references, all ranked candidates, sources).
+  (when `use_browser` / `EMVOOX_RESEARCH_USE_BROWSER`) the visible text of public pages on DramaBox, ReelShort, TikTok,
+  Google and YouTube through headless Chromium (Playwright, optional extra; sources in `DEFAULT_SOURCES` or
+  `inputs/market_sources.json`). No per-site selectors: the page text goes to the model, so a redesign of a site does
+  not break the scan. A robot check, login wall or error page is recorded as **blocked** and never worked around.
+- **Scan record**: every source is a `ScanStep` (status, characters read, excerpt, screenshot) in a `ScanState`
+  document saved after each step. `POST /api/research/scan` starts the agent in a background thread and returns the
+  scan; the Market research page polls `GET /api/research/scans/{id}` once a second and shows the pages being read.
+- **Content Analyze**: one LLM call → `MarketAnalysis`: insights per reference title, and the **three most trending
+  genres**, each with its evidence from the data, the platforms it was seen on, a new story direction, three 1-10
+  ratings (audience fit, momentum, production fit) and the nearest Mặc Khải content line (`urban_ceo`,
+  `intellectual_slap_anti_trope`, `rebirth_butterfly_effect`, or `other`). The editor's free-text `guide` steers it.
+- **Trend Ranking**: deterministic score `0.45·audience_fit + 0.30·momentum + 0.25·production_fit`; genres on the
+  editor's `focus` line rank first; the top three are kept in the `TrendBrief`.
+- **Human pick**: the editor chooses one of the three (`POST /api/research/briefs/{id}/select`); the brief's top-level
+  fields (topic, hook, premise, genre…) mirror the pick and that is what the Script Writer's Story Adapt receives. A
+  run started with `source = research` does not stop for the pick and uses the top-ranked genre.
 
 ### 2.2 Script Writer Agent (`script_writer.py`)
 - **Story Adapt**: `TrendBrief` → `StoryInput` (title, 2-5 roles each with their own goal and motive, an act-by-act
@@ -93,6 +100,11 @@ repositories, LLM client, telemetry ledger, run parameters, a log sink, a cancel
   types, episode plans that each end on a cliffhanger). Mode is picked from input length: *segment* keeps the author's
   dialogue verbatim (verbatim ratio checked, one retry), *write* expands a treatment (word floor enforced). Roles leave
   this agent **uncast**: casting belongs to the next agent. Then one draft call per episode renders the screenplay.
+- **Roster limit**: Story Adapt and the outline are told how many female and male Voice IPs exist
+  (`casting.roster_capacity`) and may not write more *named* roles (protagonist, antagonist, supporting) of either
+  gender; a version that exceeds it is sent back once. Whatever still does not fit (for example a pasted script with a
+  large cast) is demoted to a background role (`minor`). Every role carries an explicit `gender`, which decides the
+  voice. Drafts may not add speaking characters.
 - **Cliffhanger Check**: an LLM editor scores the hook 1-10 and checks the Emvoox **Anti-Trope rules**
   (`contracts/script.py::ANTI_TROPE_RULES_VI`): independent motivations, a twist within ~30 s (≈100 words), a smart
   antagonist, prepared reveals, consequences, a resolved ending. Below `EMVOOX_CLIFFHANGER_MIN_SCORE` (6) a write-mode
@@ -100,14 +112,18 @@ repositories, LLM client, telemetry ledger, run parameters, a log sink, a cancel
   stands in when the LLM check is off or fails.
 
 ### 2.3 Casting & Voice IP Curator Agent (`casting.py`)
-- **Voice Registry**: reads the locked registry; gives roles with no fitting IP a one-off entry with a placeholder voice;
-  adds a voice on an engine an actor does not have yet (an addition, so the lock is not involved).
-- **Casting Match**: director pins (`/ngan` in the story form, or the dropdown) → an LLM proposal over the free actors
-  (gender, age, persona, timbre) → a rule-based gender match → a placeholder. One actor plays one role per series.
+- **Voice Registry**: reads the locked registry; adds a voice on an engine an actor does not have yet (an addition, so
+  the lock is not involved). The agent **never adds a character**: Voice IPs are created by people (Voice IPs page, API).
+  A Voice IP profile describes the voice and personality only, never a story: one IP plays many roles across series.
+- **Casting Match**: named roles are always played by Voice IPs: director pins (`/ngan` in the story form, or the
+  dropdown) → an LLM proposal over the free actors (gender, age, persona, timbre; a proposal whose gender does not match
+  the role is rejected) → a rule-based gender match. Background roles (`minor`) take a Voice IP that is still free,
+  otherwise a **temporary voice** that exists only in that production's `cast.json` and is kept across its later runs.
+  One actor plays one role per series.
 - **Engine Policy**: per actor, the first available of `by_actor` → the actor's **cloned / preferred voice** (when
   `prefer_cloned`) → `by_role_type` (e.g. protagonist on ElevenLabs, minor roles on Gemini) → the run's default engine.
   An engine whose key is missing is skipped with a run note. WaveSpeed reuses an actor's ElevenLabs voice id through its
-  hosted ElevenLabs v3 endpoint. `tier: final` refuses placeholder voices. Output: `ResolvedCast` with, per role, the
+  hosted ElevenLabs v3 endpoint. `tier: final` refuses temporary voices on named roles. Output: `ResolvedCast` with, per role, the
   actor, provider, model, voice id, voice source (`prebuilt | premade | library | cloned | placeholder`) and the voice's
   identity settings.
 
@@ -252,6 +268,7 @@ data/
   assets/bgm/<mood>/, assets/sfx/ music beds and effect clips (optional)
   inputs/trends/*.md|txt|json     trend notes for the Market Research Agent; inputs/market_sources.json (browser targets)
   research/briefs/<id>.json       TrendBriefs
+  research/scans/<id>.json        scan records (progress, sources, log); research/scans/<id>/*.jpg page screenshots
   series/<id>/                    story, bible, cast, scripts, directed units, stems, timelines, masters, qa, release,
                                   run.log.jsonl (ledger), pipeline_run.json (run state), logs/ (step logs, events.jsonl)
   outputs/approved_masters/<id>/  epNN.mp3, epNN.wav, epNN.youtube.json (approved only)
@@ -272,7 +289,7 @@ data/
 | LLM | mock | `llm/mock.py` | deterministic, schema-valid Vietnamese template story; offline demo and tests |
 | TTS | Gemini TTS | `tts/gemini.py` | 30 prebuilt voices, multi-speaker conversation requests, direction prefix, free-tier quota fail-fast |
 | TTS | ElevenLabs | `tts/elevenlabs.py` | `eleven_v3` + v2/flash, any account voice (cloned included), alignment, tier-gated format fallback |
-| TTS | **WaveSpeed** | `tts/wavespeed.py` | `POST /api/v3/<model path>` → poll `/predictions/{id}/result` → download; `elevenlabs/eleven-v3` (any ElevenLabs voice id), `minimax/speech-2.6-hd` (system or cloned ids, emotion/speed/pitch/volume). Submissions are never blindly retried (a lost response may still be billed) |
+| TTS | **WaveSpeed** | `tts/wavespeed.py` | `POST /api/v3/<model path>` → poll `/predictions/{id}/result` → download; `elevenlabs/eleven-v3` (any ElevenLabs voice id), `minimax/speech-2.6-hd` (system or cloned ids, emotion/speed/pitch/volume). Submissions are never blindly retried (a lost response may still be billed); `google/gemini-3.8-flash[-lite]/text-to-speech` (the actor's Gemini voice name, `style_instructions`, two-speaker dialogue as `speakers` + `turns`; billed per request per started 1,000 characters, hence scene batching) |
 | TTS | mock | `tts/mock.py` | tones at the canonical stem format; fault injection (`clip`, `truncate`, `silence`, `error`) for the QA loop |
 
 Every call goes through `LlmClient.structured(...)` or a `TtsProvider.synthesize(...)`, which is where validation,

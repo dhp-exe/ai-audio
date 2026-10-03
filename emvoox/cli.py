@@ -4,7 +4,7 @@
     python -m emvoox run --series s1 --story story.txt --episodes 30 --produce 3 --tts gemini
     python -m emvoox run --series s2 --research --seeds "ghi chú xu hướng..." --llm wavespeed --tts wavespeed
     python -m emvoox run --series s1 --only 4-6                  continue an existing series
-    python -m emvoox research [--seeds "..."] [--browser] [--focus urban_ceo]
+    python -m emvoox research [--seeds "..."] [--browser] [--platforms dramabox,youtube] [--guide "..."] [--focus urban_ceo]
     python -m emvoox approve --series s1 --episode 1 --reviewer an [--notes "..."]
     python -m emvoox reject  --series s1 --episode 1 --reviewer an --notes "line 3 sounds flat"
     python -m emvoox voices                                       list Voice IPs and their voices
@@ -58,7 +58,8 @@ def cmd_research(a: argparse.Namespace) -> int:
         from pathlib import Path
 
         seeds = Path(seeds).read_text(encoding="utf-8")
-    brief = MarketResearchAgent().run(ctx, ResearchParams(seeds=seeds or "", use_browser=a.browser or None, focus=a.focus or ""))
+    brief = MarketResearchAgent().run(ctx, ResearchParams(seeds=seeds or "", use_browser=a.browser or None, focus=a.focus or "", guide=a.guide or "",
+                                                         platforms=[p.strip() for p in (a.platforms or "").split(",") if p.strip()]))
     for c in brief.candidates:
         print(f"{c.score:5.2f}  {c.theme_category.value:<30} {c.topic}", file=sys.stderr)
     return _out({"ok": True, "brief_id": brief.brief_id, "topic": brief.topic, "theme": brief.theme_category.value, "score": brief.score})
@@ -144,6 +145,8 @@ def main(argv: list[str] | None = None) -> int:
     rs.add_argument("--seeds", default="", help="trend notes (text, or a .md/.txt file)")
     rs.add_argument("--browser", action="store_true")
     rs.add_argument("--focus", default="")
+    rs.add_argument("--guide", default="", help="what the agent should look for")
+    rs.add_argument("--platforms", default="", help="comma-separated: dramabox,reelshort,tiktok,google,youtube (default: all)")
     rs.add_argument("--llm", default=None)
     for name in ("approve", "reject"):
         g = sub.add_parser(name, help=f"{name} an episode at the human gate")

@@ -90,3 +90,16 @@ def test_bible_role_mapping():
     assert m["Tô Mạn"] == "ngan" and m["to-man"] == "ngan" and m["giang-than"] == "duong" and m["duong"] == "duong"
     assert b.actor_to_role()["duong"] == "Giang Thần"
     assert json.loads(b.model_dump_json())["roles"][1]["assigned_by"] == "user"
+
+
+def test_gender_of_roles_without_a_stated_gender():
+    """The roles of the 2026-10-03 run that were all voiced as men: no description said 'nữ' or 'nam'."""
+    from emvoox.casting import gender_of
+
+    assert gender_of("Lâm An", "27 tuổi (tâm hồn 32). Từng là tiểu thư ngây thơ, sau khi tái sinh trở nên sắc sảo.") == "female"
+    assert gender_of("Thanh Vy", "27 tuổi. Bạn thân kiếp trước, kẻ chủ mưu sát hại Lâm An.") == "female"
+    assert gender_of("Khải Phong", "30 tuổi. Tổng tài lạnh lùng, bí ẩn.") == "male"
+    assert gender_of("Minh Tuấn", "28 tuổi. Chồng cũ kiếp trước của Lâm An.") == "male"
+    assert gender_of("Hạ Vy", "bị chồng phản bội, cô đơn") == "female" and gender_of("Tô Mạn", "vợ của tổng tài") == "female"  # words about other people
+    assert gender_of("Linh", "Nữ, giọng alto; giọng miền Nam, không ngọt.") == "female" and gender_of("Bà Lý", "lớn tuổi") == "female"
+    assert gender_of("X", "không rõ") is None

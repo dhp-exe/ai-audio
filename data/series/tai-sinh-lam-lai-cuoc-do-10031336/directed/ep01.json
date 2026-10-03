@@ -1,0 +1,368 @@
+{
+  "schema_version": "2.0",
+  "series_id": "tai-sinh-lam-lai-cuoc-do-10031336",
+  "episode_number": 1,
+  "title": "Tỉnh giấc từ cõi chết",
+  "target_duration_sec": 120,
+  "batching": "scene",
+  "units": [
+    {
+      "unit_id": "ep01_sc01_l001",
+      "scene_id": "sc01",
+      "order": 1,
+      "type": "monologue",
+      "speaker_id": "lam-an",
+      "role_name": "Lâm An",
+      "text": "Đau quá. Mình không phải đã chết trong căn phòng đầy lửa đó sao? Tại sao mình lại ở đây, trong chiếc váy cưới này?",
+      "tts_text": "Đau quá. Mình không phải đã chết trong căn phòng đầy lửa đó sao? Tại sao mình lại ở đây, trong chiếc váy cưới này?",
+      "emotion_tag": "fearful",
+      "emotional_intensity": 8,
+      "audio_tags": [
+        "internal monologue"
+      ],
+      "direction": "thở gấp, giọng run rẩy, âm thanh vang nhẹ như trong phòng kín",
+      "pause_after_ms": 500,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Puck",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng sợ hãi (mạnh), độc thoại nội tâm, như tự nói với chính mình, mic gần, thở gấp, giọng run rẩy, âm thanh vang nhẹ như trong phòng kín"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep01_sc01_l002",
+      "scene_id": "sc01",
+      "order": 2,
+      "type": "monologue",
+      "speaker_id": "lam-an",
+      "role_name": "Lâm An",
+      "text": "Ngày đính hôn với Minh Tuấn. Năm năm trước. Ông trời cho mình một cơ hội, lần này, mình sẽ không để bất cứ ai biến mình thành quân cờ nữa.",
+      "tts_text": "Ngày đính hôn với Minh Tuấn. Năm năm trước. Ông trời cho mình một cơ hội, lần này, mình sẽ không để bất cứ ai biến mình thành quân cờ nữa.",
+      "emotion_tag": "neutral",
+      "emotional_intensity": 6,
+      "audio_tags": [
+        "introspective"
+      ],
+      "direction": "giọng trầm xuống, sắc lạnh, quyết tâm",
+      "pause_after_ms": 500,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Puck",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng bình thản (vừa phải), độc thoại nội tâm, như tự nói với chính mình, mic gần, giọng trầm xuống, sắc lạnh, quyết tâm"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep01_sc01_l003",
+      "scene_id": "sc01",
+      "order": 3,
+      "type": "dialogue",
+      "speaker_id": "minh-tuan",
+      "role_name": "Minh Tuấn",
+      "text": "An, em xong chưa? Khách khứa bên ngoài đang chờ đợi khoảnh khắc chúng ta chính thức thuộc về nhau đấy.",
+      "tts_text": "An, em xong chưa? Khách khứa bên ngoài đang chờ đợi khoảnh khắc chúng ta chính thức thuộc về nhau đấy.",
+      "emotion_tag": "neutral",
+      "emotional_intensity": 3,
+      "audio_tags": [],
+      "direction": "giọng ngọt ngào giả tạo, hơi vang từ ngoài cửa",
+      "pause_after_ms": 300,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Achird",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng bình thản (nhẹ), giọng ngọt ngào giả tạo, hơi vang từ ngoài cửa"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep01_sc01_l004",
+      "scene_id": "sc01",
+      "order": 4,
+      "type": "dialogue",
+      "speaker_id": "lam-an",
+      "role_name": "Lâm An",
+      "text": "Anh gấp gáp đến thế sao, Minh Tuấn? Hay là anh sợ nếu không đính hôn ngay hôm nay, anh sẽ không còn cơ hội chạm tay vào tài sản của Lâm gia?",
+      "tts_text": "Anh gấp gáp đến thế sao, Minh Tuấn? Hay là anh sợ nếu không đính hôn ngay hôm nay, anh sẽ không còn cơ hội chạm tay vào tài sản của Lâm gia?",
+      "emotion_tag": "sarcastic",
+      "emotional_intensity": 7,
+      "audio_tags": [
+        "sarcastic"
+      ],
+      "direction": "giọng sắc bén, mỉa mai, nhấn mạnh vào từng chữ",
+      "pause_after_ms": 400,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Puck",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng mỉa mai (mạnh), giọng mỉa mai, giọng sắc bén, mỉa mai, nhấn mạnh vào từng chữ"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep01_sc01_l005",
+      "scene_id": "sc01",
+      "order": 5,
+      "type": "dialogue",
+      "speaker_id": "minh-tuan",
+      "role_name": "Minh Tuấn",
+      "text": "Em nói gì lạ vậy? Hôm nay là ngày vui của chúng ta, đừng đùa như thế.",
+      "tts_text": "Em nói gì lạ vậy? Hôm nay là ngày vui của chúng ta, đừng đùa như thế.",
+      "emotion_tag": "fearful",
+      "emotional_intensity": 5,
+      "audio_tags": [
+        "hesitates"
+      ],
+      "direction": "giọng hơi khựng lại, bối rối",
+      "pause_after_ms": 400,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Achird",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng sợ hãi (vừa phải), ngập ngừng, giọng hơi khựng lại, bối rối"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep01_sc02_l001",
+      "scene_id": "sc02",
+      "order": 6,
+      "type": "monologue",
+      "speaker_id": "lam-an",
+      "role_name": "Lâm An",
+      "text": "Cha đang đứng đó, chờ đợi trao gửi con gái cho một con quỷ. Mình phải ngăn lại. Ngay lúc này.",
+      "tts_text": "Cha đang đứng đó, chờ đợi trao gửi con gái cho một con quỷ. Mình phải ngăn lại. Ngay lúc này.",
+      "emotion_tag": "angry",
+      "emotional_intensity": 7,
+      "audio_tags": [
+        "internal monologue"
+      ],
+      "direction": "giọng nội tâm đanh thép, dứt khoát",
+      "pause_after_ms": 500,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Puck",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng giận dữ (mạnh), độc thoại nội tâm, như tự nói với chính mình, mic gần, giọng nội tâm đanh thép, dứt khoát"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep01_sc02_l002",
+      "scene_id": "sc02",
+      "order": 7,
+      "type": "dialogue",
+      "speaker_id": "lam-an",
+      "role_name": "Lâm An",
+      "text": "Xin lỗi mọi người, buổi lễ này phải dừng lại. Tôi có một món quà đặc biệt dành cho vị hôn phu của mình.",
+      "tts_text": "Xin lỗi mọi người, buổi lễ này phải dừng lại. Tôi có một món quà đặc biệt dành cho vị hôn phu của mình.",
+      "emotion_tag": "angry",
+      "emotional_intensity": 9,
+      "audio_tags": [
+        "shouting"
+      ],
+      "direction": "giọng vang dội, rõ ràng, quyền lực",
+      "pause_after_ms": 500,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Puck",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng giận dữ (rất mạnh, cao trào), quát lớn, giọng vang dội, rõ ràng, quyền lực"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep01_sc02_l003",
+      "scene_id": "sc02",
+      "order": 8,
+      "type": "dialogue",
+      "speaker_id": "minh-tuan",
+      "role_name": "Minh Tuấn",
+      "text": "Lâm An, em điên rồi sao? Bỏ micro xuống ngay!",
+      "tts_text": "Lâm An, em điên rồi sao? Bỏ micro xuống ngay!",
+      "emotion_tag": "angry",
+      "emotional_intensity": 8,
+      "audio_tags": [
+        "whispers"
+      ],
+      "direction": "giọng thì thầm đe dọa, gằn giọng",
+      "pause_after_ms": 400,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Achird",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng giận dữ (mạnh), thì thầm, giọng thì thầm đe dọa, gằn giọng"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep01_sc02_l004",
+      "scene_id": "sc02",
+      "order": 9,
+      "type": "dialogue",
+      "speaker_id": "lam-an",
+      "role_name": "Lâm An",
+      "text": "Mọi người có biết, trong khi chúng ta đang ăn mừng, thì Minh Tuấn đã âm thầm biển thủ ba mươi phần trăm quỹ đầu tư của tập đoàn Lâm gia để bù lỗ cho những khoản nợ cá nhân không?",
+      "tts_text": "Mọi người có biết, trong khi chúng ta đang ăn mừng, thì Minh Tuấn đã âm thầm biển thủ ba mươi phần trăm quỹ đầu tư của tập đoàn Lâm gia để bù lỗ cho những khoản nợ cá nhân không?",
+      "emotion_tag": "angry",
+      "emotional_intensity": 10,
+      "audio_tags": [
+        "sarcastic"
+      ],
+      "direction": "giọng đanh thép, vang dội, đầy uy lực",
+      "pause_after_ms": 500,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Puck",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng giận dữ (rất mạnh, cao trào), giọng mỉa mai, giọng đanh thép, vang dội, đầy uy lực"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep01_sc02_l005",
+      "scene_id": "sc02",
+      "order": 10,
+      "type": "dialogue",
+      "speaker_id": "lam-an",
+      "role_name": "Lâm An",
+      "text": "Bằng chứng nằm ngay trong chiếc USB tôi đang cầm trên tay đây, kẻ trộm không xứng đáng đứng trên sân khấu này với tư cách là con rể của Lâm gia.",
+      "tts_text": "Bằng chứng nằm ngay trong chiếc USB tôi đang cầm trên tay đây, kẻ trộm không xứng đáng đứng trên sân khấu này với tư cách là con rể của Lâm gia.",
+      "emotion_tag": "angry",
+      "emotional_intensity": 10,
+      "audio_tags": [],
+      "direction": "giọng dứt khoát, kết thúc bằng sự lạnh lùng tột độ",
+      "pause_after_ms": 1500,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Puck",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng giận dữ (rất mạnh, cao trào), giọng dứt khoát, kết thúc bằng sự lạnh lùng tột độ"
+      },
+      "sfx": []
+    }
+  ],
+  "render_plan": [
+    {
+      "id": "ep01_sc01_c01",
+      "kind": "conversation",
+      "scene_id": "sc01",
+      "unit_ids": [
+        "ep01_sc01_l001",
+        "ep01_sc01_l002",
+        "ep01_sc01_l003",
+        "ep01_sc01_l004",
+        "ep01_sc01_l005"
+      ],
+      "speakers": [
+        "lam-an",
+        "minh-tuan"
+      ],
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "ep01_sc01_c01",
+      "text": "LamAn: Đau quá. Mình không phải đã chết trong căn phòng đầy lửa đó sao? Tại sao mình lại ở đây, trong chiếc váy cưới này?\nLamAn: Ngày đính hôn với Minh Tuấn. Năm năm trước. Ông trời cho mình một cơ hội, lần này, mình sẽ không để bất cứ ai biến mình thành quân cờ nữa.\nMinhTuan: An, em xong chưa? Khách khứa bên ngoài đang chờ đợi khoảnh khắc chúng ta chính thức thuộc về nhau đấy.\nLamAn: Anh gấp gáp đến thế sao, Minh Tuấn? Hay là anh sợ nếu không đính hôn ngay hôm nay, anh sẽ không còn cơ hội chạm tay vào tài sản của Lâm gia?\nMinhTuan: Em nói gì lạ vậy? Hôm nay là ngày vui của chúng ta, đừng đùa như thế.",
+      "settings": {
+        "style": "Đọc đoạn hội thoại tiếng Việt như phim truyền hình, diễn xuất tự nhiên; giữa các câu ngắt nghỉ khoảng nửa giây.",
+        "turn_styles": [
+          "Nói tiếng Việt, giọng sợ hãi (mạnh), độc thoại nội tâm, như tự nói với chính mình, mic gần, thở gấp, giọng run rẩy, âm thanh vang nhẹ như trong phòng kín",
+          "Nói tiếng Việt, giọng bình thản (vừa phải), độc thoại nội tâm, như tự nói với chính mình, mic gần, giọng trầm xuống, sắc lạnh, quyết tâm",
+          "Nói tiếng Việt, giọng bình thản (nhẹ), giọng ngọt ngào giả tạo, hơi vang từ ngoài cửa",
+          "Nói tiếng Việt, giọng mỉa mai (mạnh), giọng mỉa mai, giọng sắc bén, mỉa mai, nhấn mạnh vào từng chữ",
+          "Nói tiếng Việt, giọng sợ hãi (vừa phải), ngập ngừng, giọng hơi khựng lại, bối rối"
+        ]
+      },
+      "speaker_voices": [
+        [
+          "LamAn",
+          "Puck"
+        ],
+        [
+          "MinhTuan",
+          "Achird"
+        ]
+      ],
+      "stem": "ep01_sc01_c01_chunk.wav",
+      "pause_after_ms": 400,
+      "attempt": 0
+    },
+    {
+      "id": "ep01_sc02_c01",
+      "kind": "conversation",
+      "scene_id": "sc02",
+      "unit_ids": [
+        "ep01_sc02_l001",
+        "ep01_sc02_l002",
+        "ep01_sc02_l003",
+        "ep01_sc02_l004",
+        "ep01_sc02_l005"
+      ],
+      "speakers": [
+        "lam-an",
+        "minh-tuan"
+      ],
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "ep01_sc02_c01",
+      "text": "LamAn: Cha đang đứng đó, chờ đợi trao gửi con gái cho một con quỷ. Mình phải ngăn lại. Ngay lúc này.\nLamAn: Xin lỗi mọi người, buổi lễ này phải dừng lại. Tôi có một món quà đặc biệt dành cho vị hôn phu của mình.\nMinhTuan: Lâm An, em điên rồi sao? Bỏ micro xuống ngay!\nLamAn: Mọi người có biết, trong khi chúng ta đang ăn mừng, thì Minh Tuấn đã âm thầm biển thủ ba mươi phần trăm quỹ đầu tư của tập đoàn Lâm gia để bù lỗ cho những khoản nợ cá nhân không?\nLamAn: Bằng chứng nằm ngay trong chiếc USB tôi đang cầm trên tay đây, kẻ trộm không xứng đáng đứng trên sân khấu này với tư cách là con rể của Lâm gia.",
+      "settings": {
+        "style": "Đọc đoạn hội thoại tiếng Việt như phim truyền hình, diễn xuất tự nhiên; giữa các câu ngắt nghỉ khoảng nửa giây.",
+        "turn_styles": [
+          "Nói tiếng Việt, giọng giận dữ (mạnh), độc thoại nội tâm, như tự nói với chính mình, mic gần, giọng nội tâm đanh thép, dứt khoát",
+          "Nói tiếng Việt, giọng giận dữ (rất mạnh, cao trào), quát lớn, giọng vang dội, rõ ràng, quyền lực",
+          "Nói tiếng Việt, giọng giận dữ (mạnh), thì thầm, giọng thì thầm đe dọa, gằn giọng",
+          "Nói tiếng Việt, giọng giận dữ (rất mạnh, cao trào), giọng mỉa mai, giọng đanh thép, vang dội, đầy uy lực",
+          "Nói tiếng Việt, giọng giận dữ (rất mạnh, cao trào), giọng dứt khoát, kết thúc bằng sự lạnh lùng tột độ"
+        ]
+      },
+      "speaker_voices": [
+        [
+          "LamAn",
+          "Puck"
+        ],
+        [
+          "MinhTuan",
+          "Achird"
+        ]
+      ],
+      "stem": "ep01_sc02_c01_chunk.wav",
+      "pause_after_ms": 1500,
+      "attempt": 0
+    }
+  ],
+  "cliffhanger": "Lâm An cầm micro bước ra sân khấu, thay vì đồng ý đính hôn, cô tuyên bố Minh Tuấn đang biển thủ công quỹ.",
+  "director_notes": "Tập phim tập trung vào sự thay đổi tâm lý của Lâm An từ hoảng loạn sang sắc sảo. Giọng Lâm An cần sự chuyển đổi rõ rệt giữa nội tâm và khi đối diện với Minh Tuấn.",
+  "bgm_mood": null,
+  "directed_at": "2026-10-03T13:36:50+00:00"
+}

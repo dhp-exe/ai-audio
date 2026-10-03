@@ -161,9 +161,10 @@ def test_market_research_to_master(studio):
     bible = studio.series.load_bible("s1")
     assert bible.trend_brief_id and bible.theme_category == "intellectual_slap_anti_trope" and len(bible.roles) == 3
     assert studio.series.load_trend_brief("s1").topic.startswith("Ngày tôi phản công")
-    # the third role had no free IP actor: a one-off character with a placeholder voice
+    # three named roles but two Voice IPs: the third becomes a background role with a temporary voice, and no character is added to the registry
     cast = studio.series.load_cast("s1")
-    assert [m.voice_source for m in cast.members].count("placeholder") == 1 and any("Placeholder voice" in n for n in st.notes)
+    assert [m.voice_source for m in cast.members].count("placeholder") == 1 and any("Temporary voice" in n for n in st.notes)
+    assert [r.role_type for r in bible.roles].count("minor") == 1 and studio.registry.load().ids() == {"ngan", "duong"}
 
 
 def test_research_without_inputs_fails_clearly(studio):

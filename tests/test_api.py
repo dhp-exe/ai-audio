@@ -132,10 +132,21 @@ def test_voice_ips_crud_lock_and_plugging_a_cloned_voice(client):
 def test_research_scan_and_briefs(client, repos):
     assert client.post("/api/research/scan", json={"seeds": "", "platforms": [], "use_browser": False, "focus": "", "llm_provider": "mock"}).status_code == 422
     r = client.post("/api/research/scan", json={"seeds": "Top DramaBox tuần này: phim vả mặt, phản diện thông minh", "platforms": [], "use_browser": False,
-                                                "focus": "urban_ceo", "llm_provider": "mock"})
+                                                "focus": "urban_ceo", "guide": "Tìm 3 thể loại hot nhất", "llm_provider": "mock", "wait": True})
     assert r.status_code == 200, r.text
-    brief = r.json()
-    assert brief["theme_category"] == "urban_ceo" and len(brief["candidates"]) == 3  # the focus boosts its line to the top
+    scan = r.json()
+    assert scan["status"] == "done" and scan["phase"] == "done" and scan["brief_id"] and scan["guide"] == "Tìm 3 thể loại hot nhất"
+    assert [(s["platform"], s["status"]) for s in scan["steps"]] == [("local", "ok")] and any("trend ranking" in line for line in scan["log"])
+    assert client.get(f"/api/research/scans/{scan['scan_id']}").json() == scan and client.get("/api/research/scans").json()["scans"][0]["scan_id"] == scan["scan_id"]
+    assert client.get("/api/research/scans/nope").status_code == 404 and client.get(f"/api/research/scans/{scan['scan_id']}/shots/x.jpg").status_code == 404
+    brief = client.get(f"/api/research/briefs/{scan['brief_id']}").json()
+    assert brief["theme_category"] == "urban_ceo" and len(brief["candidates"]) == 3  # the focus boosts its line to the top; three genres documented
+    assert brief["selected"] == 0 and brief["genre"] == brief["candidates"][0]["genre"] and brief["scan_id"] == scan["scan_id"]
+    # the editor picks another of the three genres: that one is what the Script Writer receives
+    picked = client.post(f"/api/research/briefs/{brief['brief_id']}/select", json={"index": 2}).json()
+    assert picked["selected"] == 2 and picked["topic"] == brief["candidates"][2]["topic"] and picked["theme_category"] == brief["candidates"][2]["theme_category"]
+    assert client.post(f"/api/research/briefs/{brief['brief_id']}/select", json={"index": 7}).status_code == 422
+    assert client.post("/api/research/briefs/nope/select", json={"index": 0}).status_code == 404
     assert client.get("/api/research/briefs").json()["briefs"][0]["brief_id"] == brief["brief_id"]
     assert client.delete(f"/api/research/briefs/{brief['brief_id']}").json() == {"ok": True}
 

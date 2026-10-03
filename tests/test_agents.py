@@ -54,8 +54,12 @@ def test_casting_pins_rules_and_placeholders(sandbox, repos):
     assert by["Tô Mạn"].actor_id == "ngan" and by["Tô Mạn"].assigned_by == "user" and by["Tô Mạn"].voice_id == "Leda"
     assert by["Giang Thần"].actor_id == "duong" and by["Giang Thần"].voice_source == "prebuilt"
     assert by["Bà Lý"].actor_id == "ba-ly" and by["Bà Lý"].voice_source == "placeholder" and by["Bà Lý"].voice_id not in ("Leda", "Orus")
-    reg = repos.registry.load()
-    assert reg.get("ba-ly").is_ip_asset is False and "gemini" in reg.get("ba-ly").providers
+    # a temporary voice belongs to this production's cast only: the Voice IP registry is untouched
+    assert by["Bà Lý"].is_ip_asset is False and repos.registry.load().ids() == {"ngan", "duong"}
+    assert any("Temporary voice" in n and "this production only" in n for n in ctx.notes)
+    # a later run of the same series keeps the background role's voice
+    again = CastingAgent().run(ctx_for(repos))
+    assert again.member("ba-ly").voice_id == by["Bà Lý"].voice_id and repos.registry.load().ids() == {"ngan", "duong"}
     bible = repos.series.load_bible("s1")
     assert bible.is_cast() and bible.protagonist_id == "ngan" and set(bible.cast) == {"ngan", "duong", "ba-ly"}
 
@@ -87,9 +91,13 @@ def test_cloned_voice_wins_when_its_engine_is_available(sandbox, repos, monkeypa
 def test_final_tier_refuses_placeholders(sandbox, repos):
     seed_registry(sandbox)
     bible_with(repos, [RoleCast(role_name="A", role_type="protagonist", actor_id="ngan"), RoleCast(role_name="B", role_type="antagonist", actor_id="duong"),
-                       RoleCast(role_name="C", role_type="minor", description="nam")])
-    with pytest.raises(AgentError, match="placeholder"):
+                       RoleCast(role_name="C", role_type="supporting", description="nam")])
+    with pytest.raises(AgentError, match="temporary voices on named roles"):
         CastingAgent().run(ctx_for(repos, tier="final"))
+    # a background role may keep a temporary voice in a final render
+    bible_with(repos, [RoleCast(role_name="A", role_type="protagonist", actor_id="ngan"), RoleCast(role_name="B", role_type="antagonist", actor_id="duong"),
+                       RoleCast(role_name="C", role_type="minor", description="nam")])
+    assert CastingAgent().run(ctx_for(repos, tier="final")).member("c").voice_source == "placeholder"
 
 
 # ---------------------------------------------------------------- market research, script rules
@@ -110,6 +118,51 @@ def test_market_scan_reads_seeds_and_pasted_notes(repos):
     repos.blobs.write_text("inputs/trends/week40.md", "DramaBox top 10 ...")
     obs = MarketResearchAgent().market_scan(ctx_for(repos), ResearchParams(seeds="ghi chú dán vào"))
     assert [o.source for o in obs] == ["pasted notes", "week40.md"] and all(o.via == "local" for o in obs)
+
+
+def test_browser_scan_records_each_page_and_reports_blocks(repos, monkeypatch):
+    """The browser scan publishes one step per source (status, excerpt, screenshot); a robot check is 'blocked', never bypassed."""
+    import sys
+    from types import ModuleType, SimpleNamespace
+
+    pages = {"https://a.example/": (200, "A", "Tổng tài lạnh lùng\n" * 60), "https://www.google.com/search?q=x": (429, "sorry", "Our systems have detected unusual traffic")}
+
+    class Page:
+        def goto(self, url, **_):
+            self.url = url
+            self.status, self._title, self._text = pages[url]
+            return SimpleNamespace(status=self.status)
+
+        mouse = SimpleNamespace(wheel=lambda *_: None)
+
+        def wait_for_timeout(self, _ms): ...
+        def title(self): return self._title
+        def inner_text(self, _sel): return self._text
+        def screenshot(self, path, **_): open(path, "wb").write(b"jpg")
+        def close(self): ...
+
+    class Ctx:
+        def __enter__(self): return SimpleNamespace(chromium=SimpleNamespace(launch=lambda **_: SimpleNamespace(
+            new_context=lambda **_: SimpleNamespace(new_page=Page), close=lambda: None)))
+        def __exit__(self, *_): return False
+
+    mod = ModuleType("playwright.sync_api")
+    mod.sync_playwright = Ctx  # type: ignore[attr-defined]
+    monkeypatch.setitem(sys.modules, "playwright", ModuleType("playwright"))
+    monkeypatch.setitem(sys.modules, "playwright.sync_api", mod)
+    repos.docs.put("inputs/market_sources.json", [{"platform": "dramabox", "url": "https://a.example/"}, {"platform": "google", "url": "https://www.google.com/search?q=x"},
+                                                  {"platform": "tiktok", "url": "https://t.example/"}])
+    agent = MarketResearchAgent()
+    brief = agent.run(ctx_for(repos), ResearchParams(use_browser=True, platforms=["dramabox", "google"], guide="3 thể loại hot nhất"), scan_id="scan-20261003-000000")
+    scan = repos.research.load_scan("scan-20261003-000000")
+    assert [(s.platform, s.status) for s in scan.steps] == [("dramabox", "ok"), ("google", "blocked")]  # tiktok was not asked for
+    assert scan.steps[0].screenshot == "dramabox-1.jpg" and repos.blobs.exists("research/scans/scan-20261003-000000/dramabox-1.jpg") and scan.steps[0].chars > 400
+    assert scan.status == "done" and scan.brief_id == brief.brief_id and brief.sources == ["https://a.example/"] and len(brief.candidates) == 3
+    assert brief.with_selected(1).topic == brief.candidates[1].topic
+    # nothing readable at all: the run fails with a clear message and the scan is closed as failed
+    with pytest.raises(AgentError, match="blocked or failed"):
+        agent.run(ctx_for(repos), ResearchParams(use_browser=True, platforms=["google"]), scan_id="scan-20261003-000001")
+    assert repos.research.load_scan("scan-20261003-000001").status == "failed"
 
 
 def test_cliffhanger_rules():
@@ -188,3 +241,83 @@ def test_fixture_episode_still_validates():
     s = EpisodeScript.model_validate_json((ROOT / "tests/fixtures/episode.json").read_text(encoding="utf-8"))
     assert len(s.all_lines()) == 11 and json.loads(s.model_dump_json())["language"] == "vi-VN"
     assert Path(ROOT / "data/assets/voice_registry.json").exists()
+
+
+def test_wavespeed_model_family_picks_the_matching_voice(sandbox, repos, monkeypatch):
+    """On WaveSpeed the model path decides whose voices are valid: Gemini TTS takes the actor's Gemini voice name,
+    the ElevenLabs endpoint its ElevenLabs id; a plugged-in voice of another family is never used or overwritten."""
+    from emvoox.config import reset_settings
+
+    g38 = "google/gemini-3.8-flash/text-to-speech"
+    monkeypatch.setenv("WAVESPEED_API_KEY", "ws")
+    reset_settings()
+    seed_registry(sandbox)
+    bible_with(repos, [RoleCast(role_name="Tô Mạn", role_type="protagonist", actor_id="ngan"), RoleCast(role_name="Giang Thần", role_type="antagonist", actor_id="duong"),
+                       RoleCast(role_name="Bà Lý", role_type="minor", description="nữ, lớn tuổi")])
+    cast = CastingAgent().run(ctx_for(repos, tts_provider="wavespeed", tts_model=g38))
+    by = {m.role_name: m for m in cast.members}
+    assert (by["Tô Mạn"].model_id, by["Tô Mạn"].voice_id, by["Tô Mạn"].voice_source) == (g38, "Leda", "prebuilt")
+    assert by["Giang Thần"].voice_id == "Orus"
+    from emvoox.providers.tts.catalog import gemini_voice
+
+    assert gemini_voice(by["Bà Lý"].voice_id) is not None and by["Bà Lý"].voice_id not in ("Leda", "Orus")  # placeholder from the Gemini pool
+    # switching the run back to the ElevenLabs endpoint uses the ElevenLabs ids, although a Gemini-family WaveSpeed voice is stored
+    assert repos.registry.load().get("ngan").providers["wavespeed"].voice_id == "Leda"
+    cast = CastingAgent().run(ctx_for(repos, tts_provider="wavespeed", tts_model="elevenlabs/eleven-v3"))
+    assert (cast.member("ngan").voice_id, cast.member("duong").voice_id) == ("a3", "u5")
+    assert repos.registry.load().get("ngan").providers["wavespeed"].voice_id == "Leda"  # not overwritten
+    # EMVOOX_TTS_MODEL is the default for runs that name no model
+    monkeypatch.setenv("EMVOOX_TTS_PROVIDER", "wavespeed")
+    monkeypatch.setenv("EMVOOX_TTS_MODEL", g38)
+    reset_settings()
+    assert CastingAgent().run(ctx_for(repos, tts_provider="wavespeed")).member("duong").model_id == g38
+
+
+def test_casting_follows_the_stated_gender_and_rejects_a_mismatched_proposal(sandbox, repos):
+    """RoleCast.gender (set by the Script Writer) decides the voice: a female role never gets a male actor or a male placeholder,
+    even when its description says nothing and the LLM proposes the wrong actor."""
+    from emvoox.contracts import CastingProposal
+
+    seed_registry(sandbox)  # ngan (female), duong (male)
+    bible_with(repos, [RoleCast(role_name="Quý", role_type="protagonist", gender="female", description="27 tuổi, sắc sảo"),
+                       RoleCast(role_name="Bảo Trân", role_type="supporting", gender="nữ", description="bạn thân"),  # 'nữ' is normalised
+                       RoleCast(role_name="Sếp", role_type="antagonist", gender="male", description="45 tuổi")])
+    ctx = ctx_for(repos)
+    wrong = CastingProposal.model_validate({"assignments": [{"role_name": "Quý", "actor_id": "duong", "reason": "x"}, {"role_name": "Sếp", "actor_id": "duong", "reason": "y"}]})
+    ctx.llm.structured = lambda **_: wrong  # type: ignore[method-assign]
+    cast = CastingAgent().run(ctx)
+    by = {m.role_name: m for m in cast.members}
+    assert by["Quý"].actor_id == "ngan" and by["Sếp"].actor_id == "duong"
+    from emvoox.providers.tts.catalog import gemini_voice
+
+    assert by["Bảo Trân"].voice_source == "placeholder" and gemini_voice(by["Bảo Trân"].voice_id)["gender"] == "female"
+    assert by["Bảo Trân"].actor_id not in repos.registry.load().ids()
+
+
+def test_named_roles_never_outnumber_the_voice_ips(sandbox, repos):
+    """The Script Writer is told the roster size; whatever still exceeds it becomes a background role, and casting gives
+    named roles the Voice IPs first."""
+    from emvoox.agents.script_writer import ScriptWriterAgent
+    from emvoox.casting import over_capacity, roster_capacity, roster_rule_vi
+    from emvoox.contracts.production import EpisodeFormat, StoryInput, StoryOverview, StoryRole
+
+    seed_registry(sandbox)  # ngan (female), duong (male)
+    cap = roster_capacity(repos.registry.load())
+    assert cap == {"female": 1, "male": 1} and "1 diễn viên nữ và 1 diễn viên nam" in roster_rule_vi(cap)
+    roles = [RoleCast(role_name="Vy", role_type="supporting", gender="female"), RoleCast(role_name="Mạn", role_type="protagonist", gender="female"),
+             RoleCast(role_name="Thần", role_type="antagonist", gender="male"), RoleCast(role_name="Bảo vệ", role_type="minor", gender="male")]
+    assert [r.role_name for r in over_capacity(roles, cap)] == ["Vy"]  # the protagonist keeps the only female IP
+    assert over_capacity(roles, {"female": 0, "male": 0}) == []  # no roster at all: nothing to enforce
+    # through the Script Writer: three named roles written, two Voice IPs available
+    ctx = ctx_for(repos)
+    story = StoryInput(overview=StoryOverview(title="T"), script="x " * 50, roles=[
+        StoryRole(name="Hạ Vy", gender="female", description="Nữ 26 tuổi"), StoryRole(name="Khang", gender="male", description="Nam 31 tuổi"),
+        StoryRole(name="Mai", gender="female", description="Nữ 24 tuổi, đồng nghiệp")])
+    bible = ScriptWriterAgent().outline(ctx, story, EpisodeFormat(count=3, min_duration_sec=30, max_duration_sec=60))
+    assert {r.role_name: r.role_type for r in bible.roles}["Mai"] == "minor" and any("more named" in n for n in ctx.notes)
+    assert sum(r.role_type != "minor" for r in bible.roles) == 2
+    repos.series.save_bible(bible)
+    cast = CastingAgent().run(ctx)
+    by = {m.role_name: m for m in cast.members}
+    assert by["Hạ Vy"].actor_id == "ngan" and by["Khang"].actor_id == "duong" and by["Mai"].voice_source == "placeholder"
+    assert repos.registry.load().ids() == {"ngan", "duong"}

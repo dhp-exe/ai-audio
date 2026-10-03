@@ -143,3 +143,27 @@ def test_cost_estimates_and_legacy_ledger_rows():
     assert (v["kind"], v["agent"], v["cost_usd"]) == ("tts", "sound_engineer", 0.05)
     assert (m["kind"], m["agent"], m["tokens_out"]) == ("llm", "director", 500) and m["cost_usd"] > 0
     assert normalize("demo", {"at": "bad"}) is None
+
+
+G38 = "google/gemini-3.8-flash/text-to-speech"
+
+
+def test_wavespeed_gemini_tts_bodies_and_billing():
+    """Gemini 3.8 TTS through WaveSpeed: voice by Gemini name, style as style_instructions, dialogue as turns; no unknown fields."""
+    from emvoox.providers.tts.wavespeed import billable_characters
+
+    one = TtsRequest(provider="wavespeed", model_id=G38, voice_id="Kore", text="Anh đi đi.", settings={"style": "giọng lạnh lùng (mạnh)"})
+    assert build_body(one) == {"text": "Anh đi đi.", "voice": "Kore", "style_instructions": "giọng lạnh lùng (mạnh)"}
+    assert billable_characters(one, build_body(one)) == len("Anh đi đi.") + len("giọng lạnh lùng (mạnh)")
+    duo = TtsRequest(provider="wavespeed", model_id=G38, voice_id="ep01_sc01_c01", text="Linh: Anh đi đi.\nMinhKhoi: Không: tôi ở lại.",
+                     settings={"style": "Hội thoại.", "turn_styles": ["giọng buồn", ""]}, speakers=(("Linh", "Kore"), ("MinhKhoi", "Puck")))
+    assert build_body(duo) == {
+        "speakers": [{"speaker_id": "Linh", "voice": "Kore"}, {"speaker_id": "MinhKhoi", "voice": "Puck"}],
+        "turns": [{"speaker_id": "Linh", "text": "Anh đi đi.", "style_instructions": "giọng buồn"}, {"speaker_id": "MinhKhoi", "text": "Không: tôi ở lại."}],
+        "style_instructions": "Hội thoại."}
+    with pytest.raises(ProviderError):
+        build_body(TtsRequest(provider="wavespeed", model_id=G38, voice_id="c", text="Ai đó: xin chào", speakers=(("Linh", "Kore"), ("MinhKhoi", "Puck"))))
+    # billed per request per started 1,000 characters: a 100-character line costs as much as a 1,000-character chunk
+    assert pricing.tts_cost("wavespeed", G38, characters=100) == pricing.tts_cost("wavespeed", G38, characters=1000) == 0.05
+    assert pricing.tts_cost("wavespeed", G38, characters=1001) == 0.10
+    assert pricing.tts_cost("wavespeed", "google/gemini-3.8-flash-lite/text-to-speech", characters=10) == 0.04

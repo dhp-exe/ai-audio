@@ -28,15 +28,52 @@ GEMINI_PLACEHOLDER_VOICES: dict[str, list[str]] = {
     "male": ["Puck", "Umbriel", "Iapetus", "Schedar", "Achird", "Fenrir", "Zubenelgenubi", "Charon"],
 }
 
-_FEMALE = re.compile(r"\b(nữ|cô|bà|chị|em gái|girl|female|woman|actress|mẹ)\b", re.IGNORECASE)
-_MALE = re.compile(r"\b(nam|anh|ông|chú|cậu|boy|male|man|ceo|tổng giám đốc|bố|cha)\b", re.IGNORECASE)
+# Fallback gender reading for roles whose gender nobody stated (the Script Writer normally fills RoleCast.gender).
+# Strong words describe the role itself; weak ones are pronouns and kinship terms that may refer to someone else.
+_STRONG_F = re.compile(r"\b(nữ|tiểu thư|thiên kim|phu nhân|cô gái|nữ chính|nữ hoàng|công chúa|bà chủ|female|woman|girl|actress)\b", re.IGNORECASE)
+_STRONG_M = re.compile(r"\b(nam|tổng tài|thiếu gia|chàng trai|nam chính|ông chủ|tổng giám đốc|chủ tịch|ceo|male|man|boy|actor)\b", re.IGNORECASE)
+_WEAK_F = re.compile(r"\b(cô|bà|chị|nàng|mẹ|vợ|em gái|con gái|bạn gái|hôn thê|she|her)\b", re.IGNORECASE)
+_WEAK_M = re.compile(r"\b(anh|ông|chú|cậu|hắn|bố|cha|chồng|em trai|con trai|bạn trai|hôn phu|he|his)\b", re.IGNORECASE)
+# Phrases that contain a gender word but say nothing about gender.
+_NOISE = re.compile(r"miền nam|việt nam|phương nam|phía nam|tiếng anh|cô đơn|cô độc|cô lập|cô đọng", re.IGNORECASE)
+_LEAD = re.compile(r"^\W*(nữ|nam)\b", re.IGNORECASE)
+# Common Vietnamese given names (the last word of a name); a tie-breaker only.
+_NAMES_F = set("vy vi lan mai hoa hương hồng ngân linh trang thảo nhi my mỹ ngọc yến uyên quyên hà hạnh diệp trâm thư nga loan oanh như quỳnh chi "
+               "châu trinh tuyết mạn vân hằng nhung thu xuân diễm kiều tiên ly lệ thy hân vy trúc đào liên huyền phương thùy thúy dung nguyệt".split())
+_NAMES_M = set("tuấn phong khải dương hùng dũng cường khoa khôi khang long sơn thành thắng trung tùng vũ hải huy hoàng đức đạt bảo quân kiên "
+               "nghĩa phúc quang tài thịnh toàn trí việt thần hào hiếu lộc nhân tiến vinh nam kiệt đăng duy trường hưng thiên".split())
 _TAG = re.compile(r"(?:^|\s)[/#@]([a-z][a-z0-9-]{0,23})\b", re.IGNORECASE)
 
 
+def gender_of(name: str | None, *texts: str | None) -> str | None:
+    """'female' / 'male' when the name and descriptions give a reason to say so, else None.
+
+    Order: a description that opens with 'Nữ'/'Nam' decides; then a recognisable given name; then words
+    that describe the role itself (tiểu thư, tổng tài...); then pronouns and kinship words."""
+    descs = [_NOISE.sub(" ", t) for t in texts if t]
+    for d in descs:
+        lead = _LEAD.match(d)
+        if lead:
+            return "female" if lead.group(1).lower() == "nữ" else "male"
+    blob = " ".join(descs)
+    given = (name or "").strip().lower().split()[-1:] or [""]
+    if given[0] in _NAMES_F:
+        return "female"
+    if given[0] in _NAMES_M:
+        return "male"
+    f, m = len(_STRONG_F.findall(blob)), len(_STRONG_M.findall(blob))
+    if f != m:
+        return "female" if f > m else "male"
+    # pronouns and kinship words last: "bị chồng phản bội" is about someone else, so they only count when nothing better exists
+    blob = f"{_NOISE.sub(' ', name or '')} {blob}"  # the name may carry a title: 'Bà Lý', 'Ông Trùm'
+    f, m = len(_WEAK_F.findall(blob)), len(_WEAK_M.findall(blob))
+    return None if f == m else ("female" if f > m else "male")
+
+
 def guess_gender(*texts: str | None) -> str:
-    blob = " ".join(t for t in texts if t)
-    f, m = len(_FEMALE.findall(blob)), len(_MALE.findall(blob))
-    return "female" if f > m else "male"
+    """Best guess from free text (first argument may be a name); 'male' only when nothing at all points either way."""
+    first, rest = (texts[0] if texts else None), texts[1:]
+    return gender_of(first, *rest) or gender_of(None, *texts) or "male"
 
 
 def placeholder_voice(gender: str, index: int = 0, provider: str = "elevenlabs", exclude: Iterable[str] = ()) -> str:
@@ -98,3 +135,44 @@ def parse_roles_text(text: str) -> list[StoryRole]:
         if name:
             roles.append(StoryRole(name=name, description=desc.strip()))
     return roles
+
+
+# ---- the roster limit: named roles never outnumber the Voice IPs
+
+MAIN_ROLE_TYPES = ("protagonist", "antagonist", "supporting")
+
+
+def roster_capacity(registry: VoiceRegistry) -> dict[str, int]:
+    """How many female and male Voice IPs the studio has: the most named roles of each gender a story may have."""
+    cap = {"female": 0, "male": 0}
+    for c in registry.actors():
+        g = c.gender if c.gender in cap else guess_gender(c.display_name, c.voice_description, c.persona)
+        cap[g] += 1
+    return cap
+
+
+def roster_rule_vi(cap: dict[str, int]) -> str:
+    """The limit as an instruction for the Script Writer's prompts."""
+    return (f"GIỚI HẠN DIỄN VIÊN: studio có {cap['female']} diễn viên nữ và {cap['male']} diễn viên nam cố định (Voice IP). Câu chuyện chỉ được có tối đa "
+            f"{cap['female']} vai nữ và {cap['male']} vai nam CÓ TÊN (protagonist, antagonist, supporting). Không thêm nhân vật có tên vượt giới hạn này; "
+            "hãy gộp hoặc bỏ vai thừa. Nhân vật nền không quan trọng với cốt truyện (người qua đường, nhân viên, đám đông, giọng qua điện thoại) "
+            "đặt role_type = minor, chỉ dùng khi thật cần, mỗi vai vài câu.")
+
+
+def over_capacity(roles: list, cap: dict[str, int]) -> list:
+    """Named (non-minor) roles beyond the roster, least important first to go: pinned roles and the
+    protagonist are kept, then antagonists, then supporting roles in script order. ``roles`` are
+    RoleCast-like objects (role_name, role_type, gender, description, actor_id)."""
+    if not any(cap.values()):
+        return []  # no Voice IPs at all (offline demo, empty store): there is no roster to respect
+    order = {"protagonist": 0, "antagonist": 1, "supporting": 2}
+    main = [r for r in roles if r.role_type in MAIN_ROLE_TYPES]
+    ranked = sorted(main, key=lambda r: (0 if getattr(r, "actor_id", None) else 1, order[r.role_type], roles.index(r)))
+    seen = {"female": 0, "male": 0}
+    extra = []
+    for r in ranked:
+        g = r.gender or guess_gender(r.role_name, r.description)
+        seen[g] += 1
+        if seen[g] > cap.get(g, 0) and r.role_type != "protagonist":
+            extra.append(r)
+    return extra

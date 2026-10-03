@@ -84,9 +84,10 @@ class ResolvedCast(BaseModel):
         if self.protagonist_id not in actors:
             raise ValueError(f"protagonist_id {self.protagonist_id!r} is not in the cast")
         if self.engine_policy.tier == "final":
-            ph = [m.actor_id for m in self.members if m.voice_source == "placeholder"]
+            # background roles may keep a temporary voice; a named role must be played by a Voice IP
+            ph = [m.actor_id for m in self.members if m.voice_source == "placeholder" and m.role_type != "minor"]
             if ph:
-                raise ValueError(f"tier 'final' forbids placeholder voices: {ph}")
+                raise ValueError(f"tier 'final' forbids temporary voices on named roles: {ph}")
         return self
 
     def member(self, actor_id: str) -> CastMember:

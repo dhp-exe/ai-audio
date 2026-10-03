@@ -95,6 +95,12 @@ function Wizard({ config }: { config: Config }) {
   const [overrides, setOverrides] = useState<Partial<Record<RoleType, Provider>>>({});
   const [llmProvider, setLlmProvider] = useState<LlmProviderId>(config.llm.provider);
   const [llmModel, setLlmModel] = useState("");
+  const llmDefault = llmProvider === config.llm.provider ? config.llm.model : config.llm.defaults?.[llmProvider] ?? "provider default";
+  // The provider's models to choose from; the configured default is always in the list (it may be a custom id from .env).
+  const llmOptions = useMemo(() => {
+    const list = config.llm.models?.[llmProvider] ?? [];
+    return list.some((m) => m.id === llmDefault) ? list : [{ id: llmDefault, note: "configured default" }, ...list];
+  }, [config.llm.models, llmProvider, llmDefault]);
   // production
   const [episodes, setEpisodes] = useState(config.defaults.episodes);
   const [minSec, setMinSec] = useState(config.defaults.min_sec);
@@ -269,7 +275,7 @@ function Wizard({ config }: { config: Config }) {
               </Form.Item>
             </Col>
           </Row>
-          <Typography.Text type="secondary">The Market Research agent writes a TrendBrief first, then the run continues as if you had picked that brief.</Typography.Text>
+          <Typography.Text type="secondary">The Market Research agent scans first, then the run continues with the top-ranked genre without stopping. To pick among the three trending genres yourself, scan on the Market research page instead.</Typography.Text>
         </Form>
       )}
       {source === "story" && (
@@ -380,21 +386,32 @@ function Wizard({ config }: { config: Config }) {
       <Row gutter={16}>
         <Col xs={24} sm={10}>
           <Form.Item label="LLM provider">
-            <Select value={llmProvider} onChange={setLlmProvider} options={config.llm.providers.map((p) => ({ value: p, label: p }))} />
+            <Select value={llmProvider} onChange={(v) => { setLlmProvider(v); setLlmModel(""); }} options={config.llm.providers.map((p) => ({ value: p, label: p }))} />
             {llmProvider !== "mock" && config.keys[llmProvider as keyof Config["keys"]] === false && <Typography.Text type="warning" style={{ fontSize: 12 }}>Key missing for {llmProvider}</Typography.Text>}
           </Form.Item>
         </Col>
         <Col xs={24} sm={14}>
-          <Form.Item label="Model"><Input value={llmModel} onChange={(e) => setLlmModel(e.target.value)} placeholder={llmProvider === config.llm.provider ? config.llm.model : "Provider default"} /></Form.Item>
+          <Form.Item label="Model">
+            <Select
+              value={llmModel || llmDefault}
+              onChange={(v) => setLlmModel(v === llmDefault ? "" : v)}
+              options={llmOptions.map((m) => ({
+                value: m.id,
+                label: <span>{m.id}{m.id === llmDefault && <span className="muted"> (default)</span>}</span>,
+                note: m.note,
+              }))}
+              optionRender={(o) => <div><span className="mono">{o.data.value}</span>{o.data.value === llmDefault && <span className="muted"> (default)</span>}<div className="muted" style={{ fontSize: 12, whiteSpace: "normal" }}>{o.data.note}</div></div>}
+            />
+          </Form.Item>
         </Col>
       </Row>
       <Divider />
       <Typography.Title level={5}>Production</Typography.Title>
       <Row gutter={16}>
-        <Col xs={12} md={6}><Form.Item label="Episodes"><InputNumber min={1} max={200} value={episodes} onChange={(v) => setEpisodes(v ?? 1)} style={{ width: "100%" }} /></Form.Item></Col>
+        <Col xs={12} md={6}><Form.Item label="Episodes"><InputNumber min={1} max={99} value={episodes} onChange={(v) => setEpisodes(v ?? 1)} style={{ width: "100%" }} /></Form.Item></Col>
         <Col xs={12} md={6}><Form.Item label="Produce now" tooltip="How many episodes this run renders; the rest can be continued later."><InputNumber min={1} max={episodes} value={produce} onChange={(v) => setProduce(v)} placeholder="All" style={{ width: "100%" }} /></Form.Item></Col>
-        <Col xs={12} md={6}><Form.Item label="Min seconds"><InputNumber min={10} max={600} value={minSec} onChange={(v) => setMinSec(v ?? minSec)} style={{ width: "100%" }} /></Form.Item></Col>
-        <Col xs={12} md={6}><Form.Item label="Max seconds"><InputNumber min={10} max={600} value={maxSec} onChange={(v) => setMaxSec(v ?? maxSec)} style={{ width: "100%" }} /></Form.Item></Col>
+        <Col xs={12} md={6}><Form.Item label="Min seconds"><InputNumber min={20} max={600} value={minSec} onChange={(v) => setMinSec(v ?? minSec)} style={{ width: "100%" }} /></Form.Item></Col>
+        <Col xs={12} md={6}><Form.Item label="Max seconds"><InputNumber min={20} max={900} value={maxSec} onChange={(v) => setMaxSec(v ?? maxSec)} style={{ width: "100%" }} /></Form.Item></Col>
         <Col xs={24} md={8}>
           <Form.Item label="Tier" tooltip="Test renders cheap; final uses the full-quality settings.">
             <Segmented value={tier} onChange={(v) => setTier(v as "test" | "final")} options={[{ value: "test", label: "Test" }, { value: "final", label: "Final" }]} />
@@ -433,7 +450,7 @@ function Wizard({ config }: { config: Config }) {
           ] : []),
           { key: "tts", label: "TTS", children: `${provider?.label ?? engine.provider} · ${engine.model ?? provider?.default_model ?? "default"}${provider?.scene_batching ? ` · ${engine.batching}` : ""}` },
           { key: "ovr", label: "Role overrides", children: Object.entries(overrides).filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`).join(", ") || "none" },
-          { key: "llm", label: "LLM", children: `${llmProvider} · ${llmModel || (llmProvider === config.llm.provider ? config.llm.model : "default")}` },
+          { key: "llm", label: "LLM", children: `${llmProvider} · ${llmModel || llmDefault}` },
           { key: "fmt", label: "Format", children: <span className="num">{episodes} episodes × {minSec}-{maxSec}s, produce {produce ?? "all"} now · {tier}</span> },
           { key: "qa", label: "QA & gate", children: `${maxRetries} retries · ${autoApprove ? "auto-approve PASS" : "human approval"} · ${haltOnFail ? "halt on fail" : "continue on fail"}` },
           { key: "force", label: "Overwrite", children: force ? "yes" : "no" },

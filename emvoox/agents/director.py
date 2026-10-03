@@ -21,7 +21,7 @@ from emvoox.agents.base import Agent, AgentContext, AgentError, Skill
 from emvoox.contracts.cast import ResolvedCast
 from emvoox.contracts.direction import ConversationUnit, DirectedConversationUnits, RenderUnit
 from emvoox.contracts.production import APPROVED_AUDIO_TAGS, PROTAGONIST_ALIAS, EpisodeScript, LineType, SeriesBible
-from emvoox.delivery.compile import RETRY_DIRECTION_VI, retry_settings, settings_for_line, speed_for, text_for_provider
+from emvoox.delivery.compile import RETRY_DIRECTION_VI, gemini_style, retry_settings, settings_for_line, speed_for, text_for_provider
 from emvoox.delivery.plan import build_transcript, chunk_episode
 from emvoox.delivery.screenplay import parse_screenplay
 from emvoox.providers.llm import LlmBlocked, LlmError, LlmSchemaError, LlmTruncated
@@ -48,6 +48,8 @@ TAG_RULES_TAGGED = ("Máy đọc hiểu tag âm thanh. Trong tts_text CHỈ đư
 TAG_RULES_DIRECTED = ("Máy đọc diễn theo chỉ dẫn bằng lời: tag trong ngoặc vuông sẽ được đổi thành chỉ dẫn diễn xuất chứ không đọc lên, nên CHỈ dùng các tag sau, "
                       "tối đa hai tag mỗi dòng: " + _TAGS + ". Hãy viết acoustic_direction thật cụ thể (nhịp, âm lượng, cảm xúc) vì máy đọc dựa vào đó.")
 
+
+WAVESPEED_DIALOGUE_STYLE_VI = "Đọc đoạn hội thoại tiếng Việt như phim truyền hình, diễn xuất tự nhiên; giữa các câu ngắt nghỉ khoảng nửa giây."
 
 class DirectorAgent(Agent):
     id = "director"
@@ -158,7 +160,7 @@ class DirectorAgent(Agent):
 
         def can_batch(line) -> bool:
             m = cast.member(line.character_id)
-            return batching != "line" and supports_scene_batching(m.provider)
+            return batching != "line" and supports_scene_batching(m.provider, m.model_id)
 
         chunk_of: dict[str, object] = {}
         line_attempt: dict[str, int] = {}
@@ -180,15 +182,21 @@ class DirectorAgent(Agent):
                 if chunk.chunk_id in done:  # type: ignore[attr-defined]
                     continue
                 done.add(chunk.chunk_id)  # type: ignore[attr-defined]
-                model_id = cast.member(chunk.actors[0]).model_id  # type: ignore[attr-defined]
+                member = cast.member(chunk.actors[0])  # type: ignore[attr-defined]
+                model_id = member.model_id
                 header, transcript, speakers = build_transcript(chunk, cast, model_id, normalize=ctx.settings.normalize_vi, descriptions=descriptions)  # type: ignore[arg-type]
                 attempt = attempts.get(chunk.chunk_id, 0)  # type: ignore[attr-defined]
                 if attempt:
                     header = header.replace(". Diễn xuất theo", f", {RETRY_DIRECTION_VI}. Diễn xuất theo", 1)
+                settings: dict = {"style": header}
+                if member.provider == "wavespeed" and len(speakers) > 1:
+                    # WaveSpeed's Gemini TTS takes dialogue as turns with their own direction; the long header would be billed and cut at 2,000 characters
+                    settings = {"style": WAVESPEED_DIALOGUE_STYLE_VI + (f" {RETRY_DIRECTION_VI.capitalize()}." if attempt else ""),
+                                "turn_styles": [gemini_style(ln) for ln in chunk.lines]}  # type: ignore[attr-defined]
                 plan.append(RenderUnit(
                     id=chunk.chunk_id, kind="conversation", scene_id=chunk.scene_id, unit_ids=chunk.line_ids, speakers=list(chunk.actors),  # type: ignore[attr-defined]
-                    provider="gemini", model_id=model_id, voice_id=chunk.chunk_id if len(speakers) > 1 else speakers[0][1],  # type: ignore[attr-defined]
-                    text=transcript, settings={"style": header}, speaker_voices=list(speakers),
+                    provider=member.provider, model_id=model_id, voice_id=chunk.chunk_id if len(speakers) > 1 else speakers[0][1],  # type: ignore[attr-defined]
+                    text=transcript, settings=settings, speaker_voices=list(speakers),
                     stem=paths.chunk_stem_name_from_id(chunk.chunk_id), pause_after_ms=chunk.pause_after_ms, attempt=attempt))  # type: ignore[attr-defined]
                 continue
             unit = by_id[u.unit_id]

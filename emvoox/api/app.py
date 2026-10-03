@@ -4,7 +4,8 @@ The TypeScript contract for every route lives in web/lib/api.ts.
 Studio
     GET  /api/config  /api/agents  /api/dashboard  /api/doctor[?live=1]
 Market research
-    POST /api/research/scan          GET /api/research/briefs[/{id}]   DELETE /api/research/briefs/{id}   GET /api/research/seeds
+    POST /api/research/scan          GET /api/research/scans[/{id}]    GET /api/research/scans/{id}/shots/{name}
+    GET /api/research/briefs[/{id}]  POST /api/research/briefs/{id}/select  DELETE /api/research/briefs/{id}   GET /api/research/seeds
 Runs (the engine)
     POST /api/runs                   GET /api/runs   GET /api/runs/{id}   POST /api/runs/{id}/cancel
     GET  /api/runs/{id}/steps/{step}/log             GET /api/runs/{id}/events?after=N
@@ -43,7 +44,7 @@ from emvoox import __version__, paths
 from emvoox.agents import AgentContext, AgentError, MarketResearchAgent, fleet
 from emvoox.agents import publisher as gate
 from emvoox.casting import apply_role_tags, duplicate_actor_pins, parse_roles_text
-from emvoox.config import LLM_PROVIDERS, REPO_ROOT, get_settings
+from emvoox.config import DEFAULT_LLM_MODEL, LLM_MODEL_SUGGESTIONS, LLM_PROVIDERS, REPO_ROOT, get_settings
 from emvoox.contracts.cast import EngineRef
 from emvoox.contracts.market import THEME_LABEL_VI, ThemeCategory
 from emvoox.contracts.production import CharacterProfile, ProviderVoice, StoryInput, StoryOverview, StoryRole, VoiceSource
@@ -168,7 +169,8 @@ def config() -> dict:
     active = _active()
     return {
         "version": __version__,
-        "llm": {"provider": s.llm_provider, "model": s.llm_model, "providers": [p for p in LLM_PROVIDERS if p != "mock" or _mock_enabled()]},
+        "llm": {"provider": s.llm_provider, "model": s.llm_model, "providers": [p for p in LLM_PROVIDERS if p != "mock" or _mock_enabled()],
+                "defaults": DEFAULT_LLM_MODEL, "models": LLM_MODEL_SUGGESTIONS},
         "tts": {"provider": s.tts_provider, "model": s.tts_model or DEFAULT_MODEL.get(s.tts_provider), "batching": s.tts_batching},
         "keys": s.keys_present(),
         "storage": {"backend": r.backend, "root": r.root},
@@ -234,24 +236,101 @@ class ScanIn(BaseModel):
     platforms: list[str] = Field(default_factory=list)
     use_browser: bool | None = None
     focus: str = ""
+    guide: str = ""
     llm_provider: str | None = None
+    wait: bool = False  # true = answer only when the scan has finished (scripts, tests)
+
+
+_SCAN_ID = re.compile(r"scan-[0-9]{8}-[0-9]{6}(-[0-9]+)?")
+_scan_lock = threading.Lock()
+
+
+def _scan_or_404(scan_id: str):
+    s = repos().research.load_scan(scan_id) if _SCAN_ID.fullmatch(scan_id) else None
+    if s is None:
+        raise HTTPException(404, f"no scan {scan_id!r}")
+    return s
 
 
 @app.post("/api/research/scan")
 def research_scan(body: ScanIn) -> dict:
+    """Start the Market Research Agent. Returns the scan at once; poll GET /api/research/scans/{id} for its progress."""
     r = repos()
-    provider = _check_llm(body.llm_provider) or get_settings().llm_provider
-    if provider != "mock" and not get_settings().key_for(provider):
+    s = get_settings()
+    provider = _check_llm(body.llm_provider) or s.llm_provider
+    if provider != "mock" and not s.key_for(provider):
         raise HTTPException(422, f"the LLM provider {provider!r} has no API key in .env")
-    ledger = Ledger(r.telemetry)
-    llm = LlmClient(get_llm_provider(provider), ledger)
-    params = RunParams(series_id="research", tts_provider="mock")  # research renders no audio
-    ctx = AgentContext(settings=get_settings(), repos=r, llm=llm, ledger=ledger, params=params)
+    use_browser = s.research_use_browser if body.use_browser is None else body.use_browser
+    if not body.seeds.strip() and not use_browser and not r.research.seed_files():
+        raise HTTPException(422, "Nothing to analyse: paste seed notes, add files under data/inputs/trends/, or turn on the browser scan.")
+    with _scan_lock:
+        if any(sc.status == "running" and time.time() - datetime.fromisoformat(sc.created_at).timestamp() < 900 for sc in r.research.list_scans(5)):
+            raise HTTPException(409, "A market scan is already running; wait for it to finish.")
+        stamp = datetime.now(UTC).strftime("%Y%m%d-%H%M%S")
+        scan_id = f"scan-{stamp}"
+        n = 1
+        while r.research.load_scan(scan_id) is not None:
+            n += 1
+            scan_id = f"scan-{stamp}-{n}"
+        ledger = Ledger(r.telemetry)
+        ctx = AgentContext(settings=s, repos=r, llm=LlmClient(get_llm_provider(provider), ledger), ledger=ledger,
+                           params=RunParams(series_id="research", tts_provider="mock"))  # research renders no audio
+        params = ResearchParams(seeds=body.seeds, platforms=body.platforms, use_browser=body.use_browser, focus=body.focus, guide=body.guide)
+
+        def work() -> None:
+            try:
+                MarketResearchAgent().run(ctx, params, scan_id=scan_id)
+            except Exception:  # noqa: BLE001 - the agent records the failure in the scan document
+                pass
+
+        if body.wait:
+            work()
+        else:
+            from emvoox.contracts.market import ScanState
+
+            r.research.save_scan(ScanState(scan_id=scan_id, created_at=now_iso(), guide=body.guide, focus=body.focus, use_browser=use_browser,
+                                           platforms=body.platforms))  # visible before the thread's first write
+            threading.Thread(target=work, name=scan_id, daemon=True).start()
+    return _scan_or_404(scan_id).model_dump(mode="json")
+
+
+@app.get("/api/research/scans")
+def research_scans() -> dict:
+    return {"scans": [sc.model_dump(mode="json") for sc in repos().research.list_scans(10)]}
+
+
+@app.get("/api/research/scans/{scan_id}")
+def research_scan_state(scan_id: str) -> dict:
+    return _scan_or_404(scan_id).model_dump(mode="json")
+
+
+@app.get("/api/research/scans/{scan_id}/shots/{name}")
+def research_scan_shot(scan_id: str, name: str):
+    _scan_or_404(scan_id)
     try:
-        brief = MarketResearchAgent().run(ctx, ResearchParams(seeds=body.seeds, platforms=body.platforms, use_browser=body.use_browser, focus=body.focus))
-    except AgentError as e:
+        key = paths.scan_shot(scan_id, name)
+    except ValueError as e:
+        raise HTTPException(404, str(e)) from e
+    r = repos()
+    if not r.blobs.exists(key):
+        raise HTTPException(404, "no such screenshot")
+    return FileResponse(r.blobs.local(key), media_type="image/jpeg")
+
+
+class SelectIn(BaseModel):
+    index: int = Field(ge=0)
+
+
+@app.post("/api/research/briefs/{brief_id}/select")
+def research_brief_select(brief_id: str, body: SelectIn) -> dict:
+    """The editor picks one of the trending genres; that one is what the Script Writer receives."""
+    try:
+        b = repos().research.select_candidate(brief_id, body.index)
+    except ValueError as e:
         raise HTTPException(422, str(e)) from e
-    return brief.model_dump(mode="json")
+    if b is None:
+        raise HTTPException(404, f"no brief {brief_id!r}")
+    return b.model_dump(mode="json")
 
 
 @app.get("/api/research/briefs")

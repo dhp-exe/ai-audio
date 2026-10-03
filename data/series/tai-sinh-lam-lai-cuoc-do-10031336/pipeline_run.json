@@ -1,0 +1,433 @@
+{
+  "run_id": "tai-sinh-lam-lai-cuoc-do-10031336-20261003-133602",
+  "series_id": "tai-sinh-lam-lai-cuoc-do-10031336",
+  "status": "awaiting_approval",
+  "error": null,
+  "created_at": "2026-10-03T13:36:02+00:00",
+  "finished_at": "2026-10-03T13:38:22+00:00",
+  "params": {
+    "series_id": "tai-sinh-lam-lai-cuoc-do-10031336",
+    "episodes": 30,
+    "produce": 2,
+    "only": null,
+    "min_sec": 60,
+    "max_sec": 120,
+    "force": false,
+    "source": "brief",
+    "brief_id": "rebirth-20261003-132206",
+    "research": {
+      "seeds": "",
+      "platforms": [],
+      "use_browser": null,
+      "focus": "",
+      "guide": ""
+    },
+    "tts_provider": "wavespeed",
+    "tts_model": "google/gemini-3.8-flash/text-to-speech",
+    "tts_batching": "auto",
+    "engine_by_role_type": {},
+    "engine_by_actor": {},
+    "tier": "test",
+    "llm_provider": "wavespeed",
+    "llm_model": null,
+    "max_retries": 3,
+    "auto_approve": false,
+    "halt_on_qa_fail": true
+  },
+  "steps": [
+    {
+      "id": "script",
+      "step": "script",
+      "agent": "script_writer",
+      "label": "Story + bible",
+      "episode": null,
+      "status": "done",
+      "attempts": 1,
+      "started_at": "2026-10-03T13:36:02+00:00",
+      "finished_at": "2026-10-03T13:36:30+00:00",
+      "elapsed_s": 27.96,
+      "summary": {
+        "title": "Ván Cờ Nghịch Mệnh",
+        "episodes": 30,
+        "mode": "write",
+        "roles": 4,
+        "reused": false,
+        "from_brief": "rebirth-20261003-132206"
+      },
+      "error": null,
+      "cost_usd": 0.002692,
+      "log_key": null
+    },
+    {
+      "id": "casting",
+      "step": "casting",
+      "agent": "casting",
+      "label": "Cast + engine policy",
+      "episode": null,
+      "status": "done",
+      "attempts": 1,
+      "started_at": "2026-10-03T13:36:30+00:00",
+      "finished_at": "2026-10-03T13:36:30+00:00",
+      "elapsed_s": 0.01,
+      "summary": {
+        "members": 4,
+        "providers": [
+          "wavespeed"
+        ],
+        "placeholders": [
+          "lam-an",
+          "khai-phong",
+          "minh-tuan",
+          "thanh-vy"
+        ],
+        "cloned": []
+      },
+      "error": null,
+      "cost_usd": 0.0,
+      "log_key": null
+    },
+    {
+      "id": "ep01.draft",
+      "step": "draft",
+      "agent": "script_writer",
+      "label": "Draft",
+      "episode": 1,
+      "status": "done",
+      "attempts": 1,
+      "started_at": "2026-10-03T13:36:30+00:00",
+      "finished_at": "2026-10-03T13:36:43+00:00",
+      "elapsed_s": 12.71,
+      "summary": {
+        "words": 255,
+        "scenes": 2,
+        "est_sec": 85,
+        "reused": false,
+        "hook": 8,
+        "rewrites": 0
+      },
+      "error": null,
+      "cost_usd": 0.001105,
+      "log_key": null
+    },
+    {
+      "id": "ep01.direct",
+      "step": "direct",
+      "agent": "director",
+      "label": "Direct",
+      "episode": 1,
+      "status": "done",
+      "attempts": 1,
+      "started_at": "2026-10-03T13:36:43+00:00",
+      "finished_at": "2026-10-03T13:36:50+00:00",
+      "elapsed_s": 7.21,
+      "summary": {
+        "units": 10,
+        "requests": 2,
+        "batching": "scene",
+        "characters": 1213
+      },
+      "error": null,
+      "cost_usd": 0.001256,
+      "log_key": null
+    },
+    {
+      "id": "ep01.voice",
+      "step": "voice",
+      "agent": "sound_engineer",
+      "label": "Voice",
+      "episode": 1,
+      "status": "done",
+      "attempts": 1,
+      "started_at": "2026-10-03T13:36:50+00:00",
+      "finished_at": "2026-10-03T13:37:10+00:00",
+      "elapsed_s": 20.34,
+      "summary": {
+        "planned": 2,
+        "rendered": 2,
+        "cached": 0,
+        "failed": [],
+        "characters": 1213,
+        "placeholder_voices": []
+      },
+      "error": null,
+      "cost_usd": 0.2,
+      "log_key": null
+    },
+    {
+      "id": "ep01.master",
+      "step": "master",
+      "agent": "sound_engineer",
+      "label": "Master",
+      "episode": 1,
+      "status": "done",
+      "attempts": 1,
+      "started_at": "2026-10-03T13:37:10+00:00",
+      "finished_at": "2026-10-03T13:37:16+00:00",
+      "elapsed_s": 5.25,
+      "summary": {
+        "duration_ms": 74980,
+        "lufs": -15.4,
+        "true_peak": -4.5,
+        "stems": 2,
+        "bgm": false,
+        "sfx": 0,
+        "attempt": 0
+      },
+      "error": null,
+      "cost_usd": 0.0,
+      "log_key": null
+    },
+    {
+      "id": "ep01.qa",
+      "step": "qa",
+      "agent": "qa_critic",
+      "label": "QA",
+      "episode": 1,
+      "status": "done",
+      "attempts": 1,
+      "started_at": "2026-10-03T13:37:16+00:00",
+      "finished_at": "2026-10-03T13:37:16+00:00",
+      "elapsed_s": 0.85,
+      "summary": {
+        "status": "PASS",
+        "score": 100,
+        "issues": 0,
+        "attempt": 0,
+        "codes": [],
+        "retry": []
+      },
+      "error": null,
+      "cost_usd": 0.0,
+      "log_key": null
+    },
+    {
+      "id": "ep01.gate",
+      "step": "gate",
+      "agent": "publisher",
+      "label": "Approval gate",
+      "episode": 1,
+      "status": "waiting",
+      "attempts": 1,
+      "started_at": "2026-10-03T13:37:16+00:00",
+      "finished_at": "2026-10-03T13:37:19+00:00",
+      "elapsed_s": 2.39,
+      "summary": {
+        "state": "awaiting_approval",
+        "qa": "PASS",
+        "score": 100,
+        "attempts": 0,
+        "reason": "QA passed; waiting for a human to listen and approve."
+      },
+      "error": null,
+      "cost_usd": 0.000206,
+      "log_key": null
+    },
+    {
+      "id": "ep02.draft",
+      "step": "draft",
+      "agent": "script_writer",
+      "label": "Draft",
+      "episode": 2,
+      "status": "done",
+      "attempts": 1,
+      "started_at": "2026-10-03T13:37:19+00:00",
+      "finished_at": "2026-10-03T13:37:26+00:00",
+      "elapsed_s": 7.21,
+      "summary": {
+        "words": 266,
+        "scenes": 3,
+        "est_sec": 115,
+        "reused": false,
+        "hook": 8,
+        "rewrites": 0
+      },
+      "error": null,
+      "cost_usd": 0.000732,
+      "log_key": null
+    },
+    {
+      "id": "ep02.direct",
+      "step": "direct",
+      "agent": "director",
+      "label": "Direct",
+      "episode": 2,
+      "status": "done",
+      "attempts": 1,
+      "started_at": "2026-10-03T13:37:26+00:00",
+      "finished_at": "2026-10-03T13:37:42+00:00",
+      "elapsed_s": 15.94,
+      "summary": {
+        "units": 12,
+        "requests": 4,
+        "batching": "scene",
+        "characters": 1273
+      },
+      "error": null,
+      "cost_usd": 0.001411,
+      "log_key": null
+    },
+    {
+      "id": "ep02.voice",
+      "step": "voice",
+      "agent": "sound_engineer",
+      "label": "Voice",
+      "episode": 2,
+      "status": "done",
+      "attempts": 1,
+      "started_at": "2026-10-03T13:37:42+00:00",
+      "finished_at": "2026-10-03T13:38:12+00:00",
+      "elapsed_s": 29.92,
+      "summary": {
+        "planned": 4,
+        "rendered": 4,
+        "cached": 0,
+        "failed": [],
+        "characters": 1273,
+        "placeholder_voices": []
+      },
+      "error": null,
+      "cost_usd": 0.2,
+      "log_key": null
+    },
+    {
+      "id": "ep02.master",
+      "step": "master",
+      "agent": "sound_engineer",
+      "label": "Master",
+      "episode": 2,
+      "status": "done",
+      "attempts": 1,
+      "started_at": "2026-10-03T13:38:12+00:00",
+      "finished_at": "2026-10-03T13:38:18+00:00",
+      "elapsed_s": 6.36,
+      "summary": {
+        "duration_ms": 89780,
+        "lufs": -16.6,
+        "true_peak": -4.5,
+        "stems": 4,
+        "bgm": false,
+        "sfx": 0,
+        "attempt": 0
+      },
+      "error": null,
+      "cost_usd": 0.0,
+      "log_key": null
+    },
+    {
+      "id": "ep02.qa",
+      "step": "qa",
+      "agent": "qa_critic",
+      "label": "QA",
+      "episode": 2,
+      "status": "done",
+      "attempts": 1,
+      "started_at": "2026-10-03T13:38:18+00:00",
+      "finished_at": "2026-10-03T13:38:19+00:00",
+      "elapsed_s": 1.19,
+      "summary": {
+        "status": "PASS",
+        "score": 100,
+        "issues": 0,
+        "attempt": 0,
+        "codes": [],
+        "retry": []
+      },
+      "error": null,
+      "cost_usd": 0.0,
+      "log_key": null
+    },
+    {
+      "id": "ep02.gate",
+      "step": "gate",
+      "agent": "publisher",
+      "label": "Approval gate",
+      "episode": 2,
+      "status": "waiting",
+      "attempts": 1,
+      "started_at": "2026-10-03T13:38:19+00:00",
+      "finished_at": "2026-10-03T13:38:22+00:00",
+      "elapsed_s": 2.56,
+      "summary": {
+        "state": "awaiting_approval",
+        "qa": "PASS",
+        "score": 100,
+        "attempts": 0,
+        "reason": "QA passed; waiting for a human to listen and approve."
+      },
+      "error": null,
+      "cost_usd": 0.000225,
+      "log_key": null
+    }
+  ],
+  "notes": [
+    "Placeholder voice for Lâm An (lam-an): Puck on WaveSpeed. Replace it on the Voice IPs page before publishing.",
+    "Placeholder voice for Khải Phong (khai-phong): Iapetus on WaveSpeed. Replace it on the Voice IPs page before publishing.",
+    "Placeholder voice for Minh Tuấn (minh-tuan): Achird on WaveSpeed. Replace it on the Voice IPs page before publishing.",
+    "Placeholder voice for Thanh Vy (thanh-vy): Zubenelgenubi on WaveSpeed. Replace it on the Voice IPs page before publishing."
+  ],
+  "casting": [
+    {
+      "role": "Lâm An",
+      "type": "protagonist",
+      "actor": "lam-an",
+      "actor_name": "Lâm An",
+      "assigned_by": "placeholder",
+      "reason": "không còn Voice IP phù hợp; dùng giọng tạm",
+      "provider": "wavespeed",
+      "model": "google/gemini-3.8-flash/text-to-speech",
+      "voice": "Puck",
+      "voice_source": "placeholder"
+    },
+    {
+      "role": "Khải Phong",
+      "type": "antagonist",
+      "actor": "khai-phong",
+      "actor_name": "Khải Phong",
+      "assigned_by": "placeholder",
+      "reason": "không còn Voice IP phù hợp; dùng giọng tạm",
+      "provider": "wavespeed",
+      "model": "google/gemini-3.8-flash/text-to-speech",
+      "voice": "Iapetus",
+      "voice_source": "placeholder"
+    },
+    {
+      "role": "Minh Tuấn",
+      "type": "antagonist",
+      "actor": "minh-tuan",
+      "actor_name": "Minh Tuấn",
+      "assigned_by": "placeholder",
+      "reason": "không còn Voice IP phù hợp; dùng giọng tạm",
+      "provider": "wavespeed",
+      "model": "google/gemini-3.8-flash/text-to-speech",
+      "voice": "Achird",
+      "voice_source": "placeholder"
+    },
+    {
+      "role": "Thanh Vy",
+      "type": "supporting",
+      "actor": "thanh-vy",
+      "actor_name": "Thanh Vy",
+      "assigned_by": "placeholder",
+      "reason": "không còn Voice IP phù hợp; dùng giọng tạm",
+      "provider": "wavespeed",
+      "model": "google/gemini-3.8-flash/text-to-speech",
+      "voice": "Zubenelgenubi",
+      "voice_source": "placeholder"
+    }
+  ],
+  "totals": {
+    "cost_usd": 0.407627,
+    "llm_calls": 11,
+    "tokens_in": 18778,
+    "tokens_out": 14370,
+    "tts_requests": 6,
+    "tts_characters": 5261,
+    "audio_ms": 159560,
+    "qa_retries": 0
+  },
+  "engine": {
+    "llm": "wavespeed/google/gemini-3.1-flash-lite",
+    "tts": "wavespeed/google/gemini-3.8-flash/text-to-speech",
+    "storage": "local/json"
+  }
+}

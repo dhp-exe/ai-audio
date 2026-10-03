@@ -1,0 +1,108 @@
+{
+  "locked": true,
+  "default_provider": "gemini",
+  "characters": [
+    {
+      "character_id": "lam-an",
+      "display_name": "Lâm An",
+      "persona": "27 tuổi (tâm hồn 32). Từng là tiểu thư ngây thơ, sau khi tái sinh trở nên sắc sảo, tính toán. Mục tiêu: Hủy hoại kẻ thù, bảo vệ gia sản. Động cơ: Nỗi đau bị phản bội và sự thật về cái chết kiếp trước.",
+      "voice_description": "PLACEHOLDER (male wavespeed Puck). Vai: 27 tuổi (tâm hồn 32). Từng là tiểu thư ngây thơ, sau khi tái sinh trở nên sắc sảo, tính toán. Mục tiêu: Hủy hoại kẻ thù,",
+      "gender": "male",
+      "age": null,
+      "tags": [],
+      "language": "vi-VN",
+      "providers": {
+        "wavespeed": {
+          "voice_id": "Puck",
+          "model_id": "google/gemini-3.8-flash/text-to-speech",
+          "voice_url": null,
+          "fallback_voice_id": null,
+          "default_settings": {},
+          "source": "placeholder",
+          "label": null,
+          "added_at": "2026-10-03T13:36:30+00:00"
+        }
+      },
+      "preferred_provider": null,
+      "is_ip_asset": false
+    },
+    {
+      "character_id": "khai-phong",
+      "display_name": "Khải Phong",
+      "persona": "30 tuổi. Tổng tài lạnh lùng, bí ẩn. Mục tiêu: Kiểm soát thị trường tài chính. Động cơ: Che giấu việc anh từng là người đứng sau gián tiếp gây ra sự sụp đổ của gia đình Lâm An kiếp trước để thực hiện tham vọng riêng.",
+      "voice_description": "PLACEHOLDER (male wavespeed Iapetus). Vai: 30 tuổi. Tổng tài lạnh lùng, bí ẩn. Mục tiêu: Kiểm soát thị trường tài chính. Động cơ: Che giấu việc anh từng là người đ",
+      "gender": "male",
+      "age": null,
+      "tags": [],
+      "language": "vi-VN",
+      "providers": {
+        "wavespeed": {
+          "voice_id": "Iapetus",
+          "model_id": "google/gemini-3.8-flash/text-to-speech",
+          "voice_url": null,
+          "fallback_voice_id": null,
+          "default_settings": {},
+          "source": "placeholder",
+          "label": null,
+          "added_at": "2026-10-03T13:36:30+00:00"
+        }
+      },
+      "preferred_provider": null,
+      "is_ip_asset": false
+    },
+    {
+      "character_id": "minh-tuan",
+      "display_name": "Minh Tuấn",
+      "persona": "28 tuổi. Chồng cũ kiếp trước của Lâm An. Kẻ cơ hội, tàn nhẫn. Mục tiêu: Chiếm đoạt tập đoàn Lâm gia. Động cơ: Sự tự ti về xuất thân khiến hắn muốn vươn lên bằng mọi giá.",
+      "voice_description": "PLACEHOLDER (male wavespeed Achird). Vai: 28 tuổi. Chồng cũ kiếp trước của Lâm An. Kẻ cơ hội, tàn nhẫn. Mục tiêu: Chiếm đoạt tập đoàn Lâm gia. Động cơ: Sự tự ti v",
+      "gender": "male",
+      "age": null,
+      "tags": [],
+      "language": "vi-VN",
+      "providers": {
+        "wavespeed": {
+          "voice_id": "Achird",
+          "model_id": "google/gemini-3.8-flash/text-to-speech",
+          "voice_url": null,
+          "fallback_voice_id": null,
+          "default_settings": {},
+          "source": "placeholder",
+          "label": null,
+          "added_at": "2026-10-03T13:36:30+00:00"
+        }
+      },
+      "preferred_provider": null,
+      "is_ip_asset": false
+    },
+    {
+      "character_id": "thanh-vy",
+      "display_name": "Thanh Vy",
+      "persona": "27 tuổi. Bạn thân kiếp trước, kẻ chủ mưu sát hại Lâm An. Mục tiêu: Thay thế vị trí của Lâm An. Động cơ: Lòng đố kỵ bệnh hoạn tích tụ từ nhỏ.",
+      "voice_description": "PLACEHOLDER (male wavespeed Zubenelgenubi). Vai: 27 tuổi. Bạn thân kiếp trước, kẻ chủ mưu sát hại Lâm An. Mục tiêu: Thay thế vị trí của Lâm An. Động cơ: Lòng đố kỵ bệnh ",
+      "gender": "male",
+      "age": null,
+      "tags": [],
+      "language": "vi-VN",
+      "providers": {
+        "wavespeed": {
+          "voice_id": "Zubenelgenubi",
+          "model_id": "google/gemini-3.8-flash/text-to-speech",
+          "voice_url": null,
+          "fallback_voice_id": null,
+          "default_settings": {},
+          "source": "placeholder",
+          "label": null,
+          "added_at": "2026-10-03T13:36:30+00:00"
+        }
+      },
+      "preferred_provider": null,
+      "is_ip_asset": false
+    }
+  ],
+  "changelog": [
+    "2026-10-03 added lam-an (one-off)",
+    "2026-10-03 added khai-phong (one-off)",
+    "2026-10-03 added minh-tuan (one-off)",
+    "2026-10-03 added thanh-vy (one-off)"
+  ]
+}

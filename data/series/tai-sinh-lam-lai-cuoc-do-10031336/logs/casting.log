@@ -1,0 +1,12 @@
+[13:36:30] casting: Lâm An -> lam-an (placeholder; không còn Voice IP phù hợp; dùng giọng tạm)
+[13:36:30] casting: Khải Phong -> khai-phong (placeholder; không còn Voice IP phù hợp; dùng giọng tạm)
+[13:36:30] casting: Minh Tuấn -> minh-tuan (placeholder; không còn Voice IP phù hợp; dùng giọng tạm)
+[13:36:30] casting: Thanh Vy -> thanh-vy (placeholder; không còn Voice IP phù hợp; dùng giọng tạm)
+[13:36:30] NOTE Placeholder voice for Lâm An (lam-an): Puck on WaveSpeed. Replace it on the Voice IPs page before publishing.
+[13:36:30] engine policy: lam-an -> wavespeed/google/gemini-3.8-flash/text-to-speech voice Puck [placeholder; default]
+[13:36:30] NOTE Placeholder voice for Khải Phong (khai-phong): Iapetus on WaveSpeed. Replace it on the Voice IPs page before publishing.
+[13:36:30] engine policy: khai-phong -> wavespeed/google/gemini-3.8-flash/text-to-speech voice Iapetus [placeholder; default]
+[13:36:30] NOTE Placeholder voice for Minh Tuấn (minh-tuan): Achird on WaveSpeed. Replace it on the Voice IPs page before publishing.
+[13:36:30] engine policy: minh-tuan -> wavespeed/google/gemini-3.8-flash/text-to-speech voice Achird [placeholder; default]
+[13:36:30] NOTE Placeholder voice for Thanh Vy (thanh-vy): Zubenelgenubi on WaveSpeed. Replace it on the Voice IPs page before publishing.
+[13:36:30] engine policy: thanh-vy -> wavespeed/google/gemini-3.8-flash/text-to-speech voice Zubenelgenubi [placeholder; default]

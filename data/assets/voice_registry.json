@@ -39,8 +39,8 @@
           "added_at": null
         }
       },
-      "is_ip_asset": true,
-      "preferred_provider": null
+      "preferred_provider": null,
+      "is_ip_asset": true
     },
     {
       "character_id": "minh-khoi",
@@ -79,8 +79,8 @@
           "added_at": null
         }
       },
-      "is_ip_asset": true,
-      "preferred_provider": null
+      "preferred_provider": null,
+      "is_ip_asset": true
     },
     {
       "character_id": "ngan",
@@ -118,8 +118,8 @@
           "added_at": null
         }
       },
-      "is_ip_asset": true,
-      "preferred_provider": null
+      "preferred_provider": null,
+      "is_ip_asset": true
     },
     {
       "character_id": "duong",
@@ -157,8 +157,98 @@
           "added_at": null
         }
       },
-      "is_ip_asset": true,
-      "preferred_provider": null
+      "preferred_provider": null,
+      "is_ip_asset": true
+    },
+    {
+      "character_id": "diep",
+      "display_name": "Diệp",
+      "persona": "Nữ 33 tuổi, sang trọng, khéo léo và nhiều toan tính. Luôn mỉm cười khi nói, lời lẽ ngọt ngào, lịch thiệp nhưng câu nào cũng có ẩn ý; kiểm soát cuộc trò chuyện bằng sự điềm đạm, không bao giờ lớn tiếng. Kiêu hãnh, tham vọng, giỏi đọc người khác; khi mất kiểm soát thì giọng lạnh và sắc hẳn đi. Hợp vai: người phụ nữ quyền lực, đối thủ khéo léo, người bạn hai mặt, nữ doanh nhân, người tình bí ẩn.",
+      "voice_description": "Nữ, giọng mezzo mượt như nhung, tròn và liền hơi, nhịp chậm rãi có chủ ý, hay kéo nhẹ cuối câu; giọng Hà Nội thanh lịch. Khác Linh (khàn, nhanh, thẳng) và Ngân (cao, trong, ngây thơ): Diệp mềm, mượt và nhiều lớp nghĩa. Gemini: Despina (smooth).",
+      "gender": "female",
+      "age": "33",
+      "tags": [
+        "elegant",
+        "cunning",
+        "seductive",
+        "composed",
+        "ambitious"
+      ],
+      "language": "vi-VN",
+      "providers": {
+        "gemini": {
+          "voice_id": "Despina",
+          "model_id": "gemini-3.1-flash-tts-preview",
+          "voice_url": "https://ai.google.dev/gemini-api/docs/speech-generation#voices",
+          "fallback_voice_id": null,
+          "default_settings": {},
+          "source": "prebuilt",
+          "label": null,
+          "added_at": "2026-10-03T14:13:08+00:00"
+        }
+      },
+      "preferred_provider": null,
+      "is_ip_asset": true
+    },
+    {
+      "character_id": "hanh",
+      "display_name": "Hạnh",
+      "persona": "Nữ 54 tuổi, từng trải, nghiêm khắc và giàu uy quyền. Nói ít nhưng chắc, quen ra quyết định và quen được nghe lời; thương người thân theo cách kiểm soát. Kiên định, trọng thể diện và nề nếp; khi mềm lòng thì giọng ấm, chậm và đầy trải nghiệm. Hợp vai: người mẹ, mẹ chồng, phu nhân, nữ chủ tịch, người bà, người thầy nghiêm khắc.",
+      "voice_description": "Nữ trung niên, giọng alto trầm và dày, chín, hơi rung ở cuối câu, nhịp chậm, nhấn từng chữ; giọng Bắc chuẩn mực. Là giọng nữ lớn tuổi duy nhất của dàn diễn viên: trầm và nặng hơn hẳn Linh, Ngân và Diệp. Gemini: Gacrux (mature).",
+      "gender": "female",
+      "age": "54",
+      "tags": [
+        "mature",
+        "matriarch",
+        "stern",
+        "authoritative",
+        "warm-underneath"
+      ],
+      "language": "vi-VN",
+      "providers": {
+        "gemini": {
+          "voice_id": "Gacrux",
+          "model_id": "gemini-3.1-flash-tts-preview",
+          "voice_url": "https://ai.google.dev/gemini-api/docs/speech-generation#voices",
+          "fallback_voice_id": null,
+          "default_settings": {},
+          "source": "prebuilt",
+          "label": null,
+          "added_at": "2026-10-03T14:13:08+00:00"
+        }
+      },
+      "preferred_provider": null,
+      "is_ip_asset": true
+    },
+    {
+      "character_id": "thanh",
+      "display_name": "Thành",
+      "persona": "Nam 58 tuổi, từng trải, thâm trầm và khó đoán. Nói chậm, ít lời, mỗi câu như đã cân nhắc từ lâu; không cần lớn tiếng để người khác phải nghe. Điềm đạm, bao dung với người mình quý nhưng lạnh lùng khi bị phản bội; hay nói bằng ẩn dụ và kinh nghiệm đời. Hợp vai: người cha, chủ tịch, ông trùm, người thầy, bậc trưởng bối, người quản gia trung thành.",
+      "voice_description": "Nam lớn tuổi, giọng bass-baritone khàn và sạn, vang ở ngực, nhịp chậm, nhiều khoảng lặng; giọng Bắc. Khác Dương (trầm, trẻ, gọn) và Minh Khôi (sáng, nhanh): Thành già dặn, khàn và nặng hơn. Gemini: Algenib (gravelly).",
+      "gender": "male",
+      "age": "58",
+      "tags": [
+        "elder",
+        "gravelly",
+        "patriarch",
+        "wise",
+        "commanding"
+      ],
+      "language": "vi-VN",
+      "providers": {
+        "gemini": {
+          "voice_id": "Algenib",
+          "model_id": "gemini-3.1-flash-tts-preview",
+          "voice_url": "https://ai.google.dev/gemini-api/docs/speech-generation#voices",
+          "fallback_voice_id": null,
+          "default_settings": {},
+          "source": "prebuilt",
+          "label": null,
+          "added_at": "2026-10-03T14:13:08+00:00"
+        }
+      },
+      "preferred_provider": null,
+      "is_ip_asset": true
     }
   ],
   "changelog": [
@@ -176,6 +266,9 @@
     "2026-09-20 updated linh (gemini: Erinome@gemini-3.1-flash-tts-preview -> Kore@gemini-3.1-flash-tts-preview)",
     "2026-09-20 updated minh-khoi (gemini: Charon@gemini-3.1-flash-tts-preview -> Puck@gemini-3.1-flash-tts-preview)",
     "2026-09-20 redefined linh and minh-khoi as distinct IPs (sharp/dry vs playful/warm) to contrast ngan and duong",
-    "2026-10-03 Emvoox Engine migration: moved to data/assets/voice_registry.json; voice source recorded per engine (prebuilt / premade / library)"
+    "2026-10-03 Emvoox Engine migration: moved to data/assets/voice_registry.json; voice source recorded per engine (prebuilt / premade / library)",
+    "2026-10-03 added diep (IP asset)",
+    "2026-10-03 added hanh (IP asset)",
+    "2026-10-03 added thanh (IP asset)"
   ]
 }

@@ -171,3 +171,24 @@ def test_stem_naming():
         paths.chunk_stem_name_from_id("ep01_sc02_l003")
     with pytest.raises(ValueError):
         paths.series_root("bad/id")
+
+
+def test_wavespeed_gemini_tts_batches_dialogue_as_turns(ctx):
+    """WaveSpeed's Gemini TTS is billed per request, so two-speaker runs go out as one dialogue request with per-turn direction."""
+    g38 = "google/gemini-3.8-flash/text-to-speech"
+    d = DirectorAgent()
+    s = make_script([("sc01", [("linh", "a b c"), ("minh-khoi", "d e"), ("linh", "h")])])
+    cast = make_cast({"linh": ("wavespeed", g38, "Kore"), "minh-khoi": ("wavespeed", g38, "Puck")})
+    units = d.delivery_compile(ctx, s, cast)
+    assert "giọng" in units[0].settings["style"] and "[" not in units[0].tts_text
+    plan, batching = d.render_plan(ctx, s, cast, units)
+    assert batching == "scene" and [(r.id, r.kind, r.provider, r.model_id) for r in plan] == [("ep01_sc01_c01", "conversation", "wavespeed", g38)]
+    assert plan[0].speaker_voices == [("Linh", "Kore"), ("MinhKhoi", "Puck")] and len(plan[0].settings["turn_styles"]) == 3
+    assert len(plan[0].settings["style"]) < 200  # the long per-line header is not sent (billed, capped at 2,000 characters)
+    # the same cast on WaveSpeed's ElevenLabs endpoint is rendered line by line
+    el = make_cast({"linh": ("wavespeed", "elevenlabs/eleven-v3", "x"), "minh-khoi": ("wavespeed", "elevenlabs/eleven-v3", "y")})
+    plan2, b2 = d.render_plan(ctx, s, el, d.delivery_compile(ctx, s, el))
+    assert b2 == "line" and len(plan2) == 3
+    # a QA retry splits the chunk into lines that carry the retry direction
+    plan3, _ = d.render_plan(ctx, s, cast, units, line_mode={"ep01_sc01_c01"}, attempts={"ep01_sc01_c01": 1})
+    assert [r.kind for r in plan3] == ["line"] * 3 and "không bỏ sót" in plan3[0].settings["style"]

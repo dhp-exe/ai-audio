@@ -39,6 +39,11 @@ TTS_CHAR_PRICES: dict[str, float] = {
     "minimax/speech-02-hd": 0.05,
     "mock": 0.0,
 }
+# USD per request per started 1,000 billable characters (WaveSpeed's Gemini TTS: 100 characters cost the same as 1,000).
+TTS_REQUEST_PRICES: dict[str, float] = {
+    "google/gemini-3.8-flash/text-to-speech": 0.05,
+    "google/gemini-3.8-flash-lite/text-to-speech": 0.04,
+}
 # Gemini TTS: USD per 1M tokens (text in, audio out); 25 audio tokens per second of audio.
 TTS_TOKEN_PRICES: dict[str, tuple[float, float]] = {
     "gemini-3.1-flash-tts-preview": (1.00, 20.00),
@@ -92,6 +97,9 @@ def tts_cost(provider: str, model: str, *, characters: int = 0, audio_ms: int = 
         out_tokens = tokens_out or int(audio_ms / 1000 * AUDIO_TOKENS_PER_SECOND)
         in_tokens = tokens_in or int(characters / 4)
         return round((in_tokens * pin + out_tokens * pout) / 1_000_000, 6)
+    per_request = _match({**TTS_REQUEST_PRICES, **(ov.get("tts_per_request_1k_chars") or {})}, model or "")
+    if per_request is not None:
+        return round(max(1, -(-characters // 1000)) * per_request, 6)
     table = {**TTS_CHAR_PRICES, **(ov.get("tts_per_1k_chars") or {})}
     per_1k = _match(table, model or "")
     if per_1k is None:
@@ -105,6 +113,7 @@ def price_table() -> dict:
     return {
         "llm_per_1m_tokens": {**{k: list(v) for k, v in LLM_PRICES.items()}, **(ov.get("llm") or {})},
         "tts_per_1k_chars": {**TTS_CHAR_PRICES, **(ov.get("tts_per_1k_chars") or {})},
+        "tts_per_request_1k_chars": {**TTS_REQUEST_PRICES, **(ov.get("tts_per_request_1k_chars") or {})},
         "tts_per_1m_tokens": {**{k: list(v) for k, v in TTS_TOKEN_PRICES.items()}, **(ov.get("tts_audio_per_1m_tokens") or {})},
         "note": "Estimates from list prices; the vendor invoice is the source of truth.",
     }

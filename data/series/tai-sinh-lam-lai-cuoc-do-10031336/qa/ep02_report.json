@@ -1,0 +1,58 @@
+{
+  "series_id": "tai-sinh-lam-lai-cuoc-do-10031336",
+  "episode_number": 2,
+  "attempt": 0,
+  "status": "PASS",
+  "score": 100,
+  "checks": {
+    "stems_complete": {
+      "ok": true,
+      "missing": [],
+      "units": 4
+    },
+    "sentences": {
+      "ok": true,
+      "short": [],
+      "long": []
+    },
+    "clipping": {
+      "ok": true,
+      "units": [],
+      "threshold_dbfs": -0.1
+    },
+    "silence": {
+      "ok": true,
+      "units": [],
+      "min_silence_s": 1.5
+    },
+    "speakers": {
+      "ok": true,
+      "mismatch": [],
+      "placeholder": []
+    },
+    "loudness": {
+      "ok": true,
+      "integrated_lufs": -16.6,
+      "true_peak_dbtp": -4.5,
+      "target_lufs": -16.0,
+      "target_tp": -1.5
+    },
+    "duration": {
+      "ok": true,
+      "seconds": 89.8,
+      "target": 120
+    },
+    "transcript": {
+      "ok": null,
+      "skipped": "EMVOOX_QA_TRANSCRIBE is off"
+    }
+  },
+  "error_logs": [],
+  "retry_instructions": [],
+  "review_lines": [
+    "ep02_sc02_l004",
+    "ep02_sc03_l004"
+  ],
+  "human": null,
+  "generated_at": "2026-10-03T13:38:19+00:00"
+}

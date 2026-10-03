@@ -74,7 +74,8 @@ def _draft(ctx: dict) -> dict:
 def _market(ctx: dict) -> dict:
     refs = [o.get("title") or o.get("source", "") for o in (ctx.get("observations") or [])][:3]
     def cand(topic, theme, hook, a, m, p):
-        return {"topic": topic, "theme_category": theme, "target_audience": "Nữ 18-34, nghe truyện audio buổi tối, thích xung đột rõ và phản công",
+        genre = {"urban_ceo": "Tổng tài - hôn nhân hợp đồng", "rebirth_butterfly_effect": "Trọng sinh - lội ngược dòng"}.get(theme, "Vả mặt - phản công")
+        return {"genre": genre, "evidence": "Xuất hiện trong: " + (", ".join(r for r in refs if r) or "ghi chú"), "platforms": ["local"], "topic": topic, "theme_category": theme, "target_audience": "Nữ 18-34, nghe truyện audio buổi tối, thích xung đột rõ và phản công",
                 "hook": hook, "premise": (f"{topic}. Nhân vật chính có mục tiêu rõ và phải trả giá cho từng lựa chọn. Phản diện có lý do riêng, luôn đi trước "
                                           "một bước. Bước ngoặt đầu tiên đến trong ba mươi giây đầu, mỗi tập kết bằng một câu hỏi buộc người nghe mở tập sau. "
                                           "Bằng chứng được cài từ sớm, và phần kết giải quyết xung đột chính."),

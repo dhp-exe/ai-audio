@@ -13,7 +13,7 @@ from __future__ import annotations
 import re
 
 from emvoox.contracts.production import MONOLOGUE_TAGS, Line
-from emvoox.providers.tts.catalog import supports_tags
+from emvoox.providers.tts.catalog import supports_tags, voice_family
 from emvoox.text.vi_normalize import normalize_vi
 
 _TAG_RE = re.compile(r"\[[^\[\]]+\]\s*")
@@ -98,6 +98,8 @@ def settings_for_line(line: Line, provider: str, model_id: str, defaults: dict |
     elif provider == "wavespeed":
         if model_id.startswith("elevenlabs/"):
             s.setdefault("stability", _v3_settings(i)[0])
+        elif voice_family(provider, model_id) == "gemini":
+            s.setdefault("style", gemini_style(line))
         elif model_id.startswith("minimax/"):
             s.setdefault("emotion", MINIMAX_EMOTION[line.emotion.value])
             s.setdefault("speed", speed_for(line))
@@ -121,7 +123,7 @@ def retry_settings(settings: dict, provider: str, model_id: str, attempt: int) -
     elif provider == "elevenlabs":
         s["stability"] = round(min(0.9, float(s.get("stability", 0.5)) + 0.15 * attempt), 2)
         s["style"] = round(max(0.0, float(s.get("style", 0.0)) - 0.15 * attempt), 2)
-    elif provider == "gemini":
+    elif voice_family(provider, model_id) == "gemini":
         style = str(s.get("style", "")).rstrip(":;,. ")
         s["style"] = f"{style}, {RETRY_DIRECTION_VI}" if style else RETRY_DIRECTION_VI.capitalize()
     elif provider == "wavespeed" and model_id.startswith("minimax/"):

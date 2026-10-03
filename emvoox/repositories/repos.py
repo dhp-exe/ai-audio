@@ -14,7 +14,7 @@ from emvoox import paths
 from emvoox.contracts.audio import MasteredEpisode
 from emvoox.contracts.cast import ResolvedCast
 from emvoox.contracts.direction import DirectedConversationUnits
-from emvoox.contracts.market import TrendBrief
+from emvoox.contracts.market import ScanState, TrendBrief
 from emvoox.contracts.production import (
     CharacterProfile,
     EpisodeScript,
@@ -420,6 +420,34 @@ class ResearchRepository:
 
     def delete_brief(self, brief_id: str) -> None:
         self.docs.delete(paths.brief(brief_id))
+
+    def select_candidate(self, brief_id: str, index: int) -> TrendBrief | None:
+        """The editor's pick among the trending genres: the brief now hands that one to the Script Writer."""
+        brief = self.load_brief(brief_id)
+        if brief is None:
+            return None
+        brief = brief.with_selected(index)
+        self.save_brief(brief)
+        return brief
+
+    def save_scan(self, state: ScanState) -> None:
+        self.docs.put(paths.scan(state.scan_id), state.model_dump(mode="json"))
+
+    def load_scan(self, scan_id: str) -> ScanState | None:
+        d = self.docs.get(paths.scan(scan_id))
+        return ScanState.model_validate(d) if d else None
+
+    def list_scans(self, limit: int = 10) -> list[ScanState]:
+        out = []
+        for key in self.docs.list(paths.SCANS):
+            d = self.docs.get(key)
+            if d:
+                out.append(ScanState.model_validate(d))
+        return sorted(out, key=lambda s: s.created_at, reverse=True)[:limit]
+
+    def shot_path(self, scan_id: str, name: str) -> Path:
+        """Local path to write a page screenshot to."""
+        return self.blobs.path(paths.scan_shot(scan_id, name))
 
 
 class AssetRepository:

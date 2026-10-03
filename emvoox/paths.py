@@ -38,6 +38,7 @@ SFX = "assets/sfx"
 TREND_SEEDS = "inputs/trends"
 MARKET_SOURCES = "inputs/market_sources.json"
 BRIEFS = "research/briefs"
+SCANS = "research/scans"
 SERIES = "series"
 APPROVED = "outputs/approved_masters"
 RUN_LOG = "telemetry/run_log.jsonl"
@@ -62,6 +63,17 @@ def sfx(tag: str) -> str:
 
 def brief(brief_id: str) -> str:
     return f"{BRIEFS}/{brief_id}.json"
+
+
+def scan(scan_id: str) -> str:
+    return f"{SCANS}/{_check_field(scan_id, 'scan id')}.json"
+
+
+def scan_shot(scan_id: str, name: str) -> str:
+    """Screenshot of one scanned page; ``name`` is a file name like 'dramabox-1.jpg'."""
+    if not re.fullmatch(r"[a-z0-9-]+\.jpg", name):
+        raise ValueError(f"invalid screenshot name {name!r}")
+    return f"{SCANS}/{_check_field(scan_id, 'scan id')}/{name}"
 
 
 # ---- series ----------------------------------------------------------------------------

@@ -245,9 +245,25 @@ class StoryOverview(BaseModel):
     setting: str = ""
 
 
+Gender = Literal["female", "male"]
+_GENDER_WORDS = {"female": "female", "f": "female", "nữ": "female", "nu": "female", "woman": "female",
+                 "male": "male", "m": "male", "nam": "male", "man": "male"}
+
+
+def _norm_gender(v: object) -> str | None:
+    """'Nữ' / 'Female' / 'nam' -> the enum; anything else (unknown, empty) -> None so the caller falls back to rules."""
+    return _GENDER_WORDS.get(str(v).strip().lower()) if v is not None else None
+
+
 class StoryRole(BaseModel):
     name: str = Field(min_length=1, description="Role name exactly as used in the script, e.g. 'Tô Mạn'.")
     description: str = ""
+    gender: Gender | None = Field(None, description="Giới tính của vai: 'female' (nữ) hoặc 'male' (nam). Bắt buộc khi biết.")
+
+    @field_validator("gender", mode="before")
+    @classmethod
+    def _gender(cls, v: object) -> str | None:
+        return _norm_gender(v)
     actor_id: str | None = Field(None, description="Voice IP the director assigned (e.g. from '/ngan'). None = AI chooses.")
 
     @field_validator("actor_id")
@@ -295,9 +311,15 @@ class RoleCast(BaseModel):
     role_name: str
     role_type: Literal["protagonist", "antagonist", "supporting", "minor"]
     description: str = Field("", description="Who this role is: age, gender, personality, goal. Read by the Casting Agent.")
+    gender: Gender | None = Field(None, description="Giới tính của vai: 'female' (nữ) hoặc 'male' (nam). BẮT BUỘC: quyết định giọng đọc.")
     actor_id: str | None = Field(None, description="Registry actor id, or null if no registered voice fits.")
     assigned_by: Literal["user", "ai", "rule", "placeholder"] = "ai"
     reason: str = ""
+
+    @field_validator("gender", mode="before")
+    @classmethod
+    def _gender(cls, v: object) -> str | None:
+        return _norm_gender(v)
 
     @field_validator("actor_id")
     @classmethod

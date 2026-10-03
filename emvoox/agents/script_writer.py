@@ -18,7 +18,7 @@ import re
 from datetime import UTC, datetime
 
 from emvoox.agents.base import Agent, AgentContext, AgentError, Skill
-from emvoox.casting import apply_role_tags
+from emvoox.casting import apply_role_tags, guess_gender, over_capacity, roster_capacity, roster_rule_vi
 from emvoox.contracts.market import THEME_LABEL_VI, TrendBrief
 from emvoox.contracts.production import (
     EpisodeDraft,
@@ -38,12 +38,14 @@ TWIST_WINDOW_WORDS = 100  # about 30 seconds of dialogue
 
 _RULES = "\n".join(f"{i}. {r}" for i, r in enumerate(ANTI_TROPE_RULES_VI, start=1))
 
+GENDER_VI = {"female": "nữ", "male": "nam"}
+
 ADAPT_SYSTEM = f"""Bạn là biên kịch trưởng của Emvoox (kênh Mặc Khải), viết micro-drama dạng AUDIO tiếng Việt.
 Bạn nhận một Trend Brief từ bộ phận nghiên cứu thị trường và phát triển nó thành một câu chuyện hoàn chỉnh để chia tập.
 
 Trả về StoryAdaptation:
 - title, genre, setting.
-- roles[]: 2-5 vai. Mỗi vai có name (tên Việt) và description: tuổi, giới tính, tính cách, MỤC TIÊU và ĐỘNG CƠ riêng. Để actor_id = null.
+- roles[]: 2-5 vai. Mỗi vai có name (tên Việt), gender ("female" = nữ, "male" = nam; BẮT BUỘC, vì nó quyết định giọng đọc) và description bắt đầu bằng "Nữ" hoặc "Nam" rồi đến tuổi, tính cách, MỤC TIÊU và ĐỘNG CƠ riêng. Để actor_id = null.
 - treatment: toàn bộ câu chuyện theo từng hồi, đủ chi tiết để chia thành nhiều tập, nêu rõ các bước ngoặt và kết thúc.
 
 Quy tắc Anti-Trope của Emvoox (bắt buộc):
@@ -57,7 +59,7 @@ OUTLINE_SYSTEM = """Bạn là biên kịch trưởng của một studio phim ng�
 
 Bạn nhận: (1) tổng quan câu chuyện, (2) danh sách vai và mô tả, (3) kịch bản/câu chuyện.
 
-Nhiệm vụ 1 - DANH SÁCH VAI (roles[]): liệt kê mọi vai có lời thoại. Đặt role_type: protagonist | antagonist | supporting | minor, và description (tuổi, giới tính, tính cách, mục tiêu). Để actor_id = null: việc phân vai do bộ phận casting làm sau. Xác định protagonist_role (nhân vật kể chuyện ngôi thứ nhất "tôi").
+Nhiệm vụ 1 - DANH SÁCH VAI (roles[]): liệt kê mọi vai có lời thoại. Đặt role_type: protagonist | antagonist | supporting | minor, gender ("female" = nữ, "male" = nam; BẮT BUỘC cho mọi vai, suy từ kịch bản, cách xưng hô và tên; nó quyết định giọng đọc), và description (bắt đầu bằng "Nữ" hoặc "Nam", rồi tuổi, tính cách, mục tiêu). Để actor_id = null: việc phân vai do bộ phận casting làm sau. Xác định protagonist_role (nhân vật kể chuyện ngôi thứ nhất "tôi").
 
 Nhiệm vụ 2 - CHIA TẬP (episodes[]): {count} tập, mỗi tập {min_sec}-{max_sec} giây khi đọc thành tiếng (khoảng {min_words}-{max_words} từ thoại), LUÔN kết thúc bằng cliffhanger.
 {mode_rules}
@@ -90,7 +92,7 @@ Trả về EpisodeDraft có cấu trúc:
 
 Quy tắc:
 {mode_rules}
-- Chỉ dùng các vai trong danh sách. Không có người dẫn chuyện: mọi bối cảnh phải đi qua thoại hoặc nội tâm của {protagonist_role}.
+- Chỉ dùng các vai trong danh sách; TUYỆT ĐỐI không thêm nhân vật có lời thoại mới (studio có số diễn viên cố định). Vai minor chỉ nói vài câu khi thật cần. Không có người dẫn chuyện: mọi bối cảnh phải đi qua thoại hoặc nội tâm của {protagonist_role}.
 - Lời thoại ngắn, đời, nói được. Viết số bằng chữ ("hai mươi mốt giờ" thay vì "21h").
 - Dòng cuối cùng của tập phải là cliffhanger đã định (có thể diễn đạt lại cho tự nhiên).
 - estimated_duration_sec ≈ tổng số từ thoại / 3.3.
@@ -192,16 +194,31 @@ class ScriptWriterAgent(Agent):
     # ---- skill: Story Adapt
     def story_adapt(self, ctx: AgentContext, brief: TrendBrief) -> StoryInput:
         f = brief.format_spec
+        cap = roster_capacity(ctx.repos.registry.load())
         user = (
-            f"TREND BRIEF\nChủ đề: {brief.topic}\nTuyến nội dung: {THEME_LABEL_VI[brief.theme_category]}\nKhán giả: {brief.target_audience}\n"
+            f"TREND BRIEF\nChủ đề: {brief.topic}\nThể loại đang thịnh hành: {brief.genre or '(không ghi)'}\n"
+            f"Tuyến nội dung: {THEME_LABEL_VI[brief.theme_category]}\nKhán giả: {brief.target_audience}\n"
             f"Hook: {brief.hook}\nTiền đề: {brief.premise}\nGóc làm mới: {brief.anti_trope_angle}\n"
             f"Tựa tham khảo (không sao chép): {', '.join(brief.reference_titles) or '(không có)'}\n"
             f"Định dạng: {ctx.params.episodes} tập, mỗi tập {ctx.params.min_sec}-{ctx.params.max_sec} giây "
-            f"(brief đề xuất {f.episodes} tập, {f.episode_seconds_min}-{f.episode_seconds_max} giây).\n\nHãy trả về StoryAdaptation."
+            f"(brief đề xuất {f.episodes} tập, {f.episode_seconds_min}-{f.episode_seconds_max} giây).\n\n"
+            f"{roster_rule_vi(cap)} roles[] chỉ gồm các vai có tên; không liệt kê nhân vật nền.\n\nHãy trả về StoryAdaptation."
         )
+
+        def too_many(a: StoryAdaptation) -> list[str]:
+            n = {"female": 0, "male": 0}
+            for r in a.roles:
+                n[r.gender or guess_gender(r.name, r.description)] += 1
+            return [f"{n[g]} vai {GENDER_VI[g]} (tối đa {cap[g]})" for g in n if n[g] > cap[g]]
+
         try:
             a = ctx.llm.structured(agent=self.id, skill="story_adapt", system=ADAPT_SYSTEM, user=user, schema=StoryAdaptation,
-                                   context={"brief": brief.model_dump(mode="json")})
+                                   context={"brief": brief.model_dump(mode="json"), "capacity": cap})
+            if too_many(a):  # one correction round; the outline step enforces the limit whatever comes back
+                ctx.log(f"story adapt: more roles than Voice IPs ({'; '.join(too_many(a))}); asking again")
+                a = ctx.llm.structured(agent=self.id, skill="story_adapt", system=ADAPT_SYSTEM, schema=StoryAdaptation,
+                                       user=user + f"\n\nBẢN TRƯỚC BỊ TỪ CHỐI: {'; '.join(too_many(a))}. Viết lại câu chuyện với số vai trong giới hạn.",
+                                       context={"brief": brief.model_dump(mode="json"), "capacity": cap})
         except LlmError as e:
             raise AgentError(f"Story Adapt failed: {e}", retryable=not isinstance(e, LlmBlocked)) from e
         total_min = max(1, round(ctx.params.episodes * (ctx.params.min_sec + ctx.params.max_sec) / 2 / 60))
@@ -217,28 +234,42 @@ class ScriptWriterAgent(Agent):
         max_words = int(fmt.max_duration_sec * WORDS_PER_SEC * 1.15)
         system = OUTLINE_SYSTEM.format(count=fmt.count, min_sec=fmt.min_duration_sec, max_sec=fmt.max_duration_sec, min_words=min_words,
                                        max_words=max_words, mode_rules=MODE_RULES[mode].format(count=fmt.count), rules=_RULES)
-        roles_txt = "\n".join(f"- {r.name}: {r.description}" for r in story.roles) or "(chưa liệt kê; hãy suy ra từ kịch bản)"
+        cap = roster_capacity(ctx.repos.registry.load())
+        roles_txt = "\n".join(f"- {r.name}{' (' + GENDER_VI[r.gender] + ')' if r.gender else ''}: {r.description}" for r in story.roles) or "(chưa liệt kê; hãy suy ra từ kịch bản)"
         o = story.overview
         user = (
             f"series_id: {ctx.series_id}\nSố tập: {fmt.count} | Thời lượng mỗi tập: {fmt.min_duration_sec}-{fmt.max_duration_sec} giây | Chế độ: {mode}\n\n"
             f"TỔNG QUAN\nTên: {o.title}\nThời lượng dự kiến: {o.total_minutes or '?'} phút\nThể loại: {o.genre}\nBối cảnh: {o.setting}\n\n"
-            f"VAI TRONG CÂU CHUYỆN\n{roles_txt}\n\n"
+            f"VAI TRONG CÂU CHUYỆN\n{roles_txt}\n\n{roster_rule_vi(cap)}\n\n"
             f"KỊCH BẢN\n<script>\n{story.script.strip()}\n</script>\n\nHãy trả về SeriesOutline."
         )
+        mock_ctx = {"title": o.title, "genre": o.genre, "count": fmt.count, "mode": mode,
+                    "roles": [{"name": r.name, "description": r.description, "gender": r.gender} for r in story.roles]}
         try:
-            outline = ctx.llm.structured(
-                agent=self.id, skill="episodize.outline", system=system, user=user, schema=SeriesOutline,
-                context={"title": o.title, "genre": o.genre, "count": fmt.count, "mode": mode,
-                         "roles": [{"name": r.name, "description": r.description} for r in story.roles]})
+            outline = ctx.llm.structured(agent=self.id, skill="episodize.outline", system=system, user=user, schema=SeriesOutline, context=mock_ctx)
+            extra = over_capacity(outline.roles, cap)
+            if extra and mode == "write":  # the story is ours to shape: ask once for a version that fits the roster
+                names = ", ".join(r.role_name for r in extra)
+                ctx.log(f"outline: more named roles than Voice IPs ({names}); asking again")
+                outline = ctx.llm.structured(
+                    agent=self.id, skill="episodize.outline", system=system, schema=SeriesOutline, context=mock_ctx,
+                    user=user + f"\n\nBẢN TRƯỚC BỊ TỪ CHỐI: quá số diễn viên, thừa các vai: {names}. Gộp hoặc bỏ các vai này, hoặc đặt role_type = minor nếu chỉ là nhân vật nền.")
         except LlmError as e:
             raise AgentError(f"outline failed: {e}", retryable=not isinstance(e, LlmBlocked)) from e
+        # What still does not fit (a pasted script with a large cast, or a model that would not comply) plays as a background role
+        # with a temporary voice for this production; no new Voice IP is created for it.
+        for r in over_capacity(outline.roles, cap):
+            ctx.note(f"{r.role_name}: the story has more named {r.gender or 'male/female'} roles than Voice IPs; treated as a background role with a temporary voice.")
+            r.role_type = "minor"
         if len(outline.episodes) != fmt.count:
             raise AgentError(f"outline returned {len(outline.episodes)} episodes, expected {fmt.count}", retryable=True)
 
         # The director's pins survive the outline; every other role leaves uncast for the Casting Agent.
         pins = {r.name: r.actor_id for r in story.roles if r.actor_id}
         desc = {r.name: r.description for r in story.roles}
+        told = {r.name: r.gender for r in story.roles if r.gender}  # what the author or Story Adapt stated wins over the outline's reading
         roles = [RoleCast(role_name=rc.role_name, role_type=rc.role_type, description=desc.get(rc.role_name) or rc.description or rc.reason,
+                          gender=told.get(rc.role_name) or rc.gender,
                           actor_id=pins.get(rc.role_name), assigned_by="user" if rc.role_name in pins else "ai", reason="") for rc in outline.roles]
         bible = SeriesBible(
             series_id=ctx.series_id, title=outline.title, logline=outline.logline, premise=outline.premise, tone=outline.tone,

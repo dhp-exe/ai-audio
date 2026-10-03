@@ -1,0 +1,48 @@
+{
+  "series_id": "tai-sinh-lam-lai-cuoc-do-10031336",
+  "episode_number": 2,
+  "title": "Vết nứt đầu tiên",
+  "state": "awaiting_approval",
+  "qa_status": "PASS",
+  "qa_score": 100,
+  "qa_attempts": 0,
+  "reason": "QA passed; waiting for a human to listen and approve.",
+  "duration_ms": 89780,
+  "master_mp3": "series/tai-sinh-lam-lai-cuoc-do-10031336/masters/ep02_master.mp3",
+  "master_wav": "series/tai-sinh-lam-lai-cuoc-do-10031336/masters/ep02_master.wav",
+  "metadata": {
+    "title": "Ván Cờ Nghịch Mệnh | Tập 2: Vết nứt đầu tiên - Sự kiện đính hôn đổ vỡ",
+    "description": "Sự kiện đính hôn vốn là bàn đạp quyền lực của Minh Tuấn bất ngờ đổ vỡ trong sự ngỡ ngàng của giới thượng lưu. Lâm An bắt đầu những bước đi đầu tiên trong kế hoạch trả thù, khiến Minh Tuấn không khỏi nảy sinh nghi ngờ về sự thay đổi khó lường của cô. Nghe tập tiếp theo trong danh sách phát. Giọng đọc trong video được tạo bằng AI.",
+    "tags": [
+      "Ván Cờ Nghịch Mệnh",
+      "truyện audio",
+      "Mặc Khải",
+      "Emvoox",
+      "truyện tâm lý",
+      "truyện giật gân",
+      "truyện báo thù",
+      "truyện ngôn tình",
+      "truyện trinh thám",
+      "truyện audio hay",
+      "truyện audio mới nhất"
+    ],
+    "hashtags": [
+      "#VánCờNghịchMệnh",
+      "#TruyệnAudio",
+      "#MặcKhải",
+      "#TruyệnBáoThù"
+    ],
+    "playlist_title": "Ván Cờ Nghịch Mệnh",
+    "thumbnail_text": "Đính hôn đổ vỡ",
+    "language": "vi",
+    "category": "Entertainment",
+    "made_for_kids": false,
+    "contains_synthetic_media": true,
+    "generated_by": "llm"
+  },
+  "decision": null,
+  "exported": [],
+  "publish": {},
+  "created_at": "2026-10-03T13:38:22+00:00",
+  "updated_at": "2026-10-03T13:38:22+00:00"
+}

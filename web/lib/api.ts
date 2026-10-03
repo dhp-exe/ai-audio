@@ -27,7 +27,7 @@ export interface ActorSummary {
 }
 export interface Config {
   version: string;
-  llm: { provider: LlmProviderId; model: string; providers: LlmProviderId[] };
+  llm: { provider: LlmProviderId; model: string; providers: LlmProviderId[]; defaults: Record<string, string>; models: Record<string, { id: string; note: string }[]> };
   tts: { provider: Provider; model: string; batching: Batching };
   keys: { gemini: boolean; elevenlabs: boolean; wavespeed: boolean; openai: boolean; anthropic: boolean };
   storage: { backend: string; root: string };
@@ -102,6 +102,7 @@ export interface ResumeIn {
 
 /* ---------------------------------------------------------------- market research */
 export interface TrendCandidate {
+  genre: string; evidence: string; platforms: string[];
   topic: string; theme_category: ThemeCategory; target_audience: string; hook: string; premise: string; anti_trope_angle: string;
   reference_titles: string[]; audience_fit: number; momentum: number; production_fit: number; score: number; rationale: string;
 }
@@ -111,8 +112,19 @@ export interface TrendBrief {
   format_spec: { medium: string; language: string; episodes: number; episode_seconds_min: number; episode_seconds_max: number };
   theme_category: ThemeCategory; hook: string; premise: string; anti_trope_angle: string; reference_titles: string[]; score: number;
   candidates: TrendCandidate[]; insights: ContentInsight[]; sources: string[]; platforms: string[]; notes: string;
+  genre: string; guide: string; selected: number; scan_id: string | null;
 }
-export interface ResearchScanIn { seeds: string; platforms: string[]; use_browser: boolean | null; focus: string; llm_provider?: LlmProviderId | null }
+export interface ResearchScanIn { seeds: string; platforms: string[]; use_browser: boolean | null; focus: string; guide: string; llm_provider?: LlmProviderId | null }
+export type ScanStepStatus = "pending" | "running" | "ok" | "blocked" | "error";
+export interface ScanStep {
+  platform: string; url: string; label: string; status: ScanStepStatus; title: string; chars: number; excerpt: string;
+  screenshot: string | null; detail: string; elapsed_s: number;
+}
+/** Live progress of one Market Research run; poll it while status is "running". */
+export interface ScanState {
+  scan_id: string; status: "running" | "done" | "failed"; phase: "scan" | "analyze" | "rank" | "done"; created_at: string; finished_at: string | null;
+  guide: string; focus: string; use_browser: boolean; platforms: string[]; steps: ScanStep[]; log: string[]; brief_id: string | null; error: string | null;
+}
 
 /* ---------------------------------------------------------------- library */
 export interface QaBrief { status: "PASS" | "FLAGGED" | null; score: number | null; attempt: number; issues: number; codes: string[]; legacy?: boolean }
@@ -269,7 +281,11 @@ export const api = {
   dashboard: () => request<Dashboard>("/api/dashboard"),
   doctor: (live = false) => request<{ checks: DoctorCheck[] }>(`/api/doctor${live ? "?live=1" : ""}`),
   // market research
-  scan: (body: ResearchScanIn) => post<TrendBrief>("/api/research/scan", body),
+  scan: (body: ResearchScanIn) => post<ScanState>("/api/research/scan", body),
+  scans: () => request<{ scans: ScanState[] }>("/api/research/scans"),
+  scanState: (id: string) => request<ScanState>(`/api/research/scans/${id}`),
+  scanShotUrl: (id: string, name: string) => `/api/research/scans/${id}/shots/${name}`,
+  selectGenre: (briefId: string, index: number) => post<TrendBrief>(`/api/research/briefs/${briefId}/select`, { index }),
   briefs: () => request<{ briefs: TrendBrief[] }>("/api/research/briefs"),
   brief: (id: string) => request<TrendBrief>(`/api/research/briefs/${id}`),
   deleteBrief: (id: string) => del<{ ok: boolean }>(`/api/research/briefs/${id}`),

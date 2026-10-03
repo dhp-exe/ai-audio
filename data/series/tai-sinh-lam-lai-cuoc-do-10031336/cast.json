@@ -1,0 +1,84 @@
+{
+  "series_id": "tai-sinh-lam-lai-cuoc-do-10031336",
+  "engine_policy": {
+    "default": {
+      "provider": "wavespeed",
+      "model": "google/gemini-3.8-flash/text-to-speech"
+    },
+    "by_role_type": {},
+    "by_actor": {},
+    "prefer_cloned": true,
+    "tier": "test",
+    "batching": "auto"
+  },
+  "protagonist_id": "lam-an",
+  "members": [
+    {
+      "role_name": "Lâm An",
+      "role_type": "protagonist",
+      "actor_id": "lam-an",
+      "display_name": "Lâm An",
+      "assigned_by": "placeholder",
+      "reason": "không còn Voice IP phù hợp; dùng giọng tạm",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Puck",
+      "voice_source": "placeholder",
+      "fallback_voice_id": null,
+      "voice_settings": {},
+      "is_ip_asset": false
+    },
+    {
+      "role_name": "Khải Phong",
+      "role_type": "antagonist",
+      "actor_id": "khai-phong",
+      "display_name": "Khải Phong",
+      "assigned_by": "placeholder",
+      "reason": "không còn Voice IP phù hợp; dùng giọng tạm",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Iapetus",
+      "voice_source": "placeholder",
+      "fallback_voice_id": null,
+      "voice_settings": {},
+      "is_ip_asset": false
+    },
+    {
+      "role_name": "Minh Tuấn",
+      "role_type": "antagonist",
+      "actor_id": "minh-tuan",
+      "display_name": "Minh Tuấn",
+      "assigned_by": "placeholder",
+      "reason": "không còn Voice IP phù hợp; dùng giọng tạm",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Achird",
+      "voice_source": "placeholder",
+      "fallback_voice_id": null,
+      "voice_settings": {},
+      "is_ip_asset": false
+    },
+    {
+      "role_name": "Thanh Vy",
+      "role_type": "supporting",
+      "actor_id": "thanh-vy",
+      "display_name": "Thanh Vy",
+      "assigned_by": "placeholder",
+      "reason": "không còn Voice IP phù hợp; dùng giọng tạm",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Zubenelgenubi",
+      "voice_source": "placeholder",
+      "fallback_voice_id": null,
+      "voice_settings": {},
+      "is_ip_asset": false
+    }
+  ],
+  "notes": [
+    "Placeholder voice for Lâm An (lam-an): Puck on WaveSpeed. Replace it on the Voice IPs page before publishing.",
+    "Placeholder voice for Khải Phong (khai-phong): Iapetus on WaveSpeed. Replace it on the Voice IPs page before publishing.",
+    "Placeholder voice for Minh Tuấn (minh-tuan): Achird on WaveSpeed. Replace it on the Voice IPs page before publishing.",
+    "Placeholder voice for Thanh Vy (thanh-vy): Zubenelgenubi on WaveSpeed. Replace it on the Voice IPs page before publishing."
+  ],
+  "resolved_at": "2026-10-03T13:36:30+00:00"
+}

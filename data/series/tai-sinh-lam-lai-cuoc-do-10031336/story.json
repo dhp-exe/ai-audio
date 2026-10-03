@@ -1,0 +1,31 @@
+{
+  "overview": {
+    "title": "Ván Cờ Nghịch Mệnh",
+    "total_minutes": 45,
+    "genre": "Tâm lý - Giật gân - Báo thù",
+    "setting": "Thành phố tài chính hiện đại, các buổi tiệc thượng lưu và văn phòng tập đoàn."
+  },
+  "roles": [
+    {
+      "name": "Lâm An",
+      "description": "27 tuổi (tâm hồn 32). Từng là tiểu thư ngây thơ, sau khi tái sinh trở nên sắc sảo, tính toán. Mục tiêu: Hủy hoại kẻ thù, bảo vệ gia sản. Động cơ: Nỗi đau bị phản bội và sự thật về cái chết kiếp trước.",
+      "actor_id": null
+    },
+    {
+      "name": "Khải Phong",
+      "description": "30 tuổi. Tổng tài lạnh lùng, bí ẩn. Mục tiêu: Kiểm soát thị trường tài chính. Động cơ: Che giấu việc anh từng là người đứng sau gián tiếp gây ra sự sụp đổ của gia đình Lâm An kiếp trước để thực hiện tham vọng riêng.",
+      "actor_id": null
+    },
+    {
+      "name": "Minh Tuấn",
+      "description": "28 tuổi. Chồng cũ kiếp trước của Lâm An. Kẻ cơ hội, tàn nhẫn. Mục tiêu: Chiếm đoạt tập đoàn Lâm gia. Động cơ: Sự tự ti về xuất thân khiến hắn muốn vươn lên bằng mọi giá.",
+      "actor_id": null
+    },
+    {
+      "name": "Thanh Vy",
+      "description": "27 tuổi. Bạn thân kiếp trước, kẻ chủ mưu sát hại Lâm An. Mục tiêu: Thay thế vị trí của Lâm An. Động cơ: Lòng đố kỵ bệnh hoạn tích tụ từ nhỏ.",
+      "actor_id": null
+    }
+  ],
+  "script": "Hồi 1: Tái sinh và thay đổi. Lâm An tỉnh dậy vào đúng ngày đính hôn với Minh Tuấn 5 năm trước. Thay vì đồng ý, cô công khai vạch trần bộ mặt thật của hắn ngay tại buổi lễ, khiến Minh Tuấn mất mặt và mất đi sự tin tưởng của cha cô. Cô bắt đầu tiếp cận Khải Phong, người kiếp trước cô từng từ chối, để xây dựng liên minh. Hồi 2: Hiệu ứng cánh bướm. Việc Lâm An thay đổi khiến Minh Tuấn và Thanh Vy liên kết sớm hơn, trở nên hung hãn và nguy hiểm hơn. Lâm An nhận ra Khải Phong không phải là 'hiệp sĩ' như cô tưởng; anh ta đang thao túng cô để triệt hạ Minh Tuấn nhằm độc chiếm thị trường. Bước ngoặt: Lâm An phát hiện ra trong nhật ký của Khải Phong có ghi chép về cái chết của cô ở kiếp trước, chứng tỏ anh ta đã biết về sự tồn tại của cô từ trước. Hồi 3: Đối đầu và lựa chọn. Lâm An phải giả vờ tin tưởng Khải Phong để tìm bằng chứng về tội ác của cả anh và Minh Tuấn. Cô dàn dựng một vụ bê bối tài chính khiến cả hai phe đối đầu trực diện. Kết thúc: Lâm An không chọn ai cả. Cô dùng bằng chứng thu thập được để tống giam Minh Tuấn và khiến Khải Phong mất đi quyền lực tại tập đoàn, tự mình nắm quyền kiểm soát đế chế gia đình, chấp nhận cái giá phải trả là sự cô độc và những bóng ma quá khứ luôn ám ảnh."
+}

@@ -12,6 +12,10 @@ API (https://wavespeed.ai/docs):
 
     elevenlabs/*   text, voice_id (preset name or ANY ElevenLabs voice id, cloned ones included), stability
     minimax/*      text, voice_id (system or cloned), emotion, speed, pitch, volume
+    google/*       Gemini 3.8 TTS: text, voice (prebuilt name), style_instructions; or, for a
+                   two-speaker chunk, speakers [{speaker_id, voice}] + turns [{speaker_id, text,
+                   style_instructions}] and no text. Unknown fields are rejected. Billed per
+                   request per started 1,000 characters of text + style (verified live 2026-10-03)
     anything else  text, voice_id plus the request's scalar settings as given
 
 A submission is never retried after a transport error: WaveSpeed documents that a dropped
@@ -28,6 +32,7 @@ import httpx
 
 from emvoox.config import get_settings
 from emvoox.providers.tts.base import ProviderError, StemInfo, TtsRequest, duration_ms, to_stem_wav
+from emvoox.providers.tts.catalog import voice_family
 from emvoox.telemetry.events import record_event
 
 BASE_URL = "https://api.wavespeed.ai/api/v3"
@@ -36,10 +41,44 @@ POLL_INTERVAL_S = 1.5
 POLL_TIMEOUT_S = 240.0
 MINIMAX_EMOTIONS = {"happy", "sad", "angry", "fearful", "disgusted", "surprised", "neutral"}
 MINIMAX_KEYS = ("emotion", "speed", "pitch", "volume")
+STYLE_MAX = 2000  # style_instructions limit of the Gemini TTS endpoints
+
+
+def _gemini_body(req: TtsRequest) -> dict:
+    s = req.settings
+    style = str(s.get("style") or "").strip()
+    if len(req.speakers) > 1:  # dialogue: the transcript's "Label: text" lines become turns, each with its own direction
+        labels = {label for label, _ in req.speakers}
+        styles = list(s.get("turn_styles") or [])
+        turns = []
+        for i, raw in enumerate(ln for ln in req.text.split("\n") if ln.strip()):
+            label, sep, said = raw.partition(": ")
+            if not sep or label not in labels:
+                raise ProviderError(f"wavespeed: dialogue line {i + 1} of {req.line_id or req.voice_id} has no known speaker label")
+            turn = {"speaker_id": label, "text": said.strip()}
+            if i < len(styles) and styles[i]:
+                turn["style_instructions"] = str(styles[i])[:STYLE_MAX]
+            turns.append(turn)
+        body: dict = {"speakers": [{"speaker_id": label, "voice": voice} for label, voice in req.speakers], "turns": turns}
+    else:
+        body = {"text": req.text, "voice": req.speakers[0][1] if req.speakers else req.voice_id}
+    if style:
+        body["style_instructions"] = style[:STYLE_MAX]
+    return body
+
+
+def billable_characters(req: TtsRequest, body: dict) -> int:
+    """Characters the vendor bills for this request (Gemini TTS also bills the style text)."""
+    if voice_family("wavespeed", req.model_id) != "gemini":
+        return len(req.text)
+    n = len(body.get("text", "")) + len(body.get("style_instructions", ""))
+    return n + sum(len(t["text"]) + len(t.get("style_instructions", "")) for t in body.get("turns", []))
 
 
 def build_body(req: TtsRequest) -> dict:
     """Request body for the model family named by ``req.model_id``."""
+    if voice_family("wavespeed", req.model_id) == "gemini":
+        return _gemini_body(req)
     body: dict = {"text": req.text, "voice_id": req.voice_id}
     s = req.settings
     if req.model_id.startswith("elevenlabs/"):
@@ -146,7 +185,8 @@ class WaveSpeedTtsProvider:
 
     def synthesize(self, req: TtsRequest, out: Path, *, retries: int = 3) -> StemInfo:
         t0 = time.time()
-        task_id = self._ws.submit(req.model_id, build_body(req), retries=retries)
+        body = build_body(req)
+        task_id = self._ws.submit(req.model_id, body, retries=retries)
         data = self._ws.wait(task_id)
         outputs = data.get("outputs") or []
         if not outputs:
@@ -160,7 +200,7 @@ class WaveSpeedTtsProvider:
         to_stem_wav(audio, out, src_suffix=suffix)
         return {
             "duration_ms": duration_ms(out),
-            "characters_billed": len(req.text),
+            "characters_billed": billable_characters(req, body),
             "elapsed_s": round(time.time() - t0, 2),
             "task_id": task_id,
             "output_url": url,

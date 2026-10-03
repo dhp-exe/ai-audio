@@ -1,0 +1,490 @@
+{
+  "schema_version": "2.0",
+  "series_id": "tai-sinh-lam-lai-cuoc-do-10031336",
+  "episode_number": 2,
+  "title": "Vết nứt đầu tiên",
+  "target_duration_sec": 120,
+  "batching": "scene",
+  "units": [
+    {
+      "unit_id": "ep02_sc01_l001",
+      "scene_id": "sc01",
+      "order": 1,
+      "type": "monologue",
+      "speaker_id": "lam-an",
+      "role_name": "Lâm An",
+      "text": "Nhìn gương mặt tái mét của Minh Tuấn kìa. Hắn chưa bao giờ nghĩ mình sẽ bị lật tẩy sớm thế này. Kịch bản kiếp trước đã vỡ vụn ngay từ giây phút đầu tiên.",
+      "tts_text": "Nhìn gương mặt tái mét của Minh Tuấn kìa. Hắn chưa bao giờ nghĩ mình sẽ bị lật tẩy sớm thế này. Kịch bản kiếp trước đã vỡ vụn ngay từ giây phút đầu tiên.",
+      "emotion_tag": "sarcastic",
+      "emotional_intensity": 6,
+      "audio_tags": [
+        "internal monologue"
+      ],
+      "direction": "Giọng nội tâm sắc lạnh, nhịp điệu chậm rãi, nhấn mạnh vào sự khinh bỉ.",
+      "pause_after_ms": 500,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Puck",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng mỉa mai (vừa phải), độc thoại nội tâm, như tự nói với chính mình, mic gần, Giọng nội tâm sắc lạnh, nhịp điệu chậm rãi, nhấn mạnh vào sự khinh bỉ"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep02_sc01_l002",
+      "scene_id": "sc01",
+      "order": 2,
+      "type": "dialogue",
+      "speaker_id": "minh-tuan",
+      "role_name": "Minh Tuấn",
+      "text": "Lâm An, em điên rồi! Chuyện này là hiểu lầm, đừng để người ngoài xem trò cười.",
+      "tts_text": "Lâm An, em điên rồi! Chuyện này là hiểu lầm, đừng để người ngoài xem trò cười.",
+      "emotion_tag": "angry",
+      "emotional_intensity": 7,
+      "audio_tags": [
+        "nervously"
+      ],
+      "direction": "Giọng gằn, cố giữ bình tĩnh nhưng run rẩy vì lo sợ.",
+      "pause_after_ms": 400,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Achird",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng giận dữ (mạnh), lo lắng, run giọng, Giọng gằn, cố giữ bình tĩnh nhưng run rẩy vì lo sợ"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep02_sc01_l003",
+      "scene_id": "sc01",
+      "order": 3,
+      "type": "dialogue",
+      "speaker_id": "lam-an",
+      "role_name": "Lâm An",
+      "text": "Chứng từ nằm trong cặp của anh, Minh Tuấn. Đừng bắt tôi phải gọi bảo vệ mời anh ra ngoài trước mặt quan khách.",
+      "tts_text": "Chứng từ nằm trong cặp của anh, Minh Tuấn. Đừng bắt tôi phải gọi bảo vệ mời anh ra ngoài trước mặt quan khách.",
+      "emotion_tag": "neutral",
+      "emotional_intensity": 8,
+      "audio_tags": [],
+      "direction": "Giọng lạnh lùng, dứt khoát, âm lượng vừa phải.",
+      "pause_after_ms": 400,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Puck",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng bình thản (mạnh), Giọng lạnh lùng, dứt khoát, âm lượng vừa phải"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep02_sc01_l004",
+      "scene_id": "sc01",
+      "order": 4,
+      "type": "dialogue",
+      "speaker_id": "minh-tuan",
+      "role_name": "Minh Tuấn",
+      "text": "Được, em sẽ hối hận vì quyết định ngày hôm nay.",
+      "tts_text": "Được, em sẽ hối hận vì quyết định ngày hôm nay.",
+      "emotion_tag": "angry",
+      "emotional_intensity": 8,
+      "audio_tags": [
+        "angry"
+      ],
+      "direction": "Nghiến răng, giọng đe dọa.",
+      "pause_after_ms": 1000,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Achird",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng giận dữ (mạnh), giận dữ, Nghiến răng, giọng đe dọa"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep02_sc02_l001",
+      "scene_id": "sc02",
+      "order": 5,
+      "type": "monologue",
+      "speaker_id": "lam-an",
+      "role_name": "Lâm An",
+      "text": "Cha đang giận dữ, nhưng ông ấy không biết rằng mình vừa thoát khỏi một con rắn độc. Còn Thanh Vy, cô ta đang ở đâu?",
+      "tts_text": "Cha đang giận dữ, nhưng ông ấy không biết rằng mình vừa thoát khỏi một con rắn độc. Còn Thanh Vy, cô ta đang ở đâu?",
+      "emotion_tag": "neutral",
+      "emotional_intensity": 5,
+      "audio_tags": [
+        "introspective"
+      ],
+      "direction": "Giọng trầm tư, vang vọng nhẹ.",
+      "pause_after_ms": 500,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Puck",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng bình thản (vừa phải), độc thoại nội tâm, như tự nói với chính mình, mic gần, Giọng trầm tư, vang vọng nhẹ"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep02_sc02_l002",
+      "scene_id": "sc02",
+      "order": 6,
+      "type": "dialogue",
+      "speaker_id": "thanh-vy",
+      "role_name": "Thanh Vy",
+      "text": "Tuấn, anh đừng giận. Lâm An dạo này tâm lý bất ổn, em sẽ giúp anh nói chuyện với bác.",
+      "tts_text": "Tuấn, anh đừng giận. Lâm An dạo này tâm lý bất ổn, em sẽ giúp anh nói chuyện với bác.",
+      "emotion_tag": "sarcastic",
+      "emotional_intensity": 6,
+      "audio_tags": [
+        "whispers"
+      ],
+      "direction": "Giọng giả tạo, ngọt ngào một cách đáng sợ.",
+      "pause_after_ms": 400,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Zubenelgenubi",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng mỉa mai (vừa phải), thì thầm, Giọng giả tạo, ngọt ngào một cách đáng sợ"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep02_sc02_l003",
+      "scene_id": "sc02",
+      "order": 7,
+      "type": "dialogue",
+      "speaker_id": "minh-tuan",
+      "role_name": "Minh Tuấn",
+      "text": "Cô ta thay đổi quá nhanh. Vy, em phải tìm cách lấy lại niềm tin từ ông già đó, nếu không kế hoạch của chúng ta đổ bể hết.",
+      "tts_text": "Cô ta thay đổi quá nhanh. Vy, em phải tìm cách lấy lại niềm tin từ ông già đó, nếu không kế hoạch của chúng ta đổ bể hết.",
+      "emotion_tag": "fearful",
+      "emotional_intensity": 7,
+      "audio_tags": [
+        "nervously"
+      ],
+      "direction": "Giọng cáu kỉnh, gấp gáp.",
+      "pause_after_ms": 500,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Achird",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng sợ hãi (mạnh), lo lắng, run giọng, Giọng cáu kỉnh, gấp gáp"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep02_sc02_l004",
+      "scene_id": "sc02",
+      "order": 8,
+      "type": "monologue",
+      "speaker_id": "lam-an",
+      "role_name": "Lâm An",
+      "text": "Quả nhiên. Hai kẻ này đã cấu kết với nhau từ trước. Sự đố kỵ của Thanh Vy và lòng tham của Minh Tuấn, một sự kết hợp hoàn hảo cho cái chết của tôi kiếp trước.",
+      "tts_text": "Quả nhiên. Hai kẻ này đã cấu kết với nhau từ trước. Sự đố kỵ của Thanh Vy và lòng tham của Minh Tuấn, một sự kết hợp hoàn hảo cho cái chết của tôi kiếp trước.",
+      "emotion_tag": "sad",
+      "emotional_intensity": 7,
+      "audio_tags": [
+        "internal monologue"
+      ],
+      "direction": "Giọng trầm, lạnh, chứa đựng sự thù hận.",
+      "pause_after_ms": 1000,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Puck",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng buồn (mạnh), độc thoại nội tâm, như tự nói với chính mình, mic gần, Giọng trầm, lạnh, chứa đựng sự thù hận"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep02_sc03_l001",
+      "scene_id": "sc03",
+      "order": 9,
+      "type": "monologue",
+      "speaker_id": "lam-an",
+      "role_name": "Lâm An",
+      "text": "Khải Phong đang đứng đó. Người đàn ông này là ẩn số lớn nhất. Nếu muốn thắng, tôi phải biến kẻ thù thành tấm khiên.",
+      "tts_text": "Khải Phong đang đứng đó. Người đàn ông này là ẩn số lớn nhất. Nếu muốn thắng, tôi phải biến kẻ thù thành tấm khiên.",
+      "emotion_tag": "neutral",
+      "emotional_intensity": 5,
+      "audio_tags": [
+        "internal monologue"
+      ],
+      "direction": "Giọng suy tính, nhịp độ chậm.",
+      "pause_after_ms": 400,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Puck",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng bình thản (vừa phải), độc thoại nội tâm, như tự nói với chính mình, mic gần, Giọng suy tính, nhịp độ chậm"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep02_sc03_l002",
+      "scene_id": "sc03",
+      "order": 10,
+      "type": "dialogue",
+      "speaker_id": "khai-phong",
+      "role_name": "Khải Phong",
+      "text": "Một màn kịch hay. Cô không sợ mình sẽ mất tất cả sao, Lâm An?",
+      "tts_text": "Một màn kịch hay. Cô không sợ mình sẽ mất tất cả sao, Lâm An?",
+      "emotion_tag": "neutral",
+      "emotional_intensity": 6,
+      "audio_tags": [],
+      "direction": "Giọng trầm, uy quyền, vang trong không gian hở.",
+      "pause_after_ms": 400,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Iapetus",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng bình thản (vừa phải), Giọng trầm, uy quyền, vang trong không gian hở"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep02_sc03_l003",
+      "scene_id": "sc03",
+      "order": 11,
+      "type": "dialogue",
+      "speaker_id": "lam-an",
+      "role_name": "Lâm An",
+      "text": "Tôi chỉ đang dọn dẹp những thứ rác rưởi cản đường mình thôi, Khải Phong.",
+      "tts_text": "Tôi chỉ đang dọn dẹp những thứ rác rưởi cản đường mình thôi, Khải Phong.",
+      "emotion_tag": "sarcastic",
+      "emotional_intensity": 7,
+      "audio_tags": [],
+      "direction": "Giọng tự tin, sắc bén.",
+      "pause_after_ms": 500,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Puck",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng mỉa mai (mạnh), Giọng tự tin, sắc bén"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep02_sc03_l004",
+      "scene_id": "sc03",
+      "order": 12,
+      "type": "dialogue",
+      "speaker_id": "khai-phong",
+      "role_name": "Khải Phong",
+      "text": "Tôi đã đợi khoảnh khắc cô từ bỏ hắn từ lâu rồi.",
+      "tts_text": "Tôi đã đợi khoảnh khắc cô từ bỏ hắn từ lâu rồi.",
+      "emotion_tag": "neutral",
+      "emotional_intensity": 9,
+      "audio_tags": [
+        "whispers"
+      ],
+      "direction": "Thì thầm sát tai, giọng trầm thấp, đầy ám ảnh.",
+      "pause_after_ms": 500,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Iapetus",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng bình thản (rất mạnh, cao trào), thì thầm, Thì thầm sát tai, giọng trầm thấp, đầy ám ảnh"
+      },
+      "sfx": []
+    }
+  ],
+  "render_plan": [
+    {
+      "id": "ep02_sc01_c01",
+      "kind": "conversation",
+      "scene_id": "sc01",
+      "unit_ids": [
+        "ep02_sc01_l001",
+        "ep02_sc01_l002",
+        "ep02_sc01_l003",
+        "ep02_sc01_l004"
+      ],
+      "speakers": [
+        "lam-an",
+        "minh-tuan"
+      ],
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "ep02_sc01_c01",
+      "text": "LamAn: Nhìn gương mặt tái mét của Minh Tuấn kìa. Hắn chưa bao giờ nghĩ mình sẽ bị lật tẩy sớm thế này. Kịch bản kiếp trước đã vỡ vụn ngay từ giây phút đầu tiên.\nMinhTuan: Lâm An, em điên rồi! Chuyện này là hiểu lầm, đừng để người ngoài xem trò cười.\nLamAn: Chứng từ nằm trong cặp của anh, Minh Tuấn. Đừng bắt tôi phải gọi bảo vệ mời anh ra ngoài trước mặt quan khách.\nMinhTuan: Được, em sẽ hối hận vì quyết định ngày hôm nay.",
+      "settings": {
+        "style": "Đọc đoạn hội thoại tiếng Việt như phim truyền hình, diễn xuất tự nhiên; giữa các câu ngắt nghỉ khoảng nửa giây.",
+        "turn_styles": [
+          "Nói tiếng Việt, giọng mỉa mai (vừa phải), độc thoại nội tâm, như tự nói với chính mình, mic gần, Giọng nội tâm sắc lạnh, nhịp điệu chậm rãi, nhấn mạnh vào sự khinh bỉ",
+          "Nói tiếng Việt, giọng giận dữ (mạnh), lo lắng, run giọng, Giọng gằn, cố giữ bình tĩnh nhưng run rẩy vì lo sợ",
+          "Nói tiếng Việt, giọng bình thản (mạnh), Giọng lạnh lùng, dứt khoát, âm lượng vừa phải",
+          "Nói tiếng Việt, giọng giận dữ (mạnh), giận dữ, Nghiến răng, giọng đe dọa"
+        ]
+      },
+      "speaker_voices": [
+        [
+          "LamAn",
+          "Puck"
+        ],
+        [
+          "MinhTuan",
+          "Achird"
+        ]
+      ],
+      "stem": "ep02_sc01_c01_chunk.wav",
+      "pause_after_ms": 1000,
+      "attempt": 0
+    },
+    {
+      "id": "ep02_sc02_c01",
+      "kind": "conversation",
+      "scene_id": "sc02",
+      "unit_ids": [
+        "ep02_sc02_l001",
+        "ep02_sc02_l002"
+      ],
+      "speakers": [
+        "lam-an",
+        "thanh-vy"
+      ],
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "ep02_sc02_c01",
+      "text": "LamAn: Cha đang giận dữ, nhưng ông ấy không biết rằng mình vừa thoát khỏi một con rắn độc. Còn Thanh Vy, cô ta đang ở đâu?\nThanhVy: Tuấn, anh đừng giận. Lâm An dạo này tâm lý bất ổn, em sẽ giúp anh nói chuyện với bác.",
+      "settings": {
+        "style": "Đọc đoạn hội thoại tiếng Việt như phim truyền hình, diễn xuất tự nhiên; giữa các câu ngắt nghỉ khoảng nửa giây.",
+        "turn_styles": [
+          "Nói tiếng Việt, giọng bình thản (vừa phải), độc thoại nội tâm, như tự nói với chính mình, mic gần, Giọng trầm tư, vang vọng nhẹ",
+          "Nói tiếng Việt, giọng mỉa mai (vừa phải), thì thầm, Giọng giả tạo, ngọt ngào một cách đáng sợ"
+        ]
+      },
+      "speaker_voices": [
+        [
+          "LamAn",
+          "Puck"
+        ],
+        [
+          "ThanhVy",
+          "Zubenelgenubi"
+        ]
+      ],
+      "stem": "ep02_sc02_c01_chunk.wav",
+      "pause_after_ms": 400,
+      "attempt": 0
+    },
+    {
+      "id": "ep02_sc02_c02",
+      "kind": "conversation",
+      "scene_id": "sc02",
+      "unit_ids": [
+        "ep02_sc02_l003",
+        "ep02_sc02_l004"
+      ],
+      "speakers": [
+        "minh-tuan",
+        "lam-an"
+      ],
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "ep02_sc02_c02",
+      "text": "MinhTuan: Cô ta thay đổi quá nhanh. Vy, em phải tìm cách lấy lại niềm tin từ ông già đó, nếu không kế hoạch của chúng ta đổ bể hết.\nLamAn: Quả nhiên. Hai kẻ này đã cấu kết với nhau từ trước. Sự đố kỵ của Thanh Vy và lòng tham của Minh Tuấn, một sự kết hợp hoàn hảo cho cái chết của tôi kiếp trước.",
+      "settings": {
+        "style": "Đọc đoạn hội thoại tiếng Việt như phim truyền hình, diễn xuất tự nhiên; giữa các câu ngắt nghỉ khoảng nửa giây.",
+        "turn_styles": [
+          "Nói tiếng Việt, giọng sợ hãi (mạnh), lo lắng, run giọng, Giọng cáu kỉnh, gấp gáp",
+          "Nói tiếng Việt, giọng buồn (mạnh), độc thoại nội tâm, như tự nói với chính mình, mic gần, Giọng trầm, lạnh, chứa đựng sự thù hận"
+        ]
+      },
+      "speaker_voices": [
+        [
+          "MinhTuan",
+          "Achird"
+        ],
+        [
+          "LamAn",
+          "Puck"
+        ]
+      ],
+      "stem": "ep02_sc02_c02_chunk.wav",
+      "pause_after_ms": 1000,
+      "attempt": 0
+    },
+    {
+      "id": "ep02_sc03_c01",
+      "kind": "conversation",
+      "scene_id": "sc03",
+      "unit_ids": [
+        "ep02_sc03_l001",
+        "ep02_sc03_l002",
+        "ep02_sc03_l003",
+        "ep02_sc03_l004"
+      ],
+      "speakers": [
+        "lam-an",
+        "khai-phong"
+      ],
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "ep02_sc03_c01",
+      "text": "LamAn: Khải Phong đang đứng đó. Người đàn ông này là ẩn số lớn nhất. Nếu muốn thắng, tôi phải biến kẻ thù thành tấm khiên.\nKhaiPhong: Một màn kịch hay. Cô không sợ mình sẽ mất tất cả sao, Lâm An?\nLamAn: Tôi chỉ đang dọn dẹp những thứ rác rưởi cản đường mình thôi, Khải Phong.\nKhaiPhong: Tôi đã đợi khoảnh khắc cô từ bỏ hắn từ lâu rồi.",
+      "settings": {
+        "style": "Đọc đoạn hội thoại tiếng Việt như phim truyền hình, diễn xuất tự nhiên; giữa các câu ngắt nghỉ khoảng nửa giây.",
+        "turn_styles": [
+          "Nói tiếng Việt, giọng bình thản (vừa phải), độc thoại nội tâm, như tự nói với chính mình, mic gần, Giọng suy tính, nhịp độ chậm",
+          "Nói tiếng Việt, giọng bình thản (vừa phải), Giọng trầm, uy quyền, vang trong không gian hở",
+          "Nói tiếng Việt, giọng mỉa mai (mạnh), Giọng tự tin, sắc bén",
+          "Nói tiếng Việt, giọng bình thản (rất mạnh, cao trào), thì thầm, Thì thầm sát tai, giọng trầm thấp, đầy ám ảnh"
+        ]
+      },
+      "speaker_voices": [
+        [
+          "LamAn",
+          "Puck"
+        ],
+        [
+          "KhaiPhong",
+          "Iapetus"
+        ]
+      ],
+      "stem": "ep02_sc03_c01_chunk.wav",
+      "pause_after_ms": 500,
+      "attempt": 0
+    }
+  ],
+  "cliffhanger": "Khải Phong thì thầm vào tai Lâm An: 'Tôi đã đợi khoảnh khắc cô từ bỏ hắn từ lâu rồi'.",
+  "director_notes": "Tập trung vào sự thay đổi tâm lý của Lâm An từ kiếp trước sang kiếp này. Giọng của Khải Phong cần tạo cảm giác nguy hiểm nhưng cũng đầy lôi cuốn.",
+  "bgm_mood": null,
+  "directed_at": "2026-10-03T13:37:42+00:00"
+}

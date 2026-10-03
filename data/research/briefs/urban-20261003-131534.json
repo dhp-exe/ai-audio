@@ -1,0 +1,208 @@
+{
+  "brief_id": "urban-20261003-131534",
+  "created_at": "2026-10-03T13:15:34+00:00",
+  "topic": "Hợp đồng ly hôn giả",
+  "target_audience": "Phụ nữ 25-45 tuổi, thích mô-típ sủng ngọt xen lẫn ngược tâm.",
+  "format_spec": {
+    "medium": "audio_micro_drama",
+    "language": "vi-VN",
+    "episodes": 30,
+    "episode_seconds_min": 60,
+    "episode_seconds_max": 120
+  },
+  "theme_category": "urban_ceo",
+  "hook": "Ly hôn là khởi đầu của cuộc tình thực sự.",
+  "premise": "Nữ chính ký hợp đồng ly hôn giả để giúp chồng cũ thoát khỏi áp lực gia tộc. Cô rời đi với thân phận mới, thành công rực rỡ. Chồng cũ nhận ra mình yêu cô sâu sắc và bắt đầu hành trình theo đuổi lại từ đầu. Phản diện là người tình cũ của chồng cũ luôn tìm cách phá hoại. Bước ngoặt: Nữ chính mang thai con của anh ngay trước khi ly hôn.",
+  "anti_trope_angle": "Nữ chính không chờ đợi mà chủ động xây dựng sự nghiệp riêng ngay sau khi ly hôn, không lụy tình.",
+  "reference_titles": [
+    "Đêm Tân Hôn Là Lúc Ly Hôn",
+    "Sau Khi Ly Hôn, Chồng Cũ Tôi Hoá Thành Chí Tôn"
+  ],
+  "score": 9.75,
+  "candidates": [
+    {
+      "genre": "Tổng tài - Hôn nhân hợp đồng/Ly hôn",
+      "evidence": "Xuất hiện dày đặc trên cả 3 nền tảng: 'Đêm Tân Hôn Là Lúc Ly Hôn', 'Sau Khi Ly Hôn, Chồng Cũ Tôi Hoá Thành Chí Tôn', 'Lên Nhầm Giường Anh Chồng'.",
+      "platforms": [
+        "dramabox",
+        "reelshort",
+        "youtube"
+      ],
+      "topic": "Hợp đồng ly hôn giả",
+      "theme_category": "urban_ceo",
+      "target_audience": "Phụ nữ 25-45 tuổi, thích mô-típ sủng ngọt xen lẫn ngược tâm.",
+      "hook": "Ly hôn là khởi đầu của cuộc tình thực sự.",
+      "premise": "Nữ chính ký hợp đồng ly hôn giả để giúp chồng cũ thoát khỏi áp lực gia tộc. Cô rời đi với thân phận mới, thành công rực rỡ. Chồng cũ nhận ra mình yêu cô sâu sắc và bắt đầu hành trình theo đuổi lại từ đầu. Phản diện là người tình cũ của chồng cũ luôn tìm cách phá hoại. Bước ngoặt: Nữ chính mang thai con của anh ngay trước khi ly hôn.",
+      "anti_trope_angle": "Nữ chính không chờ đợi mà chủ động xây dựng sự nghiệp riêng ngay sau khi ly hôn, không lụy tình.",
+      "reference_titles": [
+        "Đêm Tân Hôn Là Lúc Ly Hôn",
+        "Sau Khi Ly Hôn, Chồng Cũ Tôi Hoá Thành Chí Tôn"
+      ],
+      "audience_fit": 10,
+      "momentum": 10,
+      "production_fit": 9,
+      "score": 9.75,
+      "rationale": "Đây là thể loại có lượng người xem ổn định và nhu cầu cao nhất trên mọi nền tảng."
+    },
+    {
+      "genre": "Tái sinh - Báo thù",
+      "evidence": "Xuất hiện nhiều trong bảng xếp hạng: 'Sự Trở Lại Của Nữ Đế', 'Sau khi trùng sinh, tôi không làm công chúa nhỏ của bố nữa'.",
+      "platforms": [
+        "dramabox",
+        "reelshort"
+      ],
+      "topic": "Tái sinh để đòi lại công lý",
+      "theme_category": "rebirth_butterfly_effect",
+      "target_audience": "Khán giả yêu thích sự thay đổi số phận và tư duy sắc bén.",
+      "hook": "Biết trước tương lai, tôi sẽ không để bi kịch lặp lại.",
+      "premise": "Nữ chính bị gia đình và người yêu phản bội dẫn đến cái chết oan uổng. Cô tái sinh về thời điểm 5 năm trước. Cô quyết định thay đổi hoàn toàn cách ứng xử, thu thập bằng chứng về sự phản bội của kẻ thù. Bước ngoặt: Cô phát hiện người đứng sau mọi âm mưu kiếp trước lại là người cô tin tưởng nhất.",
+      "anti_trope_angle": "Nữ chính không chỉ báo thù mà còn xây dựng đế chế kinh tế riêng, không dựa dẫm vào nam chính.",
+      "reference_titles": [
+        "Sự Trở Lại Của Nữ Đế",
+        "Sau khi trùng sinh, tôi không làm công chúa nhỏ của bố nữa"
+      ],
+      "audience_fit": 9,
+      "momentum": 9,
+      "production_fit": 9,
+      "score": 9.0,
+      "rationale": "Thể loại này có tính gây nghiện cao nhờ các tình tiết thay đổi quá khứ."
+    },
+    {
+      "genre": "Chiến thần - Giấu thân phận (Hidden Identity)",
+      "evidence": "Phổ biến trên YouTube và Dramabox: 'Thân Phận Bị Che Giấu Của Chàng Rể Phế Vật', 'Bán Thần Bị Phản Bội Giành Lại Tất Cả'.",
+      "platforms": [
+        "dramabox",
+        "youtube"
+      ],
+      "topic": "Cận vệ ẩn danh",
+      "theme_category": "intellectual_slap_anti_trope",
+      "target_audience": "Nam giới và nữ giới thích cảm giác vả mặt, công lý.",
+      "hook": "Kẻ bị coi là phế vật lại là người nắm giữ quyền lực tối thượng.",
+      "premise": "Một chiến thần ẩn danh làm bảo vệ cho tập đoàn của vợ mình. Anh bị gia đình vợ khinh thường vì vẻ ngoài nghèo khổ. Khi đối thủ tấn công tập đoàn, anh âm thầm giải quyết mọi rắc rối mà không để lộ danh tính. Bước ngoặt: Sự thật về thân phận anh bị phơi bày trong buổi tiệc kỷ niệm của công ty.",
+      "anti_trope_angle": "Nam chính không phô trương sức mạnh mà dùng trí tuệ để giải quyết vấn đề, chỉ dùng vũ lực khi cần thiết.",
+      "reference_titles": [
+        "Thân Phận Bị Che Giấu Của Chàng Rể Phế Vật",
+        "Bán Thần Bị Phản Bội Giành Lại Tất Cả"
+      ],
+      "audience_fit": 8,
+      "momentum": 8,
+      "production_fit": 8,
+      "score": 8.0,
+      "rationale": "Thể loại này tạo cảm giác thỏa mãn (vả mặt) cực cao cho người nghe."
+    }
+  ],
+  "insights": [
+    {
+      "title": "Mối Tình Bí Mật",
+      "platform": "dramabox",
+      "genre": "",
+      "hook": "Thiên tài máy tính che giấu thân phận làm thư ký để tìm tình yêu chân thành.",
+      "pacing": "Tập trung vào tình tay ba, nhịp độ nhanh với các bí mật được hé lộ dần.",
+      "tropes": [
+        "Tổng tài",
+        "Thân phận bị che giấu",
+        "Tình tay ba"
+      ]
+    },
+    {
+      "title": "Yêu Cái Cách Em Nói Dối",
+      "platform": "dramabox",
+      "genre": "",
+      "hook": "Trả đũa người yêu cũ bằng cách quyến rũ ông chú của hắn.",
+      "pacing": "Bước ngoặt đến ngay từ kế hoạch trả thù, kết mỗi tập bằng sự tò mò về mối quan hệ giả thành thật.",
+      "tropes": [
+        "Trả thù",
+        "Tình tay ba",
+        "Chênh lệch tuổi tác"
+      ]
+    },
+    {
+      "title": "Sự Trở Lại Của Nữ Đế",
+      "platform": "dramabox",
+      "genre": "",
+      "hook": "Sếp tổng bị bỏ rơi trở lại với thân phận tỷ phú khiến giới thượng lưu chấn động.",
+      "pacing": "Mở đầu bằng sự phản bội, đẩy nhanh nhịp độ bằng màn tái xuất quyền lực.",
+      "tropes": [
+        "Tái sinh",
+        "Vả mặt",
+        "Sếp tổng"
+      ]
+    },
+    {
+      "title": "Thần Đèn Vĩ Đại và Toàn Năng",
+      "platform": "reelshort",
+      "genre": "",
+      "hook": "Thần đèn hóa người phàm để kết hôn với cháu gái tỷ phú nhằm thực hiện điều ước.",
+      "pacing": "Tình tiết dồn dập trong 5 năm hôn nhân đầy sự coi thường và kết thúc bằng ly hôn.",
+      "tropes": [
+        "Giả tưởng",
+        "Hợp đồng hôn nhân",
+        "Tổng tài"
+      ]
+    },
+    {
+      "title": "Chí Tôn Vùng Đất Hoang",
+      "platform": "reelshort",
+      "genre": "",
+      "hook": "Chiến thần bị bạn gái hắt hủi vì tưởng là phế vật, thực chất là người mạnh nhất.",
+      "pacing": "Bước ngoặt thức tỉnh sức mạnh ngay khi bị nhục mạ, nhịp độ dồn dập.",
+      "tropes": [
+        "Chiến thần",
+        "Giấu nghề",
+        "Vả mặt"
+      ]
+    },
+    {
+      "title": "Tuyết rơi không dấu, tim vỡ thành tiếng",
+      "platform": "reelshort",
+      "genre": "",
+      "hook": "Mối tình độc hại và sự hối tiếc muộn màng.",
+      "pacing": "Đẩy cao trào cảm xúc ngay từ những tập đầu.",
+      "tropes": [
+        "Mối tình độc hại",
+        "Ngược tâm"
+      ]
+    },
+    {
+      "title": "Tổng Tài về nước tìm vợ con thất lạc",
+      "platform": "youtube",
+      "genre": "",
+      "hook": "Tổng tài quyền lực vô tình thấy vợ con đang ăn mày bên đường.",
+      "pacing": "Xung đột gia tộc và bí mật quá khứ được tung ra ngay từ tập 1.",
+      "tropes": [
+        "Tổng tài",
+        "Gia đình",
+        "Mẹ đơn thân"
+      ]
+    },
+    {
+      "title": "Cô Gái 1 Mình Nuôi Con Sau Ly Hôn",
+      "platform": "youtube",
+      "genre": "",
+      "hook": "Hậu ly hôn, tổng tài quay đầu bám theo vợ cũ không buông.",
+      "pacing": "Tập trung vào sự hối hận của nam chính và sự mạnh mẽ của nữ chính.",
+      "tropes": [
+        "Ly hôn",
+        "Gương vỡ lại lành",
+        "Sủng vợ"
+      ]
+    }
+  ],
+  "sources": [
+    "https://www.dramabox.com/vi",
+    "https://www.dramabox.com/",
+    "https://www.reelshort.com/vi",
+    "https://www.youtube.com/results?search_query=short+drama+full+episodes",
+    "https://www.youtube.com/results?search_query=phim+ng%E1%BA%AFn+t%E1%BB%95ng+t%C3%A0i+full"
+  ],
+  "platforms": [
+    "dramabox",
+    "reelshort",
+    "youtube"
+  ],
+  "notes": "",
+  "genre": "Tổng tài - Hôn nhân hợp đồng/Ly hôn",
+  "guide": "Scan the platforms and document the 3 most trending short drama film genres.",
+  "selected": 0,
+  "scan_id": "scan-20261003-131439"
+}

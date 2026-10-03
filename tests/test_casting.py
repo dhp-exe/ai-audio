@@ -2,9 +2,7 @@ import json
 
 import pytest
 
-from pipeline import naming
-from pipeline import registry as registry_io
-from pipeline.casting import (
+from emvoox.casting import (
     apply_role_tags,
     duplicate_actor_pins,
     extract_actor_tag,
@@ -12,20 +10,19 @@ from pipeline.casting import (
     parse_roles_text,
     placeholder_voice,
 )
-from pipeline.registry import RegistryLocked
-from pipeline.schema import CharacterProfile, ProviderVoice, RoleCast, SeriesBible, StoryRole, VoiceRegistry, slugify_id
+from emvoox.contracts.production import CharacterProfile, ProviderVoice, RoleCast, SeriesBible, StoryRole, VoiceRegistry, slugify_id
+from emvoox.repositories import RegistryLocked
 
 
 @pytest.fixture
-def reg(tmp_path, monkeypatch):
-    monkeypatch.setattr(naming, "LIBRARY_DIR", tmp_path / "library")
+def reg(repos):
     r = VoiceRegistry(characters=[
         CharacterProfile(character_id="ngan", display_name="Ngân", persona="cute", voice_description="nữ", gender="female",
                          providers={"elevenlabs": ProviderVoice(voice_id="a3", model_id="eleven_v3")}),
         CharacterProfile(character_id="duong", display_name="Dương", persona="ceo", voice_description="nam trầm", gender="male",
                          providers={"elevenlabs": ProviderVoice(voice_id="u5", model_id="eleven_v3")}),
     ])
-    registry_io.save(r)
+    repos.registry.save(r)
     return r
 
 
@@ -69,7 +66,8 @@ def test_duplicate_actor_pins():
     assert duplicate_actor_pins(roles[2:]) == {}
 
 
-def test_registry_lock(reg):
+def test_registry_lock(reg, repos):
+    registry_io = repos.registry
     changed = CharacterProfile(character_id="ngan", display_name="Ngân", persona="cute", voice_description="nữ",
                                providers={"elevenlabs": ProviderVoice(voice_id="NEW", model_id="eleven_v3")})
     with pytest.raises(RegistryLocked):

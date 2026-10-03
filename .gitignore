@@ -2,24 +2,29 @@
 .venv/
 __pycache__/
 *.pyc
+*.egg-info/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
 .DS_Store
+
 # Generated audio is large and reproducible from scripts + registry. Keep out of git.
-series/*/stems/
-series/*/masters/
-series/*/timelines/
-library/bgm/
-library/sfx/
+data/series/*/stems/
+data/series/*/masters/
+data/series/*/timelines/
+data/outputs/
+data/assets/previews/*.wav
+data/assets/auditions/
+data/assets/bgm/
+data/assets/sfx/
+data/telemetry/
+data/emvoox.sqlite3
 *.wav
 *.mp3
-!series/*/reference/*.wav
 
 # web client build artifacts
 web/node_modules/
 web/.next/
 web/out/
 web/next-env.d.ts
-library/previews/
-library/usage-events.jsonl
+web/tsconfig.tsbuildinfo

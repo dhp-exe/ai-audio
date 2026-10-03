@@ -4,8 +4,8 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 
-from pipeline import naming
-from pipeline.schema import PROTAGONIST_ALIAS, EpisodeScript, SeriesBible, VoiceRegistry
+from emvoox import paths as naming
+from emvoox.contracts.production import PROTAGONIST_ALIAS, EpisodeScript, SeriesBible, VoiceRegistry
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -22,8 +22,8 @@ def test_demo_fixture_validates():
 
 
 def test_registry_and_bible_fixtures():
-    reg = VoiceRegistry.model_validate_json((ROOT / "library/voice-ips.json").read_text(encoding="utf-8"))
-    bible = SeriesBible.model_validate_json((ROOT / "series/demo/series.json").read_text(encoding="utf-8"))
+    reg = VoiceRegistry.model_validate_json((ROOT / "data/assets/voice_registry.json").read_text(encoding="utf-8"))
+    bible = SeriesBible.model_validate_json((ROOT / "data/series/demo/series.json").read_text(encoding="utf-8"))
     assert reg.locked
     assert bible.protagonist_id in bible.cast
     missing = set(bible.cast) - reg.ids()

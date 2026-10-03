@@ -1,0 +1,22 @@
+{
+  "hash": "9513e3510d4d11b2936f9b8b91771aea833254340a03f9454ecf2b7ba404e31c",
+  "request": {
+    "provider": "elevenlabs",
+    "model_id": "eleven_v3",
+    "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+    "text": "Xin chào, tôi là Minh Khôi. Có một chuyện tôi chưa từng kể với ai.",
+    "settings": {
+      "stability": 0.5,
+      "similarity_boost": 0.75,
+      "use_speaker_boost": true
+    },
+    "line_id": null
+  },
+  "requested_voice": "JBFqnCBsd6RMkjVDRZzb",
+  "placeholder": false,
+  "reason": null,
+  "rendered_at": "2026-09-20T10:07:41+00:00",
+  "duration_ms": 4000,
+  "characters_billed": 66,
+  "tokens_out": null
+}

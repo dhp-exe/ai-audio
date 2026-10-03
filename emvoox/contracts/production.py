@@ -1,24 +1,24 @@
-"""Single source of truth for data that crosses stage boundaries.
+"""Story, script and Voice IP contracts (the production core shared by several agents).
 
-- ``StoryInput``     : the sectioned story the director fills in (overview, roles, script).
-- ``SeriesOutline``  : what the episodize LLM call returns (casting + episode plan).
+- ``StoryInput``     : the sectioned story (overview, roles, script) a human or the Script Writer fills in.
+- ``SeriesOutline``  : what the Script Writer's outline call returns (roles + episode plan).
 - ``EpisodeDraft``   : what the per-episode drafting call returns (structured scenes/lines).
 - ``SeriesBible``    : ``series/<id>/series.json``.
-- ``EpisodeScript``  : what the AI Director must return (structured output contract).
-- ``VoiceRegistry``  : ``library/voice-ips.json`` (global, locked Voice IP registry of *actors*).
-- ``Timeline``       : computed after TTS by assemble-audio; absolute placement of every stem.
+- ``EpisodeScript``  : what the AI Director's Parse Script skill must return (structured output contract).
+- ``VoiceRegistry``  : ``assets/voice_registry.json`` (global, locked Voice IP registry of *actors*).
+- ``Timeline``       : computed after TTS by the Sound Engineer; absolute placement of every stem.
 
 Vocabulary: a **role** is a character in the story ("Tô Mạn"); an **actor** is a Voice IP in the
 registry ("ngan"). Casting maps roles to actors. Stems and ``character_id`` always carry the actor id.
 
-Decisions baked in (docs/IMPLEMENTATION_PLAN.md section 0):
+Decisions baked in (CLAUDE.md, "Architectural decisions"):
     D1 Vietnamese-first (language fixed to "vi-VN").
     D3 No third-person narrator. Inner voice = ``type: monologue`` on the protagonist, with the
-       alias ``character_id: "protagonist"`` resolved to the real id by parse-script.
+       alias ``character_id: "protagonist"`` resolved to the real id by the Director.
     D4 No speech-to-speech.
     D5/D6 BGM and SFX are optional in the schema and disabled by config.
 
-Run ``python -m pipeline.schema`` to print the JSON Schema for EpisodeScript.
+Run ``python -m emvoox.contracts.production`` to print the JSON Schema for EpisodeScript.
 """
 
 from __future__ import annotations
@@ -294,8 +294,9 @@ class StoryInput(BaseModel):
 class RoleCast(BaseModel):
     role_name: str
     role_type: Literal["protagonist", "antagonist", "supporting", "minor"]
+    description: str = Field("", description="Who this role is: age, gender, personality, goal. Read by the Casting Agent.")
     actor_id: str | None = Field(None, description="Registry actor id, or null if no registered voice fits.")
-    assigned_by: Literal["user", "ai", "placeholder"] = "ai"
+    assigned_by: Literal["user", "ai", "rule", "placeholder"] = "ai"
     reason: str = ""
 
     @field_validator("actor_id")
@@ -324,7 +325,9 @@ class EpisodePlan(BaseModel):
     logline: str
     key_beats: list[str] = Field(min_length=1, max_length=6)
     cliffhanger: str
-    source_span: str = Field("", description="Which part of the input script this episode covers (scene numbers / first-last line). Empty when written from a treatment.")
+    source_span: str = Field("", description="Which part of the input script this episode covers (scene numbers / first-last line). "
+                                              "Empty when written from a treatment.")
+    hook_score: int | None = Field(None, ge=1, le=10, description="Cliffhanger Check result for the drafted episode; null until checked.")
 
 
 class NewCharacter(BaseModel):
@@ -430,10 +433,12 @@ class SeriesBible(BaseModel):
     genre: list[str] = Field(default_factory=list)
     overview: StoryOverview | None = None
     mode: Literal["segment", "write"] = "write"
-    protagonist_id: str = Field(description="Actor id of the protagonist.")
+    protagonist_id: str = Field("", description="Actor id of the protagonist. Empty until the Casting Agent has resolved the cast.")
     protagonist_role: str = ""
     roles: list[RoleCast] = Field(default_factory=list, description="Story roles and the actors playing them.")
-    cast: list[str] = Field(description="Actor ids used in this series (every role's actor).")
+    cast: list[str] = Field(default_factory=list, description="Actor ids used in this series (every role's actor). Empty until cast.")
+    trend_brief_id: str | None = Field(None, description="TrendBrief this series was written from, if any.")
+    theme_category: str | None = None
     pending_characters: list[NewCharacter] = Field(default_factory=list)
     episode_format: EpisodeFormat = Field(default_factory=EpisodeFormat)
     episodes: list[EpisodePlan] = Field(default_factory=list)
@@ -441,9 +446,12 @@ class SeriesBible(BaseModel):
 
     @model_validator(mode="after")
     def _checks(self) -> SeriesBible:
-        if self.protagonist_id not in self.cast:
+        if self.cast and self.protagonist_id not in self.cast:
             raise ValueError(f"protagonist_id {self.protagonist_id!r} must be in cast")
         return self
+
+    def is_cast(self) -> bool:
+        return bool(self.cast) and all(r.actor_id for r in self.roles)
 
     def role_to_actor(self) -> dict[str, str]:
         """role name, its slug and its actor id all map to the actor id."""
@@ -461,16 +469,24 @@ class SeriesBible(BaseModel):
 
 
 # --------------------------------------------------------------------------------------
-# Voice IP registry (library/voice-ips.json, global and locked)
+# Voice IP registry (data/assets/voice_registry.json, global and locked)
 # --------------------------------------------------------------------------------------
 
 
+VoiceSource = Literal["prebuilt", "premade", "library", "cloned", "placeholder"]
+
+
 class ProviderVoice(BaseModel):
-    voice_id: str = Field(description="ElevenLabs voice_id, or a Gemini prebuilt voice name (e.g. 'Leda').")
-    model_id: str = Field(description="e.g. 'eleven_v3', 'eleven_multilingual_v2', 'gemini-2.5-flash-preview-tts'")
+    """One actor's voice on one engine."""
+
+    voice_id: str = Field(description="ElevenLabs voice_id, a Gemini prebuilt voice name (e.g. 'Leda'), or the id the cloning job returned.")
+    model_id: str = Field(description="e.g. 'eleven_v3', 'gemini-3.1-flash-tts-preview', 'elevenlabs/eleven-v3' (WaveSpeed model path)")
     voice_url: str | None = Field(None, description="Vendor page for the voice, for humans.")
     fallback_voice_id: str | None = Field(None, description="Premade voice used when the account tier rejects voice_id (HTTP 402).")
     default_settings: dict[str, float | int | str | bool] = Field(default_factory=dict)
+    source: VoiceSource = Field("premade", description="'cloned' = the team's own IP voice from voice cloning; preferred by the Engine Policy.")
+    label: str | None = Field(None, description="Human name of the voice, e.g. 'Ngân v2 (PVC, 2026-10)'.")
+    added_at: str | None = None
 
 
 class CharacterProfile(BaseModel):
@@ -485,6 +501,8 @@ class CharacterProfile(BaseModel):
     tags: list[str] = Field(default_factory=list, description="Casting tags, e.g. ['cute', 'innocent', 'ceo'].")
     language: str = Field(LANGUAGE, description="BCP-47 primary language for this voice.")
     providers: dict[str, ProviderVoice] = Field(default_factory=dict)
+    preferred_provider: str | None = Field(None, description="Engine this actor should be rendered on whenever its key is configured "
+                                                           "(set when a cloned voice is plugged in).")
     is_ip_asset: bool = True
 
     @field_validator("character_id")
@@ -493,6 +511,9 @@ class CharacterProfile(BaseModel):
         if not CHARACTER_ID_RE.match(v):
             raise ValueError(f"character_id must be lowercase [a-z0-9-]: {v!r}")
         return v
+
+    def cloned_providers(self) -> list[str]:
+        return [p for p, v in self.providers.items() if v.source == "cloned"]
 
     def casting_card(self) -> str:
         bits = [self.display_name]
@@ -508,7 +529,7 @@ class CharacterProfile(BaseModel):
 
 class VoiceRegistry(BaseModel):
     locked: bool = True
-    default_provider: str = "elevenlabs"
+    default_provider: str = "gemini"
     characters: list[CharacterProfile]
     changelog: list[str] = Field(default_factory=list)
 

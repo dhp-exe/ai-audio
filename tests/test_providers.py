@@ -7,13 +7,13 @@ from types import SimpleNamespace
 
 import pytest
 
-from pipeline.providers import PROVIDER_NAMES, default_concurrency, get_provider
-from pipeline.providers import elevenlabs as el
-from pipeline.providers import gemini_tts as gm
-from pipeline.providers.base import ProviderError, TtsRequest
-from pipeline.providers.catalog import GEMINI_VOICES, catalog, gemini_voice, model_ids
-from pipeline.providers.mapping import gemini_style, settings_for_line, text_for_provider
-from pipeline.schema import Emotion, Line, LineType
+from emvoox.contracts.production import Emotion, Line, LineType
+from emvoox.delivery.compile import gemini_style, retry_settings, settings_for_line, text_for_provider
+from emvoox.providers.tts import PROVIDER_NAMES, default_concurrency, get_provider
+from emvoox.providers.tts import elevenlabs as el
+from emvoox.providers.tts import gemini as gm
+from emvoox.providers.tts.base import ProviderError, TtsRequest
+from emvoox.providers.tts.catalog import GEMINI_VOICES, catalog, gemini_voice, model_ids, supports_scene_batching, supports_tags
 
 ROOT = Path(__file__).resolve().parents[1]
 HAS_FFMPEG = subprocess.run(["which", "ffmpeg"], capture_output=True).returncode == 0
@@ -30,10 +30,12 @@ def _line(**kw) -> Line:
 # ---- catalog ------------------------------------------------------------------------------
 
 
-def test_catalog_two_engines_only():
-    assert PROVIDER_NAMES == ("elevenlabs", "gemini")
-    c = catalog()
-    assert [p["id"] for p in c["providers"]] == ["elevenlabs", "gemini"]
+def test_catalog_engines():
+    assert PROVIDER_NAMES == ("gemini", "elevenlabs", "wavespeed", "mock")
+    assert [p["id"] for p in catalog()["providers"]] == ["gemini", "elevenlabs", "wavespeed"]  # the mock is hidden unless asked for
+    assert [p["id"] for p in catalog(include_mock=True)["providers"]][-1] == "mock"
+    assert supports_scene_batching("gemini") and not supports_scene_batching("wavespeed")
+    assert supports_tags("elevenlabs", "eleven_v3") and supports_tags("wavespeed", "elevenlabs/eleven-v3") and not supports_tags("wavespeed", "minimax/speech-2.6-hd")
     assert len(GEMINI_VOICES) == 30 and gemini_voice("leda")["gender"] == "female" and gemini_voice("nope") is None
     assert "eleven_v3" in model_ids("elevenlabs") and "gemini-2.5-flash-preview-tts" in model_ids("gemini")
     assert default_concurrency("gemini") == 1 and default_concurrency("elevenlabs") == 2
@@ -75,6 +77,24 @@ def test_gemini_style_direction():
 def test_unknown_provider_rejected():
     with pytest.raises(ValueError):
         settings_for_line(_line(), "minimax", "speech-02-hd")
+
+
+def test_wavespeed_settings_follow_the_model_family():
+    ln = _line(emotion=Emotion.desperate, emotional_intensity=9, pace="fast", volume="loud")
+    assert settings_for_line(ln, "wavespeed", "elevenlabs/eleven-v3") == {"stability": 0.0}
+    mm = settings_for_line(ln, "wavespeed", "minimax/speech-2.6-hd")
+    assert mm == {"emotion": "sad", "speed": 1.1, "volume": 1.3}
+    assert text_for_provider(_line(tts_text="[sighs] A."), "wavespeed", "elevenlabs/eleven-v3").startswith("[sighs]")
+    assert "[" not in text_for_provider(_line(tts_text="[sighs] A."), "wavespeed", "minimax/speech-2.6-hd")
+
+
+def test_retry_settings_move_toward_stable_delivery():
+    v3 = settings_for_line(_line(emotional_intensity=9), "elevenlabs", "eleven_v3")
+    assert v3["stability"] == 0.0
+    assert retry_settings(v3, "elevenlabs", "eleven_v3", 1)["stability"] == 0.5 and retry_settings(v3, "elevenlabs", "eleven_v3", 2)["stability"] == 1.0
+    assert retry_settings(v3, "elevenlabs", "eleven_v3", 0) == v3
+    g = retry_settings({"style": "giọng buồn"}, "gemini", "m", 1)["style"]
+    assert g.startswith("giọng buồn, ") and "không bỏ sót" in g
 
 
 def test_text_tags_kept_on_v3_stripped_elsewhere():

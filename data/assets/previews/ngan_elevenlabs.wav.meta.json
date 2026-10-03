@@ -1,0 +1,22 @@
+{
+  "hash": "2cb51561b6603f9ea95f7027709d5a5bfcd4f5f0abf6cf041ca0da7f69f8478d",
+  "request": {
+    "provider": "elevenlabs",
+    "model_id": "eleven_v3",
+    "voice_id": "cgSgspJ2msm6clMCkdW9",
+    "text": "Xin chào, tôi là Ngân. Có một chuyện tôi chưa từng kể với ai.",
+    "settings": {
+      "stability": 0.5,
+      "similarity_boost": 0.75,
+      "use_speaker_boost": true
+    },
+    "line_id": null
+  },
+  "requested_voice": "a3AkyqGG4v8Pg7SWQ0Y3",
+  "placeholder": true,
+  "reason": "elevenlabs 402: Free users cannot use library voices via the API. Please upgrade your subscription to use this voice.",
+  "rendered_at": "2026-09-20T10:07:58+00:00",
+  "duration_ms": 4160,
+  "characters_billed": 61,
+  "tokens_out": null
+}

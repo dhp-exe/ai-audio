@@ -1,80 +1,162 @@
 "use client";
 
+import { ArrowRightOutlined, PlusOutlined, SoundOutlined, VideoCameraOutlined } from "@ant-design/icons";
+import { Button, Card, Col, Flex, Progress, Row, Segmented, Space, Tag, Typography } from "antd";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { Plus, RefreshCw } from "lucide-react";
-import { Suspense, useEffect, useState } from "react";
-import { api, type SeriesDetail, type SeriesSummary } from "@/lib/api";
-import { usePoll } from "@/lib/hooks";
-import { StoryDetail } from "@/components/StoryDetail";
-import { Badge, Empty, Meter, StatusPill } from "@/components/ui";
+import { useMemo } from "react";
+import { EmptyState, ErrorAlert, KpiCard, KpiGrid, Legend, Loading, MiniBars, PageHead, StatusTag } from "@/components/common";
+import { ProductionCard } from "@/components/ProductionCard";
+import { useThemeMode } from "@/components/providers/ThemeProvider";
+import { api, type RunSummary } from "@/lib/api";
+import { fmtAgo, fmtMinutes, fmtUsd } from "@/lib/format";
+import { usePoll, useStoredState } from "@/lib/hooks";
+import { FLEET } from "@/lib/agents";
 
-function StoryCard({ s, selected, onClick, engineLabel }: { s: SeriesSummary; selected: boolean; onClick: () => void; engineLabel?: string }) {
+function agentName(id: string | null) {
+  if (!id) return null;
+  return FLEET.find((a) => a.id === id)?.short ?? id;
+}
+
+function ActiveRun({ r }: { r: RunSummary }) {
+  const pct = r.progress.total ? Math.round((r.progress.done / r.progress.total) * 100) : 0;
   return (
-    <button onClick={onClick} className={`w-full rounded-md border bg-panel p-4 text-left transition-colors ${selected ? "border-accent" : "border-line hover:border-line-strong"}`}>
-      <div className="flex items-center gap-2">
-        <h3 className="min-w-0 flex-1 truncate text-[15px] font-semibold">{s.title}</h3>
-        <StatusPill status={s.status} />
-        {s.active_run && <Badge tone="warn">running</Badge>}
-      </div>
-      <div className="mt-0.5 truncate font-mono text-[11px] text-muted">{s.series_id}{s.genre ? ` · ${s.genre}` : ""}{s.mode ? ` · ${s.mode} mode` : ""}</div>
-      {s.logline && <p className="mt-2 line-clamp-2 text-[12px] text-muted">{s.logline}</p>}
-      <div className="mt-3 flex items-center gap-3 text-[12px] text-muted">
-        <span><b className="font-medium text-ink">{s.produced}</b>/{s.planned} mastered</span>
-        {s.qa_warn > 0 && <span className="text-warn">⚠ {s.qa_warn} QA</span>}
-        {engineLabel && <span>{engineLabel}</span>}
-        {s.run && <span>last run {s.run.status}</span>}
-      </div>
-      <Meter value={s.produced} max={s.planned || null} className="mt-2" />
-      <div className="mt-2 flex flex-wrap gap-1">{s.roles.map((r) => <span key={r.role} className="rounded-full border border-line bg-sunken px-2 py-0.5 text-[11px]">{r.role} → {r.actor_name ?? r.actor ?? "?"}</span>)}</div>
-    </button>
+    <Link href={`/pipeline/?id=${encodeURIComponent(r.run_id)}`} style={{ color: "inherit", display: "block" }}>
+      <Flex vertical gap={4} style={{ padding: "10px 0", borderBottom: "1px solid var(--ev-border)" }}>
+        <Flex justify="space-between" gap={8} align="center">
+          <Typography.Text strong ellipsis>{r.title || r.series_id}</Typography.Text>
+          <StatusTag status={r.status} />
+        </Flex>
+        <Progress percent={pct} size="small" status={r.status === "running" ? "active" : undefined} format={() => <span className="num">{r.progress.done}/{r.progress.total}</span>} />
+        <Flex justify="space-between" style={{ fontSize: 12 }} className="muted" gap={8}>
+          <span>{agentName(r.current_agent) ?? "Queued"}{r.current_step ? ` · ${r.current_step}` : ""}</span>
+          <span className="num">{fmtUsd(r.cost_usd)}</span>
+        </Flex>
+      </Flex>
+    </Link>
   );
 }
 
-function LibraryInner() {
-  const router = useRouter();
-  const params = useSearchParams();
-  const sel = params.get("id");
-  const { data: cfg } = usePoll(api.config, 0);
-  const { data, error, refresh } = usePoll(api.library, 10_000);
-  const [detail, setDetail] = useState<SeriesDetail | null>(null);
-  const [detailErr, setDetailErr] = useState<string | null>(null);
-  const list = data?.series ?? [];
-  const current = sel ?? list[0]?.series_id ?? null;
+export default function DashboardPage() {
+  const { data, error, loading, refresh } = usePoll(() => api.dashboard(), 10000);
+  const [media, setMedia] = useStoredState<"all" | "audio" | "video">("emvoox-dash-media", "all");
+  const { resolved } = useThemeMode();
+  const productions = useMemo(() => (data?.productions ?? []).filter((p) => media === "all" || p.media === media), [data, media]);
+  const days = useMemo(() => (data?.cost_by_day ?? []).slice(-14), [data]);
+  const barColor = resolved === "dark" ? "#5b82c4" : "#284979";
 
-  useEffect(() => {
-    if (!current) { setDetail(null); return; }
-    let alive = true;
-    api.series(current).then((d) => alive && setDetail(d)).catch((e) => alive && setDetailErr(String(e.message)));
-    return () => { alive = false; };
-  }, [current, data]);
-
-  const engine = (id?: string) => cfg?.catalog.providers.find((p) => p.id === id)?.label;
+  if (loading && !data) return <><PageHead title="Dashboard" /><Loading rows={10} /></>;
+  const k = data?.kpis;
 
   return (
-    <main className="mx-auto max-w-[1440px] p-5">
-      <div className="mb-4 flex items-center gap-3">
-        <h1 className="text-[17px] font-semibold">Story library</h1>
-        <span className="text-[12px] text-muted">{list.length} {list.length === 1 ? "story" : "stories"}</span>
-        <button className="btn-ghost h-8" onClick={refresh}><RefreshCw size={13} /> Refresh</button>
-        <Link href="/story/" className="btn-primary ml-auto h-8"><Plus size={14} /> New story</Link>
-      </div>
-      {error && <div className="mb-3 text-[12px] text-bad">{error}</div>}
-      <div className="grid gap-4 lg:grid-cols-[minmax(320px,1fr)_1.5fr]">
-        <div className="space-y-3">
-          {!data ? <div className="text-[13px] text-muted">Loading…</div> : list.length === 0 ? <Empty>No stories yet. Start one with “New story”.</Empty> :
-            list.map((s) => <StoryCard key={s.series_id} s={s} selected={s.series_id === current} engineLabel={engine(s.run?.tts_provider)} onClick={() => router.replace(`/?id=${s.series_id}`)} />)}
-        </div>
-        <div>
-          {detailErr && <div className="text-[12px] text-bad">{detailErr}</div>}
-          {detail && cfg ? <StoryDetail d={detail} cfg={cfg} onDeleted={() => { setDetail(null); router.replace("/"); refresh(); }} /> :
-            list.length > 0 && <Empty>Select a story to see its episodes, listen to masters, or continue producing.</Empty>}
-        </div>
-      </div>
-    </main>
-  );
-}
+    <>
+      <PageHead
+        title={<span className="serif" style={{ letterSpacing: 1 }}>EMVOOX</span>}
+        sub="Emotion + Voice. One story in, a season of audio micro-drama out."
+        extra={<Link href="/new/"><Button type="primary" icon={<PlusOutlined />}>New production</Button></Link>}
+      />
+      <ErrorAlert error={error} onRetry={refresh} />
+      {data && k && (
+        <Flex vertical gap={16}>
+          <KpiGrid>
+            {[
+              <KpiCard key="s" title="Series" value={k.series} />,
+              <KpiCard key="e" title="Episodes mastered" value={k.episodes_mastered} suffix={<span className="muted" style={{ fontSize: 14 }}>/ {k.episodes_planned}</span>} />,
+              <KpiCard key="a" title="Awaiting approval" value={k.awaiting_approval} />,
+              <KpiCard key="n" title="Needs review" value={k.needs_review} />,
+              <KpiCard key="ap" title="Approved" value={k.approved} />,
+              <KpiCard key="c" title="Cost this month" value={fmtUsd(k.cost_month_usd)} hint={`${fmtUsd(k.cost_total_usd)} all time`} />,
+              <KpiCard key="m" title="Audio produced" value={fmtMinutes(k.audio_minutes)} />,
+            ]}
+          </KpiGrid>
 
-export default function LibraryPage() {
-  return <Suspense fallback={<main className="p-5 text-[13px] text-muted">Loading…</main>}><LibraryInner /></Suspense>;
+          <Row gutter={[16, 16]}>
+            <Col xs={24} lg={12}>
+              <Card title="In production" size="small" style={{ height: "100%" }} extra={<Link href="/pipeline/">Pipeline <ArrowRightOutlined /></Link>}>
+                {data.active_runs.length ? data.active_runs.map((r) => <ActiveRun key={r.run_id} r={r} />) : (
+                  <EmptyState description="Nothing is rendering right now" action={<Link href="/new/"><Button size="small" type="primary">Start a production</Button></Link>} />
+                )}
+                {!data.active_runs.length && data.recent_runs.length > 0 && (
+                  <div style={{ marginTop: 8 }}>
+                    <Typography.Text type="secondary" style={{ fontSize: 12 }}>Recent runs</Typography.Text>
+                    {data.recent_runs.slice(0, 3).map((r) => (
+                      <Flex key={r.run_id} justify="space-between" align="center" style={{ padding: "6px 0" }} gap={8}>
+                        <Link href={`/pipeline/?id=${encodeURIComponent(r.run_id)}`} style={{ minWidth: 0 }}>
+                          <Typography.Text ellipsis>{r.title || r.series_id}</Typography.Text>
+                        </Link>
+                        <Space size={6}><span className="muted" style={{ fontSize: 12 }}>{fmtAgo(r.finished_at ?? r.created_at)}</span><StatusTag status={r.status} /></Space>
+                      </Flex>
+                    ))}
+                  </div>
+                )}
+              </Card>
+            </Col>
+            <Col xs={24} lg={12}>
+              <Card title="Needs your attention" size="small" style={{ height: "100%" }} extra={<Link href="/approvals/">Approvals <ArrowRightOutlined /></Link>}>
+                {data.attention.length ? (
+                  <Flex vertical>
+                    {data.attention.slice(0, 8).map((a) => (
+                      <Link key={`${a.series_id}-${a.episode}`} href="/approvals/" style={{ color: "inherit" }}>
+                        <Flex justify="space-between" gap={8} align="center" style={{ padding: "8px 0", borderBottom: "1px solid var(--ev-border)" }}>
+                          <div style={{ minWidth: 0 }}>
+                            <Typography.Text strong ellipsis style={{ display: "block" }}>{a.title} · Ep {a.episode}</Typography.Text>
+                            <Typography.Text type="secondary" ellipsis style={{ fontSize: 12, display: "block" }}>{a.reason}</Typography.Text>
+                          </div>
+                          <StatusTag status={a.state} />
+                        </Flex>
+                      </Link>
+                    ))}
+                  </Flex>
+                ) : <EmptyState description="All clear. No episodes are waiting for you." />}
+              </Card>
+            </Col>
+          </Row>
+
+          <Card
+            title="Productions"
+            size="small"
+            extra={
+              <Segmented
+                size="small"
+                value={media}
+                onChange={(v) => setMedia(v as "all" | "audio" | "video")}
+                options={[
+                  { value: "all", label: "All" },
+                  { value: "audio", label: "Audio", icon: <SoundOutlined /> },
+                  { value: "video", label: <span>Video <Tag style={{ marginInlineEnd: 0, fontSize: 10, lineHeight: "16px" }}>planned</Tag></span>, icon: <VideoCameraOutlined /> },
+                ]}
+              />
+            }
+          >
+            {productions.length ? (
+              <Row gutter={[12, 12]}>
+                {productions.map((s) => (
+                  <Col key={s.series_id} xs={24} sm={12} xl={8} xxl={6}><ProductionCard s={s} /></Col>
+                ))}
+              </Row>
+            ) : media === "video" ? (
+              <EmptyState
+                description={
+                  <span>
+                    Video productions come after audio validation.<br />
+                    <span className="muted">Only series whose audio episodes prove retention get a video render.</span>
+                  </span>
+                }
+              />
+            ) : (
+              <EmptyState description="No productions yet" action={<Link href="/new/"><Button type="primary">Create the first one</Button></Link>} />
+            )}
+          </Card>
+
+          <Card title="Cost by day" size="small" extra={<Link href="/costs/">Costs <ArrowRightOutlined /></Link>}>
+            <MiniBars
+              data={days.map((d) => ({ label: d.date.slice(5), parts: [{ name: "Cost", value: d.cost_usd, color: barColor }] }))}
+              height={110}
+              format={fmtUsd}
+            />
+            <div style={{ marginTop: 6 }}><Legend items={[{ name: "Estimated spend, last 14 days (USD)", color: barColor }]} /></div>
+          </Card>
+        </Flex>
+      )}
+    </>
+  );
 }

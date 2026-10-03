@@ -23,17 +23,24 @@
           "model_id": "eleven_v3",
           "voice_url": null,
           "fallback_voice_id": "EXAVITQu4vr4xnSDxMaL",
-          "default_settings": {}
+          "default_settings": {},
+          "source": "premade",
+          "label": null,
+          "added_at": null
         },
         "gemini": {
           "voice_id": "Kore",
           "model_id": "gemini-3.1-flash-tts-preview",
           "voice_url": "https://ai.google.dev/gemini-api/docs/speech-generation#voices",
           "fallback_voice_id": null,
-          "default_settings": {}
+          "default_settings": {},
+          "source": "prebuilt",
+          "label": null,
+          "added_at": null
         }
       },
-      "is_ip_asset": true
+      "is_ip_asset": true,
+      "preferred_provider": null
     },
     {
       "character_id": "minh-khoi",
@@ -56,17 +63,24 @@
           "model_id": "eleven_v3",
           "voice_url": null,
           "fallback_voice_id": "JBFqnCBsd6RMkjVDRZzb",
-          "default_settings": {}
+          "default_settings": {},
+          "source": "premade",
+          "label": null,
+          "added_at": null
         },
         "gemini": {
           "voice_id": "Puck",
           "model_id": "gemini-3.1-flash-tts-preview",
           "voice_url": "https://ai.google.dev/gemini-api/docs/speech-generation#voices",
           "fallback_voice_id": null,
-          "default_settings": {}
+          "default_settings": {},
+          "source": "prebuilt",
+          "label": null,
+          "added_at": null
         }
       },
-      "is_ip_asset": true
+      "is_ip_asset": true,
+      "preferred_provider": null
     },
     {
       "character_id": "ngan",
@@ -88,17 +102,24 @@
           "model_id": "eleven_v3",
           "voice_url": "https://elevenlabs.io/voices/a3AkyqGG4v8Pg7SWQ0Y3",
           "fallback_voice_id": "cgSgspJ2msm6clMCkdW9",
-          "default_settings": {}
+          "default_settings": {},
+          "source": "library",
+          "label": null,
+          "added_at": null
         },
         "gemini": {
           "voice_id": "Leda",
           "model_id": "gemini-3.1-flash-tts-preview",
           "voice_url": "https://ai.google.dev/gemini-api/docs/speech-generation#voices",
           "fallback_voice_id": null,
-          "default_settings": {}
+          "default_settings": {},
+          "source": "prebuilt",
+          "label": null,
+          "added_at": null
         }
       },
-      "is_ip_asset": true
+      "is_ip_asset": true,
+      "preferred_provider": null
     },
     {
       "character_id": "duong",
@@ -120,17 +141,24 @@
           "model_id": "eleven_v3",
           "voice_url": "https://elevenlabs.io/voices/UsgbMVmY3U59ijwK5mdh",
           "fallback_voice_id": "nPczCjzI2devNBz1zQrb",
-          "default_settings": {}
+          "default_settings": {},
+          "source": "library",
+          "label": null,
+          "added_at": null
         },
         "gemini": {
           "voice_id": "Orus",
           "model_id": "gemini-3.1-flash-tts-preview",
           "voice_url": "https://ai.google.dev/gemini-api/docs/speech-generation#voices",
           "fallback_voice_id": null,
-          "default_settings": {}
+          "default_settings": {},
+          "source": "prebuilt",
+          "label": null,
+          "added_at": null
         }
       },
-      "is_ip_asset": true
+      "is_ip_asset": true,
+      "preferred_provider": null
     }
   ],
   "changelog": [
@@ -147,6 +175,7 @@
     "2026-09-20 updated linh",
     "2026-09-20 updated linh (gemini: Erinome@gemini-3.1-flash-tts-preview -> Kore@gemini-3.1-flash-tts-preview)",
     "2026-09-20 updated minh-khoi (gemini: Charon@gemini-3.1-flash-tts-preview -> Puck@gemini-3.1-flash-tts-preview)",
-    "2026-09-20 redefined linh and minh-khoi as distinct IPs (sharp/dry vs playful/warm) to contrast ngan and duong"
+    "2026-09-20 redefined linh and minh-khoi as distinct IPs (sharp/dry vs playful/warm) to contrast ngan and duong",
+    "2026-10-03 Emvoox Engine migration: moved to data/assets/voice_registry.json; voice source recorded per engine (prebuilt / premade / library)"
   ]
 }

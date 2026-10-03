@@ -183,6 +183,143 @@ flowchart TB
   class PUB,RA output
 ```
 
+### Video pipeline map (continuation, after a series is proven)
+
+```mermaid
+flowchart TB
+  subgraph L0["0 · Entry · proven series from the audio pipeline"]
+    direction LR
+    IN["Proven audio series<br/>approved masters · retention data"] --> ST["Emvox Studio"] --> RT["Agent runtime on V1RON OS<br/>skills from the V1RON Skill Store"]
+  end
+
+  subgraph L1["1 · Look"]
+    direction LR
+    subgraph V1["V1RON services · owned assets"]
+      V1a["Actor IP registry<br/>faces, wardrobe, voices"]
+      V1b["Image engines<br/>via V1RON API provider"]
+      V1c["LLM provider"]
+    end
+    A1["Visual Development Agent"]
+    subgraph S1["Skills"]
+      S1a["Character Design"]
+      S1b["Style Guide"]
+      S1c["Location Design"]
+    end
+    F1["Functions<br/>character look per Virtual Actor IP<br/>world and style · reference frames"]
+    V1 --> A1
+    A1 --> S1
+    A1 --> F1
+  end
+
+  subgraph L2["2 · Plan"]
+    direction LR
+    subgraph X2["From the audio pipeline"]
+      X2a["Series Bible"]
+      X2b["Directed Conversation Units"]
+      X2c["Audio timelines"]
+    end
+    subgraph V2["V1RON services"]
+      V2a["LLM provider"]
+    end
+    A2["Storyboard Agent"]
+    subgraph S2["Skills"]
+      S2a["Shot List"]
+      S2b["Camera Plan"]
+      S2c["Timing Sync"]
+    end
+    F2["Functions<br/>scenes to shots · framing and camera<br/>shot length matched to the audio"]
+    X2 --> A2
+    V2 --> A2
+    A2 --> S2
+    A2 --> F2
+  end
+
+  subgraph L3["3 · Generate"]
+    direction LR
+    subgraph X3["From the audio pipeline"]
+      X3a["Mastered audio stems"]
+    end
+    subgraph V3["V1RON services"]
+      V3a["Video engines<br/>via V1RON API provider"]
+      V3b["Media store"]
+    end
+    A3["Video Director Agent"]
+    subgraph S3["Skills"]
+      S3a["Shot Prompt"]
+      S3b["Identity Lock"]
+      S3c["Lip Sync"]
+    end
+    F3["Functions<br/>one prompt per shot · same face every shot<br/>mouth and gesture driven by the audio"]
+    X3 --> A3
+    V3 --> A3
+    A3 --> S3
+    A3 --> F3
+  end
+
+  subgraph L4["4 · Edit"]
+    direction LR
+    subgraph V4["V1RON services"]
+      V4a["Media store"]
+      V4b["LLM provider"]
+    end
+    A4["Editor Agent"]
+    subgraph S4["Skills"]
+      S4a["Cut Assemble"]
+      S4b["Subtitle VI"]
+      S4c["Format Export"]
+    end
+    F4["Functions<br/>shots cut to the audio timeline · transitions<br/>Vietnamese subtitles · vertical and horizontal formats"]
+    V4 --> A4
+    A4 --> S4
+    A4 --> F4
+  end
+
+  subgraph L5["5 · Check"]
+    direction LR
+    subgraph V5["V1RON services"]
+      V5a["Vision judge<br/>via V1RON API provider"]
+    end
+    A5["QA Critic Agent"]
+    subgraph S5["Skills"]
+      S5a["QA Video"]
+      S5b["Review Video"]
+    end
+    F5["Functions<br/>continuity · identity match · lip-sync check<br/>subtitle timing · re-render within budget"]
+    V5 --> A5
+    A5 --> S5
+    A5 --> F5
+  end
+
+  subgraph L6["6 · Release"]
+    direction LR
+    HG["Human approval gate"] --> PUB["Publish on video platforms<br/>TikTok · YouTube · Douyin · Emvox app"] --> RA["Retention analytics"] --> FR["Franchise the cast<br/>next series, licensing, merchandise"]
+  end
+
+  L0 --> L1
+  L1 -->|Visual Bible| L2
+  L2 -->|Shot List| L3
+  L3 -->|Generated Shots| L4
+  L4 -->|Episode Cuts| L5
+  L5 -->|QA Report + Approved Episodes| L6
+
+  classDef entry fill:#1a1a22,stroke:#9ca3af,color:#e8e8f2
+  classDef agent fill:#2a2210,stroke:#f2b544,color:#e8e8f2
+  classDef fn fill:#181826,stroke:#5d5f78,color:#e8e8f2
+  classDef skill fill:#1e1638,stroke:#8b5cf6,color:#e8e8f2
+  classDef v1ron fill:#1e1638,stroke:#8b5cf6,color:#e8e8f2
+  classDef ext fill:#2a1a0a,stroke:#f97316,color:#e8e8f2
+  classDef gate fill:#0f2a1e,stroke:#34d399,color:#e8e8f2
+  classDef output fill:#0e2a2e,stroke:#2dd4bf,color:#e8e8f2
+  class IN,ST,RT entry
+  class A1,A2,A3,A4,A5 agent
+  class F1,F2,F3,F4,F5 fn
+  class S1a,S1b,S1c,S2a,S2b,S2c,S3a,S3b,S3c,S4a,S4b,S4c,S5a,S5b skill
+  class V1a,V1b,V1c,V2a,V3a,V3b,V4a,V4b,V5a v1ron
+  class X2a,X2b,X2c,X3a ext
+  class HG,FR gate
+  class PUB,RA output
+```
+
 | # | Agent | Functions | Skills (on V1RON MCP) | Provider calls (via V1RON OS) | Output |
 |---|---|---|---|---|---|
 | 1 | Market Research Agent: finds what audiences want next. Sources: DramaBox, Douyin, ReelShort, YouTube, TikTok | trend scan; content analysis of hits (genre, hook, pacing); topic scoring against our audience; reference brief | Market Scan, Content Analyze, Trend Rank (custom skills) | browser automation fleet (Playwright) for deep research; LLM analysis through the V1RON API provider | Trend Brief: genres, hooks, references, audience fit |

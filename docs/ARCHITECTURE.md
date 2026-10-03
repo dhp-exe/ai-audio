@@ -1,363 +1,377 @@
-# Architecture walkthrough
+# Emvoox Engine: architecture (Prototype V1)
 
-How one pasted story becomes a set of mastered Vietnamese audio episodes, step by step. Diagrams are
-Mermaid and render in GitHub, VS Code and most Markdown viewers.
+| | |
+|---|---|
+| Status | Implemented. Offline end-to-end demo and 104 tests passing; live vendor runs pending the WaveSpeed key |
+| Date | 2026-10-03 |
+| Replaces | the stage-script pipeline (`pipeline/`, `.claude/skills/*/scripts/`), `docs/ARCHITECTURE.md` v0, `docs/IMPLEMENTATION_PLAN.md`, `docs/System_Flow_Map.*`, `docs/Technical_Specification.md` (still in git history) |
+| Sources | `emvox.docs/emvox technical map.png`, `emvox.docs/TỔNG HỢP DỰ ÁN EMVOOX VÀ KÊNH MẶC KHẢI.pdf`, `docs/Emvox_Technical_Map.md` |
 
-Audience: engineers and the director/producer who will operate the pipeline. Assumes you have read
-the decision table in `CLAUDE.md`. The top-level `README.md` is the shorter operator guide (running,
-API reference, storage layout); this document goes into each stage.
+Emvoox is an AI entertainment studio: fixed Virtual Actors (own voice, own look) perform Vietnamese micro-dramas, and
+audio is the cheap funnel that decides which series earn a video budget. **Emvoox Engine** is the production system
+for that funnel: seven agents with typed contracts, an event-driven state machine that runs them, a QA loop that fixes
+what it can before a human signs off, and a data layer that can move to V1RON OS without touching agent code.
 
 ---
 
-## 1. The system in one picture
+## 1. System at a glance
+
+```mermaid
+flowchart TB
+  subgraph Studio["Emvoox Studio (web/ Next.js 16 + Ant Design 6)"]
+    UI["Dashboard · Productions · New production · Pipeline · Approvals · Voice IPs · Market research · Costs · Settings"]
+  end
+  UI -->|"JSON /api (web/lib/api.ts)"| API["FastAPI (emvoox/api/app.py)"]
+  API --> ENG["Engine: async state machine + event bus (emvoox/engine)"]
+
+  subgraph Fleet["Agent fleet (emvoox/agents)"]
+    direction TB
+    MR["Market Research"] -->|TrendBrief| SW["Script Writer"]
+    SW -->|"StoryInput + SeriesBible"| CA["Casting & Voice IP Curator"]
+    CA -->|"ResolvedCast + EnginePolicy"| DI["AI Director"]
+    DI -->|DirectedConversationUnits| SE["Sound Engineer"]
+    SE -->|MasteredEpisode| QA["QA Critic"]
+    QA -->|"QAReport (PASS)"| PU["Approval Gate & Publisher"]
+    QA -.->|"FLAGGED: retry_instructions (≤3)"| SE
+  end
+  ENG --> Fleet
+
+  subgraph Providers["Providers (emvoox/providers)"]
+    LLM["LLM: Gemini · WaveSpeed LLM · OpenAI-compatible · Claude · mock"]
+    TTS["TTS: Gemini TTS · ElevenLabs · WaveSpeed (ElevenLabs v3, MiniMax) · mock"]
+    BR["Browser automation (Playwright, optional)"]
+  end
+  Fleet --> Providers
+
+  subgraph Data["Repositories (emvoox/repositories)"]
+    DS[("DocumentStore: JSON files | SQLite → v1ron_db")]
+    BS[("BlobStore: ./data → V1RON Media / MinIO")]
+  end
+  Fleet --> Data
+  ENG --> Data
+  PU -->|approved| OUT[("data/outputs/approved_masters/")]
+```
+
+One series flows through three series steps and six episode steps:
+
+| Step | Agent | Skills | Output contract | Stored at (`data/series/<id>/…`) |
+|---|---|---|---|---|
+| `research` (optional) | Market Research | Market Scan, Content Analyze, Trend Ranking | `TrendBrief` | `trend_brief.json` (+ `research/briefs/<id>.json`) |
+| `script` | Script Writer | Story Adapt, Episodize (outline) | `ScriptPackage` = `StoryInput` + `SeriesBible` | `story.json`, `story_raw.txt`, `series.json` |
+| `casting` | Casting & Voice IP Curator | Voice Registry, Casting Match, Engine Policy | `ResolvedCast` (+ `EnginePolicy`) | `cast.json`, `assets/voice_registry.json` |
+| `epNN.draft` | Script Writer | Episodize (draft), Cliffhanger Check | `EpisodeDraftResult` (+ `CliffhangerCheck`) | `scripts/raw/epNN.txt`, `scripts/checks/epNN.json` |
+| `epNN.direct` | AI Director | Parse Script, Delivery Compile, Render Plan | `DirectedConversationUnits` | `scripts/parsed/epNN.json`, `directed/epNN.json` |
+| `epNN.voice` | Sound Engineer | Generate Voice | `VoiceRenderResult` | `stems/epNN/*.wav` + `.meta.json`, `render.json` |
+| `epNN.master` | Sound Engineer | Generate SFX, Assemble Audio | `MasteredEpisode` | `timelines/`, `masters/epNN_master.{wav,mp3,json}` |
+| `epNN.qa` | QA Critic | QA Audio, Review Audio | `QAReport` | `qa/epNN_report.json` |
+| `epNN.gate` | Approval Gate & Publisher | Approval Gate, Publish Metadata, Local Export | `ReleasePackage` | `release/epNN.json`, `outputs/approved_masters/<id>/` |
+
+---
+
+## 2. Agents
+
+Every agent is a class in `emvoox/agents/` with a small set of skills (methods), one output contract, and nothing
+else: no file paths, no vendor SDKs, no knowledge of the other agents. It receives an `AgentContext` (settings,
+repositories, LLM client, telemetry ledger, run parameters, a log sink, a cancel flag) and returns a Pydantic model.
+
+### 2.1 Market Research Agent (`market_research.py`)
+- **Market Scan**: observations from text pasted into the run, every `.md/.txt/.json` under `data/inputs/trends/`, and
+  (when `use_browser` / `EMVOOX_RESEARCH_USE_BROWSER`) the visible text of public listing pages on DramaBox, ReelShort
+  and TikTok through headless Chromium (Playwright, optional extra). No per-site selectors: the page text goes to the
+  model, so a redesign of a site does not break the scan. Login walls and bot checks are skipped and logged.
+- **Content Analyze**: one LLM call → `MarketAnalysis` (insights per reference title; 3-5 story directions, each rated
+  1-10 on audience fit, momentum and production fit, and tagged with one of the three Mặc Khải content lines:
+  `urban_ceo` Đô thị - Tổng tài, `intellectual_slap_anti_trope` Vả mặt - Ngược tra, `rebirth_butterfly_effect` Tái sinh).
+- **Trend Ranking**: deterministic score `0.45·audience_fit + 0.30·momentum + 0.25·production_fit`; candidates on the
+  editor's `focus` line rank first. The best becomes the `TrendBrief` (topic, target audience, format spec, theme, hook,
+  premise, anti-trope angle, references, all ranked candidates, sources).
+
+### 2.2 Script Writer Agent (`script_writer.py`)
+- **Story Adapt**: `TrendBrief` → `StoryInput` (title, 2-5 roles each with their own goal and motive, an act-by-act
+  treatment). Skipped when a human supplies the story.
+- **Episodize**: the outline call splits the story into N episodes (`SeriesBible`: premise, tone, role list with role
+  types, episode plans that each end on a cliffhanger). Mode is picked from input length: *segment* keeps the author's
+  dialogue verbatim (verbatim ratio checked, one retry), *write* expands a treatment (word floor enforced). Roles leave
+  this agent **uncast**: casting belongs to the next agent. Then one draft call per episode renders the screenplay.
+- **Cliffhanger Check**: an LLM editor scores the hook 1-10 and checks the Emvoox **Anti-Trope rules**
+  (`contracts/script.py::ANTI_TROPE_RULES_VI`): independent motivations, a twist within ~30 s (≈100 words), a smart
+  antagonist, prepared reveals, consequences, a resolved ending. Below `EMVOOX_CLIFFHANGER_MIN_SCORE` (6) a write-mode
+  episode is rewritten once with the critique; segment mode keeps the author's text and flags it. A rule-based check
+  stands in when the LLM check is off or fails.
+
+### 2.3 Casting & Voice IP Curator Agent (`casting.py`)
+- **Voice Registry**: reads the locked registry; gives roles with no fitting IP a one-off entry with a placeholder voice;
+  adds a voice on an engine an actor does not have yet (an addition, so the lock is not involved).
+- **Casting Match**: director pins (`/ngan` in the story form, or the dropdown) → an LLM proposal over the free actors
+  (gender, age, persona, timbre) → a rule-based gender match → a placeholder. One actor plays one role per series.
+- **Engine Policy**: per actor, the first available of `by_actor` → the actor's **cloned / preferred voice** (when
+  `prefer_cloned`) → `by_role_type` (e.g. protagonist on ElevenLabs, minor roles on Gemini) → the run's default engine.
+  An engine whose key is missing is skipped with a run note. WaveSpeed reuses an actor's ElevenLabs voice id through its
+  hosted ElevenLabs v3 endpoint. `tier: final` refuses placeholder voices. Output: `ResolvedCast` with, per role, the
+  actor, provider, model, voice id, voice source (`prebuilt | premade | library | cloned | placeholder`) and the voice's
+  identity settings.
+
+### 2.4 AI Director Agent (`director.py`)
+- **Parse Script**: one structured LLM call → `EpisodeScript` (scenes, lines, actor id + role name, emotion enum,
+  intensity 1-10, ≤2 approved audio tags, acoustic direction, pace, volume, pause after). Post-conditions the schema
+  cannot express are enforced in code (every speaker is in the resolved cast, protagonist alias resolved). Two rejected
+  answers fall back to a rule-based reading of the screenplay with neutral delivery and a run note, so production is
+  never blocked by a malformed answer.
+- **Delivery Compile** (`delivery/compile.py`): per line and engine, the normalized Vietnamese text (`text/vi_normalize.py`),
+  tags kept where the engine reads them (ElevenLabs v3, WaveSpeed's ElevenLabs endpoint) or folded into a Vietnamese
+  acting direction (Gemini), and the settings vector (v3 discrete stability, v2 continuous stability/style, MiniMax
+  emotion/speed/volume). The voice's own `default_settings` (a cloned voice's identity anchor) are never overridden.
+- **Render Plan** (`delivery/plan.py`): consecutive lines of one scene on a multi-speaker engine (Gemini) with ≤2 actors
+  become one *conversation* request (1-3 requests per episode instead of 8-12); everything else is one request per line.
+  Mixed engines in one scene are supported. The plan is part of the contract.
+- **Output contract** `DirectedConversationUnits`: ordered units with `speaker_id`, `text`, `tts_text`, `emotion_tag`,
+  `emotional_intensity`, `audio_tags`, `direction`, `pause_after_ms`, `speed`, `pitch`, `volume`, the resolved
+  provider/model/voice and settings; plus the `render_plan` (validators: sequential order, ids belong to the episode,
+  every spoken unit covered exactly once).
+
+### 2.5 Sound Engineer Agent (`sound_engineer.py`)
+- **Generate Voice**: executes the render plan through the TTS adapters; canonical stems (WAV 44.1 kHz / 16-bit / mono)
+  with a sidecar per stem (content hash, request, cost, alignment, attempt). A stem is regenerated only when the hash of
+  (provider, model, voice, final text, settings, speakers, retry attempt) changes. Bounded thread pool (Gemini serial for
+  free-tier RPM). ElevenLabs "paid plan required" on a library/cloned voice → the actor's premade fallback, flagged.
+- **Generate SFX**: cues from `assets/sfx/<tag>.wav`, or generated with ElevenLabs sound effects when `ENABLE_SFX` and the
+  key are set (then cached in the library). Off by default (D6).
+- **Assemble Audio** (`audio/`): timeline from measured stem durations (Director pauses clamped to 300-500 ms, `pause`
+  units kept whole, 800 ms scene gaps, 500 ms tail), optional music bed from `assets/bgm/<mood>/` looped under the
+  speech and ducked by sidechain compression (`ENABLE_BGM`, off by default per D5), SFX at their offsets, two-pass
+  loudnorm to **-16 LUFS / -1.5 dBTP**, stereo WAV + MP3 192 kbps. Output `MasteredEpisode` with measured loudness.
+
+### 2.6 QA Critic Agent (`qa_critic.py`)
+
+| Check | Method | Issue code | Severity | Retry action |
+|---|---|---|---|---|
+| Stem present for every render unit | storage | `missing_stem` | blocker | `rerender` |
+| Missing sentence | stem duration < 45 % of what its words need at 3.6 w/s | `missing_sentence` | major | `rerender`; a conversation chunk → `rerender_line_mode` |
+| Extra speech / spoken direction | duration > 240 %, or transcript has header words | `duration_off`, `direction_leak` | major | same |
+| Clipping | `astats` peak ≥ -0.1 dBFS | `clipping` | major | `rerender` (more stable settings) |
+| Silence inside a stem | `silencedetect` -50 dB ≥ 1.5 s, or a silent stem | `long_silence` | major | `rerender` |
+| Speaker mismatch | sidecar voice ≠ resolved cast voice | `speaker_mismatch` | major | `rerender` |
+| Placeholder voice | ElevenLabs plan fallback used | `placeholder_voice` | minor | none (human decides) |
+| Master loudness / true peak | `ebur128` vs target ±1 LU, TP ≤ target + 0.1 | `loudness_off`, `true_peak_over` | major | `reassemble` |
+| Master duration | 50-160 % of the target | `master_duration_off` | minor | none (script length) |
+| Mispronunciation (optional) | `EMVOOX_QA_TRANSCRIBE`: LLM transcript of each stem, word error rate > 25 % | `mispronunciation` | major | `rerender` |
+
+Score = 100 - 25·blocker - 12·major - 3·minor. **FLAGGED** when any blocker/major remains or the score is below
+`EMVOOX_QA_PASS_SCORE` (80). Every issue carries the render unit, the line and its **timestamp in the master**
+(`at_ms`). Lines a human should hear anyway (intensity ≥ 9, intense monologues) are listed in `review_lines`.
+
+### 2.7 Human Approval Gate & Publisher (`publisher.py`)
+- **Approval Gate**: nothing is exported without a human. PASS → `awaiting_approval`; still FLAGGED after the retries →
+  `needs_review` with the reason. `auto_approve` exports PASS episodes only. Approving a FLAGGED episode is allowed and
+  recorded as an override. A reviewer name is required.
+- **Publish Metadata**: YouTube title, description (with the AI-voice disclosure), tags, hashtags, playlist, thumbnail
+  text; LLM with a rule-based fallback; editable at the gate.
+- **Local Export**: approved WAV + MP3 + `<ep>.youtube.json` to `data/outputs/approved_masters/<series>/`, and a
+  publishing mock-up receipt (`ready_for_upload`). The upload itself is not wired in Prototype V1.
+
+---
+
+## 3. Engine (`emvoox/engine/`)
+
+```mermaid
+stateDiagram-v2
+  [*] --> research: source = research
+  [*] --> script: source = story | brief | existing
+  research --> script: TrendBrief
+  script --> casting: ScriptPackage
+  casting --> draft: ResolvedCast
+  state "per episode (sequential by default)" as EP {
+    draft --> direct
+    direct --> voice: DirectedConversationUnits (validated)
+    voice --> master
+    master --> qa
+    qa --> gate: PASS
+    qa --> replan: FLAGGED and attempt < max_retries
+    replan --> voice: re-render flagged units only
+    qa --> gate: FLAGGED, retries spent (needs_review)
+  }
+  gate --> [*]: awaiting_approval / approved
+  gate --> halted: FLAGGED and halt_on_qa_fail
+```
+
+- **Async state machine.** `Engine.run()` is a coroutine; each step is one agent call in a worker thread
+  (`asyncio.to_thread`), so cancellation is honoured between steps and the API stays responsive. Episodes run in
+  order (D12, vendor rate limits); `episode_concurrency > 1` runs several under a semaphore.
+- **Handoff validation.** Each step declares its output contract; the engine re-validates the payload
+  (`Model.model_validate(result.model_dump())`) and runs cross-checks before the next agent sees it (e.g. the Director's
+  units must use exactly the cast's voices). A rejected handoff publishes `contract.rejected`, is retried once when the
+  agent says it is retryable, and otherwise fails the step and skips the rest of that episode.
+- **Event-driven.** Every transition is a `PipelineEvent` on the `EventBus` (`run.started`, `step.started`,
+  `step.finished`, `step.failed`, `step.retry`, `contract.rejected`, `cast.resolved`, `qa.flagged`, `gate.waiting`,
+  `gate.approved`, `episode.stopped`, `run.finished`). Subscribers persist `RunState` and append the event log the UI
+  tails (`GET /api/runs/{id}/events?after=N`); V1RON OS can subscribe the same way later.
+- **QA retry loop.** On FLAGGED with retry instructions and attempts left (default 3): the Director re-plans from the
+  saved script without an LLM call (flagged chunks split into lines, attempt numbers bumped so settings move toward the
+  engine's most stable delivery and the cache key changes), the Sound Engineer re-renders only the affected units,
+  re-masters, and the QA Critic checks again. Telemetry counts `qa_retries`.
+- **Human gate and halting.** The gate parks every episode. With `halt_on_qa_fail` (default) an episode still FLAGGED
+  after the retries halts the run (`status: halted`) so no further credits are spent before a human looks.
+- **Resume and idempotency.** `only=[…]` produces just those episodes; the outline, drafts and directed scripts that
+  exist are kept, stems are reused by content hash. A server restart marks in-flight runs `cancelled` (artifacts stay).
+- **Run state** (`RunState`): steps with status / attempts / timing / cost / summary, notes for humans, the casting
+  table, totals (cost, LLM calls, tokens, TTS requests, characters, audio, QA retries) and the engines used.
+
+---
+
+## 4. Data layer (`emvoox/repositories/`)
 
 ```mermaid
 flowchart LR
-    subgraph Input
-        ST[story.json<br/>overview · roles (+ /actor tags) · script]
-        REG[(library/voice-ips.json<br/>locked Voice IP registry of actors)]
-    end
-
-    subgraph "Stage 0 · episodize (Gemini)"
-        OUT[Outline call: casting + episode plan<br/>→ series.json]
-        DR[Draft call ×N<br/>segment: copy lines verbatim · write: expand<br/>→ scripts/raw/epNN.txt]
-    end
-
-    subgraph "Stage 1 · parse-script (Gemini)"
-        DIR[AI Director<br/>→ scripts/parsed/epNN.json]
-    end
-
-    subgraph "Stage 3 · generate-voice (ElevenLabs | Gemini TTS)"
-        NORM[vi_normalize]
-        MAP[intensity → settings]
-        TTS[TTS per line<br/>→ stems/epNN/*.wav + .meta.json]
-    end
-
-    subgraph "Stage 5 · assemble-audio (FFmpeg)"
-        TL[timeline from measured durations<br/>→ timelines/epNN_timeline.json]
-        MIX[concat + two-pass loudnorm<br/>→ masters/epNN_master.wav/mp3]
-    end
-
-    subgraph "Stage 6 · qa-audio"
-        QA[auto checks + human verdict<br/>→ qa/epNN_report.json]
-    end
-
-    ST --> OUT --> DR --> DIR --> NORM --> MAP --> TTS --> TL --> MIX --> QA
-    REG --> OUT
-    REG --> MAP
-    ORCH[[pipeline/orchestrator.py<br/>runs the CLIs as jobs]] -.drives.-> OUT & DR & DIR & TTS & TL & QA
-    WEB[[web/ Next.js client<br/>via pipeline/webui API]] -.starts / watches.-> ORCH
+  A["Agents · Engine · API"] --> R["Typed repositories<br/>VoiceRegistry · Series · Runs · Telemetry · Research · Assets · Outputs"]
+  R --> D{{"DocumentStore protocol"}}
+  R --> B{{"BlobStore protocol"}}
+  D --> J["JsonDocumentStore (default)"]
+  D --> S["SqliteDocumentStore"]
+  D -.-> P["PostgresDocumentStore → v1ron_db (stub)"]
+  B --> L["LocalBlobStore (./data)"]
+  B -.-> M["MinioBlobStore → V1RON Media (stub)"]
 ```
 
-Every arrow is a file on disk with a deterministic name (see `pipeline/naming.py`). That is the
-central design choice: any stage can be re-run alone, the pipeline is idempotent, and a human can
-inspect or hand-edit any intermediate artifact.
+- Every artifact has one **key**: a POSIX path relative to the storage root, built only by `emvoox/paths.py`
+  (`series/<id>/directed/ep01.json`, `assets/voice_registry.json`, …). Locally the key is a file under `./data`; on V1RON
+  it is the document id in `v1ron_db` and the object name in MinIO.
+- `DocumentStore`: `get/put/delete/exists/list/append/read_log/mtime/delete_prefix`. Two local implementations honour the
+  same contract test (`tests/test_repositories.py`): one JSON file per document (default, human-readable, diffable) and
+  SQLite (`EMVOOX_DOC_STORE=sqlite`, the shape a PostgreSQL JSONB table takes).
+- `BlobStore`: `path/commit/local/exists/list/...`. FFmpeg and the SDKs need real files, so a remote store hands out a
+  local cache path; `commit()` uploads after writing, `local()` downloads on a miss. Locally both are no-ops.
+- **Moving to V1RON OS** = implement `PostgresDocumentStore` and `MinioBlobStore` in `repositories/v1ron.py` and set
+  `EMVOOX_STORAGE=v1ron`. Agents, engine and API do not change.
 
-## 2. Repository map
+Local layout (`./data`, `EMVOOX_DATA_DIR`):
 
 ```
-pipeline/                 shared Python package
-  schema.py               Pydantic contracts for every file that crosses a stage boundary
-  naming.py               the only place paths and stem names are built
-  config.py               .env-backed settings (models, padding, loudness, flags)
-  llm/gemini_client.py    generate_structured(system, user, schema) → (instance, usage)
-  providers/              TTS engines: catalog.py (models, Gemini voices), base.py, elevenlabs.py, gemini_tts.py, mapping.py
-  previews.py             cached ~5 s voice previews per actor/engine (library/previews/)
-  stories.py              story library index (progress per series, remaining episodes)
-  text/vi_normalize.py    Vietnamese text normalizer for TTS
-  orchestrator.py         job graph runner (CLI: python -m pipeline.orchestrator)
-  webui/                  FastAPI JSON API; serves the built client from web/out (python -m pipeline.webui)
-  usage.py                usage + limit monitor (ledger, vendor events, ElevenLabs subscription)
-  registry.py             the only writer of library/voice-ips.json (lock rule)
-  casting.py              /actor tags, gender guess, placeholder voices per engine
-web/                      Next.js client: Library, New/Edit story, Run, Characters, Usage
-.claude/skills/<name>/    one skill per stage: SKILL.md (how to use) + scripts/<name>.py (CLI)
-library/voice-ips.json    global, locked Voice IP registry (ElevenLabs voice_id and Gemini voice name per actor)
-series/<id>/              everything about one series (inputs, intermediates, outputs, logs, run state)
-tests/                    pytest, no network; fixtures under tests/fixtures/
+data/
+  assets/voice_registry.json      locked Voice IP registry (global)
+  assets/previews/, auditions/    cached voice previews, ad-hoc auditions
+  assets/bgm/<mood>/, assets/sfx/ music beds and effect clips (optional)
+  inputs/trends/*.md|txt|json     trend notes for the Market Research Agent; inputs/market_sources.json (browser targets)
+  research/briefs/<id>.json       TrendBriefs
+  series/<id>/                    story, bible, cast, scripts, directed units, stems, timelines, masters, qa, release,
+                                  run.log.jsonl (ledger), pipeline_run.json (run state), logs/ (step logs, events.jsonl)
+  outputs/approved_masters/<id>/  epNN.mp3, epNN.wav, epNN.youtube.json (approved only)
+  telemetry/run_log.jsonl         ledger rows not tied to a series (previews, research, auditions)
+  telemetry/usage_events.jsonl    vendor 429 / 402 / quota events
 ```
 
-Skills are thin CLIs: they parse arguments, resolve paths through `naming`, and call into
-`pipeline/`. They never call a vendor SDK directly. This is what lets the orchestrator and the web
-UI run exactly the same code a developer runs by hand.
+---
 
-## 3. Stage by stage
+## 5. Providers (`emvoox/providers/`)
 
-### Stage 0 · episodize (sectioned story → casting + series bible + raw scripts)
+| Kind | Provider | Adapter | Notes |
+|---|---|---|---|
+| LLM | Gemini (`gemini-3.1-flash-lite` default) | `llm/gemini.py` | Pydantic `response_schema`, retries on 429/5xx, IPv4 pin, audio transcription for Review Audio |
+| LLM | **WaveSpeed LLM** (`https://llm.wavespeed.ai/v1`) | `llm/openai_compat.py` | OpenAI Chat Completions protocol, `vendor/model` ids (Gemini, Claude, GPT, DeepSeek…), JSON mode + schema in the prompt + one repair round |
+| LLM | OpenAI or any compatible gateway | `llm/openai_compat.py` | same adapter, `OPENAI_API_KEY` |
+| LLM | Claude | `llm/anthropic_llm.py` | official SDK, `messages.parse(output_format=…)`, optional extra `.[claude]` |
+| LLM | mock | `llm/mock.py` | deterministic, schema-valid Vietnamese template story; offline demo and tests |
+| TTS | Gemini TTS | `tts/gemini.py` | 30 prebuilt voices, multi-speaker conversation requests, direction prefix, free-tier quota fail-fast |
+| TTS | ElevenLabs | `tts/elevenlabs.py` | `eleven_v3` + v2/flash, any account voice (cloned included), alignment, tier-gated format fallback |
+| TTS | **WaveSpeed** | `tts/wavespeed.py` | `POST /api/v3/<model path>` → poll `/predictions/{id}/result` → download; `elevenlabs/eleven-v3` (any ElevenLabs voice id), `minimax/speech-2.6-hd` (system or cloned ids, emotion/speed/pitch/volume). Submissions are never blindly retried (a lost response may still be billed) |
+| TTS | mock | `tts/mock.py` | tones at the canonical stem format; fault injection (`clip`, `truncate`, `silence`, `error`) for the QA loop |
 
-Skill: `.claude/skills/episodize`. The director fills three sections in the web form, saved as
-`series/<id>/story.json` (`StoryInput`):
+Every call goes through `LlmClient.structured(...)` or a `TtsProvider.synthesize(...)`, which is where validation,
+retries and telemetry live. A new engine (for example a self-hosted model serving the team's cloned voices) is one class
+with `synthesize(req, out)` plus `register_provider("name", factory)` and a catalog entry; the Director needs no change
+because delivery is compiled per engine.
 
-| section | fields | used for |
+---
+
+## 6. Voice IPs and cloned voices
+
+- The registry (`data/assets/voice_registry.json`, model `VoiceRegistry`) holds actors (`CharacterProfile`: persona,
+  voice description, gender, age, tags) and one `ProviderVoice` per engine (`voice_id`, `model_id`, `source`, `label`,
+  `fallback_voice_id`, `default_settings`, `added_at`) plus `preferred_provider`.
+- **Lock rule** (only in `VoiceRegistryRepository`): changing or removing an IP asset's existing voice needs `unlock`
+  and is written to the changelog; adding a voice on a new engine does not.
+- **Plugging in a cloned voice** (web: Voice IPs → "Plug in cloned voice"; CLI: `python -m emvoox plug-voice`; API:
+  `POST /api/characters/{id}/voices`): stores it with `source: cloned` and, by default, makes that engine the actor's
+  preferred one. The next run's Engine Policy renders the actor on that voice whenever the engine's key is configured.
+  ElevenLabs PVC/IVC voice ids work directly and through WaveSpeed's ElevenLabs endpoint; MiniMax clones (WaveSpeed
+  `minimax/voice-clone`) work through `minimax/speech-2.6-hd`.
+
+---
+
+## 7. Cost and audit telemetry (`emvoox/telemetry/`)
+
+- `UsageRecord` per LLM call (tokens in/out), TTS request (characters, audio ms, tokens for Gemini), SFX, and agent step
+  (execution time), stamped with run, series, episode, agent and skill, plus an **estimated cost** from
+  `telemetry/pricing.py` (list prices from `docs/Cost_and_Pricing_Research.md`; override in `data/assets/pricing.json`).
+- Written to `series/<id>/run.log.jsonl` (or `telemetry/run_log.jsonl`); pre-refactor rows are normalized and priced.
+- `GET /api/costs`: totals (all time, month, today), by provider, model, agent, series (cost per audio minute), by day,
+  recent records, the pricing basis, and the WaveSpeed balance. `GET /api/usage`: per-model quota status (Gemini daily
+  free-tier quota with reset countdown, ElevenLabs subscription counters, vendor 429/402 events).
+
+---
+
+## 8. Web app and API
+
+`web/` is a Next.js 16 static export with Ant Design 6 (navy `#284979`, light and dark themes), served by the API at
+`/` (`python -m emvoox serve`, port 8765) or run with `npm run dev`. Pages: **Dashboard** (KPIs, productions in
+progress, attention queue, cost trend), **Productions** (library, episode players, episode drawer with script, directed
+units, QA report and release), **New production** (wizard: source = trend brief / own story / research now → story and
+roles → engines and QA policy → review), **Pipeline** (agent flow, episode × step matrix with retries, live logs,
+casting, event timeline), **Approvals** (the human gate: listen, timestamped QA issues, edit metadata, approve /
+reject, exported files), **Voice IPs** (actors, previews per engine, cloned-voice plug-in), **Market research**
+(scan, briefs, ranked candidates), **Costs** (spend and quotas), **Settings** (health checks, keys, agent fleet).
+
+The full route list is at the top of `emvoox/api/app.py`; `web/lib/api.ts` is the typed contract both sides follow.
+
+---
+
+## 9. Configuration
+
+All settings come from `emvoox/config.py::get_settings()` (`.env`, `EMVOOX_*`, legacy `AI_AUDIO_*` still read). The
+important ones: `EMVOOX_LLM_PROVIDER/MODEL`, `EMVOOX_TTS_PROVIDER/MODEL/BATCHING`, `EMVOOX_PREFER_CLONED_VOICES`,
+`EMVOOX_STORAGE`, `EMVOOX_DATA_DIR`, `EMVOOX_DOC_STORE`, `ENABLE_BGM`, `ENABLE_SFX`, loudness and padding,
+`EMVOOX_QA_MAX_RETRIES`, `EMVOOX_QA_PASS_SCORE`, `EMVOOX_QA_TRANSCRIBE`, `EMVOOX_CLIFFHANGER_*`, `EMVOOX_AUTO_APPROVE`,
+`EMVOOX_HALT_ON_QA_FAIL`, `EMVOOX_RESEARCH_USE_BROWSER`. See `.env.example`; keys and accounts in `docs/SETUP.md`.
+
+---
+
+## 10. Testing and the demo
+
+- `python scripts/demo_pipeline.py` runs research → master → gate → approval offline with an injected fault, prints
+  every step, the QA retry and the telemetry. `--live --llm wavespeed --tts wavespeed --episodes 1` runs the same on real vendors.
+- `pytest` (104 tests, no network: sockets are blocked and `.env` is not loaded under test): contracts, normalizer,
+  delivery compile and render plan, provider adapters on fake transports (Gemini, ElevenLabs, WaveSpeed TTS + LLM),
+  repositories (JSON and SQLite against one contract), agents (casting policy with cloned voices, QA measurements on
+  synthetic audio, mastering with a ducked bed), the engine end to end (retry loop, halting, auto-approve, contract
+  rejection, rule-based fallback, research-to-master, resume), and the HTTP API.
+
+---
+
+## 11. Decisions
+
+Locked decisions D1-D12 (CLAUDE.md) still hold, with D2, D4, D7 and D10 extended as below. New decisions taken in this
+refactor, each with the reason; numbered so the Lead Architect can confirm or override them one by one:
+
+| # | Decision | Why |
 |---|---|---|
-| Overview | name, expected length, genre, setting | tone and episode count suggestion (length ÷ episode length) |
-| Characters | one row per story **role**: name, description, optional **actor** (dropdown or `/ngan` tag) | casting |
-| Script | the whole story, scene by scene | segmentation into episodes |
+| E1 | Orchestration is a native asyncio state machine with Pydantic contracts, not LangGraph or CrewAI | the flow is a fixed graph with one loop; a framework adds dependencies (and Python 3.14 risk) without adding control; every step stays a plain, testable function |
+| E2 | Storage behind `DocumentStore` + `BlobStore` with keys = relative paths; JSON files by default, SQLite optional | local-first now, one adapter pair to reach v1ron_db + MinIO later |
+| E3 | Audio processing stays FFmpeg via subprocess (`audio/`), no pydub | two-pass loudnorm hits -16.0 LUFS exactly; pydub was dropped earlier for that reason |
+| E4 | LLM abstraction is a thin adapter layer (Gemini SDK, OpenAI-compatible HTTP for WaveSpeed/OpenAI, Anthropic SDK), not LiteLLM/LangChain | structured output per vendor is the hard part and each adapter does it natively; WaveSpeed already aggregates models behind one protocol |
+| E5 | Casting moves out of the outline call into its own agent; roles leave the Script Writer uncast | matches the technical map; lets cloned-voice preference and engine policy decide per actor |
+| E6 | The QA loop re-plans and re-renders only flagged units, at most `max_retries` (3), with progressively more stable engine settings; then a human decides | bounded cost, deterministic, auditable (each attempt is in the stem sidecar and the cache key) |
+| E7 | Nothing is published without a human; FLAGGED episodes halt the run by default | capital efficiency: stop spending before someone listens |
+| E8 | The Director falls back to rule-based direction after two rejected LLM answers | a malformed answer should cost a note, not a stalled batch |
+| E9 | Gemini remains the default engine; ElevenLabs and WaveSpeed are per-run or per-actor choices; a cloned voice wins whenever its engine has a key | testing stays cheap; IP voices are used as soon as they exist |
+| E10 | The Market Research browser scan is optional and selector-free | public pages change and block bots; local trend notes are the supported path until V1RON's automation fleet |
 
-Vocabulary: a **role** is a character in the story ("Tô Mạn"); an **actor** is a Voice IP in the
-registry ("ngan"). The outline call casts roles onto actors (user tags are pinned; the model picks
-the rest by gender, age, personality and voice description; one actor per role; roles nothing fits
-get a slug id and a placeholder voice). Stems and `character_id` always carry the actor id, and
-each Director line also records `role_name`.
+## 12. Not built yet (roadmap)
 
-Two kinds of Gemini calls, both through `generate_structured` with a Pydantic `response_schema`.
-
-```mermaid
-sequenceDiagram
-    participant U as story_raw.txt
-    participant E as episodize.py
-    participant G as Gemini
-    participant B as series.json
-    participant R as scripts/raw/epNN.txt
-
-    U->>E: story text + Voice IP roster
-    E->>G: OUTLINE prompt (overview, roles with pinned actors, actor roster, script) + SeriesOutline schema
-    G-->>E: casting roles[] {role, type, actor_id|null, reason}, protagonist_role, N × {title, logline, key_beats, cliffhanger, source_span}
-    E->>B: write SeriesBible (roles, cast = actor ids, pending_characters for uncast roles, mode segment|write)
-    loop for each episode n
-        E->>G: DRAFT prompt (plan n, neighbours' cliffhangers, cast personas) + EpisodeDraft schema
-        G-->>E: scenes[] { heading, atmosphere, lines[] {speaker, internal, direction, text} }
-        alt segment mode and < 70% of lines verbatim
-            E->>G: same prompt + the paraphrased lines, "copy word for word" (1 retry, temperature 0.1)
-        else write mode and word count < min_sec × 3.3
-            E->>G: same prompt + "too short, rewrite with ≥ N words" (max 2 passes)
-        end
-        E->>R: render() → screenplay text
-    end
-```
-
-Why structured drafts: the model's free-text screenplay lost line breaks and mislabeled
-monologues. With `EpisodeDraft` the model only fills fields (speaker = role name); `render()` writes
-the exact format the Director parses:
-
-```
-TẬP 01 - Cuộc gọi lúc nửa đêm
-
-CẢNH 1. Văn phòng kiến trúc nhỏ của Linh. Hai giờ sáng.
-(Tiếng mưa rơi lộp độp trên mái tôn.)
-LINH (nội tâm): Ba năm rồi. …
-MINH-KHOI (giọng trầm, qua điện thoại): Linh. Là anh đây.
-```
-
-Mode: `segment` when the pasted script is long enough to fill the episodes (it is cut at the
-tensest points and lines are copied verbatim, verified by a normalized substring check), `write`
-when the input is a treatment (dialogue is written from the plan).
-
-Length control: measured speaking pace on ElevenLabs v3 is about 3.6 words/s, so the draft target
-is `min_sec × 3.3` words with two expansion passes if the model under-writes.
-
-### Stage 1 · parse-script, the AI Director (raw script → EpisodeScript JSON)
-
-Skill: `.claude/skills/parse-script`. One Gemini call per episode with the `EpisodeScript` schema.
-The Director adds what a voice engine needs and a writer does not write:
-
-| field | meaning | consumer |
-|---|---|---|
-| `type` | `dialogue` / `monologue` / `pause` | naming, settings |
-| `character_id` | actor id (from the casting table), or alias `protagonist` for inner voice (rewritten on save) | registry lookup |
-| `role_name` | the story role the line belongs to | humans, web UI |
-| `text` | the writer's line verbatim | subtitles, QA transcript diff |
-| `tts_text` | same line prepared for the engine: approved `[tags]`, ellipses | TTS |
-| `emotion`, `emotional_intensity` 1-10 | series-relative intensity; 9-10 reserved for peaks | settings mapping, QA review list |
-| `acoustic_direction`, `pace`, `volume` | delivery notes | settings mapping, humans |
-| `pause_after_ms` | requested beat after the line | assembly (clamped) |
-| `bgm`, `sfx`, `ambience_tag` | null / empty while BGM+SFX are disabled | future mixing renderer |
-
-Validation is two-layered. Gemini enforces the JSON shape; Pydantic validators then enforce the
-rules Gemini's schema subset cannot express: sequential `sc01, sc02…`, `line_id`s restarting per
-scene, tags from the approved list, characters in the series cast and the registry. Anything else
-fails with exit 2 and nothing is written downstream.
-
-### Stage 2 · voice-registry (Voice IP anchoring)
-
-Skill: `.claude/skills/voice-registry`, and the **Characters** page of the web client; both go
-through `pipeline/registry.py`. `library/voice-ips.json` holds one entry per actor: display name,
-personality, voice description, gender, age, casting tags, and one voice per engine:
-`elevenlabs: {voice_id, model_id, voice_url, fallback_voice_id}` and `gemini: {voice_id (prebuilt name), model_id}`.
-The Characters page shows a ▶ preview per engine (rendered once through `pipeline/previews.py`, then cached). It is `locked`: changing an IP asset's voice
-needs unlock (CLI `--unlock`, API `?unlock=true`) and is appended to a changelog. This file is the
-business asset the whole thesis rests on (same voice across 30 episodes and across series).
-
-`fallback_voice_id` is a premade voice used automatically when the plan rejects the real one
-(HTTP 402, e.g. library voices on the Free tier); such stems are marked and the run notes ask for
-an upgrade and re-render.
-
-### Stage 3 · generate-voice (EpisodeScript → one WAV per line)
-
-Skill: `.claude/skills/generate-voice`. Per line:
-
-```mermaid
-flowchart LR
-    L[Line] --> N[vi_normalize<br/>NFC · numbers · đồng · giờ · dates · ko→không · punctuation]
-    N --> T{model}
-    T -- eleven_v3 --> K[keep tags<br/>+ introspective for monologue]
-    T -- multilingual_v2 / Gemini --> S[strip tags]
-    L --> M[mapping.settings_for_line<br/>ElevenLabs: intensity → stability / similarity / style<br/>Gemini: Vietnamese acting direction]
-    K & S & M --> H[content hash]
-    H --> C{sidecar hash<br/>matches?}
-    C -- yes --> SKIP[skip]
-    C -- no --> P[provider.synthesize]
-    P --> W[WAV 44.1k mono<br/>+ .meta.json with settings, cost, alignment]
-```
-
-Provider adapters live in `pipeline/providers/`. Vendor rules learned live and encoded there:
-`eleven_v3` accepts only stability 0.0/0.5/1.0, rejects `language_code` and `previous_text`/`next_text`;
-`wav_44100` output is Pro-tier only, so the adapter falls back to `mp3_44100_128` and converts with
-FFmpeg; Free tier cannot use library voices via the API. The character alignment returned by
-`convert_with_timestamps` is stored for later subtitle and lip-sync work.
-
-Two engines, chosen per run: **ElevenLabs** (the Voice IPs) and **Gemini TTS** (30 prebuilt voices
-by name; the Director's emotion/intensity/pace/volume/tags become a Vietnamese direction prefixed to
-the text, which the model does not read aloud). A character keeps one voice for the whole run; there
-is no cross-engine fallback. Concurrency: thread pool of 2 for ElevenLabs, serial for Gemini (per-minute
-limits).
-
-**Scene batching (Gemini, default).** Without billing Gemini allows 3 requests per minute and 10 per
-day per model, so one request per line (8-12 per episode) does not fit. `pipeline/chunking.py` cuts
-each scene into *chunks*: maximal runs of consecutive spoken lines with at most two actors (a pause line
-or a third actor closes the chunk). Each chunk is one multi-speaker request: the request config maps
-ASCII speaker labels (`Ngan`, `MinhKhoi`) to the actors' Gemini voices, the text is a labelled
-transcript, and the direction header lists the per-line acting notes as a numbered guide the model is
-told not to read. Output is `stems/epNN/epNN_scNN_cNN_chunk.wav` plus `stems/epNN/render.json`, the
-manifest that tells assemble-audio and qa-audio which lines each unit covers. Inside a chunk the model
-places the pauses; the timeline still adds the clamped Director pause after each chunk, the scene gaps,
-explicit pause lines and the tail. Typical episodes need 1-3 requests. `--batching line` keeps per-line
-stems (needed for line-level re-renders and the alignment data); ElevenLabs always renders per line.
-
-Cost control: the hash covers provider, model, voice, final text and settings. Editing one line and
-re-running touches one stem. `--dry-run` prints payloads and the character count before spending.
-
-### Stage 5 · assemble-audio (stems → master)
-
-Skill: `.claude/skills/assemble-audio`. Two sub-steps so layout is cheap and diffable:
-
-1. **Timeline.** Measure each stem with ffprobe, place them sequentially:
-   `start(n+1) = end(n) + gap`, where `gap` = the Director's `pause_after_ms` clamped to
-   300-500 ms (or a fixed `--padding-ms`), plus 800 ms at scene boundaries; `pause` lines add their
-   own uncapped silence; 500 ms tail. Written to `timelines/epNN_timeline.json`.
-2. **Render.** One FFmpeg `filter_complex` pads each stem with the silence that follows it and
-   concatenates; then a two-pass `loudnorm` (measure, then apply with `measured_*` and
-   `linear=true`) to a stereo WAV at -16 LUFS / -1.5 dBTP; then MP3 192 kbps.
-
-```mermaid
-flowchart LR
-    S1[ep01_sc01_l001.wav] & S2[ep01_sc01_l002.wav] & S3[…] --> PAD[apad per stem<br/>gap = next.start − this.end]
-    PAD --> CAT[concat] --> M1[loudnorm pass 1<br/>measure I / TP / LRA / thresh]
-    M1 --> M2[loudnorm pass 2<br/>linear, stereo] --> WAV[ep01_master.wav] --> MP3[ep01_master.mp3]
-```
-
-BGM, ambience and SFX are disabled by configuration in this phase; the schema keeps the fields and
-`render_mixed` is the hook for the later mixing renderer.
-
-### Stage 6 · qa-audio (gate)
-
-Skill: `.claude/skills/qa-audio`. Automatic checks write `qa/epNN_report.json`: stems complete,
-master duration vs target (60-150%), integrated loudness within 1 LU and true peak under the limit
-(ffmpeg `ebur128`), plus stubs for clipping, long silences and STT transcript diff. `review_lines`
-lists what a human should listen to first (intensity ≥ 9, tense monologues). Exit code 2 means
-"checks failed" and the orchestrator shows it as a warning, not a failure. A human records
-`--verdict approved|rejected`; nothing is published without it.
-
-## 4. The orchestrator and the web client
-
-`pipeline/orchestrator.py` turns the stages into a CI-style job graph and runs each job as a
-subprocess of the skill CLI, streaming its output to `series/<id>/logs/<job>.log` and parsing the
-CLI's last JSON line as the job summary. State is written to `series/<id>/pipeline_run.json` after
-every transition.
-
-```mermaid
-flowchart LR
-    O[outline] --> C[cast<br/>one voice per role on the run's engine<br/>placeholders for new roles]
-    C --> D1[ep01.draft] --> P1[ep01.direct] --> V1[ep01.voice] --> A1[ep01.assemble] --> Q1[ep01.qa]
-    Q1 --> D2[ep02.draft] --> P2[ep02.direct] --> V2[ep02.voice] --> A2[ep02.assemble] --> Q2[ep02.qa]
-    Q2 --> D3[…]
-```
-
-Rules: episodes are produced one after another in order (one episode's five stages complete before the
-next starts); a failed job skips the rest of that episode but the following episodes continue; the run
-is `done` only if no job failed. A run can target a
-subset of episodes (`only=[...]`), which is how the Library continues an unfinished series: the outline
-and existing drafts are kept, stems are cached by hash, masters and QA are recomputed.
-
-The web client is a Next.js app in `web/` (TypeScript, Tailwind, one typed API client in
-`web/lib/api.ts`). `npm run export` writes a static build that the FastAPI backend serves at
-http://127.0.0.1:8765; `npm run dev` proxies `/api/*` to the backend; on Vercel the same rewrite
-points at a hosted backend (`API_BASE`). The API it talks to:
-
-```mermaid
-sequenceDiagram
-    participant B as Browser
-    participant A as FastAPI app
-    participant O as Orchestrator thread
-    participant F as series/<id>/pipeline_run.json
-
-    B->>A: POST /api/runs {title, length, genre, setting, roles[+actor], script, episodes, produce, min_sec, max_sec, tts_provider, tts_model}
-    A->>O: Orchestrator(params, story).start()
-    A-->>B: run_id
-    loop every 1.5 s
-        B->>A: GET /api/runs/{run_id}
-        A->>F: read state (or in-memory if active)
-        A-->>B: jobs with status / duration / summary
-    end
-    B->>A: GET /api/runs/{run_id}/jobs/{job}/log
-    B->>A: GET /api/series/{id}/master/{ep}.mp3 (audio player)
-```
-
-Pages (light/dark theme: system default, toggle in the header; side panels collapse to a rail,
-resize by dragging their edge, and remember both):
-**Library** lists every series with progress (mastered / planned), the engine used, the cast, the
-episode table with inline players and QA, "continue N more episodes" (engine switchable), "edit
-story & re-run" and delete. **Characters** lists the Voice IP registry as cards with a ▶ preview
-per engine (rendered once, cached), edit and delete, and an add/edit form with the Gemini voice
-picker (unlock checkbox for locked voices). **New story** has the sectioned story form (one IP per
-role: a picked actor disappears from the other dropdowns; the API rejects duplicates too), the engine
-and model switch; the run board lives at `/run?id=`. **Usage** reads `GET /api/usage`
-(`pipeline/usage.py`): per model, requests / tokens / characters in the current period, the limit
-(from a vendor 429 when one was seen, else a documented default), a status of ok / rate limited /
-exhausted with a live countdown to the reset (Gemini: midnight Pacific; ElevenLabs: the billing
-period from the subscription endpoint), and every 429/402 the adapters recorded to
-`library/usage-events.jsonl`. Voice previews are rendered once per engine/voice/model and cached
-under `library/previews/`; nothing in the UI re-renders a cached clip. Board contents: the casting table (role → actor, who assigned it, why),
-one row per episode and one chip per stage (pending → running → done / warn /
-failed / skipped), the outline and cast jobs on a series row, an inline player once a master
-exists, the QA verdict, and any job's live log on click. Runs survive a server restart in read-only
-form because the state file is on disk.
-
-## 5. Contracts and where they live
-
-| file | Pydantic model | producer → consumer |
-|---|---|---|
-| `series/<id>/series.json` | `SeriesBible` | episodize → episodize drafts, parse-script, orchestrator cast job |
-| `series/<id>/scripts/raw/epNN.txt` | rendered `EpisodeDraft` | episodize → parse-script (and human editing) |
-| `series/<id>/scripts/parsed/epNN.json` | `EpisodeScript` | parse-script → generate-voice, assemble-audio, qa-audio |
-| `library/voice-ips.json` | `VoiceRegistry` | voice-registry / orchestrator → episodize, parse-script, generate-voice |
-| `series/<id>/stems/epNN/*.wav.meta.json` | dict | generate-voice → generate-voice (cache), qa, cost reports |
-| `series/<id>/timelines/epNN_timeline.json` | `Timeline` | assemble-audio → assemble-audio `--render-only` |
-| `series/<id>/qa/epNN_report.json` | dict | qa-audio → humans, web UI |
-| `series/<id>/pipeline_run.json` | `Run.to_dict()` | orchestrator → web UI, CLI watch |
-| `series/<id>/run.log.jsonl` | one JSON per paid call | every stage → cost accounting |
-
-## 6. Failure handling and re-runs
-
-- Every CLI exits 1 for usage/config errors, 2 for validation or partial failure, 3 when the LLM
-  blocked or truncated. Logs end with a JSON summary line so tools can chain them.
-- Gemini client: 180 s timeout; retries on 429/500/503 and on transport errors; IPv4 pinned
-  (this network's IPv6 path resets TLS).
-- ElevenLabs adapter: retries on 429/5xx; thread-safe output-format fallback.
-- Re-running any stage is safe. Drafts and parsed scripts are overwritten only with `--force`;
-  stems are re-rendered only when their content hash changes; masters and QA are always
-  recomputed from what is on disk.
-- To fix one bad line: edit `scripts/parsed/epNN.json`, run `generate-voice --lines <id> --force`,
-  then `assemble-audio` and `qa-audio`. Or edit the raw script and re-run from `parse-script`.
-
-## 7. Cost points
-
-| call | when | typical size (60 s episode) |
-|---|---|---|
-| Gemini outline | once per series | ~1k in / ~4k out tokens |
-| Gemini draft | 1-3 per episode | ~1.5k in / ~1.5k out tokens each |
-| Gemini direct | 1 per episode | ~2k in / ~2.5k out tokens |
-| ElevenLabs TTS | 1 per line, cached | ~1,000-1,500 characters per episode (1 credit each on v3) |
-| Gemini TTS | 1 per line, cached | ~50 tokens in / ~200-300 audio tokens out per line; free tier, else $10-20 per 1M audio tokens |
-
-All of it is logged to `series/<id>/run.log.jsonl` with the stage, episode, tokens or characters.
+1. **V1RON OS**: `PostgresDocumentStore` + `MinioBlobStore`, the V1RON API provider for LLM/TTS (register as a provider),
+   a worker process so runs survive API restarts, the V1RON browser automation fleet behind Market Scan.
+2. **Publishing**: the YouTube upload (OAuth) behind the existing `ReleasePackage`; retention analytics feeding the
+   Market Research Agent.
+3. **Director v2** (from the former Technical Specification): engine-neutral delivery cues, ElevenLabs Text-to-Dialogue
+   conversation units with per-line segments, an identity-anchored modulation model per cloned voice, an LLM delivery
+   judge for peak lines.
+4. **Video pipeline** (Visual Development, Storyboard, Video Director, Editor, QA Video; see the video map in
+   `docs/Emvox_Technical_Map.md`) for series that prove themselves in audio. The Dashboard already reserves a Video view.

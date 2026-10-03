@@ -1,0 +1,22 @@
+{
+  "hash": "28d70980a307d55e313fe56f6fc33767b0f90c85b2dc63a4a854a3ed5a5e0968",
+  "request": {
+    "provider": "elevenlabs",
+    "model_id": "eleven_v3",
+    "voice_id": "nPczCjzI2devNBz1zQrb",
+    "text": "Xin chào, tôi là Dương. Có một chuyện tôi chưa từng kể với ai.",
+    "settings": {
+      "stability": 0.5,
+      "similarity_boost": 0.75,
+      "use_speaker_boost": true
+    },
+    "line_id": null
+  },
+  "requested_voice": "UsgbMVmY3U59ijwK5mdh",
+  "placeholder": true,
+  "reason": "elevenlabs 402: Free users cannot use library voices via the API. Please upgrade your subscription to use this voice.",
+  "rendered_at": "2026-09-20T10:08:06+00:00",
+  "duration_ms": 3760,
+  "characters_billed": 62,
+  "tokens_out": null
+}

@@ -1,6 +1,6 @@
 import pytest
 
-from pipeline.text.vi_normalize import normalize_vi, number_to_vi
+from emvoox.text.vi_normalize import normalize_vi, number_to_vi
 
 
 @pytest.mark.parametrize(

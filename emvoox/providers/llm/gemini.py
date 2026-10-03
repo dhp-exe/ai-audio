@@ -1,12 +1,12 @@
-"""Google Gemini client with Pydantic structured output (decision D10).
+"""Google Gemini adapter with Pydantic structured output (decision D10).
 
-Uses the official ``google-genai`` SDK. One entry point, ``generate_structured``, returns a
-validated Pydantic instance plus token usage. All LLM-calling skills (episodize, parse-script)
-go through here so retries, model selection and cost logging live in one place.
+Uses the official ``google-genai`` SDK. ``generate_structured`` returns a validated Pydantic
+instance plus token usage; ``GeminiLlm`` exposes it through the ``LlmProvider`` interface, plus
+audio transcription for the QA Critic's Review Audio skill.
 
-Model comes from ``AI_AUDIO_LLM_MODEL`` (default ``gemini-3.1-flash-lite``). ``gemini-3.6-flash``
+Model comes from ``EMVOOX_LLM_MODEL`` (default ``gemini-3.1-flash-lite``). ``gemini-3.6-flash``
 or any other model id can be set in ``.env`` without code changes. Thinking is left at the model
-default (dynamic for 2.5 Flash); pass ``thinking_budget`` to override.
+default; pass ``thinking_budget`` to override.
 
 Notes on schema conversion: the SDK converts the Pydantic model to Gemini's JSON-schema subset.
 Enums, nullable fields, nested objects, arrays and numeric min/max are supported. Regex ``pattern``
@@ -18,43 +18,15 @@ from __future__ import annotations
 
 import os
 import time
-from dataclasses import dataclass
-from typing import TypeVar
+from pathlib import Path
 
 import httpx
-from pydantic import BaseModel, ValidationError
+from pydantic import ValidationError
 
-from pipeline.config import get_settings
+from emvoox.config import get_settings
+from emvoox.providers.llm.base import LlmBlocked, LlmError, LlmSchemaError, LlmTruncated, T, Usage
 
-T = TypeVar("T", bound=BaseModel)
-
-
-class LlmError(RuntimeError):
-    """Base class for LLM failures the caller should surface."""
-
-
-class LlmTruncated(LlmError):
-    """Response hit max_output_tokens; split the input or raise the limit."""
-
-
-class LlmBlocked(LlmError):
-    """Prompt or response blocked by safety filters."""
-
-
-class LlmSchemaError(LlmError):
-    """Model returned JSON that does not satisfy the Pydantic contract."""
-
-
-@dataclass(frozen=True)
-class Usage:
-    model: str
-    prompt_tokens: int
-    output_tokens: int
-    thinking_tokens: int
-    elapsed_s: float
-
-    def as_dict(self) -> dict:
-        return self.__dict__.copy()
+__all__ = ["GeminiLlm", "LlmBlocked", "LlmError", "LlmSchemaError", "LlmTruncated", "Usage", "generate_structured", "make_client"]
 
 
 REQUEST_TIMEOUT_MS = 180_000  # a hung call was observed in the wild; never wait forever
@@ -67,7 +39,7 @@ def make_client(api_key: str | None = None):
 
     key = api_key or get_settings().require("gemini_api_key")
     client_args: dict = {}
-    if os.getenv("AI_AUDIO_FORCE_IPV4", "true").strip().lower() in ("1", "true", "yes", "on"):
+    if (os.getenv("EMVOOX_FORCE_IPV4") or os.getenv("AI_AUDIO_FORCE_IPV4") or "true").strip().lower() in ("1", "true", "yes", "on"):
         # httpx does not do happy-eyeballs; on networks with a broken IPv6 path the TLS handshake
         # dies with "UNEXPECTED_EOF_WHILE_READING". Binding the local address forces IPv4.
         client_args["transport"] = httpx.HTTPTransport(local_address="0.0.0.0", retries=2)
@@ -93,7 +65,7 @@ def generate_structured(
     from google.genai import errors, types
 
     settings = get_settings()
-    model = model or settings.llm_model
+    model = model or (settings.llm_model if settings.llm_provider == "gemini" else "gemini-3.1-flash-lite")
     temperature = settings.llm_temperature if temperature is None else temperature
 
     config_kwargs: dict = dict(
@@ -120,7 +92,7 @@ def generate_structured(
         except errors.APIError as e:
             last_err = e
             if getattr(e, "code", None) == 429:
-                from pipeline.usage import record_event
+                from emvoox.telemetry.events import record_event
 
                 record_event("gemini", model, "rate_limit", status=429, message=str(getattr(e, "message", None) or e))
             if getattr(e, "code", None) in (429, 500, 503) and attempt < retries:
@@ -168,3 +140,40 @@ def generate_structured(
         elapsed_s=round(elapsed, 2),
     )
     return instance, usage
+
+
+class GeminiLlm:
+    """``LlmProvider`` over google-genai. Also transcribes audio (Review Audio skill)."""
+
+    name = "gemini"
+
+    def __init__(self, api_key: str | None = None):
+        self._api_key = api_key
+
+    def generate_structured(self, *, system: str, user: str, schema: type[T], model: str | None = None,
+                            temperature: float | None = None, max_output_tokens: int = 65_536,
+                            context: dict | None = None) -> tuple[T, Usage]:
+        return generate_structured(system=system, user=user, schema=schema, model=model, temperature=temperature,
+                                   max_output_tokens=max_output_tokens)
+
+    def transcribe(self, audio: Path, *, model: str | None = None, language: str = "vi") -> tuple[str, Usage]:
+        """Verbatim transcript of a short audio file (Gemini audio understanding)."""
+        from google.genai import types
+
+        settings = get_settings()
+        model = model or (settings.llm_model if settings.llm_provider == "gemini" else "gemini-3.1-flash-lite")
+        client = make_client(self._api_key)
+        t0 = time.time()
+        resp = client.models.generate_content(
+            model=model,
+            contents=[
+                types.Part.from_bytes(data=Path(audio).read_bytes(), mime_type="audio/wav"),
+                "Chép lại NGUYÊN VĂN lời nói trong đoạn âm thanh tiếng Việt này. Chỉ trả về lời nói, không thêm chú thích.",
+            ],
+            config=types.GenerateContentConfig(temperature=0.0, max_output_tokens=2048),
+        )
+        um = getattr(resp, "usage_metadata", None)
+        usage = Usage(model=model, prompt_tokens=int(getattr(um, "prompt_token_count", 0) or 0),
+                      output_tokens=int(getattr(um, "candidates_token_count", 0) or 0),
+                      thinking_tokens=int(getattr(um, "thoughts_token_count", 0) or 0), elapsed_s=round(time.time() - t0, 2))
+        return (resp.text or "").strip(), usage

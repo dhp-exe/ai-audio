@@ -1,16 +1,21 @@
-"""Static catalog of the two supported TTS engines: models, voices and how they are billed.
+"""Static catalog of the TTS engines: models, voices and how they are billed.
 
-The web client, the Characters form, the orchestrator and the casting helpers all read this so a
-provider/model/voice choice means the same thing everywhere. ElevenLabs voices are account-specific
-(voice_id from the user's My Voices), so only the models are listed; Gemini TTS ships a fixed set
-of 30 prebuilt voices that every account has, addressed by name.
+The web client, the Voice IP form, the engine and the casting helpers all read this so a
+provider/model/voice choice means the same thing everywhere.
+
+    gemini      Gemini TTS: 30 prebuilt voices addressed by name; multi-speaker scene batching.
+    elevenlabs  ElevenLabs direct: account voices (premade, library, cloned) by voice_id.
+    wavespeed   WaveSpeed.ai gateway: one key, model path picks the vendor (ElevenLabs v3 accepts
+                any ElevenLabs voice id; MiniMax accepts system and cloned voice ids).
+    mock        Offline tone generator for tests and the demo. Never shown unless enabled.
 """
 
 from __future__ import annotations
 
 from typing import TypedDict
 
-PROVIDER_NAMES: tuple[str, ...] = ("elevenlabs", "gemini")
+PROVIDER_NAMES: tuple[str, ...] = ("gemini", "elevenlabs", "wavespeed", "mock")
+REAL_PROVIDERS: tuple[str, ...] = ("gemini", "elevenlabs", "wavespeed")
 
 
 class ModelInfo(TypedDict):
@@ -79,13 +84,38 @@ GEMINI_VOICES: list[VoiceInfo] = [
     {"id": "Sadaltager", "gender": "male", "character": "knowledgeable"},
 ]
 
-DEFAULT_MODEL = {"elevenlabs": "eleven_v3", "gemini": "gemini-3.1-flash-tts-preview"}
-MODELS = {"elevenlabs": ELEVENLABS_MODELS, "gemini": GEMINI_MODELS}
-PROVIDER_LABEL = {"elevenlabs": "ElevenLabs", "gemini": "Gemini TTS"}
+# WaveSpeed model paths (POST https://api.wavespeed.ai/api/v3/<path>). `python -m emvoox doctor` lists
+# what the key can reach; any other path can be typed into a voice entry.
+WAVESPEED_MODELS: list[ModelInfo] = [
+    {"id": "elevenlabs/eleven-v3", "label": "ElevenLabs v3 (via WaveSpeed)", "tags": True,
+     "note": "Same engine as Eleven v3; voice = preset name or any ElevenLabs voice id (cloned voices included). Billed per character by WaveSpeed."},
+    {"id": "minimax/speech-2.6-hd", "label": "MiniMax Speech 2.6 HD (via WaveSpeed)", "tags": False,
+     "note": "emotion / speed / pitch / volume parameters; voice = system voice id or a voice cloned with minimax/voice-clone."},
+]
+MOCK_MODELS: list[ModelInfo] = [
+    {"id": "mock-tone", "label": "Offline tone (no API)", "tags": False, "note": "Synthetic tones instead of speech. For tests and the demo only."},
+]
+
+DEFAULT_MODEL = {"elevenlabs": "eleven_v3", "gemini": "gemini-3.1-flash-tts-preview", "wavespeed": "elevenlabs/eleven-v3", "mock": "mock-tone"}
+MODELS = {"elevenlabs": ELEVENLABS_MODELS, "gemini": GEMINI_MODELS, "wavespeed": WAVESPEED_MODELS, "mock": MOCK_MODELS}
+PROVIDER_LABEL = {"elevenlabs": "ElevenLabs", "gemini": "Gemini TTS", "wavespeed": "WaveSpeed", "mock": "Offline mock"}
+BILLING = {"elevenlabs": "credits per character", "gemini": "requests per day on the free tier, then per audio token",
+           "wavespeed": "USD per character, prepaid balance", "mock": "free"}
+KEY_ENV = {"elevenlabs": "ELEVENLABS_API_KEY", "gemini": "GEMINI_API_KEY", "wavespeed": "WAVESPEED_API_KEY", "mock": ""}
 
 
 def model_ids(provider: str) -> list[str]:
     return [m["id"] for m in MODELS.get(provider, [])]
+
+
+def supports_scene_batching(provider: str) -> bool:
+    """Multi-speaker conversation requests (one request for a run of lines)."""
+    return provider == "gemini"
+
+
+def supports_tags(provider: str, model_id: str) -> bool:
+    """True when the model reads [audio tags] inline instead of speaking them."""
+    return (provider == "elevenlabs" and model_id == "eleven_v3") or (provider == "wavespeed" and model_id.startswith("elevenlabs/"))
 
 
 def gemini_voice(voice_id: str) -> VoiceInfo | None:
@@ -96,13 +126,13 @@ def gemini_voices(gender: str | None = None) -> list[VoiceInfo]:
     return [v for v in GEMINI_VOICES if gender is None or v["gender"] == gender]
 
 
-def catalog() -> dict:
+def catalog(include_mock: bool = False) -> dict:
     """JSON-ready description for the web client."""
     return {
         "providers": [
             {"id": p, "label": PROVIDER_LABEL[p], "models": MODELS[p], "default_model": DEFAULT_MODEL[p],
-             "voices": GEMINI_VOICES if p == "gemini" else None,
-             "billing": "credits per character" if p == "elevenlabs" else "requests per day, then per audio token"}
-            for p in PROVIDER_NAMES
+             "voices": GEMINI_VOICES if p == "gemini" else None, "billing": BILLING[p], "key_env": KEY_ENV[p],
+             "scene_batching": supports_scene_batching(p), "free_voice_id": p != "gemini"}
+            for p in PROVIDER_NAMES if include_mock or p != "mock"
         ]
     }

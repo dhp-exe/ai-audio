@@ -1,31 +1,45 @@
-import type { Metadata } from "next";
-import { IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
+import { AntdRegistry } from "@ant-design/nextjs-registry";
+import type { Metadata, Viewport } from "next";
+import { Be_Vietnam_Pro, JetBrains_Mono, Noto_Serif } from "next/font/google";
+import { AppShell } from "@/components/AppShell";
+import { StudioProvider } from "@/components/providers/StudioProvider";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { THEME_INIT_SCRIPT } from "@/lib/theme";
 import "./globals.css";
-import { Header } from "@/components/Header";
-import { ThemeProvider } from "@/components/ThemeProvider";
 
-const plexSans = IBM_Plex_Sans({ subsets: ["latin", "vietnamese"], weight: ["400", "500", "600"], variable: "--font-plex-sans" });
-const plexMono = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-plex-mono" });
+const sans = Be_Vietnam_Pro({ subsets: ["latin", "vietnamese"], weight: ["400", "500", "600", "700"], variable: "--font-sans", display: "swap" });
+const serif = Noto_Serif({ subsets: ["latin", "vietnamese"], weight: ["600", "700"], variable: "--font-serif", display: "swap" });
+const mono = JetBrains_Mono({ subsets: ["latin", "vietnamese"], weight: ["400", "500"], variable: "--font-mono", display: "swap" });
 
 export const metadata: Metadata = {
-  title: "Audio AI Studio",
-  description: "Voice IP micro-drama production: stories, characters, runs and usage.",
+  title: "Emvoox Studio",
+  description: "Emvoox: Emotion + Voice. AI audio micro-drama studio with a 7-agent production pipeline.",
+  icons: { icon: "/favicon.png" },
 };
 
-// Applied before paint so a forced theme never flashes.
-const themeInit = `try{var t=localStorage.getItem("theme");var q=new URLSearchParams(location.search).get("theme");t=q||t;if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}`;
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0e1522" },
+  ],
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${plexSans.variable} ${plexMono.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${sans.variable} ${serif.variable} ${mono.variable}`}>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: themeInit }} />
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
       </head>
       <body>
-        <ThemeProvider>
-          <Header />
-          {children}
-        </ThemeProvider>
+        <AntdRegistry>
+          <ThemeProvider>
+            <StudioProvider>
+              <AppShell>{children}</AppShell>
+            </StudioProvider>
+          </ThemeProvider>
+        </AntdRegistry>
       </body>
     </html>
   );

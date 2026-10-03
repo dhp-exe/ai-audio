@@ -1,100 +1,111 @@
-@import "tailwindcss";
+/* Emvoox Studio: antd carries the design tokens; this file only sets the page canvas, fonts and a few helpers. */
 
-/* Studio palette: graphite and paper, one signal blue, four meter colors. Light is the default;
-   dark follows the OS unless data-theme forces one. */
 :root {
-  --paper: #f2f3f5;
-  --panel: #ffffff;
-  --sunken: #e8eaee;
-  --line: #d5d9e0;
-  --line-strong: #b8bec9;
-  --ink: #12151b;
-  --muted: #5b6473;
-  --accent: #1e5bff;
-  --accent-ink: #ffffff;
-  --ok: #178a4f;
-  --warn: #c7791a;
-  --bad: #cf2e2e;
-  --live: #d9a400;
-  --tint-ok: #e4f5ec;
-  --tint-warn: #fbeedc;
-  --tint-bad: #fbe4e4;
-  --tint-accent: #e6edff;
+  --ev-navy: #284979;
+  --ev-bg: #f3f5f9;
+  --ev-border: #e3e7ee;
+  --ev-muted: #64708a;
+  --ev-sunken: #eef1f6;
+  --ev-gold: #c99a2e;
+  color-scheme: light;
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --paper: #0d0f13; --panel: #141820; --sunken: #0a0c10; --line: #252b36; --line-strong: #3a4352;
-    --ink: #e7eaf0; --muted: #8b95a7; --accent: #7aa2ff; --accent-ink: #0b1020;
-    --ok: #35b56f; --warn: #e0a03a; --bad: #ef5a5a; --live: #e6bd2f;
-    --tint-ok: #123424; --tint-warn: #3a2a12; --tint-bad: #3d1717; --tint-accent: #1a2a52;
-  }
-}
-:root[data-theme="dark"] {
-  --paper: #0d0f13; --panel: #141820; --sunken: #0a0c10; --line: #252b36; --line-strong: #3a4352;
-  --ink: #e7eaf0; --muted: #8b95a7; --accent: #7aa2ff; --accent-ink: #0b1020;
-  --ok: #35b56f; --warn: #e0a03a; --bad: #ef5a5a; --live: #e6bd2f;
-  --tint-ok: #123424; --tint-warn: #3a2a12; --tint-bad: #3d1717; --tint-accent: #1a2a52;
+html[data-theme="dark"] {
+  --ev-navy: #5b82c4;
+  --ev-bg: #0b111b;
+  --ev-border: #243049;
+  --ev-muted: #8d99b3;
+  --ev-sunken: #0f1726;
+  --ev-gold: #e0b85a;
+  color-scheme: dark;
 }
 
-@theme inline {
-  --color-paper: var(--paper);
-  --color-panel: var(--panel);
-  --color-sunken: var(--sunken);
-  --color-line: var(--line);
-  --color-line-strong: var(--line-strong);
-  --color-ink: var(--ink);
-  --color-muted: var(--muted);
-  --color-accent: var(--accent);
-  --color-accent-ink: var(--accent-ink);
-  --color-ok: var(--ok);
-  --color-warn: var(--warn);
-  --color-bad: var(--bad);
-  --color-live: var(--live);
-  --color-tint-ok: var(--tint-ok);
-  --color-tint-warn: var(--tint-warn);
-  --color-tint-bad: var(--tint-bad);
-  --color-tint-accent: var(--tint-accent);
-  --font-sans: var(--font-plex-sans), "IBM Plex Sans", system-ui, sans-serif;
-  --font-mono: var(--font-plex-mono), "IBM Plex Mono", ui-monospace, Menlo, monospace;
-}
+/* Dark visitors: keep the page dark and hidden until the antd dark theme is applied (no light flash). */
+html, body { background: var(--ev-bg); }
+html.theme-pending body { visibility: hidden; }
 
-html, body { background: var(--paper); color: var(--ink); }
-body { font-family: var(--font-sans); font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
 * { box-sizing: border-box; }
-
-@layer components {
-  /* form controls */
-  .field { @apply w-full rounded-md border border-line bg-sunken px-3 py-2 text-[14px] text-ink outline-none transition-[border-color,box-shadow] focus:border-accent focus:ring-2 focus:ring-accent/25 disabled:opacity-60; }
-  textarea.field { resize: vertical; }
-  select.field { appearance: auto; }
-  .label { @apply mb-1 block text-[12px] text-muted; }
-
-  /* hairline structure instead of card kits */
-  .hair { border: 1px solid var(--line); }
-  .hair-t { border-top: 1px solid var(--line); }
-  .hair-b { border-bottom: 1px solid var(--line); }
-
-  /* buttons */
-  .btn, .btn-primary, .btn-ghost, .btn-danger { @apply inline-flex items-center justify-center gap-2 rounded-md px-3 py-2 text-[13px] font-medium transition-colors disabled:cursor-default disabled:opacity-50; }
-  .btn-primary { @apply bg-accent text-accent-ink hover:brightness-110; }
-  .btn-ghost { @apply border border-line bg-transparent text-ink hover:border-line-strong; }
-  .btn-danger { @apply border border-bad/50 bg-transparent text-bad hover:bg-tint-bad; }
-  .btn-icon { @apply inline-flex h-8 w-8 items-center justify-center rounded-md text-muted transition-colors hover:bg-sunken hover:text-ink; }
-
-  /* status pills and stage chips */
-  .pill { @apply inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[12px] font-medium; }
-  .chip { @apply inline-flex min-w-[96px] cursor-pointer items-center gap-2 rounded-md border border-transparent bg-sunken px-2.5 py-1 text-[12px] hover:border-accent; }
-  .chip.sel { border-color: var(--accent); }
-  .dot { width: 8px; height: 8px; border-radius: 999px; background: var(--line-strong); flex: none; }
-  .dot.running { background: var(--live); animation: pulse 1s infinite; }
-  .dot.done { background: var(--ok); } .dot.warn { background: var(--warn); } .dot.failed { background: var(--bad); } .dot.skipped { background: var(--line-strong); }
-  @keyframes pulse { 50% { opacity: .3; } }
-
-  audio { height: 30px; width: 220px; vertical-align: middle; }
-  pre.log { @apply mt-3 max-h-[380px] overflow-auto whitespace-pre-wrap rounded-md border border-line bg-sunken p-3 font-mono text-[12px] leading-[1.45] text-ink; }
-
-  /* meter */
-  .meter { @apply h-2 w-full overflow-hidden rounded-full bg-line; }
-  .meter > i { display: block; height: 100%; background: var(--ok); transition: width .4s; }
-  .meter > i.warn { background: var(--warn); } .meter > i.bad { background: var(--bad); }
+body {
+  margin: 0;
+  font-family: var(--font-sans), "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
+
+.serif { font-family: var(--font-serif), "Noto Serif", Georgia, serif; }
+.mono { font-family: var(--font-mono), "JetBrains Mono", ui-monospace, Menlo, monospace; }
+.num { font-variant-numeric: tabular-nums; }
+.muted { color: var(--ev-muted); }
+.nowrap { white-space: nowrap; }
+.clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* page body */
+.ev-content { padding: 20px 24px 40px; max-width: 1480px; width: 100%; margin: 0 auto; min-width: 0; }
+@media (max-width: 768px) { .ev-content { padding: 12px 12px 32px; } }
+
+.ev-page-head { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+.ev-page-head h1 { margin: 0; font-size: 22px; line-height: 1.3; font-weight: 600; }
+.ev-page-head .sub { margin-top: 2px; color: var(--ev-muted); font-size: 13px; }
+
+/* header */
+.ev-header {
+  position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: 12px;
+  height: 56px; padding: 0 16px; border-bottom: 1px solid var(--ev-border);
+}
+.ev-header .grow { flex: 1; min-width: 0; overflow: hidden; }
+@media (max-width: 576px) { .ev-hide-xs { display: none !important; } }
+@media (max-width: 992px) { .ev-hide-md { display: none !important; } }
+
+.ev-brand { display: flex; align-items: center; gap: 10px; height: 56px; padding: 0 18px; overflow: hidden; white-space: nowrap; }
+.ev-brand img { flex: none; }
+.ev-brand .name { font-family: var(--font-serif), "Noto Serif", Georgia, serif; font-weight: 700; font-size: 17px; letter-spacing: .2px; color: var(--ev-navy); }
+.ev-brand .name small { font-family: var(--font-sans), sans-serif; font-weight: 500; font-size: 12px; color: var(--ev-muted); margin-left: 4px; }
+
+/* live run pill */
+.ev-run-pill {
+  display: inline-flex; align-items: center; gap: 8px; padding: 3px 12px; border-radius: 999px;
+  border: 1px solid var(--ev-border); font-size: 12px; font-weight: 500; white-space: nowrap; color: inherit;
+}
+.ev-run-pill:hover { border-color: var(--ev-navy); }
+.pulse-dot { width: 8px; height: 8px; border-radius: 50%; background: #52c41a; flex: none; box-shadow: 0 0 0 0 rgba(82, 196, 26, .6); animation: ev-pulse 1.6s infinite; }
+@keyframes ev-pulse { 0% { box-shadow: 0 0 0 0 rgba(82,196,26,.55); } 70% { box-shadow: 0 0 0 7px rgba(82,196,26,0); } 100% { box-shadow: 0 0 0 0 rgba(82,196,26,0); } }
+
+/* audio */
+audio.ev-audio { height: 32px; width: 240px; max-width: 100%; vertical-align: middle; }
+audio.ev-audio.wide { width: 100%; }
+
+/* logs and raw text */
+pre.ev-pre {
+  margin: 0; padding: 12px; max-height: 460px; overflow: auto; white-space: pre-wrap; word-break: break-word;
+  font-family: var(--font-mono), "JetBrains Mono", ui-monospace, Menlo, monospace; font-size: 12.5px; line-height: 1.55;
+  background: var(--ev-sunken); border: 1px solid var(--ev-border); border-radius: 8px;
+}
+
+/* mini bar chart */
+.ev-bars { display: flex; align-items: flex-end; gap: 3px; width: 100%; }
+.ev-bars .col { flex: 1; min-width: 4px; display: flex; flex-direction: column-reverse; height: 100%; border-radius: 3px 3px 0 0; overflow: hidden; background: transparent; }
+.ev-bars .col:hover { opacity: .8; }
+.ev-bars-axis { display: flex; justify-content: space-between; font-size: 11px; color: var(--ev-muted); margin-top: 4px; }
+
+/* small inline meter */
+.ev-meter { display: inline-flex; align-items: center; gap: 6px; min-width: 90px; }
+.ev-meter .track { flex: 1; height: 6px; border-radius: 3px; background: var(--ev-sunken); border: 1px solid var(--ev-border); overflow: hidden; }
+.ev-meter .fill { height: 100%; background: var(--ev-navy); }
+
+/* episode matrix cells */
+.ev-cell { cursor: pointer; display: flex; flex-direction: column; gap: 2px; min-width: 92px; padding: 2px 0; }
+.ev-cell .meta { font-size: 11px; color: var(--ev-muted); line-height: 1.3; }
+
+/* clickable rows */
+.ev-click-row { cursor: pointer; }
+.ev-issue { cursor: default; padding: 6px 8px; border-radius: 6px; }
+.ev-issue.seekable { cursor: pointer; }
+.ev-issue.seekable:hover { background: var(--ev-sunken); }
+
+/* gold highlight for cloned voices */
+.ev-cloned { box-shadow: inset 3px 0 0 var(--ev-gold); }
+
+.ev-full-width { width: 100%; }
+
+/* collapse trigger: a hairline instead of a block of another colour */
+.ant-layout-sider-trigger { border-top: 1px solid var(--ev-border); border-inline-end: 1px solid var(--ev-border); }

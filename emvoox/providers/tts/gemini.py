@@ -17,8 +17,8 @@ from __future__ import annotations
 import time
 from pathlib import Path
 
-from pipeline.providers.base import ProviderError, StemInfo, TtsRequest, duration_ms, to_stem_wav
-from pipeline.usage import record_event
+from emvoox.providers.tts.base import ProviderError, StemInfo, TtsRequest, duration_ms, to_stem_wav
+from emvoox.telemetry.events import record_event
 
 PCM_RATE = 24_000
 RETRY_STATUSES = {429, 500, 502, 503, 504}
@@ -66,7 +66,7 @@ class GeminiTtsProvider:
 
     def _get_client(self):
         if self._client is None:
-            from pipeline.llm.gemini_client import make_client
+            from emvoox.providers.llm.gemini import make_client
 
             self._client = make_client(self._api_key)
         return self._client

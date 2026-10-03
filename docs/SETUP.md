@@ -1,80 +1,77 @@
-# Setup: API keys and accounts
+# Setup: install, keys, and the first real run
 
-Copy `.env.example` to `.env` and fill in the keys below. Prices and free tiers change often; the
-figures here are from the vendors' public pages as of September 2026 and should be re-checked on the
-linked pages before budgeting.
+Prices and free tiers change; figures are from the vendors' public pages (September-October 2026). Re-check before
+budgeting. Cost estimates in the app come from `emvoox/telemetry/pricing.py` and can be overridden in
+`data/assets/pricing.json`.
 
-## Phase 1 (episodize + AI Director)
-
-### `GEMINI_API_KEY`
-- **Get it:** Google AI Studio -> https://aistudio.google.com/apikey -> "Create API key". The SDK also
-  accepts `GOOGLE_API_KEY`. No credit card needed for the free tier.
-- **Free tier:** available for `gemini-2.5-flash` and the Flash-Lite models with per-minute and
-  per-day request caps (on the order of 10 requests/min and a few hundred requests/day). Free-tier
-  prompts may be used by Google to improve products; do not send confidential story material on the
-  free tier. Enough for prompt iteration on 1-3 episodes, not for a 30-episode batch in one sitting.
-- **Paid:** enable billing on the Google Cloud project linked to the key (AI Studio -> "Set up
-  billing"). Pay-as-you-go per token. Reference: https://ai.google.dev/gemini-api/docs/pricing
-  - `gemini-2.5-flash`: about $0.30 / 1M input tokens, $2.50 / 1M output tokens (thinking tokens bill
-    as output).
-  - `gemini-2.5-flash-lite`: about $0.10 / 1M input, $0.40 / 1M output.
-  - `gemini-3.1-flash-lite`: check the pricing page; set `AI_AUDIO_LLM_MODEL` to switch.
-  - Rough series cost: 31 episodize calls + 30 Director calls, each ~3-6k input and ~2-4k output
-    tokens, lands well under $1 per 30-episode series on 2.5 Flash.
-
-## Phase 2 (TTS)
-
-### `ELEVENLABS_API_KEY`
-- **Get it:** https://elevenlabs.io -> sign in -> profile menu (bottom left) -> "API Keys" ->
-  "Create API key". Scope it to Text to Speech + Voices.
-- **Free tier:** 10,000 credits/month, non-commercial license, no voice cloning. Fine for auditioning
-  the stock library, useless for our IP voices.
-- **Paid (monthly, credits reset monthly):** https://elevenlabs.io/pricing
-  - Starter ~$5: 30k credits, commercial license, Instant Voice Cloning.
-  - Creator ~$22 (~$11 first month): 100k credits, **Professional Voice Cloning** (what our Voice
-    IPs need), 192 kbps output.
-  - Pro ~$99: 500k credits, higher concurrency.
-  - Scale ~$330: 2M credits. Business ~$1,320: 11M credits.
-  - Billing: `eleven_v3` and `eleven_multilingual_v2` cost 1 credit per character;
-    `eleven_flash_v2_5` 0.5. A 30-episode Vietnamese series is roughly 35-45k characters of dialogue,
-    so **Creator** covers one series per month including ~2x re-rolls; Pro if you iterate heavily.
-  - PVC requires ~30 min of clean recordings per voice and a verification step; plan a few days.
-
-### Gemini TTS (second engine, uses `GEMINI_API_KEY`)
-- **Models:** `gemini-3.1-flash-tts-preview` (default), `gemini-2.5-flash-preview-tts`, `gemini-2.5-pro-preview-tts` (paid only).
-- **Free tier:** the two Flash TTS models are "Free of charge" on the Gemini API free tier, with low
-  per-minute request caps, so the voice stage runs serially. Paid: $0.50-1 per 1M text tokens in and
-  $10-20 per 1M audio tokens out (a 60 s episode is roughly 3-4k audio tokens, so cents per episode).
-  Reference: https://ai.google.dev/gemini-api/docs/pricing and https://ai.google.dev/gemini-api/docs/speech-generation
-- **Voices:** 30 fixed prebuilt voices addressed by name (Leda, Orus, Charon, ...), multilingual, not
-  Vietnamese-native; no cloning, no library, so they cannot be exclusive IP assets. Use Gemini for free
-  pipeline and retention tests; keep ElevenLabs for the real Voice IPs.
-- **No MiniMax.** Removed 2026-09-20: Vietnamese is supported but there is no free API tier and HD
-  pricing ($100 per 1M characters) is 3-6x ElevenLabs Creator.
-
-## Findings from the first live run (2026-09-20)
-
-- **Gemini:** `gemini-2.5-flash` is listed by the Models API but returns 404 "no longer available to new users". `gemini-3.1-flash-lite` (no thinking, ~4 s/call) and `gemini-3.6-flash` (thinking, ~5-16 s/call) both work. Default is now 3.1-flash-lite.
-- **Network:** on this machine IPv6 to `generativelanguage.googleapis.com` fails (TLS EOF). The client pins IPv4; set `AI_AUDIO_FORCE_IPV4=false` to disable elsewhere.
-- **ElevenLabs Free tier:** API key scopes omit `user_read`/`models_read` (fine). Library voices such as *Thuy Duong - Vietnamese* return 402 via API on Free; only premade voices work. `wav_44100` output needs Pro; the adapter falls back to `mp3_44100_128`. Five episodes cost ~6,100 characters of the 10,000/month free quota.
-- **Upgrade path:** Creator (~$22/mo) unlocks library voices and Professional Voice Cloning; that is the minimum for real Vietnamese Voice IPs.
-- **ElevenLabs 402 on Ngan/Duong (2026-09-20):** the exact response is `paid_plan_required: Free users cannot use library voices via the API`; both voices are correctly added to My Voices, every endpoint/model variant fails the same way, so only the plan tier matters. The API key also lacks `user_read`, so quota cannot be read; regenerate it with `user_read` + `models_read` after upgrading.
-- **Gemini TTS (2026-09-20):** both Flash TTS models render Vietnamese on the free tier in ~6 s per line; a transcript check confirmed the direction prefix is not spoken.
-- **Gemini TTS free-tier quota is 10 requests per day per model** (`GenerateRequestsPerDayPerProjectPerModel-FreeTier`, seen live on `gemini-2.5-flash-tts`). One 60 s episode is ~12 lines, so a real test needs billing enabled on the Gemini project (paid rate: cents per episode) or spreading calls across the models. The adapter fails fast with a clear message on the daily quota instead of retrying.
-
-## Not needed
-
-- No Anthropic/OpenAI key (D10). No Suno/Soundraw (D5). No STS-related access (D4).
-
-## Local tools
-
-- Python 3.11+ (`python3 -m venv .venv && .venv/bin/pip install -e .[dev]`).
-- FFmpeg + ffprobe on PATH (`brew install ffmpeg`), already present on this machine.
-
-## Smoke test without any key
+## 1. Install
 
 ```bash
-.venv/bin/python -m pytest -q
-.venv/bin/python .claude/skills/parse-script/scripts/parse_script.py --series demo --episode 1 --dry-run
-.venv/bin/python .claude/skills/generate-voice/scripts/generate_voice.py --series demo --episode 1 --dry-run
+python3.11+ -m venv .venv && source .venv/bin/activate
+pip install -e ".[dev]"                      # + ".[research]" for the browser scan, ".[claude]" for Claude
+brew install ffmpeg                          # FFmpeg and ffprobe on PATH
+cd web && npm install && npm run export      # build the web app once (served by the API)
+cp .env.example .env                         # then fill in the keys you use
 ```
+
+## 2. Verify offline first (no key, no cost)
+
+```bash
+pytest                                       # 104 tests, no network
+python scripts/demo_pipeline.py --keep ./demo-data
+EMVOOX_DATA_DIR=./demo-data EMVOOX_ENABLE_MOCK=true python -m emvoox serve   # look at the demo in the UI
+python -m emvoox doctor                      # Python, FFmpeg, registry, which keys are set
+```
+
+## 3. When to plug in the WaveSpeed key, and the first real test
+
+Plug `WAVESPEED_API_KEY` into `.env` **after step 2 passes**: at that point every agent, the QA loop and the gate are
+proven offline, so the first paid run only tests the vendors. Then:
+
+1. Add the key to `.env` and restart the server. Optionally make WaveSpeed the default:
+   `EMVOOX_LLM_PROVIDER=wavespeed` and `EMVOOX_TTS_PROVIDER=wavespeed`.
+2. `python -m emvoox doctor --live` (cheap GETs, no generation). It shows the balance, the speech models the key can
+   reach and a sample of LLM model ids. Pick the LLM id from that list and set `EMVOOX_LLM_MODEL` (format
+   `vendor/model`, e.g. a Gemini Flash Lite id; the default `google/gemini-3.1-flash-lite` is a guess until the doctor
+   confirms it).
+3. Produce **one** short episode first:
+   `python -m emvoox run --series test1 --story story.txt --episodes 10 --produce 1 --llm wavespeed --tts wavespeed`
+   (or New production in the UI with WaveSpeed selected and "Produce now" = 1). Expect a few cents: ~6-8 LLM calls
+   and ~1,000-1,500 characters of TTS at about $0.20 per 1,000 characters on WaveSpeed's ElevenLabs v3.
+4. Listen on the Approvals page, check the run on Pipeline and the spend on Costs, then approve or reject.
+5. Scale to `--produce 3`, then to the whole batch.
+
+WaveSpeed's ElevenLabs endpoint accepts any ElevenLabs voice id, so the Voice IPs' existing ElevenLabs voices (and later
+the team's cloned voices) are used through WaveSpeed automatically; actors with only a Gemini voice get a placeholder
+on WaveSpeed until one is plugged in.
+
+## 4. Keys
+
+### `WAVESPEED_API_KEY` (LLM gateway + speech models, one key)
+- Dashboard → API keys at https://wavespeed.ai. Prepaid balance in USD; `GET /api/v3/balance` is shown on the Costs page.
+- LLM: `https://llm.wavespeed.ai/v1`, OpenAI Chat Completions protocol, 90+ models (Gemini, Claude, GPT, DeepSeek…),
+  pay per token.
+- Speech: `elevenlabs/eleven-v3` ($0.20 / 1k characters per the model page; voice = preset or any ElevenLabs voice id),
+  `minimax/speech-2.6-hd` (emotion / speed / pitch / volume; voice cloning via `minimax/voice-clone`, 10-30 s sample).
+
+### `GEMINI_API_KEY` (LLM + Gemini TTS)
+- https://aistudio.google.com/apikey. Free tier: Gemini TTS is **10 requests per day per model** and ~3 per minute
+  without billing; scene batching makes an episode cost 1-3 requests. Paid: $0.50-1 per 1M text tokens in,
+  $10-20 per 1M audio tokens out (25 tokens per second of audio).
+- `gemini-2.5-flash` is closed to new accounts; `gemini-3.1-flash-lite` is the default LLM, `gemini-3.6-flash` the
+  thinking alternative. The client pins IPv4 (`EMVOOX_FORCE_IPV4`) because this network's IPv6 path resets TLS.
+
+### `ELEVENLABS_API_KEY`
+- https://elevenlabs.io → API Keys (add scope `user_read` so the Costs page can read the credit counter).
+- Free tier: premade voices only via API (library voices return 402), no `wav_44100`. Creator (~$22) unlocks library
+  voices and Professional Voice Cloning; Pro (~$99) 44.1 kHz PCM. `eleven_v3` 1 credit per character.
+
+### Optional: `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`
+- `EMVOOX_LLM_PROVIDER=openai` (any OpenAI-compatible endpoint) or `anthropic` (Claude via the official SDK; install `.[claude]`).
+
+## 5. Findings from earlier live runs (2026-09-20)
+
+- ElevenLabs Free tier: five episodes cost ~6,100 of the 10,000 monthly characters; library voices need Creator.
+- Gemini TTS: the multi-speaker direction header is not read aloud in single-speaker mode (verified); multi-speaker
+  chunks are covered by tests, and the QA Critic's duration check catches spoken direction.
+- Measured pace: 3.6 words per second on ElevenLabs v3 (drafts aim at 3.3).

@@ -1,11 +1,15 @@
-# Audio AI Studio (web client)
+# Emvoox Studio (web client)
 
-Next.js app for the pipeline. Pages: Library, New/Edit story, Run board, Characters, Usage.
+Next.js 16 (App Router, static export) + Ant Design 6 client for the Emvoox engine API (`emvoox/api/app.py`).
+Pages: Dashboard, Productions (+ detail), New production, Pipeline, Approvals, Voice IPs, Market research, Costs, Settings.
+`lib/api.ts` is the contract with the backend; light/dark/system theme via antd ConfigProvider.
 
 ```bash
 npm install
 npm run dev        # http://localhost:3000, proxies /api/* to API_BASE (default http://127.0.0.1:8765)
-npm run export     # static build in out/, served by `python -m pipeline.webui` at http://127.0.0.1:8765
+                   # the Network URL (this Mac's LAN IP) works too; add other hosts with DEV_ORIGINS=host1,host2
+npm run typecheck
+npm run export     # static build in out/, served by the engine at /
 ```
 
 Deploying on Vercel: import the `web/` folder, set `API_BASE` to the public URL of the FastAPI backend.
@@ -15,11 +19,11 @@ The backend needs FFmpeg and a disk, so it runs on a container host (Fly.io, Rai
 
 | piece | needs | fits |
 |---|---|---|
-| `web/` (this app) | static or Node hosting | **Vercel** (import the `web/` folder, set `API_BASE`) |
-| `pipeline/` backend (FastAPI, FFmpeg, subprocesses, disk) | a long-running container with FFmpeg and a persistent volume | **Fly.io** or **Railway** (Dockerfile with `ffmpeg`), or a small VPS |
-| series files, stems, masters, previews | object storage once the backend is not on one machine | **Cloudflare R2** (no egress fees for audio) or S3 |
-| runs, stories, registry, usage ledger | a database once several people share one studio | **Postgres on Supabase** (also gives auth and a storage bucket if you prefer one vendor) |
+| `web/` (this app) | static or Node hosting | **Vercel** (import the `web/` folder, set `API_BASE`), or served by the engine at `/` |
+| `emvoox/` engine + API (FastAPI, FFmpeg, disk) | a long-running container with FFmpeg and a persistent volume | V1RON OS agent runtime when available; until then a container host or one studio machine |
+| documents (story, bible, cast, runs, QA, ledger) | `DocumentStore` | JSON files or SQLite today; **v1ron_db** (PostgreSQL) via `EMVOOX_STORAGE=v1ron` |
+| audio (stems, masters, previews, approved exports) | `BlobStore` | `./data` today; **V1RON Media (MinIO)** via `EMVOOX_STORAGE=v1ron` |
 
-Today everything is files under `series/` and `library/` and the API reads them directly, which is right for one
-operator. Move to Supabase Postgres + R2 when you add logins or a second machine; the FastAPI routes stay the same,
-only `pipeline/stories.py`, `pipeline/registry.py` and `pipeline/usage.py` change their storage.
+Everything lives under `./data` behind the repository layer (`emvoox/repositories/`); moving to V1RON OS means
+implementing the two storage adapters in `emvoox/repositories/v1ron.py`. The API routes and this app do not change.
+See `docs/ARCHITECTURE.md` §4.

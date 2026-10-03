@@ -24,13 +24,14 @@ class TtsRequest:
     previous_text: str | None = None  # prosody context (same speaker), not part of the cache hash
     next_text: str | None = None
     speakers: tuple[tuple[str, str], ...] = ()  # multi-speaker chunk: ((label, voice_id), ...); voice_id then names the chunk
+    attempt: int = 0  # bumped by the QA retry loop so a retry is a different request (and a different cache key)
 
     def content_hash(self) -> str:
-        payload = json.dumps(
-            {"provider": self.provider, "model_id": self.model_id, "voice_id": self.voice_id,
-             "text": self.text, "settings": dict(sorted(self.settings.items())), "speakers": list(self.speakers)},
-            sort_keys=True, ensure_ascii=False,
-        )
+        body = {"provider": self.provider, "model_id": self.model_id, "voice_id": self.voice_id,
+                "text": self.text, "settings": dict(sorted(self.settings.items())), "speakers": [list(s) for s in self.speakers]}
+        if self.attempt:
+            body["attempt"] = self.attempt
+        payload = json.dumps(body, sort_keys=True, ensure_ascii=False)
         return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
     def as_dict(self) -> dict:
@@ -38,6 +39,8 @@ class TtsRequest:
              "text": self.text, "settings": self.settings, "line_id": self.line_id}
         if self.speakers:
             d["speakers"] = [list(s) for s in self.speakers]
+        if self.attempt:
+            d["attempt"] = self.attempt
         return d
 
 

@@ -1,4 +1,4 @@
-"""Casting helpers shared by episodize, the orchestrator, generate-voice and the web UI.
+"""Casting helpers shared by the Script Writer, the Casting Agent, the Sound Engineer and the API.
 
 - placeholder voices by gender for both engines (ElevenLabs premade voices, Gemini prebuilt voices)
 - gender guessing from Vietnamese/English descriptions
@@ -12,13 +12,15 @@ import os
 import re
 from collections.abc import Iterable
 
-from pipeline.providers.catalog import gemini_voices
-from pipeline.schema import StoryRole, VoiceRegistry
+from emvoox.contracts.production import StoryRole, VoiceRegistry
+from emvoox.providers.tts.catalog import gemini_voices
 
 # Premade ElevenLabs voices (available on every tier). Override with AI_AUDIO_PLACEHOLDER_VOICES_FEMALE / _MALE.
 PLACEHOLDER_VOICES: dict[str, list[str]] = {
-    "female": os.getenv("AI_AUDIO_PLACEHOLDER_VOICES_FEMALE", "cgSgspJ2msm6clMCkdW9,pFZP5JQG7iQjIQuC4Bku,EXAVITQu4vr4xnSDxMaL").split(","),
-    "male": os.getenv("AI_AUDIO_PLACEHOLDER_VOICES_MALE", "nPczCjzI2devNBz1zQrb,cjVigY5qzO86Huf0OWal,pqHfZKP75CvOlQylNhV4").split(","),
+    "female": (os.getenv("EMVOOX_PLACEHOLDER_VOICES_FEMALE") or os.getenv("AI_AUDIO_PLACEHOLDER_VOICES_FEMALE")
+               or "cgSgspJ2msm6clMCkdW9,pFZP5JQG7iQjIQuC4Bku,EXAVITQu4vr4xnSDxMaL").split(","),
+    "male": (os.getenv("EMVOOX_PLACEHOLDER_VOICES_MALE") or os.getenv("AI_AUDIO_PLACEHOLDER_VOICES_MALE")
+             or "nPczCjzI2devNBz1zQrb,cjVigY5qzO86Huf0OWal,pqHfZKP75CvOlQylNhV4").split(","),
 }
 # Gemini prebuilt voices used for roles without a Voice IP, in preference order.
 GEMINI_PLACEHOLDER_VOICES: dict[str, list[str]] = {
@@ -41,7 +43,9 @@ def placeholder_voice(gender: str, index: int = 0, provider: str = "elevenlabs",
     """A stand-in voice of the given gender. `exclude` skips voices already used by the cast so
     two roles never share one; falls back to round-robin when the pool is exhausted."""
     gender = gender if gender in ("female", "male") else "male"
-    if provider == "gemini":
+    if provider == "mock":
+        pool = [f"mock-{gender}-{i}" for i in range(1, 9)]
+    elif provider == "gemini":
         pool = GEMINI_PLACEHOLDER_VOICES[gender] + [v["id"] for v in gemini_voices(gender) if v["id"] not in GEMINI_PLACEHOLDER_VOICES[gender]]
     else:
         pool = [v.strip() for v in PLACEHOLDER_VOICES[gender]]

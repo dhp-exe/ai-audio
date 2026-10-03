@@ -32,3 +32,44 @@ export function fmtTime(iso: string | null | undefined) {
 export const fmtInt = (n: number | null | undefined) => (n == null ? "–" : n.toLocaleString());
 
 export function wordCount(s: string) { return s.trim() ? s.trim().split(/\s+/).length : 0; }
+
+/** US dollars; small amounts keep more precision so free-tier runs do not all read $0.00. */
+export function fmtUsd(n: number | null | undefined) {
+  if (n == null) return "–";
+  if (n === 0) return "$0";
+  const abs = Math.abs(n);
+  return `$${n.toFixed(abs < 0.01 ? 4 : abs < 1 ? 3 : 2)}`;
+}
+
+/** Milliseconds as m:ss. */
+export function fmtClock(ms: number | null | undefined) {
+  if (ms == null) return "–";
+  const s = Math.round(ms / 1000);
+  return `${Math.floor(s / 60)}:${pad2(s % 60)}`;
+}
+
+export function fmtMinutes(min: number | null | undefined) {
+  if (min == null) return "–";
+  return min < 10 ? `${min.toFixed(1)} min` : `${Math.round(min)} min`;
+}
+
+export function fmtBytes(n: number | null | undefined) {
+  if (n == null) return "–";
+  if (n < 1024) return `${n} B`;
+  if (n < 1024 * 1024) return `${(n / 1024).toFixed(1)} KB`;
+  return `${(n / 1024 / 1024).toFixed(1)} MB`;
+}
+
+export function fmtCompact(n: number | null | undefined) {
+  if (n == null) return "–";
+  return Intl.NumberFormat(undefined, { notation: "compact", maximumFractionDigits: 1 }).format(n);
+}
+
+export function fmtAgo(iso: string | null | undefined, now = Date.now()) {
+  if (!iso) return "";
+  const s = Math.round((now - new Date(iso).getTime()) / 1000);
+  if (s < 60) return "just now";
+  if (s < 3600) return `${Math.floor(s / 60)}m ago`;
+  if (s < 86400) return `${Math.floor(s / 3600)}h ago`;
+  return `${Math.floor(s / 86400)}d ago`;
+}

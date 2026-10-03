@@ -18,9 +18,9 @@ import threading
 import time
 from pathlib import Path
 
-from pipeline.config import get_settings
-from pipeline.providers.base import ProviderError, StemInfo, TtsRequest, duration_ms, to_stem_wav
-from pipeline.usage import record_event
+from emvoox.config import get_settings
+from emvoox.providers.tts.base import ProviderError, StemInfo, TtsRequest, duration_ms, to_stem_wav
+from emvoox.telemetry.events import record_event
 
 LANGUAGE_ENFORCING_MODELS = {"eleven_turbo_v2_5", "eleven_flash_v2_5"}
 NO_CONTEXT_MODELS = {"eleven_v3"}  # "previous_text or next_text is not yet supported with the 'eleven_v3' model"

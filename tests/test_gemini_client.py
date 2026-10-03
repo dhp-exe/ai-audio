@@ -1,11 +1,11 @@
-"""Mocked tests for pipeline.llm.gemini_client (no network)."""
+"""Mocked tests for the Gemini LLM adapter (no network)."""
 
 from types import SimpleNamespace
 
 import pytest
 from pydantic import BaseModel
 
-from pipeline.llm import gemini_client as gc
+from emvoox.providers.llm import gemini as gc
 
 
 class Out(BaseModel):

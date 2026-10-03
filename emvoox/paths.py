@@ -1,17 +1,15 @@
-"""Deterministic paths and stem names. See CLAUDE.md "Naming standard for audio stems".
+"""Storage keys and stem names. Every artifact has one deterministic key; never hand-build them.
 
-Underscore is the field separator, so no field may contain an underscore.
+A *key* is a POSIX path relative to the storage root (``./data`` locally). The same key addresses
+a JSON document in the ``DocumentStore`` or a file in the ``BlobStore``, so a key written to local
+disk today is the document id / object name on ``v1ron_db`` / MinIO tomorrow.
+
+Underscore is the field separator in stem names, so no field may contain an underscore.
 """
 
 from __future__ import annotations
 
-import os
 import re
-from pathlib import Path
-
-REPO_ROOT = Path(os.environ.get("AI_AUDIO_ROOT", Path(__file__).resolve().parent.parent))
-SERIES_DIR = REPO_ROOT / "series"
-LIBRARY_DIR = REPO_ROOT / "library"
 
 _STEM_RE = re.compile(
     r"^ep(?P<ep>\d{2})_sc(?P<sc>\d{2})_l(?P<line>\d{3})_(?P<char>[a-z0-9-]+)_"
@@ -21,87 +19,159 @@ STEM_TYPES = ("dialogue", "monologue")
 
 
 def _check_field(value: str, name: str) -> str:
-    if "_" in value or not value:
-        raise ValueError(f"{name} may not be empty or contain '_': {value!r}")
+    if "_" in value or "/" in value or not value:
+        raise ValueError(f"{name} may not be empty or contain '_' or '/': {value!r}")
     return value
 
 
-# ---- global library ----------------------------------------------------------------
+def ep(n: int) -> str:
+    return f"ep{n:02d}"
 
 
-def registry_path() -> Path:
-    """The single, locked Voice IP registry shared by all series (D7)."""
-    return LIBRARY_DIR / "voice-ips.json"
+# ---- assets (global, shared by every series) ------------------------------------------
+
+REGISTRY = "assets/voice_registry.json"
+PREVIEWS = "assets/previews"
+AUDITIONS = "assets/auditions"
+BGM = "assets/bgm"
+SFX = "assets/sfx"
+TREND_SEEDS = "inputs/trends"
+MARKET_SOURCES = "inputs/market_sources.json"
+BRIEFS = "research/briefs"
+SERIES = "series"
+APPROVED = "outputs/approved_masters"
+RUN_LOG = "telemetry/run_log.jsonl"
+VENDOR_EVENTS = "telemetry/usage_events.jsonl"
 
 
-def bgm_library_dir(mood: str) -> Path:
-    return LIBRARY_DIR / "bgm" / _check_field(mood, "mood")
+def preview(name: str) -> str:
+    return f"{PREVIEWS}/{name}"
 
 
-def sfx_library_path(tag: str) -> Path:
-    return LIBRARY_DIR / "sfx" / f"{_check_field(tag, 'sfx tag')}.wav"
+def audition(name: str) -> str:
+    return f"{AUDITIONS}/{name}"
 
 
-def ambience_library_path(tag: str) -> Path:
-    return LIBRARY_DIR / "ambience" / f"{_check_field(tag, 'ambience tag')}.wav"
+def bgm_dir(mood: str) -> str:
+    return f"{BGM}/{_check_field(mood, 'mood')}"
 
 
-# ---- series-level paths ----------------------------------------------------------------
+def sfx(tag: str) -> str:
+    return f"{SFX}/{_check_field(tag, 'sfx tag')}.wav"
 
 
-def series_root(series_id: str) -> Path:
-    return SERIES_DIR / _check_field(series_id, "series_id")
+def brief(brief_id: str) -> str:
+    return f"{BRIEFS}/{brief_id}.json"
 
 
-def story_raw_path(series_id: str) -> Path:
-    """Plain-text story (legacy input, or rendered from story.json)."""
-    return series_root(series_id) / "story_raw.txt"
+# ---- series ----------------------------------------------------------------------------
 
 
-def story_json_path(series_id: str) -> Path:
-    """Sectioned story input (StoryInput): overview, roles with optional actor assignment, script."""
-    return series_root(series_id) / "story.json"
+def series_root(series_id: str) -> str:
+    return f"{SERIES}/{_check_field(series_id, 'series_id')}"
 
 
-def auditions_dir() -> Path:
-    return LIBRARY_DIR / "auditions"
+def story(series_id: str) -> str:
+    """Sectioned story input (StoryInput)."""
+    return f"{series_root(series_id)}/story.json"
 
 
-def previews_dir() -> Path:
-    """Cached ~5 s voice previews for the Characters page: <actor>_<provider>.wav (+ .meta.json)."""
-    return LIBRARY_DIR / "previews"
+def story_raw(series_id: str) -> str:
+    return f"{series_root(series_id)}/story_raw.txt"
 
 
-def series_bible_path(series_id: str) -> Path:
-    return series_root(series_id) / "series.json"
+def trend_brief(series_id: str) -> str:
+    """The TrendBrief this series was written from, when it came from the Market Research Agent."""
+    return f"{series_root(series_id)}/trend_brief.json"
 
 
-def raw_script_path(series_id: str, episode: int) -> Path:
-    return series_root(series_id) / "scripts" / "raw" / f"ep{episode:02d}.txt"
+def bible(series_id: str) -> str:
+    return f"{series_root(series_id)}/series.json"
 
 
-def parsed_script_path(series_id: str, episode: int) -> Path:
-    return series_root(series_id) / "scripts" / "parsed" / f"ep{episode:02d}.json"
+def cast(series_id: str) -> str:
+    """ResolvedCast: role -> actor -> engine/voice table from the Casting Agent."""
+    return f"{series_root(series_id)}/cast.json"
 
 
-def stems_dir(series_id: str, episode: int) -> Path:
-    return series_root(series_id) / "stems" / f"ep{episode:02d}"
+def raw_script(series_id: str, episode: int) -> str:
+    return f"{series_root(series_id)}/scripts/raw/{ep(episode)}.txt"
 
 
-def timeline_path(series_id: str, episode: int) -> Path:
-    return series_root(series_id) / "timelines" / f"ep{episode:02d}_timeline.json"
+def parsed_script(series_id: str, episode: int) -> str:
+    return f"{series_root(series_id)}/scripts/parsed/{ep(episode)}.json"
 
 
-def master_path(series_id: str, episode: int, ext: str = "wav") -> Path:
-    return series_root(series_id) / "masters" / f"ep{episode:02d}_master.{ext}"
+def cliffhanger_check(series_id: str, episode: int) -> str:
+    return f"{series_root(series_id)}/scripts/checks/{ep(episode)}.json"
 
 
-def qa_report_path(series_id: str, episode: int) -> Path:
-    return series_root(series_id) / "qa" / f"ep{episode:02d}_report.json"
+def directed(series_id: str, episode: int) -> str:
+    """DirectedConversationUnits: the Director's handoff to the Sound Engineer."""
+    return f"{series_root(series_id)}/directed/{ep(episode)}.json"
 
 
-def run_log_path(series_id: str) -> Path:
-    return series_root(series_id) / "run.log.jsonl"
+def stems_dir(series_id: str, episode: int) -> str:
+    return f"{series_root(series_id)}/stems/{ep(episode)}"
+
+
+def stem(series_id: str, episode: int, name: str) -> str:
+    return f"{stems_dir(series_id, episode)}/{name}"
+
+
+def render_manifest(series_id: str, episode: int) -> str:
+    return f"{stems_dir(series_id, episode)}/render.json"
+
+
+def timeline(series_id: str, episode: int) -> str:
+    return f"{series_root(series_id)}/timelines/{ep(episode)}_timeline.json"
+
+
+def master(series_id: str, episode: int, ext: str = "wav") -> str:
+    return f"{series_root(series_id)}/masters/{ep(episode)}_master.{ext}"
+
+
+def mastered(series_id: str, episode: int) -> str:
+    """MasteredEpisode sidecar next to the master files."""
+    return f"{series_root(series_id)}/masters/{ep(episode)}_master.json"
+
+
+def qa_report(series_id: str, episode: int) -> str:
+    return f"{series_root(series_id)}/qa/{ep(episode)}_report.json"
+
+
+def release(series_id: str, episode: int) -> str:
+    """ReleasePackage: human gate state + publishing metadata."""
+    return f"{series_root(series_id)}/release/{ep(episode)}.json"
+
+
+def series_run_log(series_id: str) -> str:
+    return f"{series_root(series_id)}/run.log.jsonl"
+
+
+def run_state(series_id: str) -> str:
+    return f"{series_root(series_id)}/pipeline_run.json"
+
+
+def run_events(series_id: str) -> str:
+    return f"{series_root(series_id)}/logs/events.jsonl"
+
+
+def step_log(series_id: str, step_id: str) -> str:
+    return f"{series_root(series_id)}/logs/{step_id}.log"
+
+
+def approved_dir(series_id: str) -> str:
+    return f"{APPROVED}/{_check_field(series_id, 'series_id')}"
+
+
+def approved_file(series_id: str, episode: int, ext: str) -> str:
+    return f"{approved_dir(series_id)}/{ep(episode)}.{ext}"
+
+
+def meta(key: str) -> str:
+    """Sidecar with provider, settings, content hash, cost. Used for idempotent regeneration."""
+    return key + ".meta.json"
 
 
 # ---- stem names ------------------------------------------------------------------------
@@ -118,8 +188,8 @@ def stem_name_from_line_id(line_id: str, character_id: str, line_type: str) -> s
     m = re.match(r"^ep(\d{2})_sc(\d{2})_l(\d{3})$", line_id)
     if not m:
         raise ValueError(f"bad line_id {line_id!r}")
-    ep, sc, ln = (int(x) for x in m.groups())
-    return stem_name(ep, sc, ln, character_id, line_type)
+    e, sc, ln = (int(x) for x in m.groups())
+    return stem_name(e, sc, ln, character_id, line_type)
 
 
 def parse_stem_name(filename: str) -> dict:
@@ -137,23 +207,8 @@ def parse_stem_name(filename: str) -> dict:
     }
 
 
-def sfx_stem_name(line_id: str, tag: str) -> str:
-    _check_field(tag, "sfx tag")
-    return f"{line_id}_sfx_{tag}.wav"
-
-
-def bgm_stem_name(episode: int, scene: int, mood: str) -> str:
-    _check_field(mood, "mood")
-    return f"ep{episode:02d}_sc{scene:02d}_bgm_{mood}.wav"
-
-
-def ambience_stem_name(episode: int, scene: int, tag: str) -> str:
-    _check_field(tag, "ambience tag")
-    return f"ep{episode:02d}_sc{scene:02d}_amb_{tag}.wav"
-
-
 def chunk_stem_name(episode: int, scene: int, chunk: int) -> str:
-    """Scene-batched render unit (Gemini multi-speaker): several lines of one scene in one file."""
+    """Scene-batched render unit (multi-speaker request): several lines of one scene in one file."""
     return f"ep{episode:02d}_sc{scene:02d}_c{chunk:02d}_chunk.wav"
 
 
@@ -161,15 +216,10 @@ def chunk_stem_name_from_id(chunk_id: str) -> str:
     m = re.match(r"^ep(\d{2})_sc(\d{2})_c(\d{2})$", chunk_id)
     if not m:
         raise ValueError(f"bad chunk_id {chunk_id!r}")
-    ep, sc, c = (int(x) for x in m.groups())
-    return chunk_stem_name(ep, sc, c)
+    e, sc, c = (int(x) for x in m.groups())
+    return chunk_stem_name(e, sc, c)
 
 
-def render_manifest_path(series_id: str, episode: int) -> Path:
-    """Written by generate-voice: which render units (lines or chunks) make up the episode."""
-    return stems_dir(series_id, episode) / "render.json"
-
-
-def meta_path(stem: Path) -> Path:
-    """Sidecar with provider, settings, content hash, cost. Used for idempotent regeneration."""
-    return stem.with_suffix(stem.suffix + ".meta.json")
+def sfx_stem_name(line_id: str, tag: str) -> str:
+    _check_field(tag, "sfx tag")
+    return f"{line_id}_sfx_{tag}.wav"

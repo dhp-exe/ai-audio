@@ -1,7 +1,7 @@
 [project]
-name = "ai-audio"
-version = "0.2.0"
-description = "Audio-first Vietnamese AI micro-drama production pipeline with fixed Virtual Actor voice IPs"
+name = "emvoox"
+version = "1.0.0"
+description = "Emvoox Engine: event-driven multi-agent pipeline for Vietnamese AI audio micro-drama with fixed Virtual Actor voice IPs"
 requires-python = ">=3.11"
 dependencies = [
     "google-genai>=1.0",
@@ -9,12 +9,15 @@ dependencies = [
     "pydantic>=2.7",
     "python-dotenv>=1.0",
     "httpx>=0.27",
-    "rich>=13.0",
     "fastapi>=0.110",
     "uvicorn[standard]>=0.29",
 ]
 
 [project.optional-dependencies]
+# Market Research Agent: headless browser scan of public platform pages (then: playwright install chromium)
+research = ["playwright>=1.45"]
+# Claude as the LLM provider (EMVOOX_LLM_PROVIDER=anthropic)
+claude = ["anthropic>=0.70"]
 dev = [
     "pytest>=8.0",
     "pytest-mock>=3.14",
@@ -22,15 +25,25 @@ dev = [
     "mypy>=1.10",
 ]
 
+[project.scripts]
+emvoox = "emvoox.cli:main"
+
 [tool.ruff]
-line-length = 120
+line-length = 160
 target-version = "py311"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
+ignore = ["UP042"]  # (str, Enum) contracts kept as they are: they serialize identically and str() stays explicit
+
+[tool.ruff.lint.per-file-ignores]
+# Vietnamese prompt text and offline-story templates read better unwrapped
+"emvoox/agents/*.py" = ["E501"]
+"emvoox/providers/llm/mock.py" = ["E501"]
+"tests/*.py" = ["E501"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 
 [tool.setuptools.packages.find]
-include = ["pipeline*"]
+include = ["emvoox*"]

@@ -12,7 +12,7 @@ Goals, in order of importance:
 
 Audio tags in square brackets (e.g. "[sighs]") are preserved verbatim.
 
-CLI: python -m pipeline.text.vi_normalize "Anh nợ em 1.500.000đ từ 21h30 hôm 12/3, ko quên đâu"
+CLI: python -m emvoox.text.vi_normalize "Anh nợ em 1.500.000đ từ 21h30 hôm 12/3, ko quên đâu"
 """
 
 from __future__ import annotations

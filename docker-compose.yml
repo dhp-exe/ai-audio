@@ -1,0 +1,24 @@
+# Emvoox Studio for a teammate's machine:
+#   cp .env.example .env      # add WAVESPEED_API_KEY (or the keys you use)
+#   docker compose up --build # then open http://localhost:8765
+# One-off commands run in the same image, e.g.:
+#   docker compose run --rm emvoox python -m emvoox doctor --live
+#   docker compose run --rm emvoox python scripts/demo_pipeline.py     # offline demo, no key, no cost
+services:
+  emvoox:
+    build: .
+    image: emvoox-studio:latest
+    init: true
+    env_file:
+      - path: .env
+        required: false          # the app starts without keys (offline mock, viewing existing productions)
+    environment:
+      EMVOOX_DATA_DIR: /app/data # always the mounted folder, whatever .env says
+    ports:
+      # Published on this machine only: the app has no login. Change the left port with EMVOOX_PORT=9000.
+      - "127.0.0.1:${EMVOOX_PORT:-8765}:8765"
+    volumes:
+      # Voice IP registry, research, series, masters, cost log: kept on the host, shared with a non-Docker run.
+      - ./data:/app/data
+    shm_size: "1gb"              # headless Chromium (market research scan) needs more than Docker's 64 MB default
+    restart: unless-stopped

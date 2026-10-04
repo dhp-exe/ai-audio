@@ -59,6 +59,7 @@ tests/                 pytest, offline: sockets blocked, .env not loaded (EMVOOX
 ## Running
 
 ```bash
+docker compose up --build                                    # everything in one container at http://localhost:8765 (teammates)
 python -m emvoox serve                                       # API + web app at http://127.0.0.1:8765 (build web once: cd web && npm run export)
 cd web && npm run dev                                        # UI dev server :3000, proxies /api
 python scripts/demo_pipeline.py                              # offline demo

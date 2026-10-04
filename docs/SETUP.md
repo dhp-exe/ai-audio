@@ -6,9 +6,30 @@ budgeting. Cost estimates in the app come from `emvoox/telemetry/pricing.py` and
 
 ## 1. Install
 
+### Option A: Docker (no local toolchain)
+
+```bash
+cp .env.example .env                 # then fill in the keys you use (§4)
+docker compose up --build            # http://localhost:8765
+```
+
+- The image contains Python 3.12, FFmpeg, the built web client and headless Chromium for the market research scan.
+- `./data` is mounted into the container: the Voice IP registry from the repository is used, and everything produced
+  stays on your machine. `EMVOOX_DATA_DIR` in `.env` is ignored inside the container.
+- `.env` is read when the container starts and is never copied into the image. After changing it:
+  `docker compose up -d` (recreates the container).
+- The port is published on `127.0.0.1` only, because the app has no login. Another port: `EMVOOX_PORT=9000 docker compose up`.
+- Any CLI command runs in the same image: `docker compose run --rm emvoox python -m emvoox <command>` (for example
+  `doctor --live`, `voices`, `research --browser`, `run --series s1 --story /app/data/inputs/story.txt ...`; put input
+  files under `./data/inputs/` so the container can read them).
+- On Linux the container runs as uid 1000; if your user has another uid, `sudo chown -R 1000:1000 data` once.
+
+### Option B: on the machine
+
 ```bash
 python3.11+ -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"                      # + ".[research]" for the browser scan, ".[claude]" for Claude
+python -m playwright install chromium        # only for the browser scan
 brew install ffmpeg                          # FFmpeg and ffprobe on PATH
 cd web && npm install && npm run export      # build the web app once (served by the API)
 cp .env.example .env                         # then fill in the keys you use

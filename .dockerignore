@@ -1,0 +1,29 @@
+# Keep the build context small and secrets out of the image.
+.git
+.gitignore
+.env
+.env.*
+!.env.example
+.venv
+**/__pycache__
+**/*.pyc
+*.egg-info
+.pytest_cache
+.ruff_cache
+.mypy_cache
+.DS_Store
+.claude
+.vscode
+# data is mounted at run time, never baked in
+data
+demo-data
+emvox.docs
+docs
+tests
+# web build artifacts are rebuilt in the image
+web/node_modules
+web/.next
+web/out
+web/data
+web/.env*
+web/tsconfig.tsbuildinfo

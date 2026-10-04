@@ -12,7 +12,27 @@ Market Research → Script Writer → Casting & Voice IP Curator → AI Director
    TrendBrief      StoryInput+Bible    ResolvedCast+EnginePolicy   DirectedConversationUnits   MasteredEpisode   QAReport (PASS/FLAGGED)   approved masters + YouTube metadata
 ```
 
-## Quick start
+## Quick start with Docker (recommended for teammates)
+
+Only Docker Desktop (or Docker Engine with Compose v2.24+) is needed: Python, Node, FFmpeg and the headless browser are in the image.
+
+```bash
+git clone <this repo> && cd ai-audio
+cp .env.example .env                 # add WAVESPEED_API_KEY, set EMVOOX_LLM_PROVIDER / EMVOOX_TTS_PROVIDER to wavespeed
+docker compose up --build            # first build takes a few minutes; then open http://localhost:8765
+```
+
+```bash
+docker compose run --rm emvoox python scripts/demo_pipeline.py     # the whole fleet offline: no key, no cost
+docker compose run --rm emvoox python -m emvoox doctor --live      # keys, balance, FFmpeg, registry
+docker compose up -d && docker compose logs -f                     # run in the background, follow the log
+docker compose down                                                # stop (your data stays in ./data)
+```
+
+Everything the engine writes (Voice IP registry, research, series, masters, cost log) is in `./data` on your machine, so it
+survives rebuilds. After pulling new code: `docker compose up --build`. Details: [docs/SETUP.md](docs/SETUP.md) §1.
+
+## Quick start without Docker
 
 ```bash
 python -m venv .venv && source .venv/bin/activate && pip install -e ".[dev]"   # Python 3.11+, FFmpeg on PATH

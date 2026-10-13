@@ -1,0 +1,339 @@
+{
+  "schema_version": "2.0",
+  "series_id": "tai-sinh-de-sua-chua-sai-10081741",
+  "episode_number": 1,
+  "title": "Ngày tái sinh",
+  "target_duration_sec": 120,
+  "batching": "scene",
+  "units": [
+    {
+      "unit_id": "ep01_sc01_l001",
+      "scene_id": "sc01",
+      "order": 1,
+      "type": "monologue",
+      "speaker_id": "linh",
+      "role_name": "Nhã Đan",
+      "text": "Đau quá. Cảm giác như phổi mình vừa bị bóp nghẹt bởi làn nước lạnh lẽo của đêm đó. Mình... mình còn sống?",
+      "tts_text": "Đau quá. Cảm giác như phổi mình vừa bị bóp nghẹt bởi làn nước lạnh lẽo của đêm đó. Mình... mình còn sống?",
+      "emotion_tag": "fearful",
+      "emotional_intensity": 8,
+      "audio_tags": [
+        "internal monologue"
+      ],
+      "direction": "Giọng run rẩy, hơi thở gấp, âm thanh gần sát micro như tiếng thì thầm trong đầu.",
+      "pause_after_ms": 500,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Kore",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng sợ hãi (mạnh), độc thoại nội tâm, như tự nói với chính mình, mic gần, Giọng run rẩy, hơi thở gấp, âm thanh gần sát micro như tiếng thì thầm trong đầu"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep01_sc01_l002",
+      "scene_id": "sc01",
+      "order": 2,
+      "type": "dialogue",
+      "speaker_id": "diep",
+      "role_name": "Thùy Linh",
+      "text": "Đan à, cậu sao thế? Sắp đến giờ đính hôn rồi, đừng để gương mặt phờ phạc này làm hỏng ngày vui của cậu và Khang chứ.",
+      "tts_text": "Đan à, cậu sao thế? Sắp đến giờ đính hôn rồi, đừng để gương mặt phờ phạc này làm hỏng ngày vui của cậu và Khang chứ.",
+      "emotion_tag": "happy",
+      "emotional_intensity": 3,
+      "audio_tags": [],
+      "direction": "Giọng ngọt ngào, mượt mà nhưng có độ sắc lạnh ẩn sau nụ cười.",
+      "pause_after_ms": 400,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Despina",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng vui vẻ (nhẹ), Giọng ngọt ngào, mượt mà nhưng có độ sắc lạnh ẩn sau nụ cười"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep01_sc01_l003",
+      "scene_id": "sc01",
+      "order": 3,
+      "type": "monologue",
+      "speaker_id": "linh",
+      "role_name": "Nhã Đan",
+      "text": "Thùy Linh. Nụ cười này, ánh mắt này... chính là kẻ đã đẩy mình xuống vực thẳm. Kiếp trước mình đã quá mù quáng.",
+      "tts_text": "Thùy Linh. Nụ cười này, ánh mắt này... chính là kẻ đã đẩy mình xuống vực thẳm. Kiếp trước mình đã quá mù quáng.",
+      "emotion_tag": "disgusted",
+      "emotional_intensity": 7,
+      "audio_tags": [
+        "internal monologue"
+      ],
+      "direction": "Giọng trầm, lạnh, nhấn mạnh vào từng chữ để thể hiện sự căm hận.",
+      "pause_after_ms": 400,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Kore",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng khinh ghét (mạnh), độc thoại nội tâm, như tự nói với chính mình, mic gần, Giọng trầm, lạnh, nhấn mạnh vào từng chữ để thể hiện sự căm hận"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep01_sc01_l004",
+      "scene_id": "sc01",
+      "order": 4,
+      "type": "dialogue",
+      "speaker_id": "linh",
+      "role_name": "Nhã Đan",
+      "text": "Cảm ơn cậu đã nhắc, Linh. Mình chỉ đang nghĩ, nếu ngày hôm nay không diễn ra như dự định, liệu có ai thấy tiếc không nhỉ?",
+      "tts_text": "Cảm ơn cậu đã nhắc, Linh. Mình chỉ đang nghĩ, nếu ngày hôm nay không diễn ra như dự định, liệu có ai thấy tiếc không nhỉ?",
+      "emotion_tag": "sarcastic",
+      "emotional_intensity": 6,
+      "audio_tags": [
+        "pause"
+      ],
+      "direction": "Giọng điềm tĩnh, sắc bén, mỉa mai.",
+      "pause_after_ms": 500,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Kore",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng mỉa mai (vừa phải), ngắt một nhịp, Giọng điềm tĩnh, sắc bén, mỉa mai"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep01_sc02_l001",
+      "scene_id": "sc02",
+      "order": 5,
+      "type": "dialogue",
+      "speaker_id": "minh-khoi",
+      "role_name": "Minh Khang",
+      "text": "Đan, em làm gì vậy? Đừng để khách khứa phải chờ đợi. Ký nhanh vào bản thỏa thuận sáp nhập tài sản này đi, rồi chúng ta sẽ là một.",
+      "tts_text": "Đan, em làm gì vậy? Đừng để khách khứa phải chờ đợi. Ký nhanh vào bản thỏa thuận sáp nhập tài sản này đi, rồi chúng ta sẽ là một.",
+      "emotion_tag": "neutral",
+      "emotional_intensity": 4,
+      "audio_tags": [],
+      "direction": "Giọng thì thầm, gấp gáp, cố tỏ ra thân mật nhưng đầy áp đặt.",
+      "pause_after_ms": 400,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Puck",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng bình thản (vừa phải), Giọng thì thầm, gấp gáp, cố tỏ ra thân mật nhưng đầy áp đặt"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep01_sc02_l002",
+      "scene_id": "sc02",
+      "order": 6,
+      "type": "monologue",
+      "speaker_id": "linh",
+      "role_name": "Nhã Đan",
+      "text": "Thỏa thuận sáp nhập? Hắn vẫn dùng chiêu bài cũ để nuốt chửng tập đoàn nhà họ Lâm. Lần này, người bị nuốt sẽ là anh, Minh Khang.",
+      "tts_text": "Thỏa thuận sáp nhập? Hắn vẫn dùng chiêu bài cũ để nuốt chửng tập đoàn nhà họ Lâm. Lần này, người bị nuốt sẽ là anh, Minh Khang.",
+      "emotion_tag": "angry",
+      "emotional_intensity": 8,
+      "audio_tags": [
+        "internal monologue",
+        "pause"
+      ],
+      "direction": "Giọng nội tâm quyết liệt, nhịp điệu chậm và đanh thép.",
+      "pause_after_ms": 500,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Kore",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng giận dữ (mạnh), độc thoại nội tâm, như tự nói với chính mình, mic gần, ngắt một nhịp, Giọng nội tâm quyết liệt, nhịp điệu chậm và đanh thép"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep01_sc02_l003",
+      "scene_id": "sc02",
+      "order": 7,
+      "type": "dialogue",
+      "speaker_id": "linh",
+      "role_name": "Nhã Đan",
+      "text": "Anh Khang, em nghĩ mình nên xem lại điều khoản thứ bảy. Con số này không khớp với báo cáo tài chính quý ba mà anh gửi cho hội đồng quản trị.",
+      "tts_text": "Anh Khang, em nghĩ mình nên xem lại điều khoản thứ bảy. Con số này không khớp với báo cáo tài chính quý ba mà anh gửi cho hội đồng quản trị.",
+      "emotion_tag": "neutral",
+      "emotional_intensity": 5,
+      "audio_tags": [],
+      "direction": "Giọng bình thản, lạnh lùng, rõ ràng từng chữ.",
+      "pause_after_ms": 400,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Kore",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng bình thản (vừa phải), Giọng bình thản, lạnh lùng, rõ ràng từng chữ"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep01_sc02_l004",
+      "scene_id": "sc02",
+      "order": 8,
+      "type": "dialogue",
+      "speaker_id": "minh-khoi",
+      "role_name": "Minh Khang",
+      "text": "Em nói gì vậy? Đừng đùa trước mặt quan khách.",
+      "tts_text": "Em nói gì vậy? Đừng đùa trước mặt quan khách.",
+      "emotion_tag": "fearful",
+      "emotional_intensity": 6,
+      "audio_tags": [
+        "nervously"
+      ],
+      "direction": "Giọng bắt đầu mất bình tĩnh, hơi run.",
+      "pause_after_ms": 400,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Puck",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng sợ hãi (vừa phải), lo lắng, run giọng, Giọng bắt đầu mất bình tĩnh, hơi run"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep01_sc02_l005",
+      "scene_id": "sc02",
+      "order": 9,
+      "type": "dialogue",
+      "speaker_id": "linh",
+      "role_name": "Nhã Đan",
+      "text": "Tôi không đùa. Bản hợp đồng này không chỉ sai lệch con số, mà còn là một cái bẫy lừa đảo chiếm đoạt tài sản. Mọi người, hãy nhìn vào điều khoản này xem, Minh Khang đã cố tình cài cắm gì vào đây?",
+      "tts_text": "Tôi không đùa. Bản hợp đồng này không chỉ sai lệch con số, mà còn là một cái bẫy lừa đảo chiếm đoạt tài sản. Mọi người, hãy nhìn vào điều khoản này xem, Minh Khang đã cố tình cài cắm gì vào đây?",
+      "emotion_tag": "angry",
+      "emotional_intensity": 10,
+      "audio_tags": [
+        "shouting",
+        "pause"
+      ],
+      "direction": "Giọng vang, đanh thép, đầy uy quyền, hướng về phía đám đông.",
+      "pause_after_ms": 1500,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Kore",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng giận dữ (rất mạnh, cao trào), quát lớn, ngắt một nhịp, Giọng vang, đanh thép, đầy uy quyền, hướng về phía đám đông"
+      },
+      "sfx": []
+    }
+  ],
+  "render_plan": [
+    {
+      "id": "ep01_sc01_c01",
+      "kind": "conversation",
+      "scene_id": "sc01",
+      "unit_ids": [
+        "ep01_sc01_l001",
+        "ep01_sc01_l002",
+        "ep01_sc01_l003",
+        "ep01_sc01_l004"
+      ],
+      "speakers": [
+        "linh",
+        "diep"
+      ],
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "ep01_sc01_c01",
+      "text": "Linh: Đau quá. Cảm giác như phổi mình vừa bị bóp nghẹt bởi làn nước lạnh lẽo của đêm đó. Mình... mình còn sống?\nDiep: Đan à, cậu sao thế? Sắp đến giờ đính hôn rồi, đừng để gương mặt phờ phạc này làm hỏng ngày vui của cậu và Khang chứ.\nLinh: Thùy Linh. Nụ cười này, ánh mắt này... chính là kẻ đã đẩy mình xuống vực thẳm. Kiếp trước mình đã quá mù quáng.\nLinh: Cảm ơn cậu đã nhắc, Linh. Mình chỉ đang nghĩ, nếu ngày hôm nay không diễn ra như dự định, liệu có ai thấy tiếc không nhỉ?",
+      "settings": {
+        "style": "Đọc đoạn hội thoại tiếng Việt như phim truyền hình, diễn xuất tự nhiên; giữa các câu ngắt nghỉ khoảng nửa giây.",
+        "turn_styles": [
+          "Nói tiếng Việt, giọng sợ hãi (mạnh), độc thoại nội tâm, như tự nói với chính mình, mic gần, Giọng run rẩy, hơi thở gấp, âm thanh gần sát micro như tiếng thì thầm trong đầu",
+          "Nói tiếng Việt, giọng vui vẻ (nhẹ), Giọng ngọt ngào, mượt mà nhưng có độ sắc lạnh ẩn sau nụ cười",
+          "Nói tiếng Việt, giọng khinh ghét (mạnh), độc thoại nội tâm, như tự nói với chính mình, mic gần, Giọng trầm, lạnh, nhấn mạnh vào từng chữ để thể hiện sự căm hận",
+          "Nói tiếng Việt, giọng mỉa mai (vừa phải), ngắt một nhịp, Giọng điềm tĩnh, sắc bén, mỉa mai"
+        ]
+      },
+      "speaker_voices": [
+        [
+          "Linh",
+          "Kore"
+        ],
+        [
+          "Diep",
+          "Despina"
+        ]
+      ],
+      "stem": "ep01_sc01_c01_chunk.wav",
+      "pause_after_ms": 500,
+      "attempt": 0
+    },
+    {
+      "id": "ep01_sc02_c01",
+      "kind": "conversation",
+      "scene_id": "sc02",
+      "unit_ids": [
+        "ep01_sc02_l001",
+        "ep01_sc02_l002",
+        "ep01_sc02_l003",
+        "ep01_sc02_l004",
+        "ep01_sc02_l005"
+      ],
+      "speakers": [
+        "minh-khoi",
+        "linh"
+      ],
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "ep01_sc02_c01",
+      "text": "MinhKhoi: Đan, em làm gì vậy? Đừng để khách khứa phải chờ đợi. Ký nhanh vào bản thỏa thuận sáp nhập tài sản này đi, rồi chúng ta sẽ là một.\nLinh: Thỏa thuận sáp nhập? Hắn vẫn dùng chiêu bài cũ để nuốt chửng tập đoàn nhà họ Lâm. Lần này, người bị nuốt sẽ là anh, Minh Khang.\nLinh: Anh Khang, em nghĩ mình nên xem lại điều khoản thứ bảy. Con số này không khớp với báo cáo tài chính quý ba mà anh gửi cho hội đồng quản trị.\nMinhKhoi: Em nói gì vậy? Đừng đùa trước mặt quan khách.\nLinh: Tôi không đùa. Bản hợp đồng này không chỉ sai lệch con số, mà còn là một cái bẫy lừa đảo chiếm đoạt tài sản. Mọi người, hãy nhìn vào điều khoản này xem, Minh Khang đã cố tình cài cắm gì vào đây?",
+      "settings": {
+        "style": "Đọc đoạn hội thoại tiếng Việt như phim truyền hình, diễn xuất tự nhiên; giữa các câu ngắt nghỉ khoảng nửa giây.",
+        "turn_styles": [
+          "Nói tiếng Việt, giọng bình thản (vừa phải), Giọng thì thầm, gấp gáp, cố tỏ ra thân mật nhưng đầy áp đặt",
+          "Nói tiếng Việt, giọng giận dữ (mạnh), độc thoại nội tâm, như tự nói với chính mình, mic gần, ngắt một nhịp, Giọng nội tâm quyết liệt, nhịp điệu chậm và đanh thép",
+          "Nói tiếng Việt, giọng bình thản (vừa phải), Giọng bình thản, lạnh lùng, rõ ràng từng chữ",
+          "Nói tiếng Việt, giọng sợ hãi (vừa phải), lo lắng, run giọng, Giọng bắt đầu mất bình tĩnh, hơi run",
+          "Nói tiếng Việt, giọng giận dữ (rất mạnh, cao trào), quát lớn, ngắt một nhịp, Giọng vang, đanh thép, đầy uy quyền, hướng về phía đám đông"
+        ]
+      },
+      "speaker_voices": [
+        [
+          "MinhKhoi",
+          "Puck"
+        ],
+        [
+          "Linh",
+          "Kore"
+        ]
+      ],
+      "stem": "ep01_sc02_c01_chunk.wav",
+      "pause_after_ms": 1500,
+      "attempt": 0
+    }
+  ],
+  "cliffhanger": "Nhã Đan công khai lỗi sai trong hợp đồng của Minh Khang trước mặt toàn bộ khách mời.",
+  "director_notes": "Tập 1 tập trung vào sự chuyển biến tâm lý của Nhã Đan từ hoảng loạn sang quyết đoán. Cần chú ý sự tương phản giữa giọng ngọt ngào của Thùy Linh và sự lạnh lùng của Nhã Đan.",
+  "bgm_mood": null,
+  "directed_at": "2026-10-08T17:41:45+00:00"
+}

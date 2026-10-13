@@ -1,0 +1,47 @@
+{
+  "series_id": "tong-tai-mat-tri-nho-va-10050210",
+  "episode_number": 2,
+  "title": "Ký ức vụn vỡ",
+  "state": "awaiting_approval",
+  "qa_status": "PASS",
+  "qa_score": 100,
+  "qa_attempts": 0,
+  "reason": "QA passed; waiting for a human to listen and approve.",
+  "duration_ms": 68800,
+  "master_mp3": "series/tong-tai-mat-tri-nho-va-10050210/masters/ep02_master.mp3",
+  "master_wav": "series/tong-tai-mat-tri-nho-va-10050210/masters/ep02_master.wav",
+  "metadata": {
+    "title": "Bản Hợp Đồng Của Người Lạ | Tập 2: Ký ức vụn vỡ",
+    "description": "Minh Quân bắt đầu nảy sinh nghi vấn về người phụ nữ xa lạ tên Khánh Vy, trong khi cô âm thầm thực hiện kế hoạch của mình. Tú Anh tìm mọi cách ngăn cản sự thật về quá khứ được hé lộ. Nghe tập tiếp theo trong danh sách phát. Giọng đọc trong video được tạo bằng AI.",
+    "tags": [
+      "Bản Hợp Đồng Của Người Lạ",
+      "truyện audio",
+      "Mặc Khải",
+      "Emvoox",
+      "truyện ngôn tình",
+      "truyện đô thị",
+      "truyện ngược tâm",
+      "audiobook",
+      "truyện tâm lý xã hội",
+      "truyện dài kỳ"
+    ],
+    "hashtags": [
+      "#BảnHợpĐồngCủaNgườiLạ",
+      "#TruyệnAudio",
+      "#MặcKhải",
+      "#TruyệnNgônTình"
+    ],
+    "playlist_title": "Bản Hợp Đồng Của Người Lạ",
+    "thumbnail_text": "Sự thật bị che giấu",
+    "language": "vi",
+    "category": "Entertainment",
+    "made_for_kids": false,
+    "contains_synthetic_media": true,
+    "generated_by": "llm"
+  },
+  "decision": null,
+  "exported": [],
+  "publish": {},
+  "created_at": "2026-10-05T02:13:36+00:00",
+  "updated_at": "2026-10-05T02:13:36+00:00"
+}

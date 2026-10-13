@@ -1,0 +1,47 @@
+{
+  "series_id": "tong-tai-mat-tri-nho-va-10050210",
+  "episode_number": 3,
+  "title": "Trò chơi tâm lý",
+  "state": "awaiting_approval",
+  "qa_status": "PASS",
+  "qa_score": 100,
+  "qa_attempts": 0,
+  "reason": "QA passed; waiting for a human to listen and approve.",
+  "duration_ms": 78300,
+  "master_mp3": "series/tong-tai-mat-tri-nho-va-10050210/masters/ep03_master.mp3",
+  "master_wav": "series/tong-tai-mat-tri-nho-va-10050210/masters/ep03_master.wav",
+  "metadata": {
+    "title": "Bản Hợp Đồng Của Người Lạ | Tập 3: Trò chơi tâm lý giữa Vy và Quân",
+    "description": "Khánh Vy bắt đầu triển khai kế hoạch thao túng cảm xúc, khơi gợi lại những mảnh ký ức vụn vỡ trong tâm trí Minh Quân. Giữa những toan tính tại tập đoàn Minh Gia, liệu sự thật về quá khứ có bị bại lộ bởi những bước đi đầy ẩn ý của Vy? Nghe tập tiếp theo trong danh sách phát. Giọng đọc trong video được tạo bằng AI.",
+    "tags": [
+      "Bản Hợp Đồng Của Người Lạ",
+      "truyện audio",
+      "Mặc Khải",
+      "Emvoox",
+      "truyện ngôn tình",
+      "truyện đô thị",
+      "truyện ngược tâm",
+      "truyện tâm lý",
+      "audiobook",
+      "truyện hay"
+    ],
+    "hashtags": [
+      "#BanHopDongCuaNguoiLa",
+      "#TruyenAudio",
+      "#MacKhai",
+      "#TruyenNgonTinh"
+    ],
+    "playlist_title": "Bản Hợp Đồng Của Người Lạ",
+    "thumbnail_text": "Vy thao túng ký ức",
+    "language": "vi",
+    "category": "Entertainment",
+    "made_for_kids": false,
+    "contains_synthetic_media": true,
+    "generated_by": "llm"
+  },
+  "decision": null,
+  "exported": [],
+  "publish": {},
+  "created_at": "2026-10-05T02:14:29+00:00",
+  "updated_at": "2026-10-05T02:14:29+00:00"
+}

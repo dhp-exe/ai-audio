@@ -1,0 +1,220 @@
+{
+  "series_id": "thu-ky-bi-an-va-tong-tai-10131355",
+  "language": "vi-VN",
+  "title": "Nhịp Đập Tần Số",
+  "logline": "Một chuyên gia trị liệu tâm lý thâm nhập vào tập đoàn của người đàn ông có liên quan đến cái chết của cha cô, nhưng lại vô tình trở thành liều thuốc duy nhất cho chứng mất ngủ kinh niên của anh ta.",
+  "premise": "Lâm An, một chuyên gia trị liệu, đóng giả làm thư ký để điều tra Minh Quân - người đứng đầu tập đoàn liên quan đến vụ tai nạn của gia đình cô. Khi cô vô tình chữa khỏi chứng mất ngủ của anh bằng tần số âm thanh, cả hai bị cuốn vào một trò chơi tâm lý nguy hiểm giữa sự thật, tình yêu và sự phản bội.",
+  "tone": "Căng thẳng, lãng mạn, bí ẩn, nhịp độ nhanh.",
+  "genre": [
+    "Đô thị",
+    "Lãng mạn",
+    "Tâm lý"
+  ],
+  "overview": {
+    "title": "Nhịp Đập Tần Số",
+    "total_minutes": 10,
+    "genre": "Đô thị, Lãng mạn, Tâm lý",
+    "setting": "Tòa nhà tập đoàn tài chính Minh Gia và căn hộ penthouse tách biệt."
+  },
+  "mode": "write",
+  "protagonist_id": "linh",
+  "protagonist_role": "Lâm An",
+  "roles": [
+    {
+      "role_name": "Lâm An",
+      "role_type": "protagonist",
+      "description": "Nữ, 26 tuổi, chuyên gia trị liệu tâm lý ẩn danh. Mục tiêu: Tiếp cận Minh Quân để tìm bằng chứng về vụ tai nạn của gia đình cô. Động cơ: Sự thật và công lý.",
+      "gender": "female",
+      "actor_id": "linh",
+      "assigned_by": "ai",
+      "reason": "Chất giọng sắc sảo, thông minh và khả năng giữ bình tĩnh của Linh rất phù hợp với vai chuyên gia trị liệu ẩn danh đầy bản lĩnh."
+    },
+    {
+      "role_name": "Minh Quân",
+      "role_type": "antagonist",
+      "description": "Nam, 32 tuổi, Tổng tài mắc chứng mất ngủ kinh niên. Mục tiêu: Kiểm soát nỗi đau và sự hoài nghi. Động cơ: Sự sinh tồn và nhu cầu kiểm soát tuyệt đối.",
+      "gender": "male",
+      "actor_id": "duong",
+      "assigned_by": "ai",
+      "reason": "Chất giọng trầm, điềm tĩnh và đầy quyền uy của Dương hoàn hảo cho hình tượng tổng tài lạnh lùng, khó gần."
+    },
+    {
+      "role_name": "Tú Vy",
+      "role_type": "supporting",
+      "description": "Nữ, 28 tuổi, trợ lý cấp cao, người yêu cũ của Quân. Mục tiêu: Giữ vững vị thế trong tập đoàn. Động cơ: Sự đố kỵ và bảo vệ lợi ích cá nhân.",
+      "gender": "female",
+      "actor_id": "diep",
+      "assigned_by": "ai",
+      "reason": "Sự sang trọng, khéo léo và ẩn ý trong giọng nói của Diệp rất hợp với vai người yêu cũ đầy toan tính và tham vọng."
+    },
+    {
+      "role_name": "Khải",
+      "role_type": "supporting",
+      "description": "Nam, 30 tuổi, bác sĩ riêng của Quân. Mục tiêu: Che giấu sự thật về thuốc điều trị của Quân. Động cơ: Lợi nhuận từ việc thao túng sức khỏe của Quân.",
+      "gender": "male",
+      "actor_id": "minh-khoi",
+      "assigned_by": "ai",
+      "reason": "Sự linh hoạt và khả năng biến hóa cảm xúc của Minh Khôi giúp thể hiện tốt vai bác sĩ có vẻ ngoài dễ mến nhưng ẩn chứa sự thao túng."
+    }
+  ],
+  "cast": [
+    "linh",
+    "duong",
+    "diep",
+    "minh-khoi"
+  ],
+  "trend_brief_id": "urban-20261013-135306",
+  "theme_category": "urban_ceo",
+  "pending_characters": [],
+  "episode_format": {
+    "count": 10,
+    "min_duration_sec": 50,
+    "max_duration_sec": 70,
+    "ends_on_cliffhanger": true
+  },
+  "episodes": [
+    {
+      "number": 1,
+      "title": "Bản giao hưởng lạ",
+      "logline": "Lâm An bắt đầu công việc thư ký và đối mặt với sự khắt khe của Minh Quân.",
+      "key_beats": [
+        "An nhận việc, bị Quân giao khối lượng việc khổng lồ.",
+        "Quân lên cơn đau đầu dữ dội trong văn phòng.",
+        "An vô tình bật tần số âm thanh trị liệu.",
+        "Quân chìm vào giấc ngủ sâu lần đầu sau 5 năm."
+      ],
+      "cliffhanger": "Quân tỉnh dậy, ánh mắt sắc lạnh nhìn An: 'Cô là ai mà biết tần số này?'",
+      "source_span": "",
+      "hook_score": 8
+    },
+    {
+      "number": 2,
+      "title": "Sự nghi ngờ ngọt ngào",
+      "logline": "Quân bắt đầu giả vờ tin tưởng An để thăm dò.",
+      "key_beats": [
+        "Quân yêu cầu An làm thư ký riêng.",
+        "An cảm thấy sự bất thường trong cách Quân dùng thuốc.",
+        "Quân giả vờ lơi lỏng cảnh giác.",
+        "An lén đột nhập vào phòng làm việc của Quân."
+      ],
+      "cliffhanger": "An tìm thấy đơn thuốc của Khải và nhận ra nó chứa chất gây nghiện.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 3,
+      "title": "Liều thuốc độc",
+      "logline": "An đối mặt với Khải về loại thuốc mà Quân đang dùng.",
+      "key_beats": [
+        "An chất vấn Khải về liều lượng thuốc.",
+        "Khải đe dọa An bằng quyền lực của bác sĩ riêng.",
+        "An cảnh báo Quân nhưng bị anh gạt đi.",
+        "Tú Vy bắt đầu theo dõi mọi hành động của An."
+      ],
+      "cliffhanger": "Tú Vy tìm thấy thiết bị ghi âm trong túi xách của An.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 4,
+      "title": "Ván bài lật ngửa",
+      "logline": "Quân phát hiện hồ sơ bệnh án giả trong ngăn kéo của An.",
+      "key_beats": [
+        "Quân lục soát ngăn kéo của An khi cô vắng mặt.",
+        "Quân tìm thấy bằng chứng An đang điều tra mình.",
+        "An quay lại, đối diện với sự giận dữ của Quân.",
+        "Quân ép An phải ở lại trị liệu cho anh mỗi đêm."
+      ],
+      "cliffhanger": "Quân ghé sát tai An: 'Nếu cô muốn điều tra, hãy làm điều đó ngay trong phòng ngủ của tôi.'",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 5,
+      "title": "Đêm không ngủ",
+      "logline": "Sự gần gũi tạo ra những rung động không mong muốn.",
+      "key_beats": [
+        "An trị liệu cho Quân trong penthouse.",
+        "Quân bắt đầu chia sẻ về áp lực gia tộc.",
+        "An tìm thấy manh mối về vụ tai nạn của cha mình trong tài liệu của Quân.",
+        "Tú Vy đột ngột ghé thăm penthouse."
+      ],
+      "cliffhanger": "Tú Vy đứng ngoài cửa, nhìn thấy An đang ở trong phòng ngủ của Quân.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 6,
+      "title": "Mặt nạ rơi xuống",
+      "logline": "Tú Vy bắt đầu chiến dịch phá hoại uy tín của An tại tập đoàn.",
+      "key_beats": [
+        "Tú Vy tung tin đồn An là gián điệp.",
+        "Quân đứng ra bảo vệ An trước hội đồng quản trị.",
+        "Khải bắt đầu cảm thấy vị thế của mình bị đe dọa.",
+        "An tìm thấy bằng chứng liên kết Khải và tập đoàn Minh Gia."
+      ],
+      "cliffhanger": "An phát hiện ra chính Khải là người gây ra vụ tai nạn năm xưa.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 7,
+      "title": "Sự thật nghiệt ngã",
+      "logline": "An đứng giữa tình yêu và sự báo thù.",
+      "key_beats": [
+        "An đối chất với Quân về sự liên quan của gia tộc anh.",
+        "Quân bàng hoàng nhận ra mình bị gia đình lợi dụng.",
+        "Khải nhận ra An đã biết quá nhiều.",
+        "Khải ra lệnh cho tay chân theo dõi An."
+      ],
+      "cliffhanger": "An bị chặn đường trong hầm để xe bởi những kẻ lạ mặt.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 8,
+      "title": "Lựa chọn của Quân",
+      "logline": "Quân phát hiện thân phận thật của An và chọn cách bảo vệ cô.",
+      "key_beats": [
+        "Quân giải cứu An khỏi vụ tấn công.",
+        "Quân thừa nhận đã biết thân phận thật của cô từ lâu.",
+        "Quân quyết định từ bỏ quyền lực để bảo vệ An.",
+        "Khải ép Quân phải ký vào văn bản chuyển giao quyền lực."
+      ],
+      "cliffhanger": "Khải đe dọa sẽ tung bằng chứng giả về việc Quân giết người nếu anh không tuân lệnh.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 9,
+      "title": "Đêm trước bão",
+      "logline": "An và Quân lập kế hoạch lật đổ Khải và thế lực gia tộc.",
+      "key_beats": [
+        "An và Quân thu thập bằng chứng cuối cùng.",
+        "Tú Vy phản bội Khải để tìm đường sống.",
+        "Quân chuẩn bị cho cuộc họp cổ đông.",
+        "An lo lắng về tương lai của cả hai."
+      ],
+      "cliffhanger": "An đưa cho Quân bằng chứng về cái chết của cha mình: 'Anh có chắc muốn công khai điều này không?'",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 10,
+      "title": "Bình minh mới",
+      "logline": "Sự thật được phơi bày, Quân và An đối mặt với hậu quả.",
+      "key_beats": [
+        "Cuộc họp cổ đông, An công khai bằng chứng.",
+        "Tập đoàn Minh Gia chao đảo, Khải bị bắt.",
+        "Quân chấp nhận mất tất cả tài sản.",
+        "Cả hai đối mặt với pháp luật nhưng cùng nhau bước tiếp."
+      ],
+      "cliffhanger": "Quân nắm tay An: 'Chúng ta không còn gì, nhưng cuối cùng anh đã có thể ngủ ngon.'",
+      "source_span": "",
+      "hook_score": null
+    }
+  ],
+  "changelog": [
+    "2026-10-13 outline (google/gemini-3.1-flash-lite, mode=write)"
+  ]
+}

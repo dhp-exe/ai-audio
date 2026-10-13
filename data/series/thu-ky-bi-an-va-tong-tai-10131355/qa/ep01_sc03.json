@@ -1,0 +1,50 @@
+{
+  "series_id": "thu-ky-bi-an-va-tong-tai-10131355",
+  "episode_number": 1,
+  "scene_id": "sc03",
+  "attempt": 0,
+  "status": "PASS",
+  "score": 100,
+  "units": [
+    "ep01_sc03_c01"
+  ],
+  "checks": {
+    "stems_complete": {
+      "ok": true,
+      "missing": [],
+      "units": 1
+    },
+    "sentences": {
+      "ok": true,
+      "short": [],
+      "long": []
+    },
+    "clipping": {
+      "ok": true,
+      "units": [],
+      "threshold_dbfs": -0.1
+    },
+    "silence": {
+      "ok": true,
+      "units": [],
+      "min_silence_s": 1.5
+    },
+    "speakers": {
+      "ok": true,
+      "mismatch": [],
+      "placeholder": []
+    },
+    "transcript": {
+      "ok": null,
+      "skipped": "EMVOOX_QA_TRANSCRIBE is off"
+    }
+  },
+  "error_logs": [],
+  "retry_instructions": [],
+  "review_lines": [
+    "ep01_sc03_l001",
+    "ep01_sc03_l002"
+  ],
+  "approval": null,
+  "generated_at": "2026-10-13T13:56:42+00:00"
+}

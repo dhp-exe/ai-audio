@@ -1,0 +1,35 @@
+{
+  "overview": {
+    "title": "Bản Hợp Đồng Của Người Lạ",
+    "total_minutes": 45,
+    "genre": "Đô thị, Tâm lý, Ngược tâm",
+    "setting": "Thành phố hiện đại, tập đoàn tài chính Minh Gia"
+  },
+  "roles": [
+    {
+      "name": "Khánh Vy",
+      "description": "Nữ, 26 tuổi, sắc sảo, lạnh lùng. Mục tiêu: Trả thù và giành lại quyền thừa kế. Động cơ: Sự phản bội của chồng cũ khiến cô lột xác thành đối tác kinh doanh quyền lực.",
+      "gender": null,
+      "actor_id": null
+    },
+    {
+      "name": "Minh Quân",
+      "description": "Nam, 30 tuổi, tổng tài cao ngạo. Mục tiêu: Tìm lại ký ức đã mất. Động cơ: Sự trống rỗng sau tai nạn khiến anh ám ảnh bởi hình bóng người vợ cũ trong tiềm thức.",
+      "gender": null,
+      "actor_id": null
+    },
+    {
+      "name": "Tú Anh",
+      "description": "Nữ, 25 tuổi, thư ký riêng, xảo quyệt. Mục tiêu: Trở thành phu nhân tập đoàn. Động cơ: Che giấu sự thật về vụ tai nạn năm xưa và ngăn cản Quân nhớ lại Vy.",
+      "gender": null,
+      "actor_id": null
+    },
+    {
+      "name": "Hải",
+      "description": "Nam, 32 tuổi, trợ lý thân cận của Vy. Mục tiêu: Bảo vệ Vy. Động cơ: Tình yêu thầm kín và mong muốn Vy không bị tổn thương lần nữa.",
+      "gender": null,
+      "actor_id": null
+    }
+  ],
+  "script": "Hồi 1: Khánh Vy trở lại với tư cách là đối tác chiến lược của tập đoàn Minh Gia. Minh Quân, sau tai nạn mất trí nhớ, không nhận ra cô nhưng lại cảm thấy một sự kết nối kỳ lạ. Tú Anh, người đã thao túng Quân suốt một năm qua, bắt đầu cảm thấy bị đe dọa khi Quân liên tục tìm cách tiếp cận Vy. Bước ngoặt tập 1: Quân đột ngột hủy cuộc họp quan trọng chỉ để theo Vy đến quán cà phê cũ, nơi anh từng cầu hôn cô, dù anh không hiểu tại sao mình lại đến đó. Hồi 2: Vy sử dụng sự lạnh lùng để thao túng tâm lý Quân, khiến anh rơi vào vòng xoáy của sự hối hận vô cớ. Tú Anh bắt đầu lộ sơ hở khi cố tình tạo ra những bằng chứng giả về quá khứ của Quân. Quân bắt đầu nghi ngờ thư ký của mình. Bước ngoặt: Trong một buổi tiệc, Quân vô tình nhìn thấy vết sẹo dài trên cổ tay Vy – vết sẹo do anh gây ra trong một vụ tranh cãi trước khi cô rời đi. Hồi 3: Quân đối diện với sự thật, anh nhớ lại tất cả sự tàn nhẫn của mình. Tú Anh bị đẩy vào đường cùng, quyết định tung đòn cuối bằng cách đe dọa tính mạng của Vy. Vy không hề sợ hãi, cô đã cài bẫy để Tú Anh tự thú nhận mọi tội lỗi trong một cuộc ghi âm công khai. Kết thúc: Quân giành lại quyền kiểm soát, nhưng Vy từ chối quay lại. Cô chọn rời đi một lần nữa, để lại Quân với sự hối hận muộn màng, khẳng định rằng sự tha thứ không phải là món quà dành cho kẻ đã đánh mất chính mình."
+}

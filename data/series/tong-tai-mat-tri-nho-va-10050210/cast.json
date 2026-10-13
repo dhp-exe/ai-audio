@@ -1,0 +1,84 @@
+{
+  "series_id": "tong-tai-mat-tri-nho-va-10050210",
+  "engine_policy": {
+    "default": {
+      "provider": "wavespeed",
+      "model": "google/gemini-3.8-flash/text-to-speech"
+    },
+    "by_role_type": {},
+    "by_actor": {},
+    "prefer_cloned": true,
+    "tier": "test",
+    "batching": "auto"
+  },
+  "protagonist_id": "linh",
+  "members": [
+    {
+      "role_name": "Khánh Vy",
+      "role_type": "protagonist",
+      "actor_id": "linh",
+      "display_name": "Linh",
+      "assigned_by": "ai",
+      "reason": "Chất giọng alto khàn, sắc sảo và nhịp nói dứt khoát của Linh rất phù hợp với hình tượng người phụ nữ lạnh lùng, đầy bản lĩnh.",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Kore",
+      "voice_source": "prebuilt",
+      "fallback_voice_id": null,
+      "voice_settings": {},
+      "is_ip_asset": true
+    },
+    {
+      "role_name": "Minh Quân",
+      "role_type": "antagonist",
+      "actor_id": "duong",
+      "display_name": "Dương",
+      "assigned_by": "ai",
+      "reason": "Giọng trầm, điềm tĩnh và quyền uy của Dương hoàn hảo cho vai tổng tài đang tìm lại ký ức.",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Orus",
+      "voice_source": "prebuilt",
+      "fallback_voice_id": null,
+      "voice_settings": {},
+      "is_ip_asset": true
+    },
+    {
+      "role_name": "Tú Anh",
+      "role_type": "antagonist",
+      "actor_id": "diep",
+      "display_name": "Diệp",
+      "assigned_by": "ai",
+      "reason": "Sự khéo léo, mượt mà nhưng đầy toan tính trong giọng nói của Diệp rất hợp với vai thư ký xảo quyệt.",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Despina",
+      "voice_source": "prebuilt",
+      "fallback_voice_id": null,
+      "voice_settings": {},
+      "is_ip_asset": true
+    },
+    {
+      "role_name": "Hải",
+      "role_type": "supporting",
+      "actor_id": "minh-khoi",
+      "display_name": "Minh Khôi",
+      "assigned_by": "ai",
+      "reason": "Sự nồng nhiệt và chân thành trong giọng của Minh Khôi phù hợp với vai trợ lý luôn âm thầm bảo vệ người mình yêu.",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Puck",
+      "voice_source": "prebuilt",
+      "fallback_voice_id": null,
+      "voice_settings": {},
+      "is_ip_asset": true
+    }
+  ],
+  "notes": [
+    "linh: using its Gemini TTS voice Kore through WaveSpeed (google/gemini-3.8-flash/text-to-speech).",
+    "duong: using its Gemini TTS voice Orus through WaveSpeed (google/gemini-3.8-flash/text-to-speech).",
+    "diep: using its Gemini TTS voice Despina through WaveSpeed (google/gemini-3.8-flash/text-to-speech).",
+    "minh-khoi: using its Gemini TTS voice Puck through WaveSpeed (google/gemini-3.8-flash/text-to-speech)."
+  ],
+  "resolved_at": "2026-10-05T02:11:19+00:00"
+}

@@ -1,0 +1,14 @@
+{
+  "episode_number": 1,
+  "hook_score": 8,
+  "twist_within_30s": false,
+  "antagonist_is_smart": true,
+  "independent_motivations": true,
+  "issues": [
+    "Thiếu bước ngoặt trong 30 giây đầu (100 từ thoại đầu tiên chỉ là đối thoại công việc thông thường).",
+    "Động cơ của Tú Vy và Khải chưa được làm rõ, họ đang đóng vai trò làm nền cho nhân vật chính."
+  ],
+  "suggestion": "Hãy thêm một chi tiết bất ngờ ngay từ câu thoại đầu tiên của cảnh 1, ví dụ: Lâm An phát hiện ra một tài liệu giả mạo hoặc một hành động kỳ lạ của Minh Quân ngay khi cô vừa bước vào phòng, thay vì chỉ quan sát tấm ảnh.",
+  "checked_by": "llm",
+  "passed": false
+}

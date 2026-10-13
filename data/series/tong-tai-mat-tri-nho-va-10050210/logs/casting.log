@@ -1,0 +1,12 @@
+[02:11:19] casting: Khánh Vy -> linh (ai; Chất giọng alto khàn, sắc sảo và nhịp nói dứt khoát của Linh rất phù h)
+[02:11:19] casting: Minh Quân -> duong (ai; Giọng trầm, điềm tĩnh và quyền uy của Dương hoàn hảo cho vai tổng tài )
+[02:11:19] casting: Tú Anh -> diep (ai; Sự khéo léo, mượt mà nhưng đầy toan tính trong giọng nói của Diệp rất )
+[02:11:19] casting: Hải -> minh-khoi (ai; Sự nồng nhiệt và chân thành trong giọng của Minh Khôi phù hợp với vai )
+[02:11:19] NOTE linh: using its Gemini TTS voice Kore through WaveSpeed (google/gemini-3.8-flash/text-to-speech).
+[02:11:19] engine policy: linh -> wavespeed/google/gemini-3.8-flash/text-to-speech voice Kore [prebuilt; default]
+[02:11:19] NOTE duong: using its Gemini TTS voice Orus through WaveSpeed (google/gemini-3.8-flash/text-to-speech).
+[02:11:19] engine policy: duong -> wavespeed/google/gemini-3.8-flash/text-to-speech voice Orus [prebuilt; default]
+[02:11:19] NOTE diep: using its Gemini TTS voice Despina through WaveSpeed (google/gemini-3.8-flash/text-to-speech).
+[02:11:19] engine policy: diep -> wavespeed/google/gemini-3.8-flash/text-to-speech voice Despina [prebuilt; default]
+[02:11:19] NOTE minh-khoi: using its Gemini TTS voice Puck through WaveSpeed (google/gemini-3.8-flash/text-to-speech).
+[02:11:19] engine policy: minh-khoi -> wavespeed/google/gemini-3.8-flash/text-to-speech voice Puck [prebuilt; default]

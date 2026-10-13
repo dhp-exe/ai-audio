@@ -1,0 +1,11 @@
+{
+  "episode_number": 1,
+  "hook_score": 8,
+  "twist_within_30s": true,
+  "antagonist_is_smart": true,
+  "independent_motivations": true,
+  "issues": [],
+  "suggestion": "",
+  "checked_by": "llm",
+  "passed": true
+}

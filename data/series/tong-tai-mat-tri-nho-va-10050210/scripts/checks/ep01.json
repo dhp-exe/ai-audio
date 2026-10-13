@@ -1,0 +1,14 @@
+{
+  "episode_number": 1,
+  "hook_score": 7,
+  "twist_within_30s": true,
+  "antagonist_is_smart": true,
+  "independent_motivations": true,
+  "issues": [
+    "Tú Anh phản ứng hơi thụ động, cần thể hiện rõ hơn cô ấy đang che giấu điều gì thay vì chỉ ngăn cản.",
+    "Động cơ của Hải chưa rõ ràng, cần thêm một câu thoại thể hiện mục đích cá nhân của anh ta ngoài việc hỗ trợ Vy."
+  ],
+  "suggestion": "",
+  "checked_by": "llm",
+  "passed": true
+}

@@ -1,0 +1,530 @@
+{
+  "series_id": "tong-tai-mat-tri-nho-va-10050210",
+  "language": "vi-VN",
+  "title": "Bản Hợp Đồng Của Người Lạ",
+  "logline": "Sau tai nạn mất trí nhớ, tổng tài Minh Quân bị cuốn vào trò chơi tâm lý của người vợ cũ Khánh Vy, người đã quay lại dưới danh nghĩa đối tác để đòi lại tất cả.",
+  "premise": "Khánh Vy trở lại tập đoàn Minh Gia với tư cách đối tác chiến lược để trả thù người chồng cũ Minh Quân đã mất trí nhớ sau tai nạn, trong khi thư ký Tú Anh cố gắng che giấu sự thật về quá khứ.",
+  "tone": "Căng thẳng, kịch tính, đầy âm mưu và day dứt.",
+  "genre": [
+    "Đô thị",
+    "Tâm lý",
+    "Ngược tâm"
+  ],
+  "overview": {
+    "title": "Bản Hợp Đồng Của Người Lạ",
+    "total_minutes": 45,
+    "genre": "Đô thị, Tâm lý, Ngược tâm",
+    "setting": "Thành phố hiện đại, tập đoàn tài chính Minh Gia"
+  },
+  "mode": "write",
+  "protagonist_id": "linh",
+  "protagonist_role": "Khánh Vy",
+  "roles": [
+    {
+      "role_name": "Khánh Vy",
+      "role_type": "protagonist",
+      "description": "Nữ, 26 tuổi, sắc sảo, lạnh lùng. Mục tiêu: Trả thù và giành lại quyền thừa kế. Động cơ: Sự phản bội của chồng cũ khiến cô lột xác thành đối tác kinh doanh quyền lực.",
+      "gender": "female",
+      "actor_id": "linh",
+      "assigned_by": "ai",
+      "reason": "Chất giọng alto khàn, sắc sảo và nhịp nói dứt khoát của Linh rất phù hợp với hình tượng người phụ nữ lạnh lùng, đầy bản lĩnh."
+    },
+    {
+      "role_name": "Minh Quân",
+      "role_type": "antagonist",
+      "description": "Nam, 30 tuổi, tổng tài cao ngạo. Mục tiêu: Tìm lại ký ức đã mất. Động cơ: Sự trống rỗng sau tai nạn khiến anh ám ảnh bởi hình bóng người vợ cũ trong tiềm thức.",
+      "gender": "male",
+      "actor_id": "duong",
+      "assigned_by": "ai",
+      "reason": "Giọng trầm, điềm tĩnh và quyền uy của Dương hoàn hảo cho vai tổng tài đang tìm lại ký ức."
+    },
+    {
+      "role_name": "Tú Anh",
+      "role_type": "antagonist",
+      "description": "Nữ, 25 tuổi, thư ký riêng, xảo quyệt. Mục tiêu: Trở thành phu nhân tập đoàn. Động cơ: Che giấu sự thật về vụ tai nạn năm xưa và ngăn cản Quân nhớ lại Vy.",
+      "gender": "female",
+      "actor_id": "diep",
+      "assigned_by": "ai",
+      "reason": "Sự khéo léo, mượt mà nhưng đầy toan tính trong giọng nói của Diệp rất hợp với vai thư ký xảo quyệt."
+    },
+    {
+      "role_name": "Hải",
+      "role_type": "supporting",
+      "description": "Nam, 32 tuổi, trợ lý thân cận của Vy. Mục tiêu: Bảo vệ Vy. Động cơ: Tình yêu thầm kín và mong muốn Vy không bị tổn thương lần nữa.",
+      "gender": "male",
+      "actor_id": "minh-khoi",
+      "assigned_by": "ai",
+      "reason": "Sự nồng nhiệt và chân thành trong giọng của Minh Khôi phù hợp với vai trợ lý luôn âm thầm bảo vệ người mình yêu."
+    }
+  ],
+  "cast": [
+    "linh",
+    "duong",
+    "diep",
+    "minh-khoi"
+  ],
+  "trend_brief_id": "urban-20261005-020951",
+  "theme_category": "urban_ceo",
+  "pending_characters": [],
+  "episode_format": {
+    "count": 30,
+    "min_duration_sec": 60,
+    "max_duration_sec": 120,
+    "ends_on_cliffhanger": true
+  },
+  "episodes": [
+    {
+      "number": 1,
+      "title": "Sự trở lại của người cũ",
+      "logline": "Khánh Vy xuất hiện tại Minh Gia, khiến Minh Quân cảm thấy một sự kết nối kỳ lạ không thể giải thích.",
+      "key_beats": [
+        "Vy bước vào phòng họp với tư cách đối tác",
+        "Quân cảm thấy nhói lòng khi nhìn thấy Vy",
+        "Tú Anh lo lắng quan sát phản ứng của Quân",
+        "Quân hủy cuộc họp quan trọng",
+        "Quân bám theo Vy đến quán cà phê cũ"
+      ],
+      "cliffhanger": "Quân đứng trước quán cà phê, thấy Vy đang ngồi đó, anh thốt lên: 'Tại sao tôi lại cảm thấy nơi này quen thuộc đến đau lòng?'",
+      "source_span": "",
+      "hook_score": 7
+    },
+    {
+      "number": 2,
+      "title": "Ký ức vụn vỡ",
+      "logline": "Quân cố gắng tìm hiểu về Vy, nhưng Tú Anh nhanh chóng can thiệp.",
+      "key_beats": [
+        "Quân hỏi Vy về lý do cô chọn dự án này",
+        "Vy đáp trả lạnh lùng",
+        "Tú Anh xen ngang cuộc trò chuyện",
+        "Tú Anh cảnh báo Vy tránh xa Quân",
+        "Vy mỉm cười đầy ẩn ý"
+      ],
+      "cliffhanger": "Vy thì thầm vào tai Tú Anh: 'Cô sợ tôi nhớ lại điều gì sao, thư ký Tú Anh?'",
+      "source_span": "",
+      "hook_score": 8
+    },
+    {
+      "number": 3,
+      "title": "Trò chơi tâm lý",
+      "logline": "Vy bắt đầu thao túng cảm xúc của Quân bằng những chi tiết nhỏ trong quá khứ.",
+      "key_beats": [
+        "Vy cố tình để lại chiếc khăn tay cũ",
+        "Quân tìm thấy chiếc khăn và bị ám ảnh",
+        "Tú Anh cố gắng tiêu hủy bằng chứng",
+        "Vy bắt gặp Tú Anh lén lút",
+        "Quân chất vấn Tú Anh về chiếc khăn"
+      ],
+      "cliffhanger": "Tú Anh nói dối rằng chiếc khăn là của cô, nhưng Quân nhìn thẳng vào mắt cô đầy nghi hoặc.",
+      "source_span": "",
+      "hook_score": 8
+    },
+    {
+      "number": 4,
+      "title": "Vết sẹo trên cổ tay",
+      "logline": "Một buổi tiệc tối trở thành nơi phơi bày những bí mật bị chôn vùi.",
+      "key_beats": [
+        "Buổi tiệc tại tập đoàn",
+        "Vy xuất hiện sang trọng",
+        "Quân tiến đến mời Vy nhảy",
+        "Quân vô tình nắm lấy tay Vy",
+        "Quân nhìn thấy vết sẹo dài trên cổ tay cô"
+      ],
+      "cliffhanger": "Quân sững sờ: 'Vết sẹo này... là tôi đã gây ra sao?'",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 5,
+      "title": "Sự thật tàn khốc",
+      "logline": "Quân đối diện với sự thật về sự tàn nhẫn của mình trong quá khứ.",
+      "key_beats": [
+        "Quân rời khỏi buổi tiệc trong hoảng loạn",
+        "Hải ngăn cản Quân làm phiền Vy",
+        "Quân nhớ lại cảnh tranh cãi năm xưa",
+        "Tú Anh cố gắng trấn an Quân",
+        "Quân đẩy Tú Anh ra"
+      ],
+      "cliffhanger": "Quân gào lên: 'Đừng nói dối tôi nữa! Tôi đã làm gì cô ấy?'",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 6,
+      "title": "Đường cùng",
+      "logline": "Tú Anh nhận ra mình không còn đường lui và quyết định ra tay tàn độc.",
+      "key_beats": [
+        "Tú Anh gặp kẻ lạ mặt",
+        "Kế hoạch loại bỏ Vy được vạch ra",
+        "Vy nhận được tin nhắn đe dọa",
+        "Hải đề nghị Vy rời đi",
+        "Vy từ chối và quyết định cài bẫy"
+      ],
+      "cliffhanger": "Vy nói với Hải: 'Đây là lúc kết thúc vở kịch này'.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 7,
+      "title": "Bẫy rập",
+      "logline": "Vy dẫn dụ Tú Anh vào một cuộc đối thoại công khai.",
+      "key_beats": [
+        "Vy hẹn Tú Anh tại văn phòng vắng",
+        "Tú Anh tự tin mình sẽ thắng",
+        "Tú Anh vô tình thừa nhận vụ tai nạn",
+        "Vy ghi âm lại toàn bộ",
+        "Tú Anh nhận ra mình đã mắc bẫy"
+      ],
+      "cliffhanger": "Tiếng còi cảnh sát vang lên bên ngoài, Tú Anh tái mặt.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 8,
+      "title": "Sự tha thứ không tồn tại",
+      "logline": "Quân giành lại quyền kiểm soát, nhưng Vy đã chọn cách rời đi.",
+      "key_beats": [
+        "Quân nghe đoạn ghi âm",
+        "Tú Anh bị bắt giữ",
+        "Quân tìm đến Vy để xin lỗi",
+        "Vy từ chối quay lại",
+        "Vy bước đi không ngoảnh lại"
+      ],
+      "cliffhanger": "Quân đứng giữa căn phòng trống, nhận ra mình đã mất đi thứ quý giá nhất mãi mãi.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 9,
+      "title": "Di sản của sự hối hận",
+      "logline": "Quân cố gắng tìm lại Vy nhưng cô đã biến mất hoàn toàn.",
+      "key_beats": [
+        "Quân lục tìm mọi nơi Vy từng đến",
+        "Hải từ chối tiết lộ tung tích Vy",
+        "Quân nhận ra sự trống rỗng của quyền lực",
+        "Quân bắt đầu thay đổi cách điều hành",
+        "Quân tìm thấy một lá thư cũ"
+      ],
+      "cliffhanger": "Lá thư viết: 'Đừng tìm tôi, hãy tìm lại chính anh'.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 10,
+      "title": "Bắt đầu lại từ con số không",
+      "logline": "Quân chấp nhận sự thật và bắt đầu xây dựng lại bản thân.",
+      "key_beats": [
+        "Quân từ chức vị trí tổng tài",
+        "Quân đi đến nơi anh và Vy từng hạnh phúc",
+        "Quân gặp một người lạ giống Vy",
+        "Quân nhận ra đó chỉ là ảo giác",
+        "Quân mỉm cười chấp nhận sự cô đơn"
+      ],
+      "cliffhanger": "Quân tự nhủ: 'Đây là cái giá tôi phải trả'.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 11,
+      "title": "Bóng ma quá khứ",
+      "logline": "Quân bị ám ảnh bởi những giấc mơ về Vy.",
+      "key_beats": [
+        "Quân mơ thấy Vy khóc",
+        "Quân thức giấc giữa đêm",
+        "Quân tìm đến bác sĩ tâm lý",
+        "Bác sĩ cảnh báo về sự ám ảnh",
+        "Quân quyết định đi tìm Vy một lần nữa"
+      ],
+      "cliffhanger": "Quân tìm thấy một manh mối mới về nơi Vy đang ở.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 12,
+      "title": "Cuộc truy tìm vô vọng",
+      "logline": "Quân đến một thành phố lạ để tìm Vy.",
+      "key_beats": [
+        "Quân đến địa chỉ trong thư",
+        "Đó là một ngôi nhà cũ",
+        "Người dân nói Vy đã rời đi từ lâu",
+        "Quân thất vọng gục ngã",
+        "Quân gặp lại Hải tại đó"
+      ],
+      "cliffhanger": "Hải nói: 'Cô ấy không muốn anh tìm thấy cô ấy'.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 13,
+      "title": "Lời thú tội của Hải",
+      "logline": "Hải tiết lộ cho Quân biết về nỗi đau của Vy.",
+      "key_beats": [
+        "Hải kể về những ngày Vy đau khổ",
+        "Quân lắng nghe trong im lặng",
+        "Quân hiểu ra sự tàn nhẫn của mình",
+        "Hải cảnh báo Quân đừng làm phiền cô nữa",
+        "Quân hứa sẽ không làm phiền"
+      ],
+      "cliffhanger": "Hải đưa cho Quân một món quà cuối cùng từ Vy.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 14,
+      "title": "Món quà cuối cùng",
+      "logline": "Quân mở món quà và tìm thấy chiếc nhẫn cưới cũ.",
+      "key_beats": [
+        "Quân cầm chiếc nhẫn",
+        "Ký ức về ngày cưới ùa về",
+        "Quân khóc lần đầu tiên",
+        "Quân quyết định buông tay",
+        "Quân quay về thành phố"
+      ],
+      "cliffhanger": "Quân đặt chiếc nhẫn lên bàn và rời đi.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 15,
+      "title": "Chương mới",
+      "logline": "Quân bắt đầu một cuộc sống mới không có Vy.",
+      "key_beats": [
+        "Quân làm việc thiện nguyện",
+        "Quân không còn là tổng tài cao ngạo",
+        "Quân gặp một người phụ nữ mới",
+        "Quân cảm thấy nhẹ lòng",
+        "Quân nhìn về phía xa"
+      ],
+      "cliffhanger": "Một bóng người quen thuộc lướt qua trên phố.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 16,
+      "title": "Gặp lại",
+      "logline": "Quân tình cờ gặp lại Vy ở một nơi không ngờ tới.",
+      "key_beats": [
+        "Quân đi dạo trong công viên",
+        "Anh thấy Vy đang giúp đỡ trẻ em",
+        "Quân đứng từ xa quan sát",
+        "Vy trông hạnh phúc hơn bao giờ hết",
+        "Quân không dám tiến lại gần"
+      ],
+      "cliffhanger": "Vy bất ngờ quay lại nhìn về phía Quân.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 17,
+      "title": "Khoảng cách",
+      "logline": "Quân và Vy đối diện nhau sau thời gian dài.",
+      "key_beats": [
+        "Quân tiến lại gần Vy",
+        "Họ nhìn nhau không nói lời nào",
+        "Vy mỉm cười nhẹ nhàng",
+        "Quân nói lời xin lỗi chân thành",
+        "Vy chấp nhận lời xin lỗi"
+      ],
+      "cliffhanger": "Vy nói: 'Chúng ta đã là người lạ, hãy cứ như vậy'.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 18,
+      "title": "Sự bình yên",
+      "logline": "Quân và Vy có một cuộc trò chuyện cuối cùng.",
+      "key_beats": [
+        "Họ ngồi xuống ghế đá",
+        "Họ chia sẻ về cuộc sống hiện tại",
+        "Quân kể về sự thay đổi của mình",
+        "Vy chúc phúc cho Quân",
+        "Họ tạm biệt nhau"
+      ],
+      "cliffhanger": "Quân nhìn theo bóng lưng Vy khuất dần.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 19,
+      "title": "Sự thật về vụ tai nạn",
+      "logline": "Một chi tiết mới về vụ tai nạn năm xưa được hé lộ.",
+      "key_beats": [
+        "Quân nhận được một tài liệu cũ",
+        "Tài liệu cho thấy Tú Anh đã dàn dựng vụ tai nạn",
+        "Quân bàng hoàng",
+        "Quân tìm đến nhà tù thăm Tú Anh",
+        "Tú Anh thừa nhận tất cả"
+      ],
+      "cliffhanger": "Tú Anh cười điên dại: 'Anh vẫn yêu cô ta, đúng không?'",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 20,
+      "title": "Sự trả thù muộn màng",
+      "logline": "Quân quyết định minh oan cho Vy.",
+      "key_beats": [
+        "Quân công bố sự thật với truyền thông",
+        "Danh dự của Vy được khôi phục",
+        "Vy biết tin và cảm thấy nhẹ nhõm",
+        "Quân gửi lời xin lỗi công khai",
+        "Quân cảm thấy thanh thản"
+      ],
+      "cliffhanger": "Quân nhận được một cuộc gọi từ Vy.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 21,
+      "title": "Cuộc gọi định mệnh",
+      "logline": "Vy gọi cho Quân để cảm ơn.",
+      "key_beats": [
+        "Vy cảm ơn Quân vì đã minh oan",
+        "Quân nói đó là điều anh phải làm",
+        "Họ trò chuyện lâu hơn",
+        "Sự kết nối cũ dường như quay lại",
+        "Họ hẹn gặp nhau"
+      ],
+      "cliffhanger": "Quân hồi hộp chờ đợi cuộc gặp.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 22,
+      "title": "Cơ hội thứ hai",
+      "logline": "Quân và Vy gặp nhau tại một nhà hàng.",
+      "key_beats": [
+        "Không khí căng thẳng nhưng ấm áp",
+        "Họ nói về tương lai",
+        "Quân hy vọng về một khởi đầu mới",
+        "Vy vẫn còn do dự",
+        "Họ cùng nhau dùng bữa"
+      ],
+      "cliffhanger": "Vy nói: 'Tôi cần thêm thời gian'.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 23,
+      "title": "Thử thách mới",
+      "logline": "Một rắc rối mới xuất hiện tại tập đoàn Minh Gia.",
+      "key_beats": [
+        "Đối thủ cạnh tranh tấn công tập đoàn",
+        "Quân gặp khó khăn",
+        "Vy đề nghị giúp đỡ",
+        "Quân từ chối vì muốn tự giải quyết",
+        "Vy vẫn âm thầm hỗ trợ"
+      ],
+      "cliffhanger": "Quân phát hiện ra sự giúp đỡ của Vy.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 24,
+      "title": "Đồng hành",
+      "logline": "Quân và Vy cùng nhau vượt qua khó khăn.",
+      "key_beats": [
+        "Họ làm việc cùng nhau",
+        "Sự ăn ý quay trở lại",
+        "Họ thành công đánh bại đối thủ",
+        "Họ ăn mừng cùng nhau",
+        "Tình cảm dần nảy nở"
+      ],
+      "cliffhanger": "Quân nắm lấy tay Vy.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 25,
+      "title": "Sự lựa chọn",
+      "logline": "Vy phải quyết định giữa quá khứ và tương lai.",
+      "key_beats": [
+        "Vy suy nghĩ về tình cảm của mình",
+        "Hải khuyên Vy hãy theo đuổi hạnh phúc",
+        "Quân tỏ tình với Vy",
+        "Vy cảm thấy bối rối",
+        "Vy cần không gian riêng"
+      ],
+      "cliffhanger": "Vy rời đi mà không trả lời.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 26,
+      "title": "Sự im lặng",
+      "logline": "Quân chờ đợi câu trả lời từ Vy.",
+      "key_beats": [
+        "Quân không liên lạc với Vy",
+        "Quân tôn trọng quyết định của cô",
+        "Vy nhận ra mình không thể thiếu Quân",
+        "Vy tìm đến Quân",
+        "Họ gặp nhau tại văn phòng"
+      ],
+      "cliffhanger": "Vy nói: 'Tôi đã có câu trả lời'.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 27,
+      "title": "Lời hồi đáp",
+      "logline": "Vy chấp nhận cho Quân một cơ hội.",
+      "key_beats": [
+        "Vy nói cô muốn bắt đầu lại",
+        "Quân hạnh phúc khôn xiết",
+        "Họ ôm nhau",
+        "Họ bắt đầu một mối quan hệ mới",
+        "Mọi thứ trở nên tốt đẹp"
+      ],
+      "cliffhanger": "Một bóng đen xuất hiện theo dõi họ.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 28,
+      "title": "Mối đe dọa mới",
+      "logline": "Kẻ thù cũ của Tú Anh xuất hiện.",
+      "key_beats": [
+        "Kẻ thù đe dọa Vy",
+        "Quân bảo vệ Vy",
+        "Họ cùng nhau đối mặt với nguy hiểm",
+        "Họ phát hiện ra âm mưu lớn hơn",
+        "Họ quyết định cùng nhau chiến đấu"
+      ],
+      "cliffhanger": "Vy bị bắt cóc.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 29,
+      "title": "Giải cứu",
+      "logline": "Quân tìm cách cứu Vy.",
+      "key_beats": [
+        "Quân lần theo dấu vết",
+        "Quân đối mặt với kẻ thù",
+        "Quân giải cứu Vy thành công",
+        "Họ thoát khỏi nguy hiểm",
+        "Họ nhận ra tình yêu dành cho nhau"
+      ],
+      "cliffhanger": "Quân bị thương nặng.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 30,
+      "title": "Hạnh phúc trọn vẹn",
+      "logline": "Quân hồi phục và họ bắt đầu cuộc sống mới.",
+      "key_beats": [
+        "Quân bình phục",
+        "Họ kết hôn",
+        "Họ cùng nhau xây dựng tương lai",
+        "Quá khứ được khép lại",
+        "Họ hạnh phúc mãi mãi"
+      ],
+      "cliffhanger": "Quân nhìn Vy và nói: 'Cảm ơn em đã quay lại'.",
+      "source_span": "",
+      "hook_score": null
+    }
+  ],
+  "changelog": [
+    "2026-10-05 outline (google/gemini-3.1-flash-lite, mode=write)"
+  ]
+}

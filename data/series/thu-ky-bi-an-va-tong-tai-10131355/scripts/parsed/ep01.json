@@ -1,0 +1,202 @@
+{
+  "schema_version": "1.0",
+  "language": "vi-VN",
+  "series_id": "thu-ky-bi-an-va-tong-tai-10131355",
+  "episode_number": 1,
+  "title": "Bản giao hưởng lạ",
+  "logline": "Lâm An thâm nhập vào tập đoàn của Minh Quân để tìm sự thật, nhưng vô tình phát hiện ra khả năng chữa lành chứng mất ngủ của anh bằng âm thanh.",
+  "target_duration_sec": 70,
+  "characters_used": [
+    "diep",
+    "duong",
+    "linh",
+    "minh-khoi"
+  ],
+  "scenes": [
+    {
+      "scene_id": "sc01",
+      "title": "Văn phòng Minh Quân",
+      "location": "Văn phòng làm việc",
+      "time_of_day": "morning",
+      "ambience_tag": null,
+      "ambience_level": 0.2,
+      "bgm": null,
+      "lines": [
+        {
+          "line_id": "ep01_sc01_l001",
+          "type": "monologue",
+          "character_id": "linh",
+          "role_name": "Lâm An",
+          "text": "Trên bàn làm việc của hắn, tấm ảnh hiện trường vụ tai nạn năm xưa nằm ngay dưới tập hồ sơ dự án. Hắn không hề giấu giếm, hay là đang khiêu khích mình?",
+          "tts_text": "[internal monologue] Trên bàn làm việc của hắn, tấm ảnh hiện trường vụ tai nạn năm xưa nằm ngay dưới tập hồ sơ dự án. Hắn không hề giấu giếm, hay là đang khiêu khích mình?",
+          "emotion": "fearful",
+          "emotional_intensity": 6,
+          "acoustic_direction": "Giọng trầm, tốc độ nhanh, hơi thở dồn dập, cảm giác căng thẳng tột độ.",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 400,
+          "sfx": []
+        },
+        {
+          "line_id": "ep01_sc01_l002",
+          "type": "dialogue",
+          "character_id": "duong",
+          "role_name": "Minh Quân",
+          "text": "Cô Lâm, tập hồ sơ đó không dành cho thư ký. Cô có mười phút để hoàn thành báo cáo này, nếu không thì rời khỏi đây ngay.",
+          "tts_text": "Cô Lâm, tập hồ sơ đó không dành cho thư ký. Cô có mười phút để hoàn thành báo cáo này, nếu không thì rời khỏi đây ngay.",
+          "emotion": "angry",
+          "emotional_intensity": 7,
+          "acoustic_direction": "Giọng lạnh lùng, dứt khoát, âm lượng vừa phải nhưng đầy uy quyền.",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 300,
+          "sfx": []
+        },
+        {
+          "line_id": "ep01_sc01_l003",
+          "type": "dialogue",
+          "character_id": "diep",
+          "role_name": "Tú Vy",
+          "text": "Đừng làm phiền anh Quân nữa. Cô không đủ năng lực đâu, người mới.",
+          "tts_text": "[sarcastic] Đừng làm phiền anh Quân nữa. Cô không đủ năng lực đâu, người mới.",
+          "emotion": "disgusted",
+          "emotional_intensity": 5,
+          "acoustic_direction": "Giọng mượt mà, kéo dài âm cuối, đầy vẻ khinh miệt.",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 300,
+          "sfx": []
+        },
+        {
+          "line_id": "ep01_sc01_l004",
+          "type": "dialogue",
+          "character_id": "linh",
+          "role_name": "Lâm An",
+          "text": "Tôi hiểu rồi, thưa sếp. Tôi sẽ làm ngay.",
+          "tts_text": "Tôi hiểu rồi, thưa sếp. Tôi sẽ làm ngay.",
+          "emotion": "neutral",
+          "emotional_intensity": 3,
+          "acoustic_direction": "Giọng bình thản, che giấu cảm xúc thật.",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 500,
+          "sfx": []
+        }
+      ]
+    },
+    {
+      "scene_id": "sc02",
+      "title": "Văn phòng Minh Quân",
+      "location": "Văn phòng làm việc",
+      "time_of_day": "afternoon",
+      "ambience_tag": null,
+      "ambience_level": 0.2,
+      "bgm": null,
+      "lines": [
+        {
+          "line_id": "ep01_sc02_l001",
+          "type": "dialogue",
+          "character_id": "minh-khoi",
+          "role_name": "Khải",
+          "text": "Quân, anh lại lên cơn đau. Thuốc không còn tác dụng nữa rồi.",
+          "tts_text": "[nervously] Quân, anh lại lên cơn đau. Thuốc không còn tác dụng nữa rồi.",
+          "emotion": "fearful",
+          "emotional_intensity": 6,
+          "acoustic_direction": "Giọng gấp gáp, hơi cao, thể hiện sự lo lắng giả tạo.",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 400,
+          "sfx": []
+        },
+        {
+          "line_id": "ep01_sc02_l002",
+          "type": "monologue",
+          "character_id": "linh",
+          "role_name": "Lâm An",
+          "text": "Cơ hội đây rồi. Tần số sóng âm 432Hz. Hy vọng nó có thể làm dịu cơn đau của hắn.",
+          "tts_text": "[internal monologue] Cơ hội đây rồi. Tần số sóng âm bốn trăm ba mươi hai héc. Hy vọng nó có thể làm dịu cơn đau của hắn.",
+          "emotion": "neutral",
+          "emotional_intensity": 4,
+          "acoustic_direction": "Giọng tập trung, nhỏ nhẹ, sắc bén.",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 300,
+          "sfx": []
+        },
+        {
+          "line_id": "ep01_sc02_l003",
+          "type": "dialogue",
+          "character_id": "linh",
+          "role_name": "Lâm An",
+          "text": "Để tôi thử giúp anh, thưa sếp.",
+          "tts_text": "[whispers] Để tôi thử giúp anh, thưa sếp.",
+          "emotion": "tender",
+          "emotional_intensity": 5,
+          "acoustic_direction": "Giọng thì thầm, nhẹ nhàng, đầy tính toán.",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 300,
+          "sfx": []
+        },
+        {
+          "line_id": "ep01_sc02_l004",
+          "type": "dialogue",
+          "character_id": "duong",
+          "role_name": "Minh Quân",
+          "text": "Dừng lại... âm thanh này... nó là gì?",
+          "tts_text": "[gasps] Dừng lại... âm thanh này... nó là gì?",
+          "emotion": "surprised",
+          "emotional_intensity": 8,
+          "acoustic_direction": "Giọng gầm gừ, đứt quãng vì đau đớn.",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 1500,
+          "sfx": []
+        }
+      ]
+    },
+    {
+      "scene_id": "sc03",
+      "title": "Văn phòng Minh Quân",
+      "location": "Văn phòng làm việc",
+      "time_of_day": "afternoon",
+      "ambience_tag": null,
+      "ambience_level": 0.2,
+      "bgm": null,
+      "lines": [
+        {
+          "line_id": "ep01_sc03_l001",
+          "type": "monologue",
+          "character_id": "linh",
+          "role_name": "Lâm An",
+          "text": "Hắn đã ngủ. Năm năm rồi, đây là lần đầu tiên hắn chìm vào giấc ngủ sâu. Nhưng tại sao hắn lại nắm chặt tay mình?",
+          "tts_text": "[introspective] Hắn đã ngủ. Năm năm rồi, đây là lần đầu tiên hắn chìm vào giấc ngủ sâu. Nhưng tại sao hắn lại nắm chặt tay mình?",
+          "emotion": "surprised",
+          "emotional_intensity": 7,
+          "acoustic_direction": "Giọng trầm ngâm, bối rối.",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 500,
+          "sfx": []
+        },
+        {
+          "line_id": "ep01_sc03_l002",
+          "type": "dialogue",
+          "character_id": "duong",
+          "role_name": "Minh Quân",
+          "text": "Cô là ai mà biết tần số này?",
+          "tts_text": "Cô là ai mà biết tần số này?",
+          "emotion": "angry",
+          "emotional_intensity": 10,
+          "acoustic_direction": "Giọng khàn đặc, sắc lạnh, đầy đe dọa.",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 0,
+          "sfx": []
+        }
+      ]
+    }
+  ],
+  "cliffhanger": "Quân tỉnh dậy, ánh mắt sắc lạnh nhìn An: 'Cô là ai mà biết tần số này?'",
+  "director_notes": "Tập 1 tập trung vào sự đối lập giữa sự lạnh lùng của Minh Quân và sự điềm tĩnh, đầy toan tính của Lâm An. Cần chú ý nhấn mạnh âm thanh tần số 432Hz ở cảnh 2."
+}

@@ -1,0 +1,397 @@
+{
+  "schema_version": "2.0",
+  "series_id": "tai-sinh-de-sua-chua-sai-10081741",
+  "episode_number": 2,
+  "title": "Cú tát đầu tiên",
+  "target_duration_sec": 120,
+  "batching": "scene",
+  "units": [
+    {
+      "unit_id": "ep02_sc01_l001",
+      "scene_id": "sc01",
+      "order": 1,
+      "type": "monologue",
+      "speaker_id": "linh",
+      "role_name": "Nhã Đan",
+      "text": "Nhìn khuôn mặt tái mét của Minh Khang lúc này thật đáng giá. Kiếp trước, mình đã ngu ngốc tin vào sự giải thích của hắn đến mức nào chứ.",
+      "tts_text": "Nhìn khuôn mặt tái mét của Minh Khang lúc này thật đáng giá. Kiếp trước, mình đã ngu ngốc tin vào sự giải thích của hắn đến mức nào chứ.",
+      "emotion_tag": "sarcastic",
+      "emotional_intensity": 7,
+      "audio_tags": [
+        "internal monologue"
+      ],
+      "direction": "Giọng trầm, sắc bén, nhịp chậm rãi đầy khinh bỉ.",
+      "pause_after_ms": 500,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Kore",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng mỉa mai (mạnh), độc thoại nội tâm, như tự nói với chính mình, mic gần, Giọng trầm, sắc bén, nhịp chậm rãi đầy khinh bỉ"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep02_sc01_l002",
+      "scene_id": "sc01",
+      "order": 2,
+      "type": "dialogue",
+      "speaker_id": "minh-khoi",
+      "role_name": "Minh Khang",
+      "text": "Nhã Đan, em làm gì vậy? Đây là hiểu lầm kỹ thuật, đừng để khách mời phải bàn tán về chuyện nội bộ của chúng ta.",
+      "tts_text": "Nhã Đan, em làm gì vậy? Đây là hiểu lầm kỹ thuật, đừng để khách mời phải bàn tán về chuyện nội bộ của chúng ta.",
+      "emotion_tag": "fearful",
+      "emotional_intensity": 6,
+      "audio_tags": [
+        "nervously"
+      ],
+      "direction": "Giọng hơi run, cố gắng giữ vẻ bình tĩnh nhưng lộ rõ sự lo lắng.",
+      "pause_after_ms": 400,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Puck",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng sợ hãi (vừa phải), lo lắng, run giọng, Giọng hơi run, cố gắng giữ vẻ bình tĩnh nhưng lộ rõ sự lo lắng"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep02_sc01_l003",
+      "scene_id": "sc01",
+      "order": 3,
+      "type": "dialogue",
+      "speaker_id": "linh",
+      "role_name": "Nhã Đan",
+      "text": "Hiểu lầm sao? Con số sai lệch này đủ để công ty nhà họ Lâm phá sản trong một đêm. Anh muốn tôi im lặng để anh kịp tẩu tán tài sản sao, Minh Khang?",
+      "tts_text": "Hiểu lầm sao? Con số sai lệch này đủ để công ty nhà họ Lâm phá sản trong một đêm. Anh muốn tôi im lặng để anh kịp tẩu tán tài sản sao, Minh Khang?",
+      "emotion_tag": "angry",
+      "emotional_intensity": 8,
+      "audio_tags": [],
+      "direction": "Giọng đanh thép, dứt khoát, nhấn mạnh vào từng từ.",
+      "pause_after_ms": 400,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Kore",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng giận dữ (mạnh), Giọng đanh thép, dứt khoát, nhấn mạnh vào từng từ"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep02_sc01_l004",
+      "scene_id": "sc01",
+      "order": 4,
+      "type": "dialogue",
+      "speaker_id": "linh",
+      "role_name": "Nhã Đan",
+      "text": "Buổi tiệc này kết thúc rồi. Tôi cần thời gian để xem xét lại tư cách của người mà tôi sắp lấy làm chồng.",
+      "tts_text": "Buổi tiệc này kết thúc rồi. Tôi cần thời gian để xem xét lại tư cách của người mà tôi sắp lấy làm chồng.",
+      "emotion_tag": "sarcastic",
+      "emotional_intensity": 9,
+      "audio_tags": [],
+      "direction": "Giọng lạnh lùng, cao ngạo, kết thúc cảnh bằng sự áp đảo.",
+      "pause_after_ms": 1000,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Kore",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng mỉa mai (rất mạnh, cao trào), Giọng lạnh lùng, cao ngạo, kết thúc cảnh bằng sự áp đảo"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep02_sc02_l001",
+      "scene_id": "sc02",
+      "order": 5,
+      "type": "dialogue",
+      "speaker_id": "diep",
+      "role_name": "Thùy Linh",
+      "text": "Đan ơi, cậu sao vậy? Minh Khang đang rất giận, cậu đừng làm quá mọi chuyện lên như thế, sẽ ảnh hưởng đến danh dự của cậu đấy.",
+      "tts_text": "Đan ơi, cậu sao vậy? Minh Khang đang rất giận, cậu đừng làm quá mọi chuyện lên như thế, sẽ ảnh hưởng đến danh dự của cậu đấy.",
+      "emotion_tag": "neutral",
+      "emotional_intensity": 4,
+      "audio_tags": [],
+      "direction": "Giọng ngọt ngào giả tạo, kéo dài âm cuối.",
+      "pause_after_ms": 400,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Despina",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng bình thản (vừa phải), Giọng ngọt ngào giả tạo, kéo dài âm cuối"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep02_sc02_l002",
+      "scene_id": "sc02",
+      "order": 6,
+      "type": "monologue",
+      "speaker_id": "linh",
+      "role_name": "Nhã Đan",
+      "text": "Thùy Linh, con rắn độc này vẫn diễn vai bạn thân tốt bụng rất đạt. Để xem cô diễn được bao lâu.",
+      "tts_text": "Thùy Linh, con rắn độc này vẫn diễn vai bạn thân tốt bụng rất đạt. Để xem cô diễn được bao lâu.",
+      "emotion_tag": "sarcastic",
+      "emotional_intensity": 6,
+      "audio_tags": [
+        "internal monologue"
+      ],
+      "direction": "Giọng thì thầm, đầy mỉa mai.",
+      "pause_after_ms": 400,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Kore",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng mỉa mai (vừa phải), độc thoại nội tâm, như tự nói với chính mình, mic gần, Giọng thì thầm, đầy mỉa mai"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep02_sc02_l003",
+      "scene_id": "sc02",
+      "order": 7,
+      "type": "dialogue",
+      "speaker_id": "linh",
+      "role_name": "Nhã Đan",
+      "text": "Cảm ơn Linh đã lo lắng. Nhưng mình nghĩ, người cần lo lúc này là Minh Khang, không phải mình.",
+      "tts_text": "Cảm ơn Linh đã lo lắng. Nhưng mình nghĩ, người cần lo lúc này là Minh Khang, không phải mình.",
+      "emotion_tag": "sarcastic",
+      "emotional_intensity": 7,
+      "audio_tags": [],
+      "direction": "Giọng cười khẩy, lạnh lùng.",
+      "pause_after_ms": 1000,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Kore",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng mỉa mai (mạnh), Giọng cười khẩy, lạnh lùng"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep02_sc03_l001",
+      "scene_id": "sc03",
+      "order": 8,
+      "type": "dialogue",
+      "speaker_id": "minh-khoi",
+      "role_name": "Minh Khang",
+      "text": "Theo sát cô ta cho tôi. Nhã Đan hôm nay rất lạ, tôi cần biết cô ta đã biết được những gì.",
+      "tts_text": "Theo sát cô ta cho tôi. Nhã Đan hôm nay rất lạ, tôi cần biết cô ta đã biết được những gì.",
+      "emotion_tag": "angry",
+      "emotional_intensity": 9,
+      "audio_tags": [
+        "shouting"
+      ],
+      "direction": "Giọng gằn, độc địa, âm lượng lớn.",
+      "pause_after_ms": 500,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Puck",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng giận dữ (rất mạnh, cao trào), quát lớn, Giọng gằn, độc địa, âm lượng lớn"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep02_sc03_l002",
+      "scene_id": "sc03",
+      "order": 9,
+      "type": "monologue",
+      "speaker_id": "linh",
+      "role_name": "Nhã Đan",
+      "text": "Hắn vẫn không từ bỏ. Vừa về đến nhà, mình đã cảm thấy có gì đó không ổn trong phòng.",
+      "tts_text": "Hắn vẫn không từ bỏ. Vừa về đến nhà, mình đã cảm thấy có gì đó không ổn trong phòng.",
+      "emotion_tag": "fearful",
+      "emotional_intensity": 5,
+      "audio_tags": [
+        "internal monologue"
+      ],
+      "direction": "Giọng lo âu, nhịp nhanh.",
+      "pause_after_ms": 400,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Kore",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng sợ hãi (vừa phải), độc thoại nội tâm, như tự nói với chính mình, mic gần, Giọng lo âu, nhịp nhanh"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep02_sc03_l003",
+      "scene_id": "sc03",
+      "order": 10,
+      "type": "dialogue",
+      "speaker_id": "linh",
+      "role_name": "Nhã Đan",
+      "text": "Dưới gầm bàn trang điểm... một thiết bị nghe lén siêu nhỏ? Minh Khang, anh thực sự đã đi quá giới hạn rồi.",
+      "tts_text": "Dưới gầm bàn trang điểm... một thiết bị nghe lén siêu nhỏ? Minh Khang, anh thực sự đã đi quá giới hạn rồi.",
+      "emotion_tag": "fearful",
+      "emotional_intensity": 10,
+      "audio_tags": [
+        "whispers"
+      ],
+      "direction": "Giọng run rẩy, hoảng hốt, thì thầm.",
+      "pause_after_ms": 1500,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Kore",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng sợ hãi (rất mạnh, cao trào), thì thầm, Giọng run rẩy, hoảng hốt, thì thầm"
+      },
+      "sfx": []
+    }
+  ],
+  "render_plan": [
+    {
+      "id": "ep02_sc01_c01",
+      "kind": "conversation",
+      "scene_id": "sc01",
+      "unit_ids": [
+        "ep02_sc01_l001",
+        "ep02_sc01_l002",
+        "ep02_sc01_l003",
+        "ep02_sc01_l004"
+      ],
+      "speakers": [
+        "linh",
+        "minh-khoi"
+      ],
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "ep02_sc01_c01",
+      "text": "Linh: Nhìn khuôn mặt tái mét của Minh Khang lúc này thật đáng giá. Kiếp trước, mình đã ngu ngốc tin vào sự giải thích của hắn đến mức nào chứ.\nMinhKhoi: Nhã Đan, em làm gì vậy? Đây là hiểu lầm kỹ thuật, đừng để khách mời phải bàn tán về chuyện nội bộ của chúng ta.\nLinh: Hiểu lầm sao? Con số sai lệch này đủ để công ty nhà họ Lâm phá sản trong một đêm. Anh muốn tôi im lặng để anh kịp tẩu tán tài sản sao, Minh Khang?\nLinh: Buổi tiệc này kết thúc rồi. Tôi cần thời gian để xem xét lại tư cách của người mà tôi sắp lấy làm chồng.",
+      "settings": {
+        "style": "Đọc đoạn hội thoại tiếng Việt như phim truyền hình, diễn xuất tự nhiên; giữa các câu ngắt nghỉ khoảng nửa giây.",
+        "turn_styles": [
+          "Nói tiếng Việt, giọng mỉa mai (mạnh), độc thoại nội tâm, như tự nói với chính mình, mic gần, Giọng trầm, sắc bén, nhịp chậm rãi đầy khinh bỉ",
+          "Nói tiếng Việt, giọng sợ hãi (vừa phải), lo lắng, run giọng, Giọng hơi run, cố gắng giữ vẻ bình tĩnh nhưng lộ rõ sự lo lắng",
+          "Nói tiếng Việt, giọng giận dữ (mạnh), Giọng đanh thép, dứt khoát, nhấn mạnh vào từng từ",
+          "Nói tiếng Việt, giọng mỉa mai (rất mạnh, cao trào), Giọng lạnh lùng, cao ngạo, kết thúc cảnh bằng sự áp đảo"
+        ]
+      },
+      "speaker_voices": [
+        [
+          "Linh",
+          "Kore"
+        ],
+        [
+          "MinhKhoi",
+          "Puck"
+        ]
+      ],
+      "stem": "ep02_sc01_c01_chunk.wav",
+      "pause_after_ms": 1000,
+      "attempt": 0
+    },
+    {
+      "id": "ep02_sc02_c01",
+      "kind": "conversation",
+      "scene_id": "sc02",
+      "unit_ids": [
+        "ep02_sc02_l001",
+        "ep02_sc02_l002",
+        "ep02_sc02_l003"
+      ],
+      "speakers": [
+        "diep",
+        "linh"
+      ],
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "ep02_sc02_c01",
+      "text": "Diep: Đan ơi, cậu sao vậy? Minh Khang đang rất giận, cậu đừng làm quá mọi chuyện lên như thế, sẽ ảnh hưởng đến danh dự của cậu đấy.\nLinh: Thùy Linh, con rắn độc này vẫn diễn vai bạn thân tốt bụng rất đạt. Để xem cô diễn được bao lâu.\nLinh: Cảm ơn Linh đã lo lắng. Nhưng mình nghĩ, người cần lo lúc này là Minh Khang, không phải mình.",
+      "settings": {
+        "style": "Đọc đoạn hội thoại tiếng Việt như phim truyền hình, diễn xuất tự nhiên; giữa các câu ngắt nghỉ khoảng nửa giây.",
+        "turn_styles": [
+          "Nói tiếng Việt, giọng bình thản (vừa phải), Giọng ngọt ngào giả tạo, kéo dài âm cuối",
+          "Nói tiếng Việt, giọng mỉa mai (vừa phải), độc thoại nội tâm, như tự nói với chính mình, mic gần, Giọng thì thầm, đầy mỉa mai",
+          "Nói tiếng Việt, giọng mỉa mai (mạnh), Giọng cười khẩy, lạnh lùng"
+        ]
+      },
+      "speaker_voices": [
+        [
+          "Diep",
+          "Despina"
+        ],
+        [
+          "Linh",
+          "Kore"
+        ]
+      ],
+      "stem": "ep02_sc02_c01_chunk.wav",
+      "pause_after_ms": 1000,
+      "attempt": 0
+    },
+    {
+      "id": "ep02_sc03_c01",
+      "kind": "conversation",
+      "scene_id": "sc03",
+      "unit_ids": [
+        "ep02_sc03_l001",
+        "ep02_sc03_l002",
+        "ep02_sc03_l003"
+      ],
+      "speakers": [
+        "minh-khoi",
+        "linh"
+      ],
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "ep02_sc03_c01",
+      "text": "MinhKhoi: Theo sát cô ta cho tôi. Nhã Đan hôm nay rất lạ, tôi cần biết cô ta đã biết được những gì.\nLinh: Hắn vẫn không từ bỏ. Vừa về đến nhà, mình đã cảm thấy có gì đó không ổn trong phòng.\nLinh: Dưới gầm bàn trang điểm... một thiết bị nghe lén siêu nhỏ? Minh Khang, anh thực sự đã đi quá giới hạn rồi.",
+      "settings": {
+        "style": "Đọc đoạn hội thoại tiếng Việt như phim truyền hình, diễn xuất tự nhiên; giữa các câu ngắt nghỉ khoảng nửa giây.",
+        "turn_styles": [
+          "Nói tiếng Việt, giọng giận dữ (rất mạnh, cao trào), quát lớn, Giọng gằn, độc địa, âm lượng lớn",
+          "Nói tiếng Việt, giọng sợ hãi (vừa phải), độc thoại nội tâm, như tự nói với chính mình, mic gần, Giọng lo âu, nhịp nhanh",
+          "Nói tiếng Việt, giọng sợ hãi (rất mạnh, cao trào), thì thầm, Giọng run rẩy, hoảng hốt, thì thầm"
+        ]
+      },
+      "speaker_voices": [
+        [
+          "MinhKhoi",
+          "Puck"
+        ],
+        [
+          "Linh",
+          "Kore"
+        ]
+      ],
+      "stem": "ep02_sc03_c01_chunk.wav",
+      "pause_after_ms": 1500,
+      "attempt": 0
+    }
+  ],
+  "cliffhanger": "Nhã Đan phát hiện Minh Khang đã đặt máy nghe lén trong phòng mình.",
+  "director_notes": "Tập trung vào sự tương phản giữa vẻ ngoài lịch thiệp và nội tâm đầy toan tính của Nhã Đan. Giọng Minh Khang cần chuyển từ lo sợ sang độc địa ở cảnh cuối.",
+  "bgm_mood": null,
+  "directed_at": "2026-10-08T17:42:33+00:00"
+}

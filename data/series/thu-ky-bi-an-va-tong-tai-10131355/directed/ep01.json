@@ -1,0 +1,457 @@
+{
+  "schema_version": "2.0",
+  "series_id": "thu-ky-bi-an-va-tong-tai-10131355",
+  "episode_number": 1,
+  "title": "Bản giao hưởng lạ",
+  "target_duration_sec": 70,
+  "batching": "scene",
+  "units": [
+    {
+      "unit_id": "ep01_sc01_l001",
+      "scene_id": "sc01",
+      "order": 1,
+      "type": "monologue",
+      "speaker_id": "linh",
+      "role_name": "Lâm An",
+      "text": "Trên bàn làm việc của hắn, tấm ảnh hiện trường vụ tai nạn năm xưa nằm ngay dưới tập hồ sơ dự án. Hắn không hề giấu giếm, hay là đang khiêu khích mình?",
+      "tts_text": "Trên bàn làm việc của hắn, tấm ảnh hiện trường vụ tai nạn năm xưa nằm ngay dưới tập hồ sơ dự án. Hắn không hề giấu giếm, hay là đang khiêu khích mình?",
+      "emotion_tag": "fearful",
+      "emotional_intensity": 6,
+      "audio_tags": [
+        "internal monologue"
+      ],
+      "direction": "Giọng trầm, tốc độ nhanh, hơi thở dồn dập, cảm giác căng thẳng tột độ.",
+      "pause_after_ms": 400,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Kore",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng sợ hãi (vừa phải), độc thoại nội tâm, như tự nói với chính mình, mic gần, Giọng trầm, tốc độ nhanh, hơi thở dồn dập, cảm giác căng thẳng tột độ"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep01_sc01_l002",
+      "scene_id": "sc01",
+      "order": 2,
+      "type": "dialogue",
+      "speaker_id": "duong",
+      "role_name": "Minh Quân",
+      "text": "Cô Lâm, tập hồ sơ đó không dành cho thư ký. Cô có mười phút để hoàn thành báo cáo này, nếu không thì rời khỏi đây ngay.",
+      "tts_text": "Cô Lâm, tập hồ sơ đó không dành cho thư ký. Cô có mười phút để hoàn thành báo cáo này, nếu không thì rời khỏi đây ngay.",
+      "emotion_tag": "angry",
+      "emotional_intensity": 7,
+      "audio_tags": [],
+      "direction": "Giọng lạnh lùng, dứt khoát, âm lượng vừa phải nhưng đầy uy quyền.",
+      "pause_after_ms": 300,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Orus",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng giận dữ (mạnh), Giọng lạnh lùng, dứt khoát, âm lượng vừa phải nhưng đầy uy quyền"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep01_sc01_l003",
+      "scene_id": "sc01",
+      "order": 3,
+      "type": "dialogue",
+      "speaker_id": "diep",
+      "role_name": "Tú Vy",
+      "text": "Đừng làm phiền anh Quân nữa. Cô không đủ năng lực đâu, người mới.",
+      "tts_text": "Đừng làm phiền anh Quân nữa. Cô không đủ năng lực đâu, người mới.",
+      "emotion_tag": "disgusted",
+      "emotional_intensity": 5,
+      "audio_tags": [
+        "sarcastic"
+      ],
+      "direction": "Giọng mượt mà, kéo dài âm cuối, đầy vẻ khinh miệt.",
+      "pause_after_ms": 300,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Despina",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng khinh ghét (vừa phải), giọng mỉa mai, Giọng mượt mà, kéo dài âm cuối, đầy vẻ khinh miệt"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep01_sc01_l004",
+      "scene_id": "sc01",
+      "order": 4,
+      "type": "dialogue",
+      "speaker_id": "linh",
+      "role_name": "Lâm An",
+      "text": "Tôi hiểu rồi, thưa sếp. Tôi sẽ làm ngay.",
+      "tts_text": "Tôi hiểu rồi, thưa sếp. Tôi sẽ làm ngay.",
+      "emotion_tag": "neutral",
+      "emotional_intensity": 3,
+      "audio_tags": [],
+      "direction": "Giọng bình thản, che giấu cảm xúc thật.",
+      "pause_after_ms": 500,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Kore",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng bình thản (nhẹ), Giọng bình thản, che giấu cảm xúc thật"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep01_sc02_l001",
+      "scene_id": "sc02",
+      "order": 5,
+      "type": "dialogue",
+      "speaker_id": "minh-khoi",
+      "role_name": "Khải",
+      "text": "Quân, anh lại lên cơn đau. Thuốc không còn tác dụng nữa rồi.",
+      "tts_text": "Quân, anh lại lên cơn đau. Thuốc không còn tác dụng nữa rồi.",
+      "emotion_tag": "fearful",
+      "emotional_intensity": 6,
+      "audio_tags": [
+        "nervously"
+      ],
+      "direction": "Giọng gấp gáp, hơi cao, thể hiện sự lo lắng giả tạo.",
+      "pause_after_ms": 400,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Puck",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng sợ hãi (vừa phải), lo lắng, run giọng, Giọng gấp gáp, hơi cao, thể hiện sự lo lắng giả tạo"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep01_sc02_l002",
+      "scene_id": "sc02",
+      "order": 6,
+      "type": "monologue",
+      "speaker_id": "linh",
+      "role_name": "Lâm An",
+      "text": "Cơ hội đây rồi. Tần số sóng âm 432Hz. Hy vọng nó có thể làm dịu cơn đau của hắn.",
+      "tts_text": "Cơ hội đây rồi. Tần số sóng âm bốn trăm ba mươi hai héc. Hy vọng nó có thể làm dịu cơn đau của hắn.",
+      "emotion_tag": "neutral",
+      "emotional_intensity": 4,
+      "audio_tags": [
+        "internal monologue"
+      ],
+      "direction": "Giọng tập trung, nhỏ nhẹ, sắc bén.",
+      "pause_after_ms": 300,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Kore",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng bình thản (vừa phải), độc thoại nội tâm, như tự nói với chính mình, mic gần, Giọng tập trung, nhỏ nhẹ, sắc bén"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep01_sc02_l003",
+      "scene_id": "sc02",
+      "order": 7,
+      "type": "dialogue",
+      "speaker_id": "linh",
+      "role_name": "Lâm An",
+      "text": "Để tôi thử giúp anh, thưa sếp.",
+      "tts_text": "Để tôi thử giúp anh, thưa sếp.",
+      "emotion_tag": "tender",
+      "emotional_intensity": 5,
+      "audio_tags": [
+        "whispers"
+      ],
+      "direction": "Giọng thì thầm, nhẹ nhàng, đầy tính toán.",
+      "pause_after_ms": 300,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Kore",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng dịu dàng, trìu mến (vừa phải), thì thầm, Giọng thì thầm, nhẹ nhàng, đầy tính toán"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep01_sc02_l004",
+      "scene_id": "sc02",
+      "order": 8,
+      "type": "dialogue",
+      "speaker_id": "duong",
+      "role_name": "Minh Quân",
+      "text": "Dừng lại... âm thanh này... nó là gì?",
+      "tts_text": "Dừng lại... âm thanh này... nó là gì?",
+      "emotion_tag": "surprised",
+      "emotional_intensity": 8,
+      "audio_tags": [
+        "gasps"
+      ],
+      "direction": "Giọng gầm gừ, đứt quãng vì đau đớn.",
+      "pause_after_ms": 1500,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Orus",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng ngạc nhiên (mạnh), hít một hơi sửng sốt, Giọng gầm gừ, đứt quãng vì đau đớn"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep01_sc03_l001",
+      "scene_id": "sc03",
+      "order": 9,
+      "type": "monologue",
+      "speaker_id": "linh",
+      "role_name": "Lâm An",
+      "text": "Hắn đã ngủ. Năm năm rồi, đây là lần đầu tiên hắn chìm vào giấc ngủ sâu. Nhưng tại sao hắn lại nắm chặt tay mình?",
+      "tts_text": "Hắn đã ngủ. Năm năm rồi, đây là lần đầu tiên hắn chìm vào giấc ngủ sâu. Nhưng tại sao hắn lại nắm chặt tay mình?",
+      "emotion_tag": "surprised",
+      "emotional_intensity": 7,
+      "audio_tags": [
+        "introspective"
+      ],
+      "direction": "Giọng trầm ngâm, bối rối.",
+      "pause_after_ms": 500,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Kore",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng ngạc nhiên (mạnh), độc thoại nội tâm, như tự nói với chính mình, mic gần, Giọng trầm ngâm, bối rối"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep01_sc03_l002",
+      "scene_id": "sc03",
+      "order": 10,
+      "type": "dialogue",
+      "speaker_id": "duong",
+      "role_name": "Minh Quân",
+      "text": "Cô là ai mà biết tần số này?",
+      "tts_text": "Cô là ai mà biết tần số này?",
+      "emotion_tag": "angry",
+      "emotional_intensity": 10,
+      "audio_tags": [],
+      "direction": "Giọng khàn đặc, sắc lạnh, đầy đe dọa.",
+      "pause_after_ms": 0,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Orus",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng giận dữ (rất mạnh, cao trào), Giọng khàn đặc, sắc lạnh, đầy đe dọa"
+      },
+      "sfx": []
+    }
+  ],
+  "render_plan": [
+    {
+      "id": "ep01_sc01_c01",
+      "kind": "conversation",
+      "scene_id": "sc01",
+      "unit_ids": [
+        "ep01_sc01_l001",
+        "ep01_sc01_l002"
+      ],
+      "speakers": [
+        "linh",
+        "duong"
+      ],
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "ep01_sc01_c01",
+      "text": "Linh: Trên bàn làm việc của hắn, tấm ảnh hiện trường vụ tai nạn năm xưa nằm ngay dưới tập hồ sơ dự án. Hắn không hề giấu giếm, hay là đang khiêu khích mình?\nDuong: Cô Lâm, tập hồ sơ đó không dành cho thư ký. Cô có mười phút để hoàn thành báo cáo này, nếu không thì rời khỏi đây ngay.",
+      "settings": {
+        "style": "Đọc đoạn hội thoại tiếng Việt như phim truyền hình, diễn xuất tự nhiên; giữa các câu ngắt nghỉ khoảng nửa giây.",
+        "turn_styles": [
+          "Nói tiếng Việt, giọng sợ hãi (vừa phải), độc thoại nội tâm, như tự nói với chính mình, mic gần, Giọng trầm, tốc độ nhanh, hơi thở dồn dập, cảm giác căng thẳng tột độ",
+          "Nói tiếng Việt, giọng giận dữ (mạnh), Giọng lạnh lùng, dứt khoát, âm lượng vừa phải nhưng đầy uy quyền"
+        ]
+      },
+      "speaker_voices": [
+        [
+          "Linh",
+          "Kore"
+        ],
+        [
+          "Duong",
+          "Orus"
+        ]
+      ],
+      "stem": "ep01_sc01_c01_chunk.wav",
+      "pause_after_ms": 300,
+      "attempt": 0
+    },
+    {
+      "id": "ep01_sc01_c02",
+      "kind": "conversation",
+      "scene_id": "sc01",
+      "unit_ids": [
+        "ep01_sc01_l003",
+        "ep01_sc01_l004"
+      ],
+      "speakers": [
+        "diep",
+        "linh"
+      ],
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "ep01_sc01_c02",
+      "text": "Diep: Đừng làm phiền anh Quân nữa. Cô không đủ năng lực đâu, người mới.\nLinh: Tôi hiểu rồi, thưa sếp. Tôi sẽ làm ngay.",
+      "settings": {
+        "style": "Đọc đoạn hội thoại tiếng Việt như phim truyền hình, diễn xuất tự nhiên; giữa các câu ngắt nghỉ khoảng nửa giây.",
+        "turn_styles": [
+          "Nói tiếng Việt, giọng khinh ghét (vừa phải), giọng mỉa mai, Giọng mượt mà, kéo dài âm cuối, đầy vẻ khinh miệt",
+          "Nói tiếng Việt, giọng bình thản (nhẹ), Giọng bình thản, che giấu cảm xúc thật"
+        ]
+      },
+      "speaker_voices": [
+        [
+          "Diep",
+          "Despina"
+        ],
+        [
+          "Linh",
+          "Kore"
+        ]
+      ],
+      "stem": "ep01_sc01_c02_chunk.wav",
+      "pause_after_ms": 500,
+      "attempt": 0
+    },
+    {
+      "id": "ep01_sc02_c01",
+      "kind": "conversation",
+      "scene_id": "sc02",
+      "unit_ids": [
+        "ep01_sc02_l001",
+        "ep01_sc02_l002",
+        "ep01_sc02_l003"
+      ],
+      "speakers": [
+        "minh-khoi",
+        "linh"
+      ],
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "ep01_sc02_c01",
+      "text": "MinhKhoi: Quân, anh lại lên cơn đau. Thuốc không còn tác dụng nữa rồi.\nLinh: Cơ hội đây rồi. Tần số sóng âm bốn trăm ba mươi hai héc. Hy vọng nó có thể làm dịu cơn đau của hắn.\nLinh: Để tôi thử giúp anh, thưa sếp.",
+      "settings": {
+        "style": "Đọc đoạn hội thoại tiếng Việt như phim truyền hình, diễn xuất tự nhiên; giữa các câu ngắt nghỉ khoảng nửa giây.",
+        "turn_styles": [
+          "Nói tiếng Việt, giọng sợ hãi (vừa phải), lo lắng, run giọng, Giọng gấp gáp, hơi cao, thể hiện sự lo lắng giả tạo",
+          "Nói tiếng Việt, giọng bình thản (vừa phải), độc thoại nội tâm, như tự nói với chính mình, mic gần, Giọng tập trung, nhỏ nhẹ, sắc bén",
+          "Nói tiếng Việt, giọng dịu dàng, trìu mến (vừa phải), thì thầm, Giọng thì thầm, nhẹ nhàng, đầy tính toán"
+        ]
+      },
+      "speaker_voices": [
+        [
+          "MinhKhoi",
+          "Puck"
+        ],
+        [
+          "Linh",
+          "Kore"
+        ]
+      ],
+      "stem": "ep01_sc02_c01_chunk.wav",
+      "pause_after_ms": 300,
+      "attempt": 0
+    },
+    {
+      "id": "ep01_sc02_c02",
+      "kind": "conversation",
+      "scene_id": "sc02",
+      "unit_ids": [
+        "ep01_sc02_l004"
+      ],
+      "speakers": [
+        "duong"
+      ],
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Orus",
+      "text": "Dừng lại... âm thanh này... nó là gì?",
+      "settings": {
+        "style": "Đọc các câu thoại tiếng Việt sau của cùng một nhân vật. Diễn xuất theo chỉ dẫn từng câu bên dưới; KHÔNG đọc tên người nói, số thứ tự hay chỉ dẫn. Giữa các câu ngắt nghỉ tự nhiên khoảng nửa giây.\nNhân vật:\nMinh Quân: Nam, giọng trầm, miền Nam, kể chuyện chậm rãi và chắc (ElevenLabs 'Trieu Duong').\nChỉ dẫn diễn xuất theo thứ tự câu:\n1. Nói tiếng Việt, giọng ngạc nhiên (mạnh), hít một hơi sửng sốt, Giọng gầm gừ, đứt quãng vì đau đớn\nLời thoại"
+      },
+      "speaker_voices": [
+        [
+          "Duong",
+          "Orus"
+        ]
+      ],
+      "stem": "ep01_sc02_c02_chunk.wav",
+      "pause_after_ms": 1500,
+      "attempt": 0
+    },
+    {
+      "id": "ep01_sc03_c01",
+      "kind": "conversation",
+      "scene_id": "sc03",
+      "unit_ids": [
+        "ep01_sc03_l001",
+        "ep01_sc03_l002"
+      ],
+      "speakers": [
+        "linh",
+        "duong"
+      ],
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "ep01_sc03_c01",
+      "text": "Linh: Hắn đã ngủ. Năm năm rồi, đây là lần đầu tiên hắn chìm vào giấc ngủ sâu. Nhưng tại sao hắn lại nắm chặt tay mình?\nDuong: Cô là ai mà biết tần số này?",
+      "settings": {
+        "style": "Đọc đoạn hội thoại tiếng Việt như phim truyền hình, diễn xuất tự nhiên; giữa các câu ngắt nghỉ khoảng nửa giây.",
+        "turn_styles": [
+          "Nói tiếng Việt, giọng ngạc nhiên (mạnh), độc thoại nội tâm, như tự nói với chính mình, mic gần, Giọng trầm ngâm, bối rối",
+          "Nói tiếng Việt, giọng giận dữ (rất mạnh, cao trào), Giọng khàn đặc, sắc lạnh, đầy đe dọa"
+        ]
+      },
+      "speaker_voices": [
+        [
+          "Linh",
+          "Kore"
+        ],
+        [
+          "Duong",
+          "Orus"
+        ]
+      ],
+      "stem": "ep01_sc03_c01_chunk.wav",
+      "pause_after_ms": 0,
+      "attempt": 0
+    }
+  ],
+  "cliffhanger": "Quân tỉnh dậy, ánh mắt sắc lạnh nhìn An: 'Cô là ai mà biết tần số này?'",
+  "director_notes": "Tập 1 tập trung vào sự đối lập giữa sự lạnh lùng của Minh Quân và sự điềm tĩnh, đầy toan tính của Lâm An. Cần chú ý nhấn mạnh âm thanh tần số 432Hz ở cảnh 2.",
+  "bgm_mood": null,
+  "directed_at": "2026-10-13T13:56:08+00:00"
+}

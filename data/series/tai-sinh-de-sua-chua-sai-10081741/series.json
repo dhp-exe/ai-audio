@@ -1,0 +1,560 @@
+{
+  "series_id": "tai-sinh-de-sua-chua-sai-10081741",
+  "language": "vi-VN",
+  "title": "Ván Cờ Tái Sinh: Đế Chế Của Riêng Tôi",
+  "logline": "Sau khi bị sát hại bởi chồng cũ và bạn thân, Nhã Đan tái sinh về thời điểm 3 năm trước, quyết tâm dùng kiến thức tương lai để phá hủy đế chế của kẻ phản bội và xây dựng sự nghiệp riêng.",
+  "premise": "Nhã Đan tỉnh dậy vào ngày đính hôn định mệnh. Với ký ức về sự phản bội, cô bắt đầu một ván cờ đầy nguy hiểm để lật đổ Minh Khang và Thùy Linh, đồng thời đối mặt với những cảm xúc phức tạp dành cho người đồng minh Gia Huy.",
+  "tone": "Căng thẳng, kịch tính, sắc sảo, đầy toan tính.",
+  "genre": [
+    "Tâm lý",
+    "Giật gân",
+    "Báo thù"
+  ],
+  "overview": {
+    "title": "Ván Cờ Tái Sinh: Đế Chế Của Riêng Tôi",
+    "total_minutes": 45,
+    "genre": "Tâm lý, Giật gân, Báo thù",
+    "setting": "Thành phố hiện đại, tập đoàn tài chính lớn và các buổi tiệc thượng lưu."
+  },
+  "mode": "write",
+  "protagonist_id": "linh",
+  "protagonist_role": "Nhã Đan",
+  "roles": [
+    {
+      "role_name": "Nhã Đan",
+      "role_type": "protagonist",
+      "description": "Nữ, 25 tuổi, thông minh và quyết đoán. Mục tiêu: Phá hủy sự nghiệp của kẻ phản bội và xây dựng đế chế riêng. Động cơ: Nỗi đau bị sát hại ở kiếp trước.",
+      "gender": "female",
+      "actor_id": "linh",
+      "assigned_by": "ai",
+      "reason": "Chất giọng sắc sảo, dứt khoát của Linh rất phù hợp với hình tượng nữ chính thông minh, quyết đoán và đầy thù hận."
+    },
+    {
+      "role_name": "Minh Khang",
+      "role_type": "antagonist",
+      "description": "Nam, 28 tuổi, chồng cũ của Nhã Đan. Mục tiêu: Chiếm đoạt tài sản nhà họ Lâm. Động cơ: Tham vọng quyền lực không đáy, luôn cảnh giác với mọi sự thay đổi của Nhã Đan.",
+      "gender": "male",
+      "actor_id": "minh-khoi",
+      "assigned_by": "ai",
+      "reason": "Sự linh hoạt, quyến rũ và khả năng che giấu cảm xúc của Minh Khôi là lựa chọn lý tưởng cho vai phản diện đầy tham vọng."
+    },
+    {
+      "role_name": "Thùy Linh",
+      "role_type": "antagonist",
+      "description": "Nữ, 25 tuổi, bạn thân kiêm kẻ phản bội. Mục tiêu: Thay thế vị trí của Nhã Đan. Động cơ: Sự đố kỵ tích tụ từ nhỏ.",
+      "gender": "female",
+      "actor_id": "diep",
+      "assigned_by": "ai",
+      "reason": "Chất giọng mượt mà, khéo léo và đầy toan tính của Diệp hoàn hảo cho vai diễn người bạn thân hai mặt."
+    },
+    {
+      "role_name": "Gia Huy",
+      "role_type": "supporting",
+      "description": "Nam, 30 tuổi, đối thủ kinh doanh của Minh Khang. Mục tiêu: Lật đổ Minh Khang. Động cơ: Trả thù cho gia đình bị Minh Khang hãm hại trong quá khứ.",
+      "gender": "male",
+      "actor_id": "duong",
+      "assigned_by": "ai",
+      "reason": "Giọng trầm, điềm tĩnh và đầy quyền uy của Dương rất hợp với hình tượng đối thủ kinh doanh bản lĩnh."
+    }
+  ],
+  "cast": [
+    "linh",
+    "minh-khoi",
+    "diep",
+    "duong"
+  ],
+  "trend_brief_id": "rebirth-20261008-173953",
+  "theme_category": "rebirth_butterfly_effect",
+  "pending_characters": [],
+  "episode_format": {
+    "count": 30,
+    "min_duration_sec": 60,
+    "max_duration_sec": 120,
+    "ends_on_cliffhanger": true
+  },
+  "episodes": [
+    {
+      "number": 1,
+      "title": "Ngày tái sinh",
+      "logline": "Nhã Đan tỉnh dậy ngay trước buổi lễ đính hôn và nhận ra mình đã quay về quá khứ.",
+      "key_beats": [
+        "Nhã Đan tỉnh dậy trong phòng trang điểm",
+        "Ký ức về cái chết ùa về",
+        "Nhã Đan nhìn thấy Minh Khang và Thùy Linh",
+        "Cô quyết định thay đổi vận mệnh",
+        "Buổi lễ đính hôn bắt đầu",
+        "Nhã Đan từ chối đeo nhẫn"
+      ],
+      "cliffhanger": "Nhã Đan công khai lỗi sai trong hợp đồng của Minh Khang trước mặt toàn bộ khách mời.",
+      "source_span": "",
+      "hook_score": 8
+    },
+    {
+      "number": 2,
+      "title": "Cú tát đầu tiên",
+      "logline": "Minh Khang bẽ mặt, Nhã Đan bắt đầu chiến dịch cô lập hắn.",
+      "key_beats": [
+        "Minh Khang cố gắng giải thích",
+        "Nhã Đan lạnh lùng rời khỏi buổi tiệc",
+        "Thùy Linh tiếp cận Nhã Đan giả vờ quan tâm",
+        "Nhã Đan diễn kịch đáp trả",
+        "Minh Khang nghi ngờ sự thay đổi của Nhã Đan",
+        "Hắn âm thầm cho người theo dõi cô"
+      ],
+      "cliffhanger": "Nhã Đan phát hiện Minh Khang đã đặt máy nghe lén trong phòng mình.",
+      "source_span": "",
+      "hook_score": 8
+    },
+    {
+      "number": 3,
+      "title": "Ván cờ mới",
+      "logline": "Nhã Đan bắt đầu tách biệt tài chính khỏi Minh Khang.",
+      "key_beats": [
+        "Nhã Đan rút vốn khỏi dự án của Minh Khang",
+        "Minh Khang nổi giận nhưng phải kiềm chế",
+        "Nhã Đan tìm hiểu về Gia Huy",
+        "Cô nhận ra Gia Huy là đối thủ lớn nhất của Minh Khang",
+        "Nhã Đan lên kế hoạch tiếp cận Gia Huy",
+        "Cô cần một đồng minh mạnh"
+      ],
+      "cliffhanger": "Nhã Đan gửi lời mời gặp mặt bí mật cho Gia Huy.",
+      "source_span": "",
+      "hook_score": 8
+    },
+    {
+      "number": 4,
+      "title": "Cuộc gặp định mệnh",
+      "logline": "Nhã Đan đối mặt với Gia Huy lần đầu tiên trong kiếp này.",
+      "key_beats": [
+        "Nhã Đan gặp Gia Huy tại quán cafe kín đáo",
+        "Gia Huy nghi ngờ ý đồ của cô",
+        "Nhã Đan tiết lộ thông tin nội bộ của Minh Khang",
+        "Gia Huy ngạc nhiên trước sự hiểu biết của cô",
+        "Họ bắt đầu thiết lập lòng tin",
+        "Minh Khang phát hiện Nhã Đan đi gặp đối thủ"
+      ],
+      "cliffhanger": "Minh Khang chặn đường Nhã Đan ngay khi cô vừa rời khỏi chỗ Gia Huy.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 5,
+      "title": "Mặt nạ giả tạo",
+      "logline": "Nhã Đan đối phó với sự tra hỏi của Minh Khang.",
+      "key_beats": [
+        "Minh Khang chất vấn về Gia Huy",
+        "Nhã Đan bịa ra lý do công việc",
+        "Thùy Linh xen vào làm tình hình thêm căng thẳng",
+        "Nhã Đan dùng lời nói xoay chuyển tình thế",
+        "Minh Khang tạm thời tin tưởng",
+        "Nhã Đan biết mình cần hành động nhanh hơn"
+      ],
+      "cliffhanger": "Nhã Đan phát hiện Thùy Linh đang lén lút lấy trộm tài liệu mật của cô.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 6,
+      "title": "Cái bẫy ngọt ngào",
+      "logline": "Nhã Đan tương kế tựu kế với Thùy Linh.",
+      "key_beats": [
+        "Nhã Đan để lộ tài liệu giả cho Thùy Linh lấy",
+        "Thùy Linh đưa tài liệu cho Minh Khang",
+        "Minh Khang tin đó là thật và đầu tư sai chỗ",
+        "Nhã Đan quan sát từ xa",
+        "Gia Huy bắt đầu tấn công vào thị trường của Minh Khang",
+        "Minh Khang rơi vào khủng hoảng tài chính"
+      ],
+      "cliffhanger": "Minh Khang mất trắng một khoản tiền lớn và đổ lỗi cho Thùy Linh.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 7,
+      "title": "Sự rạn nứt",
+      "logline": "Mối quan hệ giữa Minh Khang và Thùy Linh bắt đầu rạn nứt.",
+      "key_beats": [
+        "Minh Khang quát mắng Thùy Linh",
+        "Thùy Linh cảm thấy bị phản bội",
+        "Nhã Đan bắt đầu tiếp cận Thùy Linh",
+        "Cô gieo rắc sự nghi ngờ vào lòng Thùy Linh",
+        "Minh Khang bắt đầu tìm kiếm người thay thế",
+        "Nhã Đan biết mình đã đạt được mục đích"
+      ],
+      "cliffhanger": "Thùy Linh tìm đến Nhã Đan để cầu cứu.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 8,
+      "title": "Đồng minh bất đắc dĩ",
+      "logline": "Nhã Đan lợi dụng sự tuyệt vọng của Thùy Linh.",
+      "key_beats": [
+        "Thùy Linh khóc lóc kể khổ",
+        "Nhã Đan giả vờ thông cảm",
+        "Cô yêu cầu Thùy Linh làm gián điệp cho mình",
+        "Thùy Linh do dự nhưng đồng ý",
+        "Gia Huy cảnh báo Nhã Đan về sự nguy hiểm của Thùy Linh",
+        "Nhã Đan khẳng định cô kiểm soát được"
+      ],
+      "cliffhanger": "Nhã Đan nhận được tin nhắn đe dọa từ một số lạ.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 9,
+      "title": "Bóng ma quá khứ",
+      "logline": "Nhã Đan điều tra về kẻ đe dọa mình.",
+      "key_beats": [
+        "Nhã Đan kiểm tra camera an ninh",
+        "Cô nhận ra kẻ đe dọa là người của Minh Khang",
+        "Gia Huy đề nghị bảo vệ Nhã Đan",
+        "Nhã Đan từ chối vì muốn tự mình giải quyết",
+        "Minh Khang bắt đầu nghi ngờ Thùy Linh",
+        "Hắn đặt bẫy để thử lòng cô ta"
+      ],
+      "cliffhanger": "Thùy Linh suýt bị Minh Khang bắt quả tang đang gửi tin nhắn cho Nhã Đan.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 10,
+      "title": "Vượt giới hạn",
+      "logline": "Minh Khang quyết định dùng biện pháp mạnh.",
+      "key_beats": [
+        "Minh Khang thuê người hãm hại Gia Huy",
+        "Nhã Đan biết tin và tìm cách báo cho Gia Huy",
+        "Cô phải đến gặp Gia Huy trong đêm",
+        "Minh Khang bám theo Nhã Đan",
+        "Nhã Đan phát hiện ra sự hiện diện của Minh Khang",
+        "Cô phải tìm cách thoát thân"
+      ],
+      "cliffhanger": "Nhã Đan bị Minh Khang dồn vào đường cùng tại bãi đỗ xe.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 11,
+      "title": "Đối đầu trong bóng tối",
+      "logline": "Nhã Đan đối mặt với Minh Khang.",
+      "key_beats": [
+        "Minh Khang đe dọa Nhã Đan",
+        "Nhã Đan giữ bình tĩnh và đáp trả sắc bén",
+        "Cô dùng bằng chứng về việc Minh Khang hãm hại đối thủ để uy hiếp",
+        "Minh Khang chùn bước",
+        "Nhã Đan rời đi an toàn",
+        "Gia Huy xuất hiện kịp lúc"
+      ],
+      "cliffhanger": "Gia Huy tiết lộ với Nhã Đan rằng anh biết cô đang che giấu điều gì đó.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 12,
+      "title": "Sự thật phơi bày",
+      "logline": "Gia Huy và Nhã Đan chia sẻ bí mật.",
+      "key_beats": [
+        "Nhã Đan kể về kiếp trước",
+        "Gia Huy nghe và cảm thấy chấn động",
+        "Anh tin cô vì chính anh cũng có những giấc mơ kỳ lạ",
+        "Họ quyết định hợp tác toàn diện",
+        "Minh Khang bắt đầu mất kiểm soát",
+        "Hắn tìm đến những kẻ cho vay nặng lãi"
+      ],
+      "cliffhanger": "Minh Khang quyết định đánh cược toàn bộ tài sản vào một dự án mạo hiểm.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 13,
+      "title": "Dự án tử thần",
+      "logline": "Nhã Đan tìm cách phá hoại dự án của Minh Khang.",
+      "key_beats": [
+        "Nhã Đan biết về dự án mạo hiểm của Minh Khang",
+        "Cô tung tin đồn thất thiệt về dự án",
+        "Các nhà đầu tư bắt đầu rút vốn",
+        "Minh Khang điên cuồng tìm cách cứu vãn",
+        "Thùy Linh bắt đầu phản bội Minh Khang hoàn toàn",
+        "Cô ta cung cấp thông tin cho Nhã Đan"
+      ],
+      "cliffhanger": "Minh Khang phát hiện ra sự phản bội của Thùy Linh.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 14,
+      "title": "Sự trả thù tàn khốc",
+      "logline": "Minh Khang trừng phạt Thùy Linh.",
+      "key_beats": [
+        "Minh Khang nhốt Thùy Linh lại",
+        "Nhã Đan biết tin và tìm cách cứu cô ta",
+        "Gia Huy giúp Nhã Đan đột nhập",
+        "Họ giải cứu Thùy Linh thành công",
+        "Thùy Linh hoàn toàn sụp đổ",
+        "Nhã Đan đưa Thùy Linh đến nơi an toàn"
+      ],
+      "cliffhanger": "Thùy Linh tiết lộ một bí mật kinh hoàng về Minh Khang.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 15,
+      "title": "Bí mật đen tối",
+      "logline": "Nhã Đan biết về tội ác thực sự của Minh Khang.",
+      "key_beats": [
+        "Thùy Linh kể về vụ tai nạn năm xưa",
+        "Minh Khang chính là kẻ gây ra cái chết cho gia đình Gia Huy",
+        "Nhã Đan bàng hoàng",
+        "Cô phải tìm cách nói cho Gia Huy biết",
+        "Gia Huy đang ở trong tình thế nguy hiểm",
+        "Minh Khang đang lên kế hoạch ám sát Gia Huy"
+      ],
+      "cliffhanger": "Nhã Đan gọi điện cho Gia Huy nhưng không ai bắt máy.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 16,
+      "title": "Cuộc đua với thời gian",
+      "logline": "Nhã Đan tìm cách cứu Gia Huy.",
+      "key_beats": [
+        "Nhã Đan lái xe đến chỗ Gia Huy",
+        "Cô gặp tai nạn trên đường",
+        "Nhã Đan cố gắng thoát ra khỏi xe",
+        "Minh Khang xuất hiện tại hiện trường",
+        "Hắn định kết liễu Nhã Đan",
+        "Gia Huy xuất hiện kịp lúc cứu Nhã Đan"
+      ],
+      "cliffhanger": "Gia Huy bị thương nặng khi bảo vệ Nhã Đan.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 17,
+      "title": "Trong bệnh viện",
+      "logline": "Nhã Đan chăm sóc Gia Huy.",
+      "key_beats": [
+        "Gia Huy được đưa vào cấp cứu",
+        "Nhã Đan dằn vặt bản thân",
+        "Cô thề sẽ tiêu diệt Minh Khang",
+        "Minh Khang vẫn tiếp tục các âm mưu",
+        "Hắn cố gắng chiếm đoạt cổ phần của Gia Huy",
+        "Nhã Đan ngăn chặn kịp thời"
+      ],
+      "cliffhanger": "Nhã Đan nhận được thông báo Minh Khang đã chiếm được quyền kiểm soát hội đồng quản trị.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 18,
+      "title": "Thế cờ đảo ngược",
+      "logline": "Nhã Đan bắt đầu phản công.",
+      "key_beats": [
+        "Nhã Đan tập hợp các cổ đông trung thành",
+        "Cô vạch trần sai phạm của Minh Khang",
+        "Minh Khang cố gắng chối cãi",
+        "Các cổ đông bắt đầu dao động",
+        "Nhã Đan đưa ra bằng chứng không thể chối cãi",
+        "Minh Khang bị đình chỉ chức vụ"
+      ],
+      "cliffhanger": "Minh Khang bỏ trốn cùng một số tiền lớn.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 19,
+      "title": "Cuộc săn lùng",
+      "logline": "Nhã Đan truy tìm Minh Khang.",
+      "key_beats": [
+        "Nhã Đan nhờ cảnh sát hỗ trợ",
+        "Gia Huy tỉnh lại và tham gia truy tìm",
+        "Họ lần theo dấu vết của Minh Khang",
+        "Minh Khang đang chuẩn bị rời khỏi đất nước",
+        "Nhã Đan biết nơi hắn đang trốn",
+        "Cô đến đó một mình"
+      ],
+      "cliffhanger": "Nhã Đan đối mặt với Minh Khang tại sân bay.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 20,
+      "title": "Đường cùng",
+      "logline": "Cuộc đối đầu cuối cùng giữa Nhã Đan và Minh Khang.",
+      "key_beats": [
+        "Minh Khang đe dọa Nhã Đan bằng vũ khí",
+        "Nhã Đan không hề sợ hãi",
+        "Cô nói về những sai lầm của hắn",
+        "Minh Khang suy sụp",
+        "Cảnh sát ập đến",
+        "Minh Khang bị bắt giữ"
+      ],
+      "cliffhanger": "Minh Khang cười điên dại khi bị đưa đi.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 21,
+      "title": "Hậu quả",
+      "logline": "Nhã Đan bắt đầu xây dựng lại đế chế.",
+      "key_beats": [
+        "Công ty dần ổn định trở lại",
+        "Nhã Đan được bổ nhiệm làm CEO",
+        "Cô bắt đầu thực hiện các dự án mới",
+        "Gia Huy hồi phục và hỗ trợ cô",
+        "Thùy Linh biến mất không dấu vết",
+        "Nhã Đan cảm thấy nhẹ nhõm"
+      ],
+      "cliffhanger": "Nhã Đan nhận được một món quà bí ẩn tại văn phòng.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 22,
+      "title": "Món quà lạ",
+      "logline": "Nhã Đan điều tra về món quà.",
+      "key_beats": [
+        "Món quà là một chiếc nhẫn cũ",
+        "Nhã Đan nhớ lại kỷ niệm đau buồn",
+        "Cô nghi ngờ Minh Khang vẫn còn tay trong",
+        "Gia Huy giúp cô kiểm tra camera",
+        "Họ phát hiện một người lạ mặt",
+        "Nhã Đan quyết tâm tìm ra kẻ đó"
+      ],
+      "cliffhanger": "Người lạ mặt đó chính là Thùy Linh.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 23,
+      "title": "Sự trở lại của Thùy Linh",
+      "logline": "Thùy Linh quay lại để trả thù.",
+      "key_beats": [
+        "Thùy Linh xuất hiện tại công ty",
+        "Cô ta đe dọa Nhã Đan",
+        "Nhã Đan không nao núng",
+        "Thùy Linh bắt đầu phá hoại từ bên trong",
+        "Nhã Đan phát hiện ra các lỗ hổng bảo mật",
+        "Cô bắt đầu theo dõi Thùy Linh"
+      ],
+      "cliffhanger": "Thùy Linh đã đánh cắp dữ liệu quan trọng của công ty.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 24,
+      "title": "Cuộc chiến mới",
+      "logline": "Nhã Đan đối phó với Thùy Linh.",
+      "key_beats": [
+        "Dữ liệu bị rò rỉ",
+        "Nhã Đan tìm cách khắc phục",
+        "Gia Huy giúp cô ngăn chặn cuộc tấn công mạng",
+        "Thùy Linh bị dồn vào chân tường",
+        "Cô ta cố gắng bỏ trốn",
+        "Nhã Đan chặn đường cô ta"
+      ],
+      "cliffhanger": "Thùy Linh thú nhận cô ta làm vậy vì bị Minh Khang ép buộc từ trong tù.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 25,
+      "title": "Bóng ma trong tù",
+      "logline": "Nhã Đan đến thăm Minh Khang trong tù.",
+      "key_beats": [
+        "Minh Khang vẫn giữ thái độ ngạo mạn",
+        "Nhã Đan chất vấn hắn về Thùy Linh",
+        "Minh Khang phủ nhận mọi chuyện",
+        "Nhã Đan nhận ra hắn vẫn còn đồng bọn bên ngoài",
+        "Cô phải cẩn thận hơn",
+        "Gia Huy đề nghị tăng cường an ninh"
+      ],
+      "cliffhanger": "Nhã Đan phát hiện ra luật sư của Minh Khang là người đứng sau mọi chuyện.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 26,
+      "title": "Luật sư quỷ quyệt",
+      "logline": "Nhã Đan đối đầu với luật sư của Minh Khang.",
+      "key_beats": [
+        "Nhã Đan tìm hiểu về luật sư",
+        "Cô phát hiện ra hắn có liên quan đến các vụ án cũ",
+        "Cô thu thập bằng chứng",
+        "Luật sư cố gắng đe dọa Nhã Đan",
+        "Gia Huy giúp cô bảo vệ bằng chứng",
+        "Họ chuẩn bị tung đòn quyết định"
+      ],
+      "cliffhanger": "Luật sư biến mất cùng với toàn bộ hồ sơ vụ án.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 27,
+      "title": "Truy tìm tung tích",
+      "logline": "Nhã Đan và Gia Huy truy tìm luật sư.",
+      "key_beats": [
+        "Họ lần theo dấu vết đến một căn nhà hoang",
+        "Họ tìm thấy hồ sơ vụ án",
+        "Luật sư xuất hiện và tấn công họ",
+        "Nhã Đan và Gia Huy chống trả",
+        "Luật sư bị đánh bại",
+        "Họ giao hắn cho cảnh sát"
+      ],
+      "cliffhanger": "Hồ sơ vụ án tiết lộ một bí mật lớn hơn về gia đình Nhã Đan.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 28,
+      "title": "Sự thật về gia đình",
+      "logline": "Nhã Đan biết về quá khứ của gia đình mình.",
+      "key_beats": [
+        "Cha của Nhã Đan từng bị Minh Khang hãm hại",
+        "Cô hiểu tại sao Minh Khang lại nhắm vào gia đình mình",
+        "Nhã Đan cảm thấy đau lòng",
+        "Gia Huy an ủi cô",
+        "Họ quyết định làm sáng tỏ mọi chuyện",
+        "Nhã Đan cảm thấy tự tin hơn"
+      ],
+      "cliffhanger": "Nhã Đan quyết định công khai toàn bộ sự thật trước công chúng.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 29,
+      "title": "Công lý được thực thi",
+      "logline": "Nhã Đan tổ chức một buổi họp báo.",
+      "key_beats": [
+        "Buổi họp báo thu hút đông đảo truyền thông",
+        "Nhã Đan trình bày bằng chứng",
+        "Mọi người đều kinh ngạc",
+        "Minh Khang và đồng bọn bị kết án nặng hơn",
+        "Nhã Đan cảm thấy nhẹ nhõm",
+        "Cô đã hoàn thành mục tiêu"
+      ],
+      "cliffhanger": "Gia Huy cầu hôn Nhã Đan.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 30,
+      "title": "Chương mới",
+      "logline": "Nhã Đan bắt đầu một cuộc sống mới.",
+      "key_beats": [
+        "Nhã Đan suy nghĩ về lời cầu hôn",
+        "Cô nhận ra mình cần tập trung vào sự nghiệp",
+        "Cô từ chối lời cầu hôn một cách khéo léo",
+        "Gia Huy tôn trọng quyết định của cô",
+        "Nhã Đan tiếp tục điều hành đế chế",
+        "Cô nhìn về tương lai với sự tự tin"
+      ],
+      "cliffhanger": "Nhã Đan mỉm cười khi nhìn thấy ánh bình minh, sẵn sàng cho những thử thách mới.",
+      "source_span": "",
+      "hook_score": null
+    }
+  ],
+  "changelog": [
+    "2026-10-08 outline (google/gemini-3.1-flash-lite, mode=write)"
+  ]
+}

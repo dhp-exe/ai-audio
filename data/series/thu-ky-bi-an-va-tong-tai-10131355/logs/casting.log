@@ -1,0 +1,8 @@
+[13:55:29] casting: Lâm An -> linh (ai; Chất giọng sắc sảo, thông minh và khả năng giữ bình tĩnh của Linh rất )
+[13:55:29] casting: Minh Quân -> duong (ai; Chất giọng trầm, điềm tĩnh và đầy quyền uy của Dương hoàn hảo cho hình)
+[13:55:29] casting: Tú Vy -> diep (ai; Sự sang trọng, khéo léo và ẩn ý trong giọng nói của Diệp rất hợp với v)
+[13:55:29] casting: Khải -> minh-khoi (ai; Sự linh hoạt và khả năng biến hóa cảm xúc của Minh Khôi giúp thể hiện )
+[13:55:29] engine policy: linh -> wavespeed/google/gemini-3.8-flash/text-to-speech voice Kore [prebuilt; default]
+[13:55:29] engine policy: duong -> wavespeed/google/gemini-3.8-flash/text-to-speech voice Orus [prebuilt; default]
+[13:55:29] engine policy: diep -> wavespeed/google/gemini-3.8-flash/text-to-speech voice Despina [prebuilt; default]
+[13:55:29] engine policy: minh-khoi -> wavespeed/google/gemini-3.8-flash/text-to-speech voice Puck [prebuilt; default]

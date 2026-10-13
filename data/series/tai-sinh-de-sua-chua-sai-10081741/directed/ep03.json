@@ -1,0 +1,328 @@
+{
+  "schema_version": "2.0",
+  "series_id": "tai-sinh-de-sua-chua-sai-10081741",
+  "episode_number": 3,
+  "title": "Ván cờ mới",
+  "target_duration_sec": 120,
+  "batching": "scene",
+  "units": [
+    {
+      "unit_id": "ep03_sc01_l001",
+      "scene_id": "sc01",
+      "order": 1,
+      "type": "monologue",
+      "speaker_id": "linh",
+      "role_name": "Nhã Đan",
+      "text": "Máy nghe lén dưới gầm bàn? Minh Khang, anh vẫn rẻ tiền như kiếp trước. Nhưng lần này, tôi sẽ cho anh thấy cái giá của sự tham lam.",
+      "tts_text": "Máy nghe lén dưới gầm bàn? Minh Khang, anh vẫn rẻ tiền như kiếp trước. Nhưng lần này, tôi sẽ cho anh thấy cái giá của sự tham lam.",
+      "emotion_tag": "sarcastic",
+      "emotional_intensity": 7,
+      "audio_tags": [
+        "internal monologue"
+      ],
+      "direction": "Giọng trầm, sắc lạnh, nhịp chậm rãi đầy khinh bỉ.",
+      "pause_after_ms": 500,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Kore",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng mỉa mai (mạnh), độc thoại nội tâm, như tự nói với chính mình, mic gần, Giọng trầm, sắc lạnh, nhịp chậm rãi đầy khinh bỉ"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep03_sc01_l002",
+      "scene_id": "sc01",
+      "order": 2,
+      "type": "dialogue",
+      "speaker_id": "linh",
+      "role_name": "Nhã Đan",
+      "text": "Gửi lệnh rút vốn toàn bộ khỏi dự án bất động sản phía Nam. Đừng để lại một xu nào cho Minh Khang.",
+      "tts_text": "Gửi lệnh rút vốn toàn bộ khỏi dự án bất động sản phía Nam. Đừng để lại một xu nào cho Minh Khang.",
+      "emotion_tag": "neutral",
+      "emotional_intensity": 5,
+      "audio_tags": [],
+      "direction": "Giọng dứt khoát, chuyên nghiệp, không chút cảm xúc.",
+      "pause_after_ms": 400,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Kore",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng bình thản (vừa phải), Giọng dứt khoát, chuyên nghiệp, không chút cảm xúc"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep03_sc01_l003",
+      "scene_id": "sc01",
+      "order": 3,
+      "type": "dialogue",
+      "speaker_id": "minh-khoi",
+      "role_name": "Minh Khang",
+      "text": "Nhã Đan! Cô điên rồi sao? Cô vừa hủy bỏ hợp đồng đầu tư mà không thông qua tôi?",
+      "tts_text": "Nhã Đan! Cô điên rồi sao? Cô vừa hủy bỏ hợp đồng đầu tư mà không thông qua tôi?",
+      "emotion_tag": "angry",
+      "emotional_intensity": 9,
+      "audio_tags": [
+        "shouting"
+      ],
+      "direction": "Giọng cao, gắt gỏng, âm lượng lớn.",
+      "pause_after_ms": 400,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Puck",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng giận dữ (rất mạnh, cao trào), quát lớn, Giọng cao, gắt gỏng, âm lượng lớn"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep03_sc01_l004",
+      "scene_id": "sc01",
+      "order": 4,
+      "type": "dialogue",
+      "speaker_id": "linh",
+      "role_name": "Nhã Đan",
+      "text": "Tiền của tôi, tôi có quyền quyết định. Hay anh nghĩ, cái danh xưng vợ chồng này cho phép anh tiêu xài tài sản của nhà họ Lâm tùy ý?",
+      "tts_text": "Tiền của tôi, tôi có quyền quyết định. Hay anh nghĩ, cái danh xưng vợ chồng này cho phép anh tiêu xài tài sản của nhà họ Lâm tùy ý?",
+      "emotion_tag": "sarcastic",
+      "emotional_intensity": 8,
+      "audio_tags": [
+        "sarcastic"
+      ],
+      "direction": "Giọng bình thản, chậm rãi, xoáy sâu vào sự tự tôn của đối phương.",
+      "pause_after_ms": 500,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Kore",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng mỉa mai (mạnh), giọng mỉa mai, Giọng bình thản, chậm rãi, xoáy sâu vào sự tự tôn của đối phương"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep03_sc01_l005",
+      "scene_id": "sc01",
+      "order": 5,
+      "type": "dialogue",
+      "speaker_id": "minh-khoi",
+      "role_name": "Minh Khang",
+      "text": "Cô đang làm hỏng mọi thứ. Thùy Linh đang chờ dự án này để chứng minh năng lực. Đừng để tôi phải dùng biện pháp mạnh.",
+      "tts_text": "Cô đang làm hỏng mọi thứ. Thùy Linh đang chờ dự án này để chứng minh năng lực. Đừng để tôi phải dùng biện pháp mạnh.",
+      "emotion_tag": "angry",
+      "emotional_intensity": 7,
+      "audio_tags": [
+        "hesitates"
+      ],
+      "direction": "Giọng nghiến răng, đe dọa ngầm.",
+      "pause_after_ms": 400,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Puck",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng giận dữ (mạnh), ngập ngừng, Giọng nghiến răng, đe dọa ngầm"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep03_sc02_l001",
+      "scene_id": "sc02",
+      "order": 6,
+      "type": "monologue",
+      "speaker_id": "linh",
+      "role_name": "Nhã Đan",
+      "text": "Minh Khang đã bắt đầu phong tỏa thẻ tín dụng của mình. Hắn muốn mình quỳ gối xin lỗi. Nhưng hắn quên mất, Gia Huy mới là con sói đang chờ xé xác hắn.",
+      "tts_text": "Minh Khang đã bắt đầu phong tỏa thẻ tín dụng của mình. Hắn muốn mình quỳ gối xin lỗi. Nhưng hắn quên mất, Gia Huy mới là con sói đang chờ xé xác hắn.",
+      "emotion_tag": "neutral",
+      "emotional_intensity": 6,
+      "audio_tags": [
+        "introspective"
+      ],
+      "direction": "Giọng thì thầm, đầy toan tính.",
+      "pause_after_ms": 500,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Kore",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng bình thản (vừa phải), độc thoại nội tâm, như tự nói với chính mình, mic gần, Giọng thì thầm, đầy toan tính"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep03_sc02_l002",
+      "scene_id": "sc02",
+      "order": 7,
+      "type": "dialogue",
+      "speaker_id": "linh",
+      "role_name": "Nhã Đan",
+      "text": "Gia Huy, tôi biết anh đang tìm cách lật đổ Minh Khang. Tôi có thứ anh cần, và anh có thứ tôi muốn. Gặp tôi tại quán cà phê cũ lúc mười giờ tối mai.",
+      "tts_text": "Gia Huy, tôi biết anh đang tìm cách lật đổ Minh Khang. Tôi có thứ anh cần, và anh có thứ tôi muốn. Gặp tôi tại quán cà phê cũ lúc mười giờ tối mai.",
+      "emotion_tag": "neutral",
+      "emotional_intensity": 5,
+      "audio_tags": [],
+      "direction": "Giọng tập trung, gõ phím đều đặn.",
+      "pause_after_ms": 400,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Kore",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng bình thản (vừa phải), Giọng tập trung, gõ phím đều đặn"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep03_sc02_l003",
+      "scene_id": "sc02",
+      "order": 8,
+      "type": "monologue",
+      "speaker_id": "linh",
+      "role_name": "Nhã Đan",
+      "text": "Cái gì? Tin nhắn phản hồi ngay lập tức?",
+      "tts_text": "Cái gì? Tin nhắn phản hồi ngay lập tức?",
+      "emotion_tag": "surprised",
+      "emotional_intensity": 8,
+      "audio_tags": [
+        "gasps"
+      ],
+      "direction": "Giọng bất ngờ, hơi run.",
+      "pause_after_ms": 300,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Kore",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng ngạc nhiên (mạnh), độc thoại nội tâm, như tự nói với chính mình, mic gần, hít một hơi sửng sốt, Giọng bất ngờ, hơi run"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep03_sc02_l004",
+      "scene_id": "sc02",
+      "order": 9,
+      "type": "dialogue",
+      "speaker_id": "linh",
+      "role_name": "Nhã Đan",
+      "text": "Tôi không cần đợi đến ngày mai. Tôi đang ở ngay dưới nhà cô, Nhã Đan.",
+      "tts_text": "Tôi không cần đợi đến ngày mai. Tôi đang ở ngay dưới nhà cô, Nhã Đan.",
+      "emotion_tag": "fearful",
+      "emotional_intensity": 10,
+      "audio_tags": [
+        "whispers"
+      ],
+      "direction": "Giọng run rẩy, đọc tin nhắn từ điện thoại, âm thanh nghẹn lại.",
+      "pause_after_ms": 1500,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Kore",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng sợ hãi (rất mạnh, cao trào), thì thầm, Giọng run rẩy, đọc tin nhắn từ điện thoại, âm thanh nghẹn lại"
+      },
+      "sfx": []
+    }
+  ],
+  "render_plan": [
+    {
+      "id": "ep03_sc01_c01",
+      "kind": "conversation",
+      "scene_id": "sc01",
+      "unit_ids": [
+        "ep03_sc01_l001",
+        "ep03_sc01_l002",
+        "ep03_sc01_l003",
+        "ep03_sc01_l004",
+        "ep03_sc01_l005"
+      ],
+      "speakers": [
+        "linh",
+        "minh-khoi"
+      ],
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "ep03_sc01_c01",
+      "text": "Linh: Máy nghe lén dưới gầm bàn? Minh Khang, anh vẫn rẻ tiền như kiếp trước. Nhưng lần này, tôi sẽ cho anh thấy cái giá của sự tham lam.\nLinh: Gửi lệnh rút vốn toàn bộ khỏi dự án bất động sản phía Nam. Đừng để lại một xu nào cho Minh Khang.\nMinhKhoi: Nhã Đan! Cô điên rồi sao? Cô vừa hủy bỏ hợp đồng đầu tư mà không thông qua tôi?\nLinh: Tiền của tôi, tôi có quyền quyết định. Hay anh nghĩ, cái danh xưng vợ chồng này cho phép anh tiêu xài tài sản của nhà họ Lâm tùy ý?\nMinhKhoi: Cô đang làm hỏng mọi thứ. Thùy Linh đang chờ dự án này để chứng minh năng lực. Đừng để tôi phải dùng biện pháp mạnh.",
+      "settings": {
+        "style": "Đọc đoạn hội thoại tiếng Việt như phim truyền hình, diễn xuất tự nhiên; giữa các câu ngắt nghỉ khoảng nửa giây.",
+        "turn_styles": [
+          "Nói tiếng Việt, giọng mỉa mai (mạnh), độc thoại nội tâm, như tự nói với chính mình, mic gần, Giọng trầm, sắc lạnh, nhịp chậm rãi đầy khinh bỉ",
+          "Nói tiếng Việt, giọng bình thản (vừa phải), Giọng dứt khoát, chuyên nghiệp, không chút cảm xúc",
+          "Nói tiếng Việt, giọng giận dữ (rất mạnh, cao trào), quát lớn, Giọng cao, gắt gỏng, âm lượng lớn",
+          "Nói tiếng Việt, giọng mỉa mai (mạnh), giọng mỉa mai, Giọng bình thản, chậm rãi, xoáy sâu vào sự tự tôn của đối phương",
+          "Nói tiếng Việt, giọng giận dữ (mạnh), ngập ngừng, Giọng nghiến răng, đe dọa ngầm"
+        ]
+      },
+      "speaker_voices": [
+        [
+          "Linh",
+          "Kore"
+        ],
+        [
+          "MinhKhoi",
+          "Puck"
+        ]
+      ],
+      "stem": "ep03_sc01_c01_chunk.wav",
+      "pause_after_ms": 400,
+      "attempt": 0
+    },
+    {
+      "id": "ep03_sc02_c01",
+      "kind": "conversation",
+      "scene_id": "sc02",
+      "unit_ids": [
+        "ep03_sc02_l001",
+        "ep03_sc02_l002",
+        "ep03_sc02_l003",
+        "ep03_sc02_l004"
+      ],
+      "speakers": [
+        "linh"
+      ],
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Kore",
+      "text": "Minh Khang đã bắt đầu phong tỏa thẻ tín dụng của mình. Hắn muốn mình quỳ gối xin lỗi. Nhưng hắn quên mất, Gia Huy mới là con sói đang chờ xé xác hắn.\nGia Huy, tôi biết anh đang tìm cách lật đổ Minh Khang. Tôi có thứ anh cần, và anh có thứ tôi muốn. Gặp tôi tại quán cà phê cũ lúc mười giờ tối mai.\nCái gì? Tin nhắn phản hồi ngay lập tức?\nTôi không cần đợi đến ngày mai. Tôi đang ở ngay dưới nhà cô, Nhã Đan.",
+      "settings": {
+        "style": "Đọc các câu thoại tiếng Việt sau của cùng một nhân vật, đọc thật rõ ràng, đầy đủ từng chữ, không bỏ sót hay thêm lời nào. Diễn xuất theo chỉ dẫn từng câu bên dưới; KHÔNG đọc tên người nói, số thứ tự hay chỉ dẫn. Giữa các câu ngắt nghỉ tự nhiên khoảng nửa giây.\nNhân vật:\nNhã Đan: Nữ, giọng alto hơi khàn, ấm ở âm trầm, nhịp nói nhanh và dứt khoát, ngắt câu sắc; giọng miền Nam, không ngọt. Khác Ngân (cao, trong, ngây thơ): Linh trầm hơn, tỉnh táo và khô hơn. ElevenLabs hiện là placeholder Sarah (EN premade) cho đến khi có giọng Việt; Gemini: Kore (firm).\nChỉ dẫn diễn xuất theo thứ tự câu:\n1. Nói tiếng Việt, giọng bình thản (vừa phải), độc thoại nội tâm, như tự nói với chính mình, mic gần, Giọng thì thầm, đầy toan tính\n2. Nói tiếng Việt, giọng bình thản (vừa phải), Giọng tập trung, gõ phím đều đặn\n3. Nói tiếng Việt, giọng ngạc nhiên (mạnh), độc thoại nội tâm, như tự nói với chính mình, mic gần, hít một hơi sửng sốt, Giọng bất ngờ, hơi run\n4. Nói tiếng Việt, giọng sợ hãi (rất mạnh, cao trào), thì thầm, Giọng run rẩy, đọc tin nhắn từ điện thoại, âm thanh nghẹn lại\nLời thoại"
+      },
+      "speaker_voices": [
+        [
+          "Linh",
+          "Kore"
+        ]
+      ],
+      "stem": "ep03_sc02_c01_chunk.wav",
+      "pause_after_ms": 1500,
+      "attempt": 1
+    }
+  ],
+  "cliffhanger": "Nhã Đan gửi lời mời gặp mặt bí mật cho Gia Huy, nhưng nhận được tin nhắn phản hồi rằng Gia Huy đã ở ngay dưới nhà cô.",
+  "director_notes": "",
+  "bgm_mood": null,
+  "directed_at": "2026-10-08T17:44:09+00:00"
+}

@@ -1,0 +1,8 @@
+[17:41:31] casting: Nhã Đan -> linh (ai; Chất giọng sắc sảo, dứt khoát của Linh rất phù hợp với hình tượng nữ c)
+[17:41:31] casting: Minh Khang -> minh-khoi (ai; Sự linh hoạt, quyến rũ và khả năng che giấu cảm xúc của Minh Khôi là l)
+[17:41:31] casting: Thùy Linh -> diep (ai; Chất giọng mượt mà, khéo léo và đầy toan tính của Diệp hoàn hảo cho va)
+[17:41:31] casting: Gia Huy -> duong (ai; Giọng trầm, điềm tĩnh và đầy quyền uy của Dương rất hợp với hình tượng)
+[17:41:31] engine policy: linh -> wavespeed/google/gemini-3.8-flash/text-to-speech voice Kore [prebuilt; default]
+[17:41:31] engine policy: minh-khoi -> wavespeed/google/gemini-3.8-flash/text-to-speech voice Puck [prebuilt; default]
+[17:41:31] engine policy: diep -> wavespeed/google/gemini-3.8-flash/text-to-speech voice Despina [prebuilt; default]
+[17:41:31] engine policy: duong -> wavespeed/google/gemini-3.8-flash/text-to-speech voice Orus [prebuilt; default]

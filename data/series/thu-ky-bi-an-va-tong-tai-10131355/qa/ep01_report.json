@@ -1,0 +1,90 @@
+{
+  "series_id": "thu-ky-bi-an-va-tong-tai-10131355",
+  "episode_number": 1,
+  "attempt": 0,
+  "status": "PASS",
+  "score": 100,
+  "checks": {
+    "stems_complete": {
+      "ok": true,
+      "missing": [],
+      "units": 5
+    },
+    "sentences": {
+      "ok": true,
+      "short": [],
+      "long": []
+    },
+    "clipping": {
+      "ok": true,
+      "units": [],
+      "threshold_dbfs": -0.1
+    },
+    "silence": {
+      "ok": true,
+      "units": [],
+      "min_silence_s": 1.5
+    },
+    "speakers": {
+      "ok": true,
+      "mismatch": [],
+      "placeholder": []
+    },
+    "transcript": {
+      "ok": null,
+      "skipped": "EMVOOX_QA_TRANSCRIBE is off"
+    },
+    "loudness": {
+      "ok": true,
+      "integrated_lufs": -15.9,
+      "true_peak_dbtp": -4.5,
+      "target_lufs": -16.0,
+      "target_tp": -1.5
+    },
+    "duration": {
+      "ok": true,
+      "seconds": 60.6,
+      "target": 70
+    }
+  },
+  "error_logs": [],
+  "retry_instructions": [],
+  "review_lines": [
+    "ep01_sc03_l001",
+    "ep01_sc03_l002"
+  ],
+  "scenes": [
+    {
+      "scene_id": "sc01",
+      "status": "PASS",
+      "score": 100,
+      "attempt": 0,
+      "issues": [],
+      "approved_by": null
+    },
+    {
+      "scene_id": "sc02",
+      "status": "PASS",
+      "score": 100,
+      "attempt": 0,
+      "issues": [],
+      "approved_by": null
+    },
+    {
+      "scene_id": "sc03",
+      "status": "PASS",
+      "score": 100,
+      "attempt": 0,
+      "issues": [],
+      "approved_by": null
+    }
+  ],
+  "human": {
+    "verdict": "approved",
+    "reviewer": "dhp",
+    "lines": [],
+    "notes": "",
+    "at": "2026-10-13T13:57:32+00:00"
+  },
+  "generated_at": "2026-10-13T13:56:48+00:00"
+}

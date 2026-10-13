@@ -1,0 +1,35 @@
+{
+  "overview": {
+    "title": "Ván Cờ Tái Sinh: Đế Chế Của Riêng Tôi",
+    "total_minutes": 45,
+    "genre": "Tâm lý, Giật gân, Báo thù",
+    "setting": "Thành phố hiện đại, tập đoàn tài chính lớn và các buổi tiệc thượng lưu."
+  },
+  "roles": [
+    {
+      "name": "Nhã Đan",
+      "description": "Nữ, 25 tuổi, thông minh và quyết đoán. Mục tiêu: Phá hủy sự nghiệp của kẻ phản bội và xây dựng đế chế riêng. Động cơ: Nỗi đau bị sát hại ở kiếp trước.",
+      "gender": null,
+      "actor_id": null
+    },
+    {
+      "name": "Minh Khang",
+      "description": "Nam, 28 tuổi, chồng cũ của Nhã Đan. Mục tiêu: Chiếm đoạt tài sản nhà họ Lâm. Động cơ: Tham vọng quyền lực không đáy, luôn cảnh giác với mọi sự thay đổi của Nhã Đan.",
+      "gender": null,
+      "actor_id": null
+    },
+    {
+      "name": "Thùy Linh",
+      "description": "Nữ, 25 tuổi, bạn thân kiêm kẻ phản bội. Mục tiêu: Thay thế vị trí của Nhã Đan. Động cơ: Sự đố kỵ tích tụ từ nhỏ.",
+      "gender": null,
+      "actor_id": null
+    },
+    {
+      "name": "Gia Huy",
+      "description": "Nam, 30 tuổi, đối thủ kinh doanh của Minh Khang. Mục tiêu: Lật đổ Minh Khang. Động cơ: Trả thù cho gia đình bị Minh Khang hãm hại trong quá khứ.",
+      "gender": null,
+      "actor_id": null
+    }
+  ],
+  "script": "Hồi 1: Tái sinh và sự nghi ngờ. Nhã Đan tỉnh dậy vào đúng ngày đính hôn 3 năm trước. Cô nhận ra mình có cơ hội sửa sai. Bước ngoặt: Ngay tại buổi tiệc, cô từ chối đeo nhẫn và công khai một lỗi sai trong hợp đồng của Minh Khang khiến hắn mất mặt. Minh Khang bắt đầu nghi ngờ sự thay đổi đột ngột này và âm thầm điều tra. Hồi 2: Xây dựng đế chế. Nhã Đan dùng kiến thức tương lai để đầu tư vào các dự án tiềm năng, tách biệt tài chính khỏi Minh Khang. Cô tiếp cận Gia Huy để liên minh. Bước ngoặt: Cô phát hiện Gia Huy chính là người đã cố cứu cô trong kiếp trước nhưng thất bại. Cô đứng giữa lựa chọn: dùng Gia Huy làm công cụ báo thù hay bảo vệ anh khỏi âm mưu của Minh Khang. Hồi 3: Đối đầu trực diện. Minh Khang phát hiện ra kế hoạch của Nhã Đan và cố gắng cô lập cô. Thùy Linh bị Minh Khang bỏ rơi và trở thành con bài của Nhã Đan. Bước ngoặt: Nhã Đan tung bằng chứng Minh Khang tham ô ngay trước cổ đông, nhưng hắn đã chuẩn bị đường lui. Kết thúc: Nhã Đan thành công chiếm quyền kiểm soát tập đoàn, đẩy Minh Khang vào cảnh trắng tay. Cô chọn từ bỏ tình cảm cá nhân để giữ vững đế chế, để lại Minh Khang trong sự hối hận và thất bại hoàn toàn."
+}

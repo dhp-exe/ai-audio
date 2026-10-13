@@ -1,0 +1,49 @@
+{
+  "series_id": "tai-sinh-de-sua-chua-sai-10081741",
+  "episode_number": 2,
+  "title": "Cú tát đầu tiên",
+  "state": "awaiting_approval",
+  "qa_status": "PASS",
+  "qa_score": 100,
+  "qa_attempts": 0,
+  "reason": "QA passed; waiting for a human to listen and approve.",
+  "duration_ms": 82700,
+  "master_mp3": "series/tai-sinh-de-sua-chua-sai-10081741/masters/ep02_master.mp3",
+  "master_wav": "series/tai-sinh-de-sua-chua-sai-10081741/masters/ep02_master.wav",
+  "metadata": {
+    "title": "Ván Cờ Tái Sinh: Đế Chế Của Riêng Tôi | Tập 2: Cú tát đầu tiên",
+    "description": "Nhã Đan bắt đầu chiến dịch cô lập Minh Khang ngay trong ngày đính hôn, khiến hắn rơi vào tình thế bẽ mặt trước công chúng. Những quân cờ đầu tiên đã được đặt xuống, báo hiệu một cuộc trả thù đầy toan tính và kịch tính. Nghe tập tiếp theo trong danh sách phát. Giọng đọc trong video được tạo bằng AI.",
+    "tags": [
+      "Ván Cờ Tái Sinh",
+      "truyện audio",
+      "Mặc Khải",
+      "Emvoox",
+      "truyện tâm lý",
+      "truyện giật gân",
+      "truyện báo thù",
+      "truyện ngôn tình",
+      "audiobook",
+      "Nhã Đan",
+      "truyện hay"
+    ],
+    "hashtags": [
+      "#VanCoTaiSinh",
+      "#TruyenAudio",
+      "#MacKhai",
+      "#Emvoox",
+      "#TruyenBaoThu"
+    ],
+    "playlist_title": "Ván Cờ Tái Sinh: Đế Chế Của Riêng Tôi",
+    "thumbnail_text": "Cú tát trả thù",
+    "language": "vi",
+    "category": "Entertainment",
+    "made_for_kids": false,
+    "contains_synthetic_media": true,
+    "generated_by": "llm"
+  },
+  "decision": null,
+  "exported": [],
+  "publish": {},
+  "created_at": "2026-10-08T17:43:19+00:00",
+  "updated_at": "2026-10-08T17:43:19+00:00"
+}

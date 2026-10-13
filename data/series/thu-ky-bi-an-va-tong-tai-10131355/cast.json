@@ -1,0 +1,79 @@
+{
+  "series_id": "thu-ky-bi-an-va-tong-tai-10131355",
+  "engine_policy": {
+    "default": {
+      "provider": "wavespeed",
+      "model": null
+    },
+    "by_role_type": {},
+    "by_actor": {},
+    "prefer_cloned": true,
+    "tier": "test",
+    "batching": "auto"
+  },
+  "protagonist_id": "linh",
+  "members": [
+    {
+      "role_name": "Lâm An",
+      "role_type": "protagonist",
+      "actor_id": "linh",
+      "display_name": "Linh",
+      "assigned_by": "ai",
+      "reason": "Chất giọng sắc sảo, thông minh và khả năng giữ bình tĩnh của Linh rất phù hợp với vai chuyên gia trị liệu ẩn danh đầy bản lĩnh.",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Kore",
+      "voice_source": "prebuilt",
+      "fallback_voice_id": null,
+      "voice_settings": {},
+      "is_ip_asset": true
+    },
+    {
+      "role_name": "Minh Quân",
+      "role_type": "antagonist",
+      "actor_id": "duong",
+      "display_name": "Dương",
+      "assigned_by": "ai",
+      "reason": "Chất giọng trầm, điềm tĩnh và đầy quyền uy của Dương hoàn hảo cho hình tượng tổng tài lạnh lùng, khó gần.",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Orus",
+      "voice_source": "prebuilt",
+      "fallback_voice_id": null,
+      "voice_settings": {},
+      "is_ip_asset": true
+    },
+    {
+      "role_name": "Tú Vy",
+      "role_type": "supporting",
+      "actor_id": "diep",
+      "display_name": "Diệp",
+      "assigned_by": "ai",
+      "reason": "Sự sang trọng, khéo léo và ẩn ý trong giọng nói của Diệp rất hợp với vai người yêu cũ đầy toan tính và tham vọng.",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Despina",
+      "voice_source": "prebuilt",
+      "fallback_voice_id": null,
+      "voice_settings": {},
+      "is_ip_asset": true
+    },
+    {
+      "role_name": "Khải",
+      "role_type": "supporting",
+      "actor_id": "minh-khoi",
+      "display_name": "Minh Khôi",
+      "assigned_by": "ai",
+      "reason": "Sự linh hoạt và khả năng biến hóa cảm xúc của Minh Khôi giúp thể hiện tốt vai bác sĩ có vẻ ngoài dễ mến nhưng ẩn chứa sự thao túng.",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Puck",
+      "voice_source": "prebuilt",
+      "fallback_voice_id": null,
+      "voice_settings": {},
+      "is_ip_asset": true
+    }
+  ],
+  "notes": [],
+  "resolved_at": "2026-10-13T13:55:29+00:00"
+}

@@ -1,0 +1,79 @@
+{
+  "series_id": "tai-sinh-de-sua-chua-sai-10081741",
+  "engine_policy": {
+    "default": {
+      "provider": "wavespeed",
+      "model": "google/gemini-3.8-flash/text-to-speech"
+    },
+    "by_role_type": {},
+    "by_actor": {},
+    "prefer_cloned": true,
+    "tier": "test",
+    "batching": "auto"
+  },
+  "protagonist_id": "linh",
+  "members": [
+    {
+      "role_name": "Nhã Đan",
+      "role_type": "protagonist",
+      "actor_id": "linh",
+      "display_name": "Linh",
+      "assigned_by": "ai",
+      "reason": "Chất giọng sắc sảo, dứt khoát của Linh rất phù hợp với hình tượng nữ chính thông minh, quyết đoán và đầy thù hận.",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Kore",
+      "voice_source": "prebuilt",
+      "fallback_voice_id": null,
+      "voice_settings": {},
+      "is_ip_asset": true
+    },
+    {
+      "role_name": "Minh Khang",
+      "role_type": "antagonist",
+      "actor_id": "minh-khoi",
+      "display_name": "Minh Khôi",
+      "assigned_by": "ai",
+      "reason": "Sự linh hoạt, quyến rũ và khả năng che giấu cảm xúc của Minh Khôi là lựa chọn lý tưởng cho vai phản diện đầy tham vọng.",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Puck",
+      "voice_source": "prebuilt",
+      "fallback_voice_id": null,
+      "voice_settings": {},
+      "is_ip_asset": true
+    },
+    {
+      "role_name": "Thùy Linh",
+      "role_type": "antagonist",
+      "actor_id": "diep",
+      "display_name": "Diệp",
+      "assigned_by": "ai",
+      "reason": "Chất giọng mượt mà, khéo léo và đầy toan tính của Diệp hoàn hảo cho vai diễn người bạn thân hai mặt.",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Despina",
+      "voice_source": "prebuilt",
+      "fallback_voice_id": null,
+      "voice_settings": {},
+      "is_ip_asset": true
+    },
+    {
+      "role_name": "Gia Huy",
+      "role_type": "supporting",
+      "actor_id": "duong",
+      "display_name": "Dương",
+      "assigned_by": "ai",
+      "reason": "Giọng trầm, điềm tĩnh và đầy quyền uy của Dương rất hợp với hình tượng đối thủ kinh doanh bản lĩnh.",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Orus",
+      "voice_source": "prebuilt",
+      "fallback_voice_id": null,
+      "voice_settings": {},
+      "is_ip_asset": true
+    }
+  ],
+  "notes": [],
+  "resolved_at": "2026-10-08T17:41:31+00:00"
+}

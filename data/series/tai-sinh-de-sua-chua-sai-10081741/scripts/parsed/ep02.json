@@ -1,0 +1,201 @@
+{
+  "schema_version": "1.0",
+  "language": "vi-VN",
+  "series_id": "tai-sinh-de-sua-chua-sai-10081741",
+  "episode_number": 2,
+  "title": "Cú tát đầu tiên",
+  "logline": "Nhã Đan bắt đầu chiến dịch lật đổ Minh Khang ngay tại buổi tiệc đính hôn, khiến hắn lộ rõ bộ mặt thật và bắt đầu theo dõi cô.",
+  "target_duration_sec": 120,
+  "characters_used": [
+    "diep",
+    "linh",
+    "minh-khoi"
+  ],
+  "scenes": [
+    {
+      "scene_id": "sc01",
+      "title": "Sảnh tiệc khách sạn",
+      "location": "Sảnh tiệc khách sạn sang trọng",
+      "time_of_day": "night",
+      "ambience_tag": null,
+      "ambience_level": 0.2,
+      "bgm": null,
+      "lines": [
+        {
+          "line_id": "ep02_sc01_l001",
+          "type": "monologue",
+          "character_id": "linh",
+          "role_name": "Nhã Đan",
+          "text": "Nhìn khuôn mặt tái mét của Minh Khang lúc này thật đáng giá. Kiếp trước, mình đã ngu ngốc tin vào sự giải thích của hắn đến mức nào chứ.",
+          "tts_text": "[internal monologue] Nhìn khuôn mặt tái mét của Minh Khang lúc này thật đáng giá. Kiếp trước, mình đã ngu ngốc tin vào sự giải thích của hắn đến mức nào chứ.",
+          "emotion": "sarcastic",
+          "emotional_intensity": 7,
+          "acoustic_direction": "Giọng trầm, sắc bén, nhịp chậm rãi đầy khinh bỉ.",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 500,
+          "sfx": []
+        },
+        {
+          "line_id": "ep02_sc01_l002",
+          "type": "dialogue",
+          "character_id": "minh-khoi",
+          "role_name": "Minh Khang",
+          "text": "Nhã Đan, em làm gì vậy? Đây là hiểu lầm kỹ thuật, đừng để khách mời phải bàn tán về chuyện nội bộ của chúng ta.",
+          "tts_text": "[nervously] Nhã Đan, em làm gì vậy? Đây là hiểu lầm kỹ thuật, đừng để khách mời phải bàn tán về chuyện nội bộ của chúng ta.",
+          "emotion": "fearful",
+          "emotional_intensity": 6,
+          "acoustic_direction": "Giọng hơi run, cố gắng giữ vẻ bình tĩnh nhưng lộ rõ sự lo lắng.",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 400,
+          "sfx": []
+        },
+        {
+          "line_id": "ep02_sc01_l003",
+          "type": "dialogue",
+          "character_id": "linh",
+          "role_name": "Nhã Đan",
+          "text": "Hiểu lầm sao? Con số sai lệch này đủ để công ty nhà họ Lâm phá sản trong một đêm. Anh muốn tôi im lặng để anh kịp tẩu tán tài sản sao, Minh Khang?",
+          "tts_text": "Hiểu lầm sao? Con số sai lệch này đủ để công ty nhà họ Lâm phá sản trong một đêm. Anh muốn tôi im lặng để anh kịp tẩu tán tài sản sao, Minh Khang?",
+          "emotion": "angry",
+          "emotional_intensity": 8,
+          "acoustic_direction": "Giọng đanh thép, dứt khoát, nhấn mạnh vào từng từ.",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 400,
+          "sfx": []
+        },
+        {
+          "line_id": "ep02_sc01_l004",
+          "type": "dialogue",
+          "character_id": "linh",
+          "role_name": "Nhã Đan",
+          "text": "Buổi tiệc này kết thúc rồi. Tôi cần thời gian để xem xét lại tư cách của người mà tôi sắp lấy làm chồng.",
+          "tts_text": "Buổi tiệc này kết thúc rồi. Tôi cần thời gian để xem xét lại tư cách của người mà tôi sắp lấy làm chồng.",
+          "emotion": "sarcastic",
+          "emotional_intensity": 9,
+          "acoustic_direction": "Giọng lạnh lùng, cao ngạo, kết thúc cảnh bằng sự áp đảo.",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 1000,
+          "sfx": []
+        }
+      ]
+    },
+    {
+      "scene_id": "sc02",
+      "title": "Hành lang khách sạn",
+      "location": "Hành lang vắng vẻ",
+      "time_of_day": "night",
+      "ambience_tag": null,
+      "ambience_level": 0.2,
+      "bgm": null,
+      "lines": [
+        {
+          "line_id": "ep02_sc02_l001",
+          "type": "dialogue",
+          "character_id": "diep",
+          "role_name": "Thùy Linh",
+          "text": "Đan ơi, cậu sao vậy? Minh Khang đang rất giận, cậu đừng làm quá mọi chuyện lên như thế, sẽ ảnh hưởng đến danh dự của cậu đấy.",
+          "tts_text": "Đan ơi, cậu sao vậy? Minh Khang đang rất giận, cậu đừng làm quá mọi chuyện lên như thế, sẽ ảnh hưởng đến danh dự của cậu đấy.",
+          "emotion": "neutral",
+          "emotional_intensity": 4,
+          "acoustic_direction": "Giọng ngọt ngào giả tạo, kéo dài âm cuối.",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 400,
+          "sfx": []
+        },
+        {
+          "line_id": "ep02_sc02_l002",
+          "type": "monologue",
+          "character_id": "linh",
+          "role_name": "Nhã Đan",
+          "text": "Thùy Linh, con rắn độc này vẫn diễn vai bạn thân tốt bụng rất đạt. Để xem cô diễn được bao lâu.",
+          "tts_text": "[internal monologue] Thùy Linh, con rắn độc này vẫn diễn vai bạn thân tốt bụng rất đạt. Để xem cô diễn được bao lâu.",
+          "emotion": "sarcastic",
+          "emotional_intensity": 6,
+          "acoustic_direction": "Giọng thì thầm, đầy mỉa mai.",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 400,
+          "sfx": []
+        },
+        {
+          "line_id": "ep02_sc02_l003",
+          "type": "dialogue",
+          "character_id": "linh",
+          "role_name": "Nhã Đan",
+          "text": "Cảm ơn Linh đã lo lắng. Nhưng mình nghĩ, người cần lo lúc này là Minh Khang, không phải mình.",
+          "tts_text": "Cảm ơn Linh đã lo lắng. Nhưng mình nghĩ, người cần lo lúc này là Minh Khang, không phải mình.",
+          "emotion": "sarcastic",
+          "emotional_intensity": 7,
+          "acoustic_direction": "Giọng cười khẩy, lạnh lùng.",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 1000,
+          "sfx": []
+        }
+      ]
+    },
+    {
+      "scene_id": "sc03",
+      "title": "Phòng ngủ Nhã Đan",
+      "location": "Biệt thự",
+      "time_of_day": "night",
+      "ambience_tag": null,
+      "ambience_level": 0.2,
+      "bgm": null,
+      "lines": [
+        {
+          "line_id": "ep02_sc03_l001",
+          "type": "dialogue",
+          "character_id": "minh-khoi",
+          "role_name": "Minh Khang",
+          "text": "Theo sát cô ta cho tôi. Nhã Đan hôm nay rất lạ, tôi cần biết cô ta đã biết được những gì.",
+          "tts_text": "[shouting] Theo sát cô ta cho tôi. Nhã Đan hôm nay rất lạ, tôi cần biết cô ta đã biết được những gì.",
+          "emotion": "angry",
+          "emotional_intensity": 9,
+          "acoustic_direction": "Giọng gằn, độc địa, âm lượng lớn.",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 500,
+          "sfx": []
+        },
+        {
+          "line_id": "ep02_sc03_l002",
+          "type": "monologue",
+          "character_id": "linh",
+          "role_name": "Nhã Đan",
+          "text": "Hắn vẫn không từ bỏ. Vừa về đến nhà, mình đã cảm thấy có gì đó không ổn trong phòng.",
+          "tts_text": "[internal monologue] Hắn vẫn không từ bỏ. Vừa về đến nhà, mình đã cảm thấy có gì đó không ổn trong phòng.",
+          "emotion": "fearful",
+          "emotional_intensity": 5,
+          "acoustic_direction": "Giọng lo âu, nhịp nhanh.",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 400,
+          "sfx": []
+        },
+        {
+          "line_id": "ep02_sc03_l003",
+          "type": "dialogue",
+          "character_id": "linh",
+          "role_name": "Nhã Đan",
+          "text": "Dưới gầm bàn trang điểm... một thiết bị nghe lén siêu nhỏ? Minh Khang, anh thực sự đã đi quá giới hạn rồi.",
+          "tts_text": "[whispers] Dưới gầm bàn trang điểm... một thiết bị nghe lén siêu nhỏ? Minh Khang, anh thực sự đã đi quá giới hạn rồi.",
+          "emotion": "fearful",
+          "emotional_intensity": 10,
+          "acoustic_direction": "Giọng run rẩy, hoảng hốt, thì thầm.",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 1500,
+          "sfx": []
+        }
+      ]
+    }
+  ],
+  "cliffhanger": "Nhã Đan phát hiện Minh Khang đã đặt máy nghe lén trong phòng mình.",
+  "director_notes": "Tập trung vào sự tương phản giữa vẻ ngoài lịch thiệp và nội tâm đầy toan tính của Nhã Đan. Giọng Minh Khang cần chuyển từ lo sợ sang độc địa ở cảnh cuối."
+}

@@ -1,0 +1,76 @@
+{
+  "series_id": "thu-ky-bi-an-va-tong-tai-10131355",
+  "episode_number": 1,
+  "title": "Bản giao hưởng lạ",
+  "state": "approved",
+  "qa_status": "PASS",
+  "qa_score": 100,
+  "qa_attempts": 0,
+  "reason": "QA passed; waiting for a human to listen and approve.",
+  "duration_ms": 60580,
+  "master_mp3": "series/thu-ky-bi-an-va-tong-tai-10131355/masters/ep01_master.mp3",
+  "master_wav": "series/thu-ky-bi-an-va-tong-tai-10131355/masters/ep01_master.wav",
+  "metadata": {
+    "title": "Nhịp Đập Tần Số | Tập 1: Bản giao hưởng lạ - Lâm An bắt đầu công việc thư ký",
+    "description": "Lâm An, một chuyên gia trị liệu, bắt đầu kế hoạch tiếp cận Minh Quân dưới thân phận thư ký mới để điều tra về vụ tai nạn năm xưa. Trong ngày làm việc đầu tiên, cô phải đối mặt với sự khắt khe và khó đoán của vị chủ tịch tập đoàn. Nghe tập tiếp theo trong danh sách phát. Giọng đọc trong video được tạo bằng AI.",
+    "tags": [
+      "Nhịp Đập Tần Số",
+      "truyện audio",
+      "Mặc Khải",
+      "Emvoox",
+      "truyện ngôn tình",
+      "truyện đô thị",
+      "truyện tâm lý",
+      "truyện lãng mạn",
+      "audiobook",
+      "truyện hay",
+      "truyện mới"
+    ],
+    "hashtags": [
+      "#NhipDapTanSo",
+      "#TruyenAudio",
+      "#MacKhai",
+      "#TruyenNgonTinh"
+    ],
+    "playlist_title": "Nhịp Đập Tần Số",
+    "thumbnail_text": "Thư ký mới bắt đầu",
+    "language": "vi",
+    "category": "Entertainment",
+    "made_for_kids": false,
+    "contains_synthetic_media": true,
+    "generated_by": "llm"
+  },
+  "decision": {
+    "decision": "approved",
+    "reviewer": "dhp",
+    "notes": "",
+    "lines": [],
+    "override_flagged": false,
+    "at": "2026-10-13T13:57:32+00:00"
+  },
+  "exported": [
+    {
+      "kind": "mp3",
+      "path": "outputs/approved_masters/thu-ky-bi-an-va-tong-tai-10131355/ep01.mp3",
+      "bytes": 1455795
+    },
+    {
+      "kind": "wav",
+      "path": "outputs/approved_masters/thu-ky-bi-an-va-tong-tai-10131355/ep01.wav",
+      "bytes": 10686390
+    },
+    {
+      "kind": "metadata",
+      "path": "outputs/approved_masters/thu-ky-bi-an-va-tong-tai-10131355/ep01.youtube.json",
+      "bytes": 0
+    }
+  ],
+  "publish": {
+    "platform": "youtube",
+    "status": "ready_for_upload",
+    "at": "2026-10-13T13:57:32+00:00",
+    "note": "Publishing mock-up: files and metadata are staged locally; the upload is not wired in Prototype V1."
+  },
+  "created_at": "2026-10-13T13:56:53+00:00",
+  "updated_at": "2026-10-13T13:57:32+00:00"
+}

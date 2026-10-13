@@ -1,0 +1,370 @@
+{
+  "schema_version": "2.0",
+  "series_id": "tong-tai-mat-tri-nho-va-10050210",
+  "episode_number": 3,
+  "title": "Trò chơi tâm lý",
+  "target_duration_sec": 120,
+  "batching": "scene",
+  "units": [
+    {
+      "unit_id": "ep03_sc01_l001",
+      "scene_id": "sc01",
+      "order": 1,
+      "type": "monologue",
+      "speaker_id": "linh",
+      "role_name": "Khánh Vy",
+      "text": "Minh Quân, anh có thể quên đi khuôn mặt tôi, nhưng cơ thể anh sẽ không bao giờ quên được những thói quen cũ. Chiếc khăn tay thêu hoa nhài này, chính là chìa khóa mở ra cơn ác mộng của anh.",
+      "tts_text": "Minh Quân, anh có thể quên đi khuôn mặt tôi, nhưng cơ thể anh sẽ không bao giờ quên được những thói quen cũ. Chiếc khăn tay thêu hoa nhài này, chính là chìa khóa mở ra cơn ác mộng của anh.",
+      "emotion_tag": "sad",
+      "emotional_intensity": 7,
+      "audio_tags": [
+        "internal monologue"
+      ],
+      "direction": "Giọng trầm, chậm, đầy sự chiếm hữu và toan tính.",
+      "pause_after_ms": 500,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Kore",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng buồn (mạnh), độc thoại nội tâm, như tự nói với chính mình, mic gần, Giọng trầm, chậm, đầy sự chiếm hữu và toan tính"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep03_sc01_l002",
+      "scene_id": "sc01",
+      "order": 2,
+      "type": "dialogue",
+      "speaker_id": "linh",
+      "role_name": "Khánh Vy",
+      "text": "Tôi để quên đồ ở đây, hy vọng nó không làm phiền đến công việc của anh, chủ tịch Minh.",
+      "tts_text": "Tôi để quên đồ ở đây, hy vọng nó không làm phiền đến công việc của anh, chủ tịch Minh.",
+      "emotion_tag": "sarcastic",
+      "emotional_intensity": 6,
+      "audio_tags": [],
+      "direction": "Giọng lạnh lùng, sắc bén, nhấn mạnh vào từ chủ tịch.",
+      "pause_after_ms": 500,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Kore",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng mỉa mai (vừa phải), Giọng lạnh lùng, sắc bén, nhấn mạnh vào từ chủ tịch"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep03_sc01_l003",
+      "scene_id": "sc01",
+      "order": 3,
+      "type": "dialogue",
+      "speaker_id": "duong",
+      "role_name": "Minh Quân",
+      "text": "Hoa nhài? Tại sao nhìn nó... tôi lại cảm thấy đau nhói ở lồng ngực thế này?",
+      "tts_text": "Hoa nhài? Tại sao nhìn nó... tôi lại cảm thấy đau nhói ở lồng ngực thế này?",
+      "emotion_tag": "fearful",
+      "emotional_intensity": 8,
+      "audio_tags": [
+        "hesitates"
+      ],
+      "direction": "Giọng trầm, bối rối, hơi thở dồn dập nhẹ.",
+      "pause_after_ms": 1000,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Orus",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng sợ hãi (mạnh), ngập ngừng, Giọng trầm, bối rối, hơi thở dồn dập nhẹ"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep03_sc02_l001",
+      "scene_id": "sc02",
+      "order": 4,
+      "type": "monologue",
+      "speaker_id": "diep",
+      "role_name": "Tú Anh",
+      "text": "Cái khăn đó... không thể nào! Cô ta đang cố tình khơi gợi lại ký ức của anh ấy.",
+      "tts_text": "Cái khăn đó... không thể nào! Cô ta đang cố tình khơi gợi lại ký ức của anh ấy.",
+      "emotion_tag": "fearful",
+      "emotional_intensity": 7,
+      "audio_tags": [
+        "nervously"
+      ],
+      "direction": "Giọng run rẩy, gấp gáp, hơi thở không đều.",
+      "pause_after_ms": 400,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Despina",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng sợ hãi (mạnh), độc thoại nội tâm, như tự nói với chính mình, mic gần, lo lắng, run giọng, Giọng run rẩy, gấp gáp, hơi thở không đều"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep03_sc02_l002",
+      "scene_id": "sc02",
+      "order": 5,
+      "type": "dialogue",
+      "speaker_id": "linh",
+      "role_name": "Khánh Vy",
+      "text": "Cô đang tìm thứ gì à, thư ký Tú Anh? Hay là cô sợ chiếc khăn đó sẽ kể cho anh ấy nghe một câu chuyện mà cô đã cố công chôn vùi?",
+      "tts_text": "Cô đang tìm thứ gì à, thư ký Tú Anh? Hay là cô sợ chiếc khăn đó sẽ kể cho anh ấy nghe một câu chuyện mà cô đã cố công chôn vùi?",
+      "emotion_tag": "sarcastic",
+      "emotional_intensity": 8,
+      "audio_tags": [
+        "pause"
+      ],
+      "direction": "Giọng cười nhẹ, đầy đe dọa, âm sắc khàn.",
+      "pause_after_ms": 500,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Kore",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng mỉa mai (mạnh), ngắt một nhịp, Giọng cười nhẹ, đầy đe dọa, âm sắc khàn"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep03_sc02_l003",
+      "scene_id": "sc02",
+      "order": 6,
+      "type": "dialogue",
+      "speaker_id": "diep",
+      "role_name": "Tú Anh",
+      "text": "Đừng tưởng cô có thể thao túng được anh ấy bằng mấy trò rẻ tiền đó. Tôi sẽ không để cô phá hỏng mọi thứ!",
+      "tts_text": "Đừng tưởng cô có thể thao túng được anh ấy bằng mấy trò rẻ tiền đó. Tôi sẽ không để cô phá hỏng mọi thứ!",
+      "emotion_tag": "angry",
+      "emotional_intensity": 9,
+      "audio_tags": [
+        "shouting"
+      ],
+      "direction": "Giọng gằn, cao độ tăng dần, đầy sự tức giận.",
+      "pause_after_ms": 500,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Despina",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng giận dữ (rất mạnh, cao trào), quát lớn, Giọng gằn, cao độ tăng dần, đầy sự tức giận"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep03_sc03_l001",
+      "scene_id": "sc03",
+      "order": 7,
+      "type": "dialogue",
+      "speaker_id": "duong",
+      "role_name": "Minh Quân",
+      "text": "Tú Anh, cô vào đây. Chiếc khăn này... có phải của cô không?",
+      "tts_text": "Tú Anh, cô vào đây. Chiếc khăn này... có phải của cô không?",
+      "emotion_tag": "neutral",
+      "emotional_intensity": 5,
+      "audio_tags": [],
+      "direction": "Giọng điềm tĩnh, nghiêm nghị, đầy quyền lực.",
+      "pause_after_ms": 500,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Orus",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng bình thản (vừa phải), Giọng điềm tĩnh, nghiêm nghị, đầy quyền lực"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep03_sc03_l002",
+      "scene_id": "sc03",
+      "order": 8,
+      "type": "dialogue",
+      "speaker_id": "diep",
+      "role_name": "Tú Anh",
+      "text": "Vâng, thưa chủ tịch. Đó là khăn của tôi, tôi đã để quên nó ở đây từ sáng.",
+      "tts_text": "Vâng, thưa chủ tịch. Đó là khăn của tôi, tôi đã để quên nó ở đây từ sáng.",
+      "emotion_tag": "fearful",
+      "emotional_intensity": 7,
+      "audio_tags": [
+        "hesitates"
+      ],
+      "direction": "Giọng run, cố lấy lại bình tĩnh nhưng vẫn lộ sự sợ hãi.",
+      "pause_after_ms": 500,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Despina",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng sợ hãi (mạnh), ngập ngừng, Giọng run, cố lấy lại bình tĩnh nhưng vẫn lộ sự sợ hãi"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep03_sc03_l003",
+      "scene_id": "sc03",
+      "order": 9,
+      "type": "dialogue",
+      "speaker_id": "duong",
+      "role_name": "Minh Quân",
+      "text": "Vậy tại sao trên khăn lại có mùi hương mà tôi chưa từng ngửi thấy trên người cô, nhưng lại vô cùng quen thuộc trong tiềm thức của tôi?",
+      "tts_text": "Vậy tại sao trên khăn lại có mùi hương mà tôi chưa từng ngửi thấy trên người cô, nhưng lại vô cùng quen thuộc trong tiềm thức của tôi?",
+      "emotion_tag": "surprised",
+      "emotional_intensity": 10,
+      "audio_tags": [],
+      "direction": "Giọng trầm, sắc lạnh, nhấn mạnh từng chữ, đầy sự nghi hoặc.",
+      "pause_after_ms": 1500,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Orus",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng ngạc nhiên (rất mạnh, cao trào), Giọng trầm, sắc lạnh, nhấn mạnh từng chữ, đầy sự nghi hoặc"
+      },
+      "sfx": []
+    }
+  ],
+  "render_plan": [
+    {
+      "id": "ep03_sc01_c01",
+      "kind": "conversation",
+      "scene_id": "sc01",
+      "unit_ids": [
+        "ep03_sc01_l001",
+        "ep03_sc01_l002",
+        "ep03_sc01_l003"
+      ],
+      "speakers": [
+        "linh",
+        "duong"
+      ],
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "ep03_sc01_c01",
+      "text": "Linh: Minh Quân, anh có thể quên đi khuôn mặt tôi, nhưng cơ thể anh sẽ không bao giờ quên được những thói quen cũ. Chiếc khăn tay thêu hoa nhài này, chính là chìa khóa mở ra cơn ác mộng của anh.\nLinh: Tôi để quên đồ ở đây, hy vọng nó không làm phiền đến công việc của anh, chủ tịch Minh.\nDuong: Hoa nhài? Tại sao nhìn nó... tôi lại cảm thấy đau nhói ở lồng ngực thế này?",
+      "settings": {
+        "style": "Đọc đoạn hội thoại tiếng Việt như phim truyền hình, diễn xuất tự nhiên; giữa các câu ngắt nghỉ khoảng nửa giây.",
+        "turn_styles": [
+          "Nói tiếng Việt, giọng buồn (mạnh), độc thoại nội tâm, như tự nói với chính mình, mic gần, Giọng trầm, chậm, đầy sự chiếm hữu và toan tính",
+          "Nói tiếng Việt, giọng mỉa mai (vừa phải), Giọng lạnh lùng, sắc bén, nhấn mạnh vào từ chủ tịch",
+          "Nói tiếng Việt, giọng sợ hãi (mạnh), ngập ngừng, Giọng trầm, bối rối, hơi thở dồn dập nhẹ"
+        ]
+      },
+      "speaker_voices": [
+        [
+          "Linh",
+          "Kore"
+        ],
+        [
+          "Duong",
+          "Orus"
+        ]
+      ],
+      "stem": "ep03_sc01_c01_chunk.wav",
+      "pause_after_ms": 1000,
+      "attempt": 0
+    },
+    {
+      "id": "ep03_sc02_c01",
+      "kind": "conversation",
+      "scene_id": "sc02",
+      "unit_ids": [
+        "ep03_sc02_l001",
+        "ep03_sc02_l002",
+        "ep03_sc02_l003"
+      ],
+      "speakers": [
+        "diep",
+        "linh"
+      ],
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "ep03_sc02_c01",
+      "text": "Diep: Cái khăn đó... không thể nào! Cô ta đang cố tình khơi gợi lại ký ức của anh ấy.\nLinh: Cô đang tìm thứ gì à, thư ký Tú Anh? Hay là cô sợ chiếc khăn đó sẽ kể cho anh ấy nghe một câu chuyện mà cô đã cố công chôn vùi?\nDiep: Đừng tưởng cô có thể thao túng được anh ấy bằng mấy trò rẻ tiền đó. Tôi sẽ không để cô phá hỏng mọi thứ!",
+      "settings": {
+        "style": "Đọc đoạn hội thoại tiếng Việt như phim truyền hình, diễn xuất tự nhiên; giữa các câu ngắt nghỉ khoảng nửa giây.",
+        "turn_styles": [
+          "Nói tiếng Việt, giọng sợ hãi (mạnh), độc thoại nội tâm, như tự nói với chính mình, mic gần, lo lắng, run giọng, Giọng run rẩy, gấp gáp, hơi thở không đều",
+          "Nói tiếng Việt, giọng mỉa mai (mạnh), ngắt một nhịp, Giọng cười nhẹ, đầy đe dọa, âm sắc khàn",
+          "Nói tiếng Việt, giọng giận dữ (rất mạnh, cao trào), quát lớn, Giọng gằn, cao độ tăng dần, đầy sự tức giận"
+        ]
+      },
+      "speaker_voices": [
+        [
+          "Diep",
+          "Despina"
+        ],
+        [
+          "Linh",
+          "Kore"
+        ]
+      ],
+      "stem": "ep03_sc02_c01_chunk.wav",
+      "pause_after_ms": 500,
+      "attempt": 0
+    },
+    {
+      "id": "ep03_sc03_c01",
+      "kind": "conversation",
+      "scene_id": "sc03",
+      "unit_ids": [
+        "ep03_sc03_l001",
+        "ep03_sc03_l002",
+        "ep03_sc03_l003"
+      ],
+      "speakers": [
+        "duong",
+        "diep"
+      ],
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "ep03_sc03_c01",
+      "text": "Duong: Tú Anh, cô vào đây. Chiếc khăn này... có phải của cô không?\nDiep: Vâng, thưa chủ tịch. Đó là khăn của tôi, tôi đã để quên nó ở đây từ sáng.\nDuong: Vậy tại sao trên khăn lại có mùi hương mà tôi chưa từng ngửi thấy trên người cô, nhưng lại vô cùng quen thuộc trong tiềm thức của tôi?",
+      "settings": {
+        "style": "Đọc đoạn hội thoại tiếng Việt như phim truyền hình, diễn xuất tự nhiên; giữa các câu ngắt nghỉ khoảng nửa giây.",
+        "turn_styles": [
+          "Nói tiếng Việt, giọng bình thản (vừa phải), Giọng điềm tĩnh, nghiêm nghị, đầy quyền lực",
+          "Nói tiếng Việt, giọng sợ hãi (mạnh), ngập ngừng, Giọng run, cố lấy lại bình tĩnh nhưng vẫn lộ sự sợ hãi",
+          "Nói tiếng Việt, giọng ngạc nhiên (rất mạnh, cao trào), Giọng trầm, sắc lạnh, nhấn mạnh từng chữ, đầy sự nghi hoặc"
+        ]
+      },
+      "speaker_voices": [
+        [
+          "Duong",
+          "Orus"
+        ],
+        [
+          "Diep",
+          "Despina"
+        ]
+      ],
+      "stem": "ep03_sc03_c01_chunk.wav",
+      "pause_after_ms": 1500,
+      "attempt": 0
+    }
+  ],
+  "cliffhanger": "Tú Anh nói dối rằng chiếc khăn là của cô, nhưng Quân nhìn thẳng vào mắt cô đầy nghi hoặc.",
+  "director_notes": "",
+  "bgm_mood": null,
+  "directed_at": "2026-10-05T02:13:49+00:00"
+}

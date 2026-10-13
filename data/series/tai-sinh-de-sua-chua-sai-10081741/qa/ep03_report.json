@@ -1,0 +1,60 @@
+{
+  "series_id": "tai-sinh-de-sua-chua-sai-10081741",
+  "episode_number": 3,
+  "attempt": 1,
+  "status": "PASS",
+  "score": 100,
+  "checks": {
+    "stems_complete": {
+      "ok": true,
+      "missing": [],
+      "units": 2
+    },
+    "sentences": {
+      "ok": true,
+      "short": [],
+      "long": []
+    },
+    "clipping": {
+      "ok": true,
+      "units": [],
+      "threshold_dbfs": -0.1
+    },
+    "silence": {
+      "ok": true,
+      "units": [],
+      "min_silence_s": 1.5
+    },
+    "speakers": {
+      "ok": true,
+      "mismatch": [],
+      "placeholder": []
+    },
+    "loudness": {
+      "ok": true,
+      "integrated_lufs": -16.0,
+      "true_peak_dbtp": -4.5,
+      "target_lufs": -16.0,
+      "target_tp": -1.5
+    },
+    "duration": {
+      "ok": true,
+      "seconds": 69.8,
+      "target": 120
+    },
+    "transcript": {
+      "ok": null,
+      "skipped": "EMVOOX_QA_TRANSCRIBE is off"
+    }
+  },
+  "error_logs": [],
+  "retry_instructions": [],
+  "review_lines": [
+    "ep03_sc01_l001",
+    "ep03_sc01_l003",
+    "ep03_sc02_l003",
+    "ep03_sc02_l004"
+  ],
+  "human": null,
+  "generated_at": "2026-10-08T17:44:39+00:00"
+}

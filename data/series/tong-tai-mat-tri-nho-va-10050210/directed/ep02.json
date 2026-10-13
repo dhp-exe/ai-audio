@@ -1,0 +1,308 @@
+{
+  "schema_version": "2.0",
+  "series_id": "tong-tai-mat-tri-nho-va-10050210",
+  "episode_number": 2,
+  "title": "Ký ức vụn vỡ",
+  "target_duration_sec": 120,
+  "batching": "scene",
+  "units": [
+    {
+      "unit_id": "ep02_sc01_l001",
+      "scene_id": "sc01",
+      "order": 1,
+      "type": "monologue",
+      "speaker_id": "linh",
+      "role_name": "Khánh Vy",
+      "text": "Anh ta đang đứng đó, nhìn mình như thể muốn đào bới từng mảnh ký ức đã vỡ vụn. Đáng tiếc, thứ anh nhận lại chỉ là sự xa lạ.",
+      "tts_text": "Anh ta đang đứng đó, nhìn mình như thể muốn đào bới từng mảnh ký ức đã vỡ vụn. Đáng tiếc, thứ anh nhận lại chỉ là sự xa lạ.",
+      "emotion_tag": "neutral",
+      "emotional_intensity": 4,
+      "audio_tags": [
+        "internal monologue"
+      ],
+      "direction": "Giọng trầm, đều, hơi lạnh, khoảng cách mic gần để tạo cảm giác thân mật nội tâm.",
+      "pause_after_ms": 500,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Kore",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng bình thản (vừa phải), độc thoại nội tâm, như tự nói với chính mình, mic gần, Giọng trầm, đều, hơi lạnh, khoảng cách mic gần để tạo cảm giác thân mật nội tâm"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep02_sc01_l002",
+      "scene_id": "sc01",
+      "order": 2,
+      "type": "dialogue",
+      "speaker_id": "duong",
+      "role_name": "Minh Quân",
+      "text": "Cô Vy, tại sao cô lại chọn dự án này? Với năng lực của cô, cô có thể chọn bất cứ đối tác nào khác thay vì một Minh Gia đang chao đảo.",
+      "tts_text": "Cô Vy, tại sao cô lại chọn dự án này? Với năng lực của cô, cô có thể chọn bất cứ đối tác nào khác thay vì một Minh Gia đang chao đảo.",
+      "emotion_tag": "neutral",
+      "emotional_intensity": 3,
+      "audio_tags": [],
+      "direction": "Giọng trầm, chậm rãi, có chút nghi vấn chuyên nghiệp.",
+      "pause_after_ms": 400,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Orus",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng bình thản (nhẹ), Giọng trầm, chậm rãi, có chút nghi vấn chuyên nghiệp"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep02_sc01_l003",
+      "scene_id": "sc01",
+      "order": 3,
+      "type": "dialogue",
+      "speaker_id": "linh",
+      "role_name": "Khánh Vy",
+      "text": "Tổng giám đốc Minh, tôi thích những thứ từng bị vứt bỏ. Sửa chữa chúng mang lại cảm giác thành tựu hơn nhiều.",
+      "tts_text": "Tổng giám đốc Minh, tôi thích những thứ từng bị vứt bỏ. Sửa chữa chúng mang lại cảm giác thành tựu hơn nhiều.",
+      "emotion_tag": "sarcastic",
+      "emotional_intensity": 6,
+      "audio_tags": [
+        "sarcastic"
+      ],
+      "direction": "Giọng sắc, dứt khoát, hơi mỉa mai.",
+      "pause_after_ms": 400,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Kore",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng mỉa mai (vừa phải), giọng mỉa mai, Giọng sắc, dứt khoát, hơi mỉa mai"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep02_sc01_l004",
+      "scene_id": "sc01",
+      "order": 4,
+      "type": "dialogue",
+      "speaker_id": "duong",
+      "role_name": "Minh Quân",
+      "text": "Cô nói như thể cô đã biết rõ về tôi từ trước. Chúng ta... đã từng gặp nhau ở đâu chưa?",
+      "tts_text": "Cô nói như thể cô đã biết rõ về tôi từ trước. Chúng ta... đã từng gặp nhau ở đâu chưa?",
+      "emotion_tag": "surprised",
+      "emotional_intensity": 5,
+      "audio_tags": [
+        "hesitates"
+      ],
+      "direction": "Giọng trầm, hơi khựng lại ở dấu ba chấm, thể hiện sự bối rối.",
+      "pause_after_ms": 500,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Orus",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng ngạc nhiên (vừa phải), ngập ngừng, Giọng trầm, hơi khựng lại ở dấu ba chấm, thể hiện sự bối rối"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep02_sc02_l001",
+      "scene_id": "sc02",
+      "order": 5,
+      "type": "dialogue",
+      "speaker_id": "diep",
+      "role_name": "Tú Anh",
+      "text": "Tổng giám đốc, cuộc họp hội đồng sắp bắt đầu. Cô Vy, hy vọng cô hiểu rằng thời gian của anh Quân là vàng bạc, không phải để dành cho những câu hỏi vô nghĩa.",
+      "tts_text": "Tổng giám đốc, cuộc họp hội đồng sắp bắt đầu. Cô Vy, hy vọng cô hiểu rằng thời gian của anh Quân là vàng bạc, không phải để dành cho những câu hỏi vô nghĩa.",
+      "emotion_tag": "disgusted",
+      "emotional_intensity": 7,
+      "audio_tags": [],
+      "direction": "Giọng sắc lẹm, mượt mà nhưng đầy uy hiếp.",
+      "pause_after_ms": 400,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Despina",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng khinh ghét (mạnh), Giọng sắc lẹm, mượt mà nhưng đầy uy hiếp"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep02_sc02_l002",
+      "scene_id": "sc02",
+      "order": 6,
+      "type": "dialogue",
+      "speaker_id": "linh",
+      "role_name": "Khánh Vy",
+      "text": "Cô thư ký đây thật chu đáo. Nhưng tôi nghĩ anh Quân cần một chút tự do để tìm lại chính mình, cô không thấy vậy sao?",
+      "tts_text": "Cô thư ký đây thật chu đáo. Nhưng tôi nghĩ anh Quân cần một chút tự do để tìm lại chính mình, cô không thấy vậy sao?",
+      "emotion_tag": "neutral",
+      "emotional_intensity": 5,
+      "audio_tags": [],
+      "direction": "Giọng bình thản, thách thức.",
+      "pause_after_ms": 400,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Kore",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng bình thản (vừa phải), Giọng bình thản, thách thức"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep02_sc02_l003",
+      "scene_id": "sc02",
+      "order": 7,
+      "type": "dialogue",
+      "speaker_id": "diep",
+      "role_name": "Tú Anh",
+      "text": "Đừng cố khơi gợi những thứ đã chết. Nếu cô còn tiếp tục tiếp cận anh ấy, tôi sẽ khiến cô hối hận vì đã quay lại thành phố này.",
+      "tts_text": "Đừng cố khơi gợi những thứ đã chết. Nếu cô còn tiếp tục tiếp cận anh ấy, tôi sẽ khiến cô hối hận vì đã quay lại thành phố này.",
+      "emotion_tag": "angry",
+      "emotional_intensity": 8,
+      "audio_tags": [
+        "whispers"
+      ],
+      "direction": "Giọng ghé sát tai, đe dọa, âm lượng thấp nhưng sắc.",
+      "pause_after_ms": 500,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Despina",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng giận dữ (mạnh), thì thầm, Giọng ghé sát tai, đe dọa, âm lượng thấp nhưng sắc"
+      },
+      "sfx": []
+    },
+    {
+      "unit_id": "ep02_sc02_l004",
+      "scene_id": "sc02",
+      "order": 8,
+      "type": "dialogue",
+      "speaker_id": "linh",
+      "role_name": "Khánh Vy",
+      "text": "Cô sợ tôi nhớ lại điều gì sao, thư ký Tú Anh?",
+      "tts_text": "Cô sợ tôi nhớ lại điều gì sao, thư ký Tú Anh?",
+      "emotion_tag": "sarcastic",
+      "emotional_intensity": 9,
+      "audio_tags": [
+        "whispers"
+      ],
+      "direction": "Giọng thì thầm, lạnh lùng, đầy ẩn ý.",
+      "pause_after_ms": 1500,
+      "speed": 1.0,
+      "pitch": 0,
+      "volume": "normal",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Kore",
+      "settings": {
+        "style": "Nói tiếng Việt, giọng mỉa mai (rất mạnh, cao trào), thì thầm, Giọng thì thầm, lạnh lùng, đầy ẩn ý"
+      },
+      "sfx": []
+    }
+  ],
+  "render_plan": [
+    {
+      "id": "ep02_sc01_c01",
+      "kind": "conversation",
+      "scene_id": "sc01",
+      "unit_ids": [
+        "ep02_sc01_l001",
+        "ep02_sc01_l002",
+        "ep02_sc01_l003",
+        "ep02_sc01_l004"
+      ],
+      "speakers": [
+        "linh",
+        "duong"
+      ],
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "ep02_sc01_c01",
+      "text": "Linh: Anh ta đang đứng đó, nhìn mình như thể muốn đào bới từng mảnh ký ức đã vỡ vụn. Đáng tiếc, thứ anh nhận lại chỉ là sự xa lạ.\nDuong: Cô Vy, tại sao cô lại chọn dự án này? Với năng lực của cô, cô có thể chọn bất cứ đối tác nào khác thay vì một Minh Gia đang chao đảo.\nLinh: Tổng giám đốc Minh, tôi thích những thứ từng bị vứt bỏ. Sửa chữa chúng mang lại cảm giác thành tựu hơn nhiều.\nDuong: Cô nói như thể cô đã biết rõ về tôi từ trước. Chúng ta... đã từng gặp nhau ở đâu chưa?",
+      "settings": {
+        "style": "Đọc đoạn hội thoại tiếng Việt như phim truyền hình, diễn xuất tự nhiên; giữa các câu ngắt nghỉ khoảng nửa giây.",
+        "turn_styles": [
+          "Nói tiếng Việt, giọng bình thản (vừa phải), độc thoại nội tâm, như tự nói với chính mình, mic gần, Giọng trầm, đều, hơi lạnh, khoảng cách mic gần để tạo cảm giác thân mật nội tâm",
+          "Nói tiếng Việt, giọng bình thản (nhẹ), Giọng trầm, chậm rãi, có chút nghi vấn chuyên nghiệp",
+          "Nói tiếng Việt, giọng mỉa mai (vừa phải), giọng mỉa mai, Giọng sắc, dứt khoát, hơi mỉa mai",
+          "Nói tiếng Việt, giọng ngạc nhiên (vừa phải), ngập ngừng, Giọng trầm, hơi khựng lại ở dấu ba chấm, thể hiện sự bối rối"
+        ]
+      },
+      "speaker_voices": [
+        [
+          "Linh",
+          "Kore"
+        ],
+        [
+          "Duong",
+          "Orus"
+        ]
+      ],
+      "stem": "ep02_sc01_c01_chunk.wav",
+      "pause_after_ms": 500,
+      "attempt": 0
+    },
+    {
+      "id": "ep02_sc02_c01",
+      "kind": "conversation",
+      "scene_id": "sc02",
+      "unit_ids": [
+        "ep02_sc02_l001",
+        "ep02_sc02_l002",
+        "ep02_sc02_l003",
+        "ep02_sc02_l004"
+      ],
+      "speakers": [
+        "diep",
+        "linh"
+      ],
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "ep02_sc02_c01",
+      "text": "Diep: Tổng giám đốc, cuộc họp hội đồng sắp bắt đầu. Cô Vy, hy vọng cô hiểu rằng thời gian của anh Quân là vàng bạc, không phải để dành cho những câu hỏi vô nghĩa.\nLinh: Cô thư ký đây thật chu đáo. Nhưng tôi nghĩ anh Quân cần một chút tự do để tìm lại chính mình, cô không thấy vậy sao?\nDiep: Đừng cố khơi gợi những thứ đã chết. Nếu cô còn tiếp tục tiếp cận anh ấy, tôi sẽ khiến cô hối hận vì đã quay lại thành phố này.\nLinh: Cô sợ tôi nhớ lại điều gì sao, thư ký Tú Anh?",
+      "settings": {
+        "style": "Đọc đoạn hội thoại tiếng Việt như phim truyền hình, diễn xuất tự nhiên; giữa các câu ngắt nghỉ khoảng nửa giây.",
+        "turn_styles": [
+          "Nói tiếng Việt, giọng khinh ghét (mạnh), Giọng sắc lẹm, mượt mà nhưng đầy uy hiếp",
+          "Nói tiếng Việt, giọng bình thản (vừa phải), Giọng bình thản, thách thức",
+          "Nói tiếng Việt, giọng giận dữ (mạnh), thì thầm, Giọng ghé sát tai, đe dọa, âm lượng thấp nhưng sắc",
+          "Nói tiếng Việt, giọng mỉa mai (rất mạnh, cao trào), thì thầm, Giọng thì thầm, lạnh lùng, đầy ẩn ý"
+        ]
+      },
+      "speaker_voices": [
+        [
+          "Diep",
+          "Despina"
+        ],
+        [
+          "Linh",
+          "Kore"
+        ]
+      ],
+      "stem": "ep02_sc02_c01_chunk.wav",
+      "pause_after_ms": 1500,
+      "attempt": 0
+    }
+  ],
+  "cliffhanger": "Vy thì thầm vào tai Tú Anh: 'Cô sợ tôi nhớ lại điều gì sao, thư ký Tú Anh?'",
+  "director_notes": "Tập trung vào sự đối lập giữa giọng khàn, dứt khoát của Linh và giọng mượt, kéo dài của Diệp để làm nổi bật sự căng thẳng.",
+  "bgm_mood": null,
+  "directed_at": "2026-10-05T02:13:08+00:00"
+}

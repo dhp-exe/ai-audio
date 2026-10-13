@@ -1,0 +1,47 @@
+{
+  "series_id": "tai-sinh-de-sua-chua-sai-10081741",
+  "episode_number": 1,
+  "title": "Ngày tái sinh",
+  "state": "awaiting_approval",
+  "qa_status": "PASS",
+  "qa_score": 100,
+  "qa_attempts": 0,
+  "reason": "QA passed; waiting for a human to listen and approve.",
+  "duration_ms": 84480,
+  "master_mp3": "series/tai-sinh-de-sua-chua-sai-10081741/masters/ep01_master.mp3",
+  "master_wav": "series/tai-sinh-de-sua-chua-sai-10081741/masters/ep01_master.wav",
+  "metadata": {
+    "title": "Ván Cờ Tái Sinh: Đế Chế Của Riêng Tôi | Tập 1: Ngày tái sinh",
+    "description": "Nhã Đan tỉnh dậy ngay trước buổi lễ đính hôn định mệnh và bàng hoàng nhận ra mình đã quay về quá khứ. Với ký ức về sự phản bội đau đớn, cô quyết định bắt đầu một ván cờ mới để lật đổ những kẻ đã hãm hại mình. Nghe tập tiếp theo trong danh sách phát. Giọng đọc trong video được tạo bằng AI.",
+    "tags": [
+      "Ván Cờ Tái Sinh",
+      "truyện audio",
+      "Mặc Khải",
+      "Emvoox",
+      "truyện tâm lý",
+      "truyện giật gân",
+      "truyện báo thù",
+      "truyện ngôn tình",
+      "audiobook",
+      "truyện hay"
+    ],
+    "hashtags": [
+      "#VanCoTaiSinh",
+      "#MacKhai",
+      "#TruyenAudio",
+      "#Audiobook"
+    ],
+    "playlist_title": "Ván Cờ Tái Sinh: Đế Chế Của Riêng Tôi",
+    "thumbnail_text": "Ngày trở về quá khứ",
+    "language": "vi",
+    "category": "Entertainment",
+    "made_for_kids": false,
+    "contains_synthetic_media": true,
+    "generated_by": "llm"
+  },
+  "decision": null,
+  "exported": [],
+  "publish": {},
+  "created_at": "2026-10-08T17:42:19+00:00",
+  "updated_at": "2026-10-08T17:42:19+00:00"
+}

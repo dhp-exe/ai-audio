@@ -1,0 +1,186 @@
+{
+  "schema_version": "1.0",
+  "language": "vi-VN",
+  "series_id": "tong-tai-mat-tri-nho-va-10050210",
+  "episode_number": 3,
+  "title": "Trò chơi tâm lý",
+  "logline": "Khánh Vy dùng chiếc khăn tay cũ để khơi gợi ký ức của Minh Quân, khiến Tú Anh rơi vào thế bị động và buộc phải nói dối.",
+  "target_duration_sec": 120,
+  "characters_used": [
+    "diep",
+    "duong",
+    "linh"
+  ],
+  "scenes": [
+    {
+      "scene_id": "sc01",
+      "title": "Văn phòng chủ tịch",
+      "location": "Văn phòng chủ tịch",
+      "time_of_day": "afternoon",
+      "ambience_tag": null,
+      "ambience_level": 0.2,
+      "bgm": null,
+      "lines": [
+        {
+          "line_id": "ep03_sc01_l001",
+          "type": "monologue",
+          "character_id": "linh",
+          "role_name": "Khánh Vy",
+          "text": "Minh Quân, anh có thể quên đi khuôn mặt tôi, nhưng cơ thể anh sẽ không bao giờ quên được những thói quen cũ. Chiếc khăn tay thêu hoa nhài này, chính là chìa khóa mở ra cơn ác mộng của anh.",
+          "tts_text": "[internal monologue] Minh Quân, anh có thể quên đi khuôn mặt tôi, nhưng cơ thể anh sẽ không bao giờ quên được những thói quen cũ. Chiếc khăn tay thêu hoa nhài này, chính là chìa khóa mở ra cơn ác mộng của anh.",
+          "emotion": "sad",
+          "emotional_intensity": 7,
+          "acoustic_direction": "Giọng trầm, chậm, đầy sự chiếm hữu và toan tính.",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 500,
+          "sfx": []
+        },
+        {
+          "line_id": "ep03_sc01_l002",
+          "type": "dialogue",
+          "character_id": "linh",
+          "role_name": "Khánh Vy",
+          "text": "Tôi để quên đồ ở đây, hy vọng nó không làm phiền đến công việc của anh, chủ tịch Minh.",
+          "tts_text": "Tôi để quên đồ ở đây, hy vọng nó không làm phiền đến công việc của anh, chủ tịch Minh.",
+          "emotion": "sarcastic",
+          "emotional_intensity": 6,
+          "acoustic_direction": "Giọng lạnh lùng, sắc bén, nhấn mạnh vào từ chủ tịch.",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 500,
+          "sfx": []
+        },
+        {
+          "line_id": "ep03_sc01_l003",
+          "type": "dialogue",
+          "character_id": "duong",
+          "role_name": "Minh Quân",
+          "text": "Hoa nhài? Tại sao nhìn nó... tôi lại cảm thấy đau nhói ở lồng ngực thế này?",
+          "tts_text": "Hoa nhài? [hesitates] Tại sao nhìn nó... tôi lại cảm thấy đau nhói ở lồng ngực thế này?",
+          "emotion": "fearful",
+          "emotional_intensity": 8,
+          "acoustic_direction": "Giọng trầm, bối rối, hơi thở dồn dập nhẹ.",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 1000,
+          "sfx": []
+        }
+      ]
+    },
+    {
+      "scene_id": "sc02",
+      "title": "Hành lang vắng",
+      "location": "Hành lang văn phòng",
+      "time_of_day": "afternoon",
+      "ambience_tag": null,
+      "ambience_level": 0.2,
+      "bgm": null,
+      "lines": [
+        {
+          "line_id": "ep03_sc02_l001",
+          "type": "monologue",
+          "character_id": "diep",
+          "role_name": "Tú Anh",
+          "text": "Cái khăn đó... không thể nào! Cô ta đang cố tình khơi gợi lại ký ức của anh ấy.",
+          "tts_text": "[nervously] Cái khăn đó... không thể nào! Cô ta đang cố tình khơi gợi lại ký ức của anh ấy.",
+          "emotion": "fearful",
+          "emotional_intensity": 7,
+          "acoustic_direction": "Giọng run rẩy, gấp gáp, hơi thở không đều.",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 400,
+          "sfx": []
+        },
+        {
+          "line_id": "ep03_sc02_l002",
+          "type": "dialogue",
+          "character_id": "linh",
+          "role_name": "Khánh Vy",
+          "text": "Cô đang tìm thứ gì à, thư ký Tú Anh? Hay là cô sợ chiếc khăn đó sẽ kể cho anh ấy nghe một câu chuyện mà cô đã cố công chôn vùi?",
+          "tts_text": "Cô đang tìm thứ gì à, thư ký Tú Anh? [pause] Hay là cô sợ chiếc khăn đó sẽ kể cho anh ấy nghe một câu chuyện mà cô đã cố công chôn vùi?",
+          "emotion": "sarcastic",
+          "emotional_intensity": 8,
+          "acoustic_direction": "Giọng cười nhẹ, đầy đe dọa, âm sắc khàn.",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 500,
+          "sfx": []
+        },
+        {
+          "line_id": "ep03_sc02_l003",
+          "type": "dialogue",
+          "character_id": "diep",
+          "role_name": "Tú Anh",
+          "text": "Đừng tưởng cô có thể thao túng được anh ấy bằng mấy trò rẻ tiền đó. Tôi sẽ không để cô phá hỏng mọi thứ!",
+          "tts_text": "[shouting] Đừng tưởng cô có thể thao túng được anh ấy bằng mấy trò rẻ tiền đó. Tôi sẽ không để cô phá hỏng mọi thứ!",
+          "emotion": "angry",
+          "emotional_intensity": 9,
+          "acoustic_direction": "Giọng gằn, cao độ tăng dần, đầy sự tức giận.",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 500,
+          "sfx": []
+        }
+      ]
+    },
+    {
+      "scene_id": "sc03",
+      "title": "Văn phòng chủ tịch",
+      "location": "Văn phòng chủ tịch",
+      "time_of_day": "afternoon",
+      "ambience_tag": null,
+      "ambience_level": 0.2,
+      "bgm": null,
+      "lines": [
+        {
+          "line_id": "ep03_sc03_l001",
+          "type": "dialogue",
+          "character_id": "duong",
+          "role_name": "Minh Quân",
+          "text": "Tú Anh, cô vào đây. Chiếc khăn này... có phải của cô không?",
+          "tts_text": "Tú Anh, cô vào đây. Chiếc khăn này... có phải của cô không?",
+          "emotion": "neutral",
+          "emotional_intensity": 5,
+          "acoustic_direction": "Giọng điềm tĩnh, nghiêm nghị, đầy quyền lực.",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 500,
+          "sfx": []
+        },
+        {
+          "line_id": "ep03_sc03_l002",
+          "type": "dialogue",
+          "character_id": "diep",
+          "role_name": "Tú Anh",
+          "text": "Vâng, thưa chủ tịch. Đó là khăn của tôi, tôi đã để quên nó ở đây từ sáng.",
+          "tts_text": "[hesitates] Vâng, thưa chủ tịch. Đó là khăn của tôi, tôi đã để quên nó ở đây từ sáng.",
+          "emotion": "fearful",
+          "emotional_intensity": 7,
+          "acoustic_direction": "Giọng run, cố lấy lại bình tĩnh nhưng vẫn lộ sự sợ hãi.",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 500,
+          "sfx": []
+        },
+        {
+          "line_id": "ep03_sc03_l003",
+          "type": "dialogue",
+          "character_id": "duong",
+          "role_name": "Minh Quân",
+          "text": "Vậy tại sao trên khăn lại có mùi hương mà tôi chưa từng ngửi thấy trên người cô, nhưng lại vô cùng quen thuộc trong tiềm thức của tôi?",
+          "tts_text": "Vậy tại sao trên khăn lại có mùi hương mà tôi chưa từng ngửi thấy trên người cô, nhưng lại vô cùng quen thuộc trong tiềm thức của tôi?",
+          "emotion": "surprised",
+          "emotional_intensity": 10,
+          "acoustic_direction": "Giọng trầm, sắc lạnh, nhấn mạnh từng chữ, đầy sự nghi hoặc.",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 1500,
+          "sfx": []
+        }
+      ]
+    }
+  ],
+  "cliffhanger": "Tú Anh nói dối rằng chiếc khăn là của cô, nhưng Quân nhìn thẳng vào mắt cô đầy nghi hoặc.",
+  "director_notes": ""
+}

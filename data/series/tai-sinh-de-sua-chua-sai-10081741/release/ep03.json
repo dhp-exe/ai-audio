@@ -1,0 +1,47 @@
+{
+  "series_id": "tai-sinh-de-sua-chua-sai-10081741",
+  "episode_number": 3,
+  "title": "Ván cờ mới",
+  "state": "awaiting_approval",
+  "qa_status": "PASS",
+  "qa_score": 100,
+  "qa_attempts": 1,
+  "reason": "QA passed; waiting for a human to listen and approve.",
+  "duration_ms": 69780,
+  "master_mp3": "series/tai-sinh-de-sua-chua-sai-10081741/masters/ep03_master.mp3",
+  "master_wav": "series/tai-sinh-de-sua-chua-sai-10081741/masters/ep03_master.wav",
+  "metadata": {
+    "title": "Ván Cờ Tái Sinh: Đế Chế Của Riêng Tôi | Tập 3: Nhã Đan bắt đầu tách biệt tài chính",
+    "description": "Nhã Đan chính thức bắt đầu kế hoạch lật đổ Minh Khang bằng việc tách biệt tài chính, tạo nên những rạn nứt đầu tiên trong đế chế của kẻ phản bội. Liệu cô có thể xoay chuyển tình thế trước khi sự thật về sự phản bội bị che giấu hoàn toàn? Nghe tập tiếp theo trong danh sách phát. Giọng đọc trong video được tạo bằng AI.",
+    "tags": [
+      "Ván Cờ Tái Sinh",
+      "truyện audio",
+      "Mặc Khải",
+      "Emvoox",
+      "truyện tâm lý",
+      "truyện giật gân",
+      "truyện báo thù",
+      "audiobook",
+      "truyện ngôn tình",
+      "truyện hay"
+    ],
+    "hashtags": [
+      "#VanCoTaiSinh",
+      "#TruyenAudio",
+      "#MacKhai",
+      "#TruyenTamLy"
+    ],
+    "playlist_title": "Ván Cờ Tái Sinh: Đế Chế Của Riêng Tôi",
+    "thumbnail_text": "Nhã Đan tách tài chính",
+    "language": "vi",
+    "category": "Entertainment",
+    "made_for_kids": false,
+    "contains_synthetic_media": true,
+    "generated_by": "llm"
+  },
+  "decision": null,
+  "exported": [],
+  "publish": {},
+  "created_at": "2026-10-08T17:44:42+00:00",
+  "updated_at": "2026-10-08T17:44:42+00:00"
+}

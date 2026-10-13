@@ -1,0 +1,160 @@
+{
+  "schema_version": "1.0",
+  "language": "vi-VN",
+  "series_id": "tong-tai-mat-tri-nho-va-10050210",
+  "episode_number": 2,
+  "title": "Ký ức vụn vỡ",
+  "logline": "Khánh Vy đối mặt với Minh Quân tại quán cà phê, trong khi Tú Anh tìm mọi cách ngăn cản cô khơi gợi quá khứ.",
+  "target_duration_sec": 120,
+  "characters_used": [
+    "diep",
+    "duong",
+    "linh"
+  ],
+  "scenes": [
+    {
+      "scene_id": "sc01",
+      "title": "Quán cà phê đối diện Minh Gia",
+      "location": "Quán cà phê",
+      "time_of_day": "afternoon",
+      "ambience_tag": null,
+      "ambience_level": 0.2,
+      "bgm": null,
+      "lines": [
+        {
+          "line_id": "ep02_sc01_l001",
+          "type": "monologue",
+          "character_id": "linh",
+          "role_name": "Khánh Vy",
+          "text": "Anh ta đang đứng đó, nhìn mình như thể muốn đào bới từng mảnh ký ức đã vỡ vụn. Đáng tiếc, thứ anh nhận lại chỉ là sự xa lạ.",
+          "tts_text": "[internal monologue] Anh ta đang đứng đó, nhìn mình như thể muốn đào bới từng mảnh ký ức đã vỡ vụn. Đáng tiếc, thứ anh nhận lại chỉ là sự xa lạ.",
+          "emotion": "neutral",
+          "emotional_intensity": 4,
+          "acoustic_direction": "Giọng trầm, đều, hơi lạnh, khoảng cách mic gần để tạo cảm giác thân mật nội tâm.",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 500,
+          "sfx": []
+        },
+        {
+          "line_id": "ep02_sc01_l002",
+          "type": "dialogue",
+          "character_id": "duong",
+          "role_name": "Minh Quân",
+          "text": "Cô Vy, tại sao cô lại chọn dự án này? Với năng lực của cô, cô có thể chọn bất cứ đối tác nào khác thay vì một Minh Gia đang chao đảo.",
+          "tts_text": "Cô Vy, tại sao cô lại chọn dự án này? Với năng lực của cô, cô có thể chọn bất cứ đối tác nào khác thay vì một Minh Gia đang chao đảo.",
+          "emotion": "neutral",
+          "emotional_intensity": 3,
+          "acoustic_direction": "Giọng trầm, chậm rãi, có chút nghi vấn chuyên nghiệp.",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 400,
+          "sfx": []
+        },
+        {
+          "line_id": "ep02_sc01_l003",
+          "type": "dialogue",
+          "character_id": "linh",
+          "role_name": "Khánh Vy",
+          "text": "Tổng giám đốc Minh, tôi thích những thứ từng bị vứt bỏ. Sửa chữa chúng mang lại cảm giác thành tựu hơn nhiều.",
+          "tts_text": "[sarcastic] Tổng giám đốc Minh, tôi thích những thứ từng bị vứt bỏ. Sửa chữa chúng mang lại cảm giác thành tựu hơn nhiều.",
+          "emotion": "sarcastic",
+          "emotional_intensity": 6,
+          "acoustic_direction": "Giọng sắc, dứt khoát, hơi mỉa mai.",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 400,
+          "sfx": []
+        },
+        {
+          "line_id": "ep02_sc01_l004",
+          "type": "dialogue",
+          "character_id": "duong",
+          "role_name": "Minh Quân",
+          "text": "Cô nói như thể cô đã biết rõ về tôi từ trước. Chúng ta... đã từng gặp nhau ở đâu chưa?",
+          "tts_text": "[hesitates] Cô nói như thể cô đã biết rõ về tôi từ trước. Chúng ta... đã từng gặp nhau ở đâu chưa?",
+          "emotion": "surprised",
+          "emotional_intensity": 5,
+          "acoustic_direction": "Giọng trầm, hơi khựng lại ở dấu ba chấm, thể hiện sự bối rối.",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 500,
+          "sfx": []
+        }
+      ]
+    },
+    {
+      "scene_id": "sc02",
+      "title": "Hành lang quán cà phê",
+      "location": "Hành lang",
+      "time_of_day": "afternoon",
+      "ambience_tag": null,
+      "ambience_level": 0.2,
+      "bgm": null,
+      "lines": [
+        {
+          "line_id": "ep02_sc02_l001",
+          "type": "dialogue",
+          "character_id": "diep",
+          "role_name": "Tú Anh",
+          "text": "Tổng giám đốc, cuộc họp hội đồng sắp bắt đầu. Cô Vy, hy vọng cô hiểu rằng thời gian của anh Quân là vàng bạc, không phải để dành cho những câu hỏi vô nghĩa.",
+          "tts_text": "Tổng giám đốc, cuộc họp hội đồng sắp bắt đầu. Cô Vy, hy vọng cô hiểu rằng thời gian của anh Quân là vàng bạc, không phải để dành cho những câu hỏi vô nghĩa.",
+          "emotion": "disgusted",
+          "emotional_intensity": 7,
+          "acoustic_direction": "Giọng sắc lẹm, mượt mà nhưng đầy uy hiếp.",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 400,
+          "sfx": []
+        },
+        {
+          "line_id": "ep02_sc02_l002",
+          "type": "dialogue",
+          "character_id": "linh",
+          "role_name": "Khánh Vy",
+          "text": "Cô thư ký đây thật chu đáo. Nhưng tôi nghĩ anh Quân cần một chút tự do để tìm lại chính mình, cô không thấy vậy sao?",
+          "tts_text": "Cô thư ký đây thật chu đáo. Nhưng tôi nghĩ anh Quân cần một chút tự do để tìm lại chính mình, cô không thấy vậy sao?",
+          "emotion": "neutral",
+          "emotional_intensity": 5,
+          "acoustic_direction": "Giọng bình thản, thách thức.",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 400,
+          "sfx": []
+        },
+        {
+          "line_id": "ep02_sc02_l003",
+          "type": "dialogue",
+          "character_id": "diep",
+          "role_name": "Tú Anh",
+          "text": "Đừng cố khơi gợi những thứ đã chết. Nếu cô còn tiếp tục tiếp cận anh ấy, tôi sẽ khiến cô hối hận vì đã quay lại thành phố này.",
+          "tts_text": "[whispers] Đừng cố khơi gợi những thứ đã chết. Nếu cô còn tiếp tục tiếp cận anh ấy, tôi sẽ khiến cô hối hận vì đã quay lại thành phố này.",
+          "emotion": "angry",
+          "emotional_intensity": 8,
+          "acoustic_direction": "Giọng ghé sát tai, đe dọa, âm lượng thấp nhưng sắc.",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 500,
+          "sfx": []
+        },
+        {
+          "line_id": "ep02_sc02_l004",
+          "type": "dialogue",
+          "character_id": "linh",
+          "role_name": "Khánh Vy",
+          "text": "Cô sợ tôi nhớ lại điều gì sao, thư ký Tú Anh?",
+          "tts_text": "[whispers] Cô sợ tôi nhớ lại điều gì sao, thư ký Tú Anh?",
+          "emotion": "sarcastic",
+          "emotional_intensity": 9,
+          "acoustic_direction": "Giọng thì thầm, lạnh lùng, đầy ẩn ý.",
+          "pace": "normal",
+          "volume": "normal",
+          "pause_after_ms": 1500,
+          "sfx": []
+        }
+      ]
+    }
+  ],
+  "cliffhanger": "Vy thì thầm vào tai Tú Anh: 'Cô sợ tôi nhớ lại điều gì sao, thư ký Tú Anh?'",
+  "director_notes": "Tập trung vào sự đối lập giữa giọng khàn, dứt khoát của Linh và giọng mượt, kéo dài của Diệp để làm nổi bật sự căng thẳng."
+}

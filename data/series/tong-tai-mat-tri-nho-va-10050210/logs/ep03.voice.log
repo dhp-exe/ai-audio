@@ -1,0 +1,4 @@
+[02:13:49] generate voice: 3 unit(s), 3 to render, 0 cached
+[02:14:05]   ep03_sc02_c01: 22880 ms, 330 chars, wavespeed/google/gemini-3.8-flash/text-to-speech
+[02:14:07]   ep03_sc01_c01: 32840 ms, 370 chars, wavespeed/google/gemini-3.8-flash/text-to-speech
+[02:14:19]   ep03_sc03_c01: 19480 ms, 288 chars, wavespeed/google/gemini-3.8-flash/text-to-speech

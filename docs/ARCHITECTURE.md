@@ -1,16 +1,26 @@
-# Emvoox Engine: architecture (Prototype V1)
+# Emvoox Engine: architecture
 
 | | |
 |---|---|
-| Status | Implemented. Offline end-to-end demo and 104 tests passing; live vendor runs pending the WaveSpeed key |
-| Date | 2026-10-03 |
+| Status | Implemented through Phase 4 of `docs/MIGRATION_PLAN.md`. Offline end-to-end demo and 160 tests (159 pass, 1 skipped) |
+| Date | 2026-10-03; rewritten 2026-10-13 for the workflow graph, durable runs, the agent runtime and the chat |
+| Next | This document describes what runs today. Still planned: long-term memory and compaction (Phase 5), users, roles and metering (Phase 6); see `docs/TARGET_ARCHITECTURE.md` and `docs/MIGRATION_PLAN.md` |
 | Replaces | the stage-script pipeline (`pipeline/`, `.claude/skills/*/scripts/`), `docs/ARCHITECTURE.md` v0, `docs/IMPLEMENTATION_PLAN.md`, `docs/System_Flow_Map.*`, `docs/Technical_Specification.md` (still in git history) |
 | Sources | `emvox.docs/emvox technical map.png`, `emvox.docs/TỔNG HỢP DỰ ÁN EMVOOX VÀ KÊNH MẶC KHẢI.pdf`, `docs/Emvox_Technical_Map.md` |
 
 Emvoox is an AI entertainment studio: fixed Virtual Actors (own voice, own look) perform Vietnamese micro-dramas, and
 audio is the cheap funnel that decides which series earn a video budget. **Emvoox Engine** is the production system
-for that funnel: seven agents with typed contracts, an event-driven state machine that runs them, a QA loop that fixes
-what it can before a human signs off, and a data layer that can move to V1RON OS without touching agent code.
+for that funnel. It has two ways of working, each used where it fits:
+
+- a **workflow graph** (LangGraph) for production, where order is fixed and money is spent under guarantees: seven agents
+  with typed contracts, scenes produced in parallel with their own QA, retry and approval loops, and a human gate
+  before anything is exported;
+- an **agent runtime** for work whose path is not known in advance: a model calls tools from a registry, inside a
+  permission gate, a step limit and a budget. The Market Research agent can run this way, and the **Producer** agent
+  behind the chat does.
+
+Runs are durable: a worker takes them from a queue, they pause wherever a person has to decide, and they continue from
+a checkpoint in whichever process picks them up. Storage is tenant-scoped and can live in PostgreSQL.
 
 ---
 
@@ -19,51 +29,66 @@ what it can before a human signs off, and a data layer that can move to V1RON OS
 ```mermaid
 flowchart TB
   subgraph Studio["Emvoox Studio (web/ Next.js 16 + Ant Design 6)"]
-    UI["Dashboard · Productions · New production · Pipeline · Approvals · Voice IPs · Market research · Costs · Settings"]
+    UI["Producer chat · Dashboard · Productions · New production · Pipeline · Approvals · Voice IPs · Market research · Costs · Settings"]
   end
   UI -->|"JSON /api (web/lib/api.ts)"| API["FastAPI (emvoox/api/app.py)"]
-  API --> ENG["Engine: async state machine + event bus (emvoox/engine)"]
+  API -->|"saves the run / thread, enqueues a job"| Q[("Queue: memory | Redis")]
+  Q --> W["Worker (emvoox/worker)"]
 
-  subgraph Fleet["Agent fleet (emvoox/agents)"]
-    direction TB
-    MR["Market Research"] -->|TrendBrief| SW["Script Writer"]
-    SW -->|"StoryInput + SeriesBible"| CA["Casting & Voice IP Curator"]
-    CA -->|"ResolvedCast + EnginePolicy"| DI["AI Director"]
-    DI -->|DirectedConversationUnits| SE["Sound Engineer"]
-    SE -->|MasteredEpisode| QA["QA Critic"]
-    QA -->|"QAReport (PASS)"| PU["Approval Gate & Publisher"]
-    QA -.->|"FLAGGED: retry_instructions (≤3)"| SE
+  subgraph RT["Agent runtime (emvoox/runtime)"]
+    LOOP["loop: context → model → permission gate → tools → repeat"]
+    PROD["Producer (chat)"] --- MRA["Market Research (loop mode)"]
   end
-  ENG --> Fleet
+  subgraph TOOLS["Tool registry (emvoox/tools)"]
+    T["core · research · library · production"]
+  end
+  W --> RT
+  RT --> TOOLS
+
+  subgraph WF["Workflow graph (emvoox/workflow, LangGraph)"]
+    direction TB
+    SER["series: [research] → script → casting"] --> EP["episode: draft → direct"]
+    EP --> SC["scenes in parallel: render → QA → retry (≤3) → [approval]"]
+    SC --> JOIN["join → master → episode QA → gate"]
+  end
+  W -->|"Engine (emvoox/engine)"| WF
+  TOOLS -->|"production_start (needs approval)"| Q
+
+  subgraph Fleet["Agents as plain functions (emvoox/agents)"]
+    MR["Market Research"] --- SW["Script Writer"] --- CA["Casting"] --- DI["AI Director"] --- SE["Sound Engineer"] --- QA["QA Critic"] --- PU["Publisher"]
+  end
+  WF --> Fleet
+  TOOLS --> Fleet
 
   subgraph Providers["Providers (emvoox/providers)"]
-    LLM["LLM: Gemini · WaveSpeed LLM · OpenAI-compatible · Claude · mock"]
-    TTS["TTS: Gemini TTS · ElevenLabs · WaveSpeed (ElevenLabs v3, MiniMax, Gemini 3.8 TTS) · mock"]
-    BR["Browser automation (Playwright, optional)"]
+    LLM["LLM (structured output + tool calling): Gemini · WaveSpeed · OpenAI-compatible · Claude · mock"]
+    TTS["TTS: Gemini TTS · ElevenLabs · WaveSpeed · mock"]
   end
   Fleet --> Providers
+  RT --> Providers
 
-  subgraph Data["Repositories (emvoox/repositories)"]
-    DS[("DocumentStore: JSON files | SQLite → v1ron_db")]
-    BS[("BlobStore: ./data → V1RON Media / MinIO")]
+  subgraph Data["Repositories, per tenant (emvoox/repositories)"]
+    DS[("DocumentStore: JSON files | SQLite | PostgreSQL")]
+    BS[("BlobStore: ./data → MinIO later")]
+    CP[("Checkpoints: SQLite file | PostgreSQL")]
   end
   Fleet --> Data
-  ENG --> Data
-  PU -->|approved| OUT[("data/outputs/approved_masters/")]
+  WF --> CP
+  RT --> Data
 ```
 
 One series flows through three series steps and six episode steps:
 
 | Step | Agent | Skills | Output contract | Stored at (`data/series/<id>/…`) |
 |---|---|---|---|---|
-| `research` (optional) | Market Research | Market Scan, Content Analyze, Trend Ranking | `TrendBrief` | `trend_brief.json` (+ `research/briefs/<id>.json`) |
+| `research` (optional) | Market Research | Search Plan, Market Scan, Content Analyze, Trend Ranking | `TrendBrief` | `trend_brief.json` (+ `research/briefs/<id>.json`) |
 | `script` | Script Writer | Story Adapt, Episodize (outline) | `ScriptPackage` = `StoryInput` + `SeriesBible` | `story.json`, `story_raw.txt`, `series.json` |
 | `casting` | Casting & Voice IP Curator | Voice Registry, Casting Match, Engine Policy | `ResolvedCast` (+ `EnginePolicy`) | `cast.json`, `assets/voice_registry.json` |
 | `epNN.draft` | Script Writer | Episodize (draft), Cliffhanger Check | `EpisodeDraftResult` (+ `CliffhangerCheck`) | `scripts/raw/epNN.txt`, `scripts/checks/epNN.json` |
 | `epNN.direct` | AI Director | Parse Script, Delivery Compile, Render Plan | `DirectedConversationUnits` | `scripts/parsed/epNN.json`, `directed/epNN.json` |
-| `epNN.voice` | Sound Engineer | Generate Voice | `VoiceRenderResult` | `stems/epNN/*.wav` + `.meta.json`, `render.json` |
+| `epNN.voice` (all scenes) | Sound Engineer + QA Critic, per scene | Generate Voice, QA Audio, Review Audio | `VoiceRenderResult` (summed), one `SceneQAReport` per scene | `stems/epNN/*.wav` + `.meta.json`, `render.json`, `qa/epNN_scNN.json` |
 | `epNN.master` | Sound Engineer | Generate SFX, Assemble Audio | `MasteredEpisode` | `timelines/`, `masters/epNN_master.{wav,mp3,json}` |
-| `epNN.qa` | QA Critic | QA Audio, Review Audio | `QAReport` | `qa/epNN_report.json` |
+| `epNN.qa` | QA Critic | roll-up of the scene reports + master checks | `QAReport` | `qa/epNN_report.json` |
 | `epNN.gate` | Approval Gate & Publisher | Approval Gate, Publish Metadata, Local Export | `ReleasePackage` | `release/epNN.json`, `outputs/approved_masters/<id>/` |
 
 ---
@@ -75,6 +100,11 @@ else: no file paths, no vendor SDKs, no knowledge of the other agents. It receiv
 repositories, LLM client, telemetry ledger, run parameters, a log sink, a cancel flag) and returns a Pydantic model.
 
 ### 2.1 Market Research Agent (`market_research.py`)
+- **Search Plan**: runs only when the editor gave a `guide` and the browser is on. One LLM call → `SearchPlan`: how the
+  guide was understood (`intent`) and at most two searches each for TikTok, Google and YouTube. The model writes only
+  search words; the agent builds the URL (`SEARCH_URL`) and drops URLs, duplicates and platforms the run did not ask
+  for. The searches replace the fixed search pages of their platform; home pages (DramaBox, ReelShort) are still read.
+  Without a guide, or when the call fails, the scan reads the fixed sources. Intent and queries are saved on the `ScanState`.
 - **Market Scan**: observations from text pasted into the run, every `.md/.txt/.json` under `data/inputs/trends/`, and
   (when `use_browser` / `EMVOOX_RESEARCH_USE_BROWSER`) the visible text of public pages on DramaBox, ReelShort, TikTok,
   Google and YouTube through headless Chromium (Playwright, optional extra; sources in `DEFAULT_SOURCES` or
@@ -86,9 +116,14 @@ repositories, LLM client, telemetry ledger, run parameters, a log sink, a cancel
 - **Content Analyze**: one LLM call → `MarketAnalysis`: insights per reference title, and the **three most trending
   genres**, each with its evidence from the data, the platforms it was seen on, a new story direction, three 1-10
   ratings (audience fit, momentum, production fit) and the nearest Mặc Khải content line (`urban_ceo`,
-  `intellectual_slap_anti_trope`, `rebirth_butterfly_effect`, or `other`). The editor's free-text `guide` steers it.
+  `intellectual_slap_anti_trope`, `rebirth_butterfly_effect`, or `other`). The editor's free-text `guide` has priority:
+  the prompt carries the guide, the plan's intent and its searches, and asks the model to say so when the data cannot answer it.
 - **Trend Ranking**: deterministic score `0.45·audience_fit + 0.30·momentum + 0.25·production_fit`; genres on the
   editor's `focus` line rank first; the top three are kept in the `TrendBrief`.
+- **Loop mode** (`agent: true` on a scan, `research --agent`): instead of the fixed order, the model drives the
+  research with four tools (`research_read_notes`, `research_read_platform`, `research_search`,
+  `research_write_brief`; §6). It never supplies a URL, sees only an excerpt of each page, and ends in the same
+  Content Analyze + Trend Ranking, so the brief has the same shape. Every source it reads is a `ScanStep` like any other.
 - **Human pick**: the editor chooses one of the three (`POST /api/research/briefs/{id}/select`); the brief's top-level
   fields (topic, hook, premise, genre…) mirror the pick and that is what the Script Writer's Story Adapt receives. A
   run started with `source = research` does not stop for the pick and uses the top-ranked genre.
@@ -172,6 +207,10 @@ repositories, LLM client, telemetry ledger, run parameters, a log sink, a cancel
 | Master duration | 50-160 % of the target | `master_duration_off` | minor | none (script length) |
 | Mispronunciation (optional) | `EMVOOX_QA_TRANSCRIBE`: LLM transcript of each stem, word error rate > 25 % | `mispronunciation` | major | `rerender` |
 
+**Two levels.** Scenes are produced in parallel, so the stem checks run per scene (`review_scene` → `SceneQAReport`,
+with the retries that scene can do). The episode report (`run`) rolls the scene reports up, places each issue on the
+master's timeline, and adds the checks only a master can answer (loudness, true peak, duration).
+
 Score = 100 - 25·blocker - 12·major - 3·minor. **FLAGGED** when any blocker/major remains or the score is below
 `EMVOOX_QA_PASS_SCORE` (80). Every issue carries the render unit, the line and its **timestamp in the master**
 (`at_ms`). Lines a human should hear anyway (intensity ≥ 9, intense monologues) are listed in `review_lines`.
@@ -187,7 +226,7 @@ Score = 100 - 25·blocker - 12·major - 3·minor. **FLAGGED** when any blocker/m
 
 ---
 
-## 3. Engine (`emvoox/engine/`)
+## 3. Engine and workflow graph (`emvoox/engine/`, `emvoox/workflow/`)
 
 ```mermaid
 stateDiagram-v2
@@ -195,42 +234,74 @@ stateDiagram-v2
   [*] --> script: source = story | brief | existing
   research --> script: TrendBrief
   script --> casting: ScriptPackage
-  casting --> draft: ResolvedCast
-  state "per episode (sequential by default)" as EP {
+  casting --> pick: ResolvedCast
+  pick --> budget: spent ≥ cap (pause)
+  budget --> pick: raised
+  budget --> [*]: declined (halted)
+  pick --> draft: next episode
+  state "episode" as EP {
     draft --> direct
-    direct --> voice: DirectedConversationUnits (validated)
-    voice --> master
+    direct --> scenes: DirectedConversationUnits (validated)
+    state "scenes, in parallel" as scenes {
+      render --> check
+      check --> retry: FLAGGED and attempt < max_retries
+      retry --> render: only the flagged units
+      check --> approve: scene_approval (pause)
+      approve --> redo: rejected
+      redo --> render
+    }
+    scenes --> join: every scene done
+    join --> master: plan saved once, manifest written
     master --> qa
-    qa --> gate: PASS
-    qa --> replan: FLAGGED and attempt < max_retries
-    replan --> voice: re-render flagged units only
-    qa --> gate: FLAGGED, retries spent (needs_review)
+    qa --> master: loudness off, re-master (bounded)
+    qa --> gate
   }
-  gate --> [*]: awaiting_approval / approved
-  gate --> halted: FLAGGED and halt_on_qa_fail
+  gate --> pick: parked for approval
+  gate --> [*]: FLAGGED and halt_on_qa_fail (halted)
 ```
 
-- **Async state machine.** `Engine.run()` is a coroutine; each step is one agent call in a worker thread
-  (`asyncio.to_thread`), so cancellation is honoured between steps and the API stays responsive. Episodes run in
-  order (D12, vendor rate limits); `episode_concurrency > 1` runs several under a semaphore.
-- **Handoff validation.** Each step declares its output contract; the engine re-validates the payload
-  (`Model.model_validate(result.model_dump())`) and runs cross-checks before the next agent sees it (e.g. the Director's
-  units must use exactly the cast's voices). A rejected handoff publishes `contract.rejected`, is retried once when the
-  agent says it is retryable, and otherwise fails the step and skips the rest of that episode.
-- **Event-driven.** Every transition is a `PipelineEvent` on the `EventBus` (`run.started`, `step.started`,
-  `step.finished`, `step.failed`, `step.retry`, `contract.rejected`, `cast.resolved`, `qa.flagged`, `gate.waiting`,
-  `gate.approved`, `episode.stopped`, `run.finished`). Subscribers persist `RunState` and append the event log the UI
-  tails (`GET /api/runs/{id}/events?after=N`); V1RON OS can subscribe the same way later.
-- **QA retry loop.** On FLAGGED with retry instructions and attempts left (default 3): the Director re-plans from the
-  saved script without an LLM call (flagged chunks split into lines, attempt numbers bumped so settings move toward the
-  engine's most stable delivery and the cache key changes), the Sound Engineer re-renders only the affected units,
-  re-masters, and the QA Critic checks again. Telemetry counts `qa_retries`.
-- **Human gate and halting.** The gate parks every episode. With `halt_on_qa_fail` (default) an episode still FLAGGED
-  after the retries halts the run (`status: halted`) so no further credits are spent before a human looks.
-- **Resume and idempotency.** `only=[…]` produces just those episodes; the outline, drafts and directed scripts that
-  exist are kept, stems are reused by content hash. A server restart marks in-flight runs `cancelled` (artifacts stay).
-- **Run state** (`RunState`): steps with status / attempts / timing / cost / summary, notes for humans, the casting
-  table, totals (cost, LLM calls, tokens, TTS requests, characters, audio, QA retries) and the engines used.
+- **Who does what.** The graphs in `emvoox/workflow` (`series_graph`, `episode_graph`, `scene_graph`) decide order,
+  fan-out, pauses and checkpoints. `Engine` is what their nodes run with: the run's state and events, the ledger, the
+  agents, and `_step`, which runs one agent call in a worker thread, re-validates its output against the declared
+  contract, retries a rejected handoff once when the agent says it is retryable, and records time and cost.
+- **Scenes in parallel.** Each scene renders, is checked (`SceneQAReport`), and retries only its own flagged units up
+  to `max_retries`, with the Director's retry parameters. Vendor requests of all scenes share one cap per provider
+  (`ProviderLimiter`, held around every `synthesize` call). A scene works from an unsaved view of the plan; the join
+  saves the plan once with every scene's retry parameters, writes the render manifest, and only then is the episode
+  mastered.
+- **Pauses.** A run stops for a person in three places: a scene waiting for approval (`RunParams.scene_approval`; a
+  rejection re-renders the scene or the units the reviewer names, and asks again), the budget (`max_cost_usd`, checked
+  before each episode: raise it or the run halts), and a FLAGGED episode (halts the run, as before). A paused run has
+  status `waiting` and its open decisions in `RunState.pending`; answering them continues it.
+- **The episode gate is not a pause.** An episode that passes QA is parked for approval and the run goes on to the next
+  one. Nothing is exported without a human (D11); `approve` / `reject` are separate actions.
+- **Durable.** The run graph is checkpointed after every step (thread = tenant + run id; a SQLite file under the data
+  directory, or PostgreSQL). What the engine does follows from the saved state: `pending` → start, `waiting` → continue
+  with the answers, `running` → the process that had it died, so recover from the last checkpoint. The node that was
+  running then runs again, so nodes are repeat-safe: stems are reused by content hash, and a forced render skips what
+  this very run already rendered. A recovered LLM step is paid for again.
+- **In a graph node, nothing with a side effect comes before `interrupt`.** A paused node re-runs from its start when
+  it is resumed, and a paused sibling re-runs whenever another branch is resumed; a wait is announced in its own node.
+- **Events.** Every transition is a `PipelineEvent` (`run.started | waiting | resumed | recovered | finished`,
+  `step.*`, `contract.rejected`, `scene.qa | waiting | approved | rejected | failed`, `qa.flagged`,
+  `budget.waiting | raised`, `gate.*`, `episode.stopped`). The subscriber persists `RunState` after each one; sequence
+  numbers continue across the processes of one run.
+- **Run state** (`RunState`): steps with status / attempts / timing / cost / summary, the scenes (`SceneRun`: status,
+  attempt, score, issues, reviewer), open decisions, the current budget, notes, the casting table, totals and the
+  engines used. Totals carry over from the processes that did the earlier work.
+
+### 3.1 Queue and workers (`emvoox/worker/`)
+
+- The API never runs an engine. It saves a run as `pending` (`Engine.create`) and enqueues a `Job`; answering a
+  decision or sending a chat message enqueues one too. A job names its run, it does not carry it: the worker rebuilds
+  the engine from storage (`Engine.restore`).
+- **Queues.** `memory` (default): jobs live in the API process, which also runs the worker thread; at startup the API
+  re-enqueues runs that were queued or in progress. `redis`: jobs are shared and survive restarts; start
+  `python -m emvoox worker` processes. A claimed job has a lease the worker renews; when the worker dies the lease
+  expires and any worker puts the job back, marked `recover`.
+- A per-run lock keeps two jobs of one run from executing at once. Cancel is a signal on the queue: a worker stops the
+  run after the current step; a queued run is closed when it is claimed.
+- Job kinds: `run` (start, resume, recover), `scan` (market research), `chat` (one turn of a conversation).
 
 ---
 
@@ -243,7 +314,7 @@ flowchart LR
   R --> B{{"BlobStore protocol"}}
   D --> J["JsonDocumentStore (default)"]
   D --> S["SqliteDocumentStore"]
-  D -.-> P["PostgresDocumentStore → v1ron_db (stub)"]
+  D --> P["PostgresDocumentStore (EMVOOX_STORAGE=postgres)"]
   B --> L["LocalBlobStore (./data)"]
   B -.-> M["MinioBlobStore → V1RON Media (stub)"]
 ```
@@ -256,8 +327,15 @@ flowchart LR
   SQLite (`EMVOOX_DOC_STORE=sqlite`, the shape a PostgreSQL JSONB table takes).
 - `BlobStore`: `path/commit/local/exists/list/...`. FFmpeg and the SDKs need real files, so a remote store hands out a
   local cache path; `commit()` uploads after writing, `local()` downloads on a miss. Locally both are no-ops.
-- **Moving to V1RON OS** = implement `PostgresDocumentStore` and `MinioBlobStore` in `repositories/v1ron.py` and set
-  `EMVOOX_STORAGE=v1ron`. Agents, engine and API do not change.
+- **Tenants.** `get_repositories(tenant)` returns one tenant's bundle. The `default` tenant is the storage root itself
+  (an existing single-studio `./data` is the default tenant as it is); any other tenant lives under `tenants/<id>/`.
+  Scoping is done once around the two backends (`repositories/tenancy.py`): a key that tries to leave its tenant is
+  refused, and the default tenant cannot address `tenants/`. PostgreSQL rows carry the tenant in their primary key.
+  Nothing chooses a tenant per request yet (`EMVOOX_TENANT` per process); that arrives with users and roles (Phase 6).
+- **PostgreSQL** (`EMVOOX_STORAGE=postgres`, `repositories/postgres.py`): documents, run state, logs and the graph's
+  checkpoints in one database; media files stay on local disk. The same contract test runs against JSON, SQLite and
+  PostgreSQL.
+- **Still to do for `EMVOOX_STORAGE=v1ron`**: `MinioBlobStore` in `repositories/v1ron.py`. Agents, engine and API do not change.
 
 Local layout (`./data`, `EMVOOX_DATA_DIR`):
 
@@ -269,6 +347,11 @@ data/
   inputs/trends/*.md|txt|json     trend notes for the Market Research Agent; inputs/market_sources.json (browser targets)
   research/briefs/<id>.json       TrendBriefs
   research/scans/<id>.json        scan records (progress, sources, log); research/scans/<id>/*.jpg page screenshots
+  research/observations/<id>.json full text an agent-driven scan has read (the conversation keeps excerpts)
+  agents/sessions/<id>.json       AgentSession: one agent working on one task (a chat thread, a research loop)
+  chat/threads/<id>/              thread.json and events.jsonl of one conversation with the Producer
+  runs/checkpoints.sqlite         workflow graph checkpoints (local storage)
+  tenants/<tenant>/…              the same layout for every tenant other than "default"
   series/<id>/                    story, bible, cast, scripts, directed units, stems, timelines, masters, qa, release,
                                   run.log.jsonl (ledger), pipeline_run.json (run state), logs/ (step logs, events.jsonl)
   outputs/approved_masters/<id>/  epNN.mp3, epNN.wav, epNN.youtube.json (approved only)
@@ -292,14 +375,54 @@ data/
 | TTS | **WaveSpeed** | `tts/wavespeed.py` | `POST /api/v3/<model path>` → poll `/predictions/{id}/result` → download; `elevenlabs/eleven-v3` (any ElevenLabs voice id), `minimax/speech-2.6-hd` (system or cloned ids, emotion/speed/pitch/volume). Submissions are never blindly retried (a lost response may still be billed); `google/gemini-3.8-flash[-lite]/text-to-speech` (the actor's Gemini voice name, `style_instructions`, two-speaker dialogue as `speakers` + `turns`; billed per request per started 1,000 characters, hence scene batching) |
 | TTS | mock | `tts/mock.py` | tones at the canonical stem format; fault injection (`clip`, `truncate`, `silence`, `error`) for the QA loop |
 
-Every call goes through `LlmClient.structured(...)` or a `TtsProvider.synthesize(...)`, which is where validation,
+`LlmClient.chat(...)` is the second entry point: one model turn of a tool loop (text, tool calls, or both), on Gemini
+function calling, Chat Completions function calling (WaveSpeed / OpenAI) and the Claude Messages API. A Gemini model
+turn is sent back exactly as received, because Gemini checks the thought signatures of its own function calls. The mock
+plays a scripted list of turns, or a small fixed policy per agent, so the loop and the chat run offline.
+
+Every call goes through `LlmClient.structured(...)`, `LlmClient.chat(...)` or a `TtsProvider.synthesize(...)`, which is where validation,
 retries and telemetry live. A new engine (for example a self-hosted model serving the team's cloned voices) is one class
 with `synthesize(req, out)` plus `register_provider("name", factory)` and a catalog entry; the Director needs no change
 because delivery is compiled per engine.
 
 ---
 
-## 6. Voice IPs and cloned voices
+## 6. Agent runtime and tools (`emvoox/runtime/`, `emvoox/tools/`)
+
+- **One loop for every agent** (`runtime/loop.py`): build context → call the model → permission gate → run tools →
+  repeat until the model answers without a tool call. It runs on an `AgentSession`, a document saved after every turn,
+  so it can stop wherever a person is needed and continue in another process.
+- **An agent is configuration** (`runtime/agents.py`, `AgentSpec`): prompt, tool areas, core tools, model, step limit,
+  budget. Today: `market_research` (loop mode) and `producer` (the chat). `register_agent` adds one.
+- **A tool is a function** with a Pydantic arguments model, an `area` and a `kind`, registered with `@tool`
+  (`tools/base.py`). 14 tools ship: core (`load_tools`, `ask_user`, `spawn_subagent`), research (4), library (5, read
+  only), production (`production_start`, `production_continue`). `GET /api/agents` lists them with their schemas.
+- **The permission gate** (`runtime/permissions.py`), per call, in order: the tool must be loaded for this agent; the
+  arguments must validate (the error goes back to the model); `external` tools always wait for a person and `write`
+  tools wait in manual mode; a session that has read outside text (itself or through a specialist) may no longer load
+  tool areas; a session nobody is following cannot wait, so a call that needs a person is refused.
+- **Limits**, checked before every model call: the step limit, the agent's budget (model calls plus what its tools
+  spent), a cancel request. A session that hits one ends as `stopped` with the reason.
+- **Outside text is data.** A page's text reaches the model only inside a tool result, as an excerpt with a note; the
+  full text stays in the scan's observations. In the live check (four runs, two models) neither model followed an
+  instruction planted in a page; the structural rules above hold even if one does.
+- **Production from an agent.** `production_start` saves a run and enqueues it; it does not wait. The run pauses for
+  its own decisions, which only a person answers.
+- Tool calls are in the ledger (`skill: tool:<name>`) next to the model calls that asked for them.
+
+### 6.1 Chat (`emvoox/services/chat.py`)
+
+A thread is one conversation with the Producer. A message or an answer enqueues a `chat` job; a worker advances the
+Producer's session until it has answered or needs the person. The Producer hands research to the Market Research agent
+(`spawn_subagent`), asks which of the three genres to produce (`ask_user`), and starts production
+(`production_start`, which needs approval). The thread view carries the conversation, the open questions and
+approvals, and the runs the thread started with their own open decisions and parked episodes, so every decision can be
+taken in the chat. Typing a reply while the agent waits answers its question, and declines an approval. The reply
+arrives per model turn, not per token.
+
+---
+
+## 7. Voice IPs and cloned voices
 
 - The registry (`data/assets/voice_registry.json`, model `VoiceRegistry`) holds actors (`CharacterProfile`: persona,
   voice description, gender, age, tags) and one `ProviderVoice` per engine (`voice_id`, `model_id`, `source`, `label`,
@@ -314,7 +437,7 @@ because delivery is compiled per engine.
 
 ---
 
-## 7. Cost and audit telemetry (`emvoox/telemetry/`)
+## 8. Cost and audit telemetry (`emvoox/telemetry/`)
 
 - `UsageRecord` per LLM call (tokens in/out), TTS request (characters, audio ms, tokens for Gemini), SFX, and agent step
   (execution time), stamped with run, series, episode, agent and skill, plus an **estimated cost** from
@@ -326,36 +449,45 @@ because delivery is compiled per engine.
 
 ---
 
-## 8. Web app and API
+## 9. Web app and API
 
 `web/` is a Next.js 16 static export with Ant Design 6 (navy `#284979`, light and dark themes), served by the API at
-`/` (`python -m emvoox serve`, port 8765) or run with `npm run dev`. Pages: **Dashboard** (KPIs, productions in
+`/` (`python -m emvoox serve`, port 8765) or run with `npm run dev`. Pages: **Producer chat** (the home screen: one
+message starts the work; question, approval, scene, budget and episode cards appear in the conversation),
+**Dashboard** (`/dashboard/`: KPIs, productions in
 progress, attention queue, cost trend), **Productions** (library, episode players, episode drawer with script, directed
 units, QA report and release), **New production** (wizard: source = trend brief / own story / research now → story and
-roles → engines and QA policy → review), **Pipeline** (agent flow, episode × step matrix with retries, live logs,
-casting, event timeline), **Approvals** (the human gate: listen, timestamped QA issues, edit metadata, approve /
-reject, exported files), **Voice IPs** (actors, previews per engine, cloned-voice plug-in), **Market research**
+roles → engines and QA policy → review), **Pipeline** (agent flow, episode × step matrix, the scenes of each episode, a paused run's decisions, live
+logs, casting, event timeline), **Approvals** (paused runs: scene and budget decisions; and the human gate: listen,
+timestamped QA issues, edit metadata, approve / reject, exported files), **Voice IPs** (actors, previews per engine, cloned-voice plug-in), **Market research**
 (scan, briefs, ranked candidates), **Costs** (spend and quotas), **Settings** (health checks, keys, agent fleet).
 
 The full route list is at the top of `emvoox/api/app.py`; `web/lib/api.ts` is the typed contract both sides follow.
 
 ---
 
-## 9. Configuration
+## 10. Configuration
 
 All settings come from `emvoox/config.py::get_settings()` (`.env`, `EMVOOX_*`, legacy `AI_AUDIO_*` still read). The
 important ones: `EMVOOX_LLM_PROVIDER/MODEL`, `EMVOOX_TTS_PROVIDER/MODEL/BATCHING`, `EMVOOX_PREFER_CLONED_VOICES`,
-`EMVOOX_STORAGE`, `EMVOOX_DATA_DIR`, `EMVOOX_DOC_STORE`, `ENABLE_BGM`, `ENABLE_SFX`, loudness and padding,
+`EMVOOX_STORAGE` (`local | postgres`), `EMVOOX_DATA_DIR`, `EMVOOX_DOC_STORE`, `EMVOOX_DATABASE_URL`, `EMVOOX_TENANT`,
+`EMVOOX_QUEUE` (`memory | redis`), `EMVOOX_REDIS_URL`, `EMVOOX_EMBEDDED_WORKER`, `ENABLE_BGM`, `ENABLE_SFX`, loudness and padding,
 `EMVOOX_QA_MAX_RETRIES`, `EMVOOX_QA_PASS_SCORE`, `EMVOOX_QA_TRANSCRIBE`, `EMVOOX_CLIFFHANGER_*`, `EMVOOX_AUTO_APPROVE`,
 `EMVOOX_HALT_ON_QA_FAIL`, `EMVOOX_RESEARCH_USE_BROWSER`. See `.env.example`; keys and accounts in `docs/SETUP.md`.
 
 ---
 
-## 10. Testing and the demo
+## 11. Testing and the demo
 
 - `python scripts/demo_pipeline.py` runs research → master → gate → approval offline with an injected fault, prints
   every step, the QA retry and the telemetry. `--live --llm wavespeed --tts wavespeed --episodes 1` runs the same on real vendors.
-- `pytest` (104 tests, no network: sockets are blocked and `.env` is not loaded under test): contracts, normalizer,
+- `pytest` (160 tests, no outside network: sockets are blocked except localhost and `.env` is not loaded under test).
+  Tests that need PostgreSQL (`createdb emvoox_test`) or Redis (database 15) are skipped when the server is not
+  there. Covered: the workflow graph (parallel scenes under the provider cap, per-scene retries, scene approval and
+  rejection, the budget pause, pausing and resuming in new engines), durability (a run whose process was killed with
+  SIGKILL is recovered without paying twice, Redis re-delivery, checkpoints in PostgreSQL, tenant isolation), the
+  runtime (gate, limits, tool loading, the taint rule, adapters' tool calling), the research loop, and the chat from one
+  message to a mastered episode. Also: contracts, normalizer,
   delivery compile and render plan, provider adapters on fake transports (Gemini, ElevenLabs, WaveSpeed TTS + LLM),
   repositories (JSON and SQLite against one contract), agents (casting policy with cloned voices, QA measurements on
   synthetic audio, mastering with a ducked bed), the engine end to end (retry loop, halting, auto-approve, contract
@@ -363,14 +495,16 @@ important ones: `EMVOOX_LLM_PROVIDER/MODEL`, `EMVOOX_TTS_PROVIDER/MODEL/BATCHING
 
 ---
 
-## 11. Decisions
+## 12. Decisions
 
-Locked decisions D1-D12 (CLAUDE.md) still hold, with D2, D4, D7 and D10 extended as below. New decisions taken in this
+Decisions F1-F12 of the agentic platform are in `docs/TARGET_ARCHITECTURE.md`; F1-F6 and F9 are built. Locked decisions
+D1-D11 (CLAUDE.md) hold; D12 (one series at a time, episodes sequential) is replaced: scenes run in parallel under a
+per-provider cap and runs queue. The refactor decisions below hold except E1. New decisions taken in this
 refactor, each with the reason; numbered so the Lead Architect can confirm or override them one by one:
 
 | # | Decision | Why |
 |---|---|---|
-| E1 | Orchestration is a native asyncio state machine with Pydantic contracts, not LangGraph or CrewAI | the flow is a fixed graph with one loop; a framework adds dependencies (and Python 3.14 risk) without adding control; every step stays a plain, testable function |
+| E1 | Orchestration is a native asyncio state machine with Pydantic contracts, not LangGraph or CrewAI | the flow is a fixed graph with one loop; a framework adds dependencies (and Python 3.14 risk) without adding control; every step stays a plain, testable function. **Superseded by F1 (2026-10-13):** production runs scenes in parallel with their own QA and approval loops, on LangGraph; the native engine was deleted in Phase 1. Agents are still plain, testable functions |
 | E2 | Storage behind `DocumentStore` + `BlobStore` with keys = relative paths; JSON files by default, SQLite optional | local-first now, one adapter pair to reach v1ron_db + MinIO later |
 | E3 | Audio processing stays FFmpeg via subprocess (`audio/`), no pydub | two-pass loudnorm hits -16.0 LUFS exactly; pydub was dropped earlier for that reason |
 | E4 | LLM abstraction is a thin adapter layer (Gemini SDK, OpenAI-compatible HTTP for WaveSpeed/OpenAI, Anthropic SDK), not LiteLLM/LangChain | structured output per vendor is the hard part and each adapter does it natively; WaveSpeed already aggregates models behind one protocol |
@@ -381,11 +515,15 @@ refactor, each with the reason; numbered so the Lead Architect can confirm or ov
 | E9 | Gemini remains the default engine; ElevenLabs and WaveSpeed are per-run or per-actor choices; a cloned voice wins whenever its engine has a key | testing stays cheap; IP voices are used as soon as they exist |
 | E10 | The Market Research browser scan is optional and selector-free | public pages change and block bots; local trend notes are the supported path until V1RON's automation fleet |
 
-## 12. Not built yet (roadmap)
+## 13. Not built yet (roadmap)
 
-1. **V1RON OS**: `PostgresDocumentStore` + `MinioBlobStore`, the V1RON API provider for LLM/TTS (register as a provider),
-   a worker process so runs survive API restarts, the V1RON browser automation fleet behind Market Scan.
-2. **Publishing**: the YouTube upload (OAuth) behind the existing `ReleasePackage`; retention analytics feeding the
+Phases 0-4 of `docs/MIGRATION_PLAN.md` are done. Next: (5) long-term memory and compaction, (6) users, roles,
+per-tenant keys and budgets, metering. Open from the phases done: token streaming in the chat, `MinioBlobStore`, a
+real search source for Google (O5), per-request tenants.
+
+1. **V1RON OS**: still unplanned: the V1RON API provider for LLM/TTS (register as a provider) and the V1RON browser
+   automation fleet behind Market Scan.
+2. **Publishing** (after Phase 6): the YouTube upload (OAuth) behind the existing `ReleasePackage`; retention analytics feeding the
    Market Research Agent.
 3. **Director v2** (from the former Technical Specification): engine-neutral delivery cues, ElevenLabs Text-to-Dialogue
    conversation units with per-line segments, an identity-anchored modulation model per cloned voice, an LLM delivery

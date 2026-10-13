@@ -24,7 +24,8 @@ def run_checks(repos: Repositories, *, live: bool = False) -> list[dict]:
     out = [
         _check("python", "Python 3.11+", sys.version_info >= (3, 11), f"{platform.python_version()} at {sys.executable}"),
         _check("ffmpeg", "FFmpeg and ffprobe on PATH", have_ffmpeg(), "needed for stems, mastering and QA"),
-        _check("storage", "Storage backend", True, f"{repos.backend} at {repos.root}"),
+        _check("storage", "Storage backend", True, f"{repos.backend} at {repos.root}; tenant {repos.tenant}"),
+        _queue_check(),
     ]
     reg = repos.registry.load()
     ips = reg.actors()
@@ -47,6 +48,21 @@ def run_checks(repos: Repositories, *, live: bool = False) -> list[dict]:
     if live:
         out.extend(live_checks())
     return out
+
+
+def _queue_check() -> dict:
+    """Where jobs wait. The memory queue needs nothing; Redis must answer."""
+    s = get_settings()
+    if s.queue_backend == "memory":
+        return _check("queue", "Job queue", True, "memory: jobs run inside the API process and are re-queued from storage after a restart")
+    try:
+        from emvoox.worker import get_queue
+
+        depth = get_queue().depth()
+        return _check("queue", "Job queue", True, f"redis at {s.redis_url.rsplit('@', 1)[-1]}: {depth} job(s) waiting; "
+                      + ("this process also runs a worker" if s.embedded_worker else "start workers with `python -m emvoox worker`"))
+    except Exception as e:  # noqa: BLE001 - report, never raise
+        return _check("queue", "Job queue", False, f"redis at {s.redis_url.rsplit('@', 1)[-1]} is not reachable: {type(e).__name__}: {str(e)[:120]}")
 
 
 def live_checks() -> list[dict]:

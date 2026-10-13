@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import uuid
+
 import pytest
 
 from emvoox.contracts import CharacterProfile, ProviderVoice, VoiceRegistry
@@ -10,9 +12,18 @@ from emvoox.repositories.base import BlobStore, DocumentStore
 from emvoox.repositories.local import JsonDocumentStore, LocalBlobStore, SqliteDocumentStore
 
 
-@pytest.fixture(params=["json", "sqlite"])
+@pytest.fixture(params=["json", "sqlite", "postgres"])
 def docs(request, tmp_path) -> DocumentStore:
-    return JsonDocumentStore(tmp_path) if request.param == "json" else SqliteDocumentStore(tmp_path / "db.sqlite3")
+    if request.param == "postgres":
+        from emvoox.repositories.postgres import PostgresDocumentStore, PostgresPool
+
+        pool = PostgresPool(request.getfixturevalue("postgres_dsn"))
+        store = PostgresDocumentStore(pool, f"t-{uuid.uuid4().hex[:12]}")  # a tenant of its own: nothing left over from other tests
+        yield store
+        store.delete_prefix("")
+        pool.close()
+        return
+    yield JsonDocumentStore(tmp_path) if request.param == "json" else SqliteDocumentStore(tmp_path / "db.sqlite3")
 
 
 def test_document_store_contract(docs):
@@ -89,3 +100,64 @@ def test_series_repository_roundtrip(repos):
     assert s.has_raw_script("s1", 1) and not s.has_script("s1", 1)
     s.delete("s1")
     assert s.list_ids() == [] and not s.exists("s1")
+
+
+# ---------------------------------------------------------------- tenants
+
+
+def _tenant_pair(kind: str, tmp_path, request):
+    if kind == "postgres":
+        from emvoox.repositories.factory import postgres_repositories, reset_repositories
+
+        dsn = request.getfixturevalue("postgres_dsn")
+        a, b = f"a-{uuid.uuid4().hex[:10]}", f"b-{uuid.uuid4().hex[:10]}"
+        ra, rb = postgres_repositories(dsn, tmp_path, a), postgres_repositories(dsn, tmp_path, b)
+        request.addfinalizer(lambda: (ra.docs.delete_prefix(""), rb.docs.delete_prefix(""), reset_repositories()))
+        return ra, rb
+    return local_repositories(tmp_path, kind, "studio-a"), local_repositories(tmp_path, kind, "studio-b")
+
+
+@pytest.mark.parametrize("kind", ["json", "sqlite", "postgres"])
+def test_two_tenants_cannot_see_each_others_series_registry_or_runs(kind, tmp_path, request):
+    from emvoox.contracts import RunParams, RunState
+
+    a, b = _tenant_pair(kind, tmp_path, request)
+    assert a.tenant != b.tenant
+    for repos, name in ((a, "Ngân A"), (b, "Ngân B")):
+        repos.registry.save(VoiceRegistry(characters=[CharacterProfile(character_id="ngan", display_name=name, persona="p", voice_description="nữ",
+                                                                      providers={"gemini": ProviderVoice(voice_id="Leda", model_id="m")})]))
+    a.docs.put("series/s1/series.json", {"title": "only A"})
+    a.blobs.write_text("series/s1/story_raw.txt", "A's story")
+    a.runs.save(RunState(run_id="s1-1", series_id="s1", created_at="2026-10-13T00:00:00+00:00", params=RunParams(series_id="s1", tts_provider="mock")))
+    a.docs.append("series/s1/run.log.jsonl", {"cost": 1})
+    # the same keys, two tenants, two worlds
+    assert a.registry.load().get("ngan").display_name == "Ngân A" and b.registry.load().get("ngan").display_name == "Ngân B"
+    assert a.series.list_ids() == ["s1"] and b.series.list_ids() == []
+    assert b.docs.get("series/s1/series.json") is None and b.runs.load("s1") is None and b.docs.read_log("series/s1/run.log.jsonl") == []
+    assert b.blobs.read_text("series/s1/story_raw.txt") is None and not b.series.exists("s1")
+    assert a.docs.list("series/s1") == ["series/s1/pipeline_run.json", "series/s1/series.json"] and b.docs.list("series") == []
+    # deleting in one tenant leaves the other alone, and a key cannot climb out of its tenant
+    b.docs.delete_prefix("series")
+    b.blobs.delete_prefix("series")
+    assert a.docs.get("series/s1/series.json") == {"title": "only A"} and a.blobs.read_text("series/s1/story_raw.txt") == "A's story"
+    for bad in ("../studio-a/series/s1/series.json", "/etc/passwd", "series/../../x"):
+        with pytest.raises(ValueError):
+            b.blobs.read_text(bad)
+
+
+@pytest.mark.parametrize("doc_store", ["json", "sqlite"])
+def test_the_default_tenant_is_the_data_root_and_cannot_reach_other_tenants(tmp_path, doc_store):
+    default, other = local_repositories(tmp_path, doc_store), local_repositories(tmp_path, doc_store, "studio-a")
+    default.docs.put("series/s1/series.json", {"title": "root"})
+    default.blobs.write_text("series/s1/story_raw.txt", "root")
+    other.docs.put("series/s9/series.json", {"title": "tenant"})
+    other.blobs.write_text("series/s9/story_raw.txt", "x")
+    if doc_store == "json":  # an existing single-studio data directory is the default tenant as it is: nothing moves
+        assert (tmp_path / "series" / "s1" / "series.json").exists() and (tmp_path / "tenants" / "studio-a" / "series" / "s9" / "series.json").exists()
+    assert default.series.list_ids() == ["s1"] and other.series.list_ids() == ["s9"]
+    assert default.docs.list("series") == ["series/s1/series.json"]
+    for store, call in ((default.docs, "get"), (default.blobs, "read_text"), (default.docs, "list")):
+        with pytest.raises(ValueError, match="another tenant"):
+            getattr(store, call)("tenants/studio-a/series/s9/series.json")
+    with pytest.raises(ValueError):
+        local_repositories(tmp_path, doc_store, "Not_A_Tenant")

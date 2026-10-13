@@ -11,11 +11,15 @@ dependencies = [
     "httpx>=0.27",
     "fastapi>=0.110",
     "uvicorn[standard]>=0.29",
+    "langgraph>=1.2",                     # workflow graph: fan-out, pause and resume (emvoox/workflow)
+    "langgraph-checkpoint-sqlite>=3.1",   # checkpoints on local storage
 ]
 
 [project.optional-dependencies]
 # Market Research Agent: headless browser scan of public platform pages (then: playwright install chromium)
 research = ["playwright>=1.45"]
+# Durable runs: documents and checkpoints in PostgreSQL (EMVOOX_STORAGE=postgres), jobs in Redis (EMVOOX_QUEUE=redis)
+durable = ["psycopg[binary,pool]>=3.2", "langgraph-checkpoint-postgres>=2.0", "redis>=5.0"]
 # Claude as the LLM provider (EMVOOX_LLM_PROVIDER=anthropic)
 claude = ["anthropic>=0.70"]
 dev = [
@@ -40,6 +44,7 @@ ignore = ["UP042"]  # (str, Enum) contracts kept as they are: they serialize ide
 # Vietnamese prompt text and offline-story templates read better unwrapped
 "emvoox/agents/*.py" = ["E501"]
 "emvoox/providers/llm/mock.py" = ["E501"]
+"emvoox/runtime/agents.py" = ["E501"]
 "tests/*.py" = ["E501"]
 
 [tool.pytest.ini_options]

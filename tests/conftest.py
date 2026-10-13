@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import subprocess
 from pathlib import Path
@@ -24,6 +25,7 @@ BASE_ENV = {
     "EMVOOX_QA_MAX_RETRIES": "3", "EMVOOX_CLIFFHANGER_CHECK": "true", "EMVOOX_PREFER_CLONED_VOICES": "true", "EMVOOX_STORAGE": "local",
     "EMVOOX_DOC_STORE": "json", "ENABLE_BGM": "false", "ENABLE_SFX": "false", "EMVOOX_RESEARCH_USE_BROWSER": "false", "EMVOOX_ENABLE_MOCK": "true",
     "EMVOOX_MOCK_TTS_FAULTS": "", "GEMINI_API_KEY": "test-gemini", "ELEVENLABS_API_KEY": "test-eleven", "EMVOOX_SKIP_DOTENV": "1",
+    "EMVOOX_QUEUE": "memory", "EMVOOX_TENANT": "default", "EMVOOX_EMBEDDED_WORKER": "true", "EMVOOX_DATABASE_URL": "",
 }
 
 
@@ -55,16 +57,57 @@ def sandbox(tmp_path, monkeypatch):
     reset_repositories()
     pricing.reset_overrides()
     MockTtsProvider.reset()
+    restart_workers()
     yield data
+    restart_workers()
     MockTtsProvider.reset()
     reset_settings()
     reset_repositories()
     pricing.reset_overrides()
 
 
+def restart_workers() -> None:
+    """Stop the worker thread inside this process and forget the queue, like a server restart (jobs in memory are lost)."""
+    from emvoox.worker import reset_queue, stop_embedded_worker
+
+    stop_embedded_worker()
+    reset_queue()
+
+
 @pytest.fixture
 def repos(sandbox):
     return get_repositories()
+
+
+TEST_DATABASE_URL = os.getenv("EMVOOX_TEST_DATABASE_URL", "postgresql://127.0.0.1:5432/emvoox_test")
+TEST_REDIS_URL = os.getenv("EMVOOX_TEST_REDIS_URL", "redis://127.0.0.1:6379/15")
+
+
+@pytest.fixture(scope="session")
+def postgres_dsn() -> str:
+    """A local PostgreSQL test database (createdb emvoox_test); tests that need one are skipped without it."""
+    try:
+        import psycopg
+
+        psycopg.connect(TEST_DATABASE_URL, connect_timeout=2).close()
+    except Exception as e:  # noqa: BLE001 - no driver or no server: skip, never fail
+        pytest.skip(f"no PostgreSQL test database at {TEST_DATABASE_URL} ({type(e).__name__})")
+    return TEST_DATABASE_URL
+
+
+@pytest.fixture
+def redis_url() -> str:
+    """A local Redis (database 15, emptied before and after); tests that need one are skipped without it."""
+    try:
+        import redis
+
+        client = redis.Redis.from_url(TEST_REDIS_URL, socket_connect_timeout=2)
+        client.flushdb()
+    except Exception as e:  # noqa: BLE001
+        pytest.skip(f"no Redis at {TEST_REDIS_URL} ({type(e).__name__})")
+    yield TEST_REDIS_URL
+    client.flushdb()
+    client.close()
 
 
 def seed_registry(data: Path, actors: list[dict] | None = None) -> None:

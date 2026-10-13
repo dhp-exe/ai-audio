@@ -4,6 +4,8 @@
 # One-off commands run in the same image, e.g.:
 #   docker compose run --rm emvoox python -m emvoox doctor --live
 #   docker compose run --rm emvoox python scripts/demo_pipeline.py     # offline demo, no key, no cost
+# Durable setup (runs survive restarts: documents and checkpoints in PostgreSQL, jobs in Redis, a separate worker):
+#   docker compose -f docker-compose.yml -f docker-compose.durable.yml up --build
 services:
   emvoox:
     build: .

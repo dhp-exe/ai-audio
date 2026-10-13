@@ -5,7 +5,8 @@
 export type Provider = "gemini" | "elevenlabs" | "wavespeed" | "mock";
 export type LlmProviderId = "gemini" | "wavespeed" | "openai" | "anthropic" | "mock";
 export type Batching = "auto" | "line" | "scene";
-export type RunStatus = "pending" | "running" | "done" | "failed" | "cancelled" | "halted" | "awaiting_approval";
+export type RunStatus = "pending" | "running" | "waiting" | "done" | "failed" | "cancelled" | "halted" | "awaiting_approval";
+export type SceneStatus = "pending" | "rendering" | "checking" | "retrying" | "waiting" | "passed" | "flagged" | "approved" | "failed";
 export type StepStatus = "pending" | "running" | "done" | "warn" | "failed" | "skipped" | "waiting" | "approved" | "rejected";
 export type GateState = "awaiting_approval" | "needs_review" | "approved" | "rejected";
 export type VoiceSource = "prebuilt" | "premade" | "library" | "cloned" | "placeholder";
@@ -65,10 +66,31 @@ export interface RunParams {
   research: { seeds: string; platforms: string[]; use_browser: boolean | null; focus: string };
   tts_provider: Provider; tts_model: string | null; tts_batching: Batching; tier: "test" | "final";
   llm_provider: LlmProviderId | null; llm_model: string | null; max_retries: number; auto_approve: boolean; halt_on_qa_fail: boolean;
+  scene_approval: boolean; max_cost_usd: number | null;
 }
+/** One scene of an episode: its own render -> QA -> retry -> approval loop. */
+export interface SceneRun {
+  id: string; episode: number; scene_id: string; status: SceneStatus; attempt: number; units: number; score: number | null;
+  issues: string[]; reviewer: string | null; error: string | null;
+}
+/** Something a paused run is waiting for a person to decide. */
+export interface PendingDecision {
+  id: string; kind: "scene_approval" | "budget"; episode: number | null; scene_id: string | null; message: string;
+  data: { qa_status?: "PASS" | "FLAGGED"; score?: number; attempt?: number; issues?: string[]; units?: string[]; spent_usd?: number; budget_usd?: number };
+  asked_at: string;
+}
+export interface SceneDetail {
+  episode: number; scene_id: string;
+  lines: { unit_id: string; speaker_id: string | null; text: string | null; emotion: string | null; intensity: number | null }[];
+  stems: { unit_id: string; name: string; url: string }[];
+  qa: { status: "PASS" | "FLAGGED"; score: number; attempt: number; units: string[]; error_logs: QAIssue[] } | null;
+}
+export interface DecisionItem extends PendingDecision { run_id: string; series_id: string; series_title: string; scene?: SceneDetail }
+export interface DecisionAnswer { id: string; approved: boolean; reviewer: string; notes?: string; unit_ids?: string[]; max_cost_usd?: number | null }
 export interface Run {
   run_id: string; series_id: string; status: RunStatus; error: string | null; created_at: string; finished_at: string | null;
-  params: RunParams; steps: StepState[]; notes: string[]; casting: CastRow[]; totals: RunTotals; engine: { llm?: string; tts?: string; storage?: string };
+  params: RunParams; steps: StepState[]; scenes: SceneRun[]; pending: PendingDecision[]; budget_usd: number | null;
+  notes: string[]; casting: CastRow[]; totals: RunTotals; engine: { llm?: string; tts?: string; storage?: string };
 }
 export interface RunSummary {
   run_id: string; series_id: string; title: string; status: RunStatus; created_at: string; finished_at: string | null;
@@ -94,10 +116,12 @@ export interface StartRun {
   engine_by_role_type?: Partial<Record<RoleType, EngineRef>>;
   llm_provider?: LlmProviderId | null; llm_model?: string | null;
   max_retries: number; auto_approve: boolean; halt_on_qa_fail: boolean;
+  scene_approval?: boolean; max_cost_usd?: number | null;
 }
 export interface ResumeIn {
   next?: number; episodes?: number[]; tts_provider?: Provider; tts_model?: string | null; tts_batching?: Batching; force?: boolean;
   auto_approve?: boolean; max_retries?: number; llm_provider?: LlmProviderId | null;
+  scene_approval?: boolean; max_cost_usd?: number | null;
 }
 
 /* ---------------------------------------------------------------- market research */
@@ -114,16 +138,18 @@ export interface TrendBrief {
   candidates: TrendCandidate[]; insights: ContentInsight[]; sources: string[]; platforms: string[]; notes: string;
   genre: string; guide: string; selected: number; scan_id: string | null;
 }
-export interface ResearchScanIn { seeds: string; platforms: string[]; use_browser: boolean | null; focus: string; guide: string; llm_provider?: LlmProviderId | null }
+export interface ResearchScanIn { seeds: string; platforms: string[]; use_browser: boolean | null; focus: string; guide: string; llm_provider?: LlmProviderId | null; agent?: boolean }
 export type ScanStepStatus = "pending" | "running" | "ok" | "blocked" | "error";
 export interface ScanStep {
   platform: string; url: string; label: string; status: ScanStepStatus; title: string; chars: number; excerpt: string;
   screenshot: string | null; detail: string; elapsed_s: number;
 }
+/** One search the agent wrote from the research guide (Search Plan skill). */
+export interface SearchQuery { platform: string; query: string; reason: string }
 /** Live progress of one Market Research run; poll it while status is "running". */
 export interface ScanState {
-  scan_id: string; status: "running" | "done" | "failed"; phase: "scan" | "analyze" | "rank" | "done"; created_at: string; finished_at: string | null;
-  guide: string; focus: string; use_browser: boolean; platforms: string[]; steps: ScanStep[]; log: string[]; brief_id: string | null; error: string | null;
+  scan_id: string; status: "running" | "done" | "failed"; phase: "plan" | "scan" | "analyze" | "rank" | "done"; created_at: string; finished_at: string | null;
+  mode: "fixed" | "agent"; guide: string; intent: string; queries: SearchQuery[]; focus: string; use_browser: boolean; platforms: string[]; steps: ScanStep[]; log: string[]; brief_id: string | null; error: string | null;
 }
 
 /* ---------------------------------------------------------------- library */
@@ -237,6 +263,26 @@ export interface Usage {
   models: UsageModel[]; events: UsageEvent[];
 }
 
+/* ---------------------------------------------------------------- chat with the Producer agent */
+export interface ChatThread {
+  id: string; title: string; user: string; status: "idle" | "running" | "waiting" | "failed"; preview: string; error: string | null;
+  created_at: string; updated_at: string;
+}
+export interface ChatPending { id: string; kind: "question" | "tool_approval"; message: string; options: string[]; asked_at: string }
+export type ChatItem =
+  | { kind: "user" | "assistant"; text: string; at: string }
+  | { kind: "tool"; id: string; tool: string; args: Record<string, unknown>; at: string; status: "running" | "waiting" | "done" | "failed";
+      result: unknown; pending?: ChatPending };
+export interface ChatRun {
+  series_id: string; run_id: string; title: string; status: RunStatus; error: string | null; cost_usd: number; budget_usd: number | null;
+  progress: { done: number; total: number }; current: string | null; decisions: DecisionItem[]; episodes: ApprovalItem[];
+}
+export interface ChatView {
+  thread: ChatThread; items: ChatItem[]; runs: ChatRun[];
+  usage: { steps: number; cost_usd: number; tokens_in: number; tokens_out: number }; summary: string;
+}
+export interface ChatAnswer { id: string; answer?: string; approved?: boolean; notes?: string; reviewer?: string }
+
 /* ---------------------------------------------------------------- dashboard, doctor */
 export interface AttentionItem { series_id: string; title: string; episode: number; state: GateState; reason: string; at: string }
 export interface Dashboard {
@@ -295,8 +341,17 @@ export const api = {
   runs: () => request<{ active: Run[]; recent: RunSummary[] }>("/api/runs"),
   run: (id: string) => request<Run>(`/api/runs/${id}`),
   cancelRun: (id: string) => post<{ ok: boolean }>(`/api/runs/${id}/cancel`),
+  decisions: () => request<{ items: DecisionItem[] }>("/api/decisions"),
+  decide: (runId: string, decisions: DecisionAnswer[]) => post<Run>(`/api/runs/${runId}/decisions`, { decisions }),
   stepLog: (id: string, step: string) => request<string>(`/api/runs/${id}/steps/${step}/log`),
   events: (id: string, after = 0) => request<{ events: PipelineEvent[] }>(`/api/runs/${id}/events?after=${after}`),
+  // chat
+  chatThreads: () => request<{ threads: ChatThread[] }>("/api/chat/threads"),
+  chatStart: (text: string, user = "") => post<ChatView>("/api/chat/threads", { text, user }),
+  chatThread: (id: string) => request<ChatView>(`/api/chat/threads/${id}`),
+  chatSend: (id: string, text: string) => post<ChatView>(`/api/chat/threads/${id}/messages`, { text }),
+  chatAnswer: (id: string, answers: ChatAnswer[]) => post<ChatView>(`/api/chat/threads/${id}/answers`, { answers }),
+  chatDelete: (id: string) => del<{ ok: boolean }>(`/api/chat/threads/${id}`),
   // productions
   library: () => request<{ series: SeriesSummary[] }>("/api/library"),
   series: (id: string) => request<SeriesDetail>(`/api/series/${id}`),

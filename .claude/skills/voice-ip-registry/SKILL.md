@@ -21,6 +21,10 @@ python -m emvoox plug-voice --actor ngan --provider elevenlabs --voice-id <new i
 run, as long as the engine's API key is in `.env`; without the key it falls back to the run's engine and says so in
 the run notes. Previews for the actor on that engine are invalidated so the Voice IPs page renders the new voice once.
 
+The registry belongs to a tenant. The commands above work on `EMVOOX_TENANT` (`default` = `data/assets/voice_registry.json`;
+any other tenant keeps its own under `data/tenants/<id>/assets/`). With `EMVOOX_STORAGE=postgres` the registry is a row
+in the database, not a file, and a new database starts without one.
+
 Engines: `elevenlabs` (any ElevenLabs voice id, cloned included), `wavespeed` (model path decides the vendor:
 `elevenlabs/eleven-v3` takes any ElevenLabs voice id, `minimax/speech-2.6-hd` takes MiniMax system or cloned ids),
 `gemini` (30 prebuilt names only, no cloning).

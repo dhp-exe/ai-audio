@@ -7,6 +7,7 @@ from collections.abc import Callable
 from pydantic import BaseModel, ValidationError
 
 from emvoox.config import DEFAULT_LLM_MODEL, LLM_PROVIDERS, get_settings
+from emvoox.contracts.agentic import ChatMessage, ChatReply, ToolSpec
 from emvoox.providers.llm.base import LlmBlocked, LlmError, LlmProvider, LlmSchemaError, LlmTruncated, T, Usage
 from emvoox.telemetry.ledger import Ledger
 
@@ -77,6 +78,28 @@ class LlmClient:
             self.ledger.llm(agent=agent, skill=skill, provider=self.provider.name, model=usage.model, tokens_in=usage.prompt_tokens,
                             tokens_out=usage.output_tokens + usage.thinking_tokens, elapsed_s=usage.elapsed_s, episode=episode)
         return instance
+
+    def can_chat(self) -> bool:
+        return callable(getattr(self.provider, "chat", None))
+
+    def chat(self, *, agent: str, skill: str = "loop", system: str, messages: list[ChatMessage], tools: list[ToolSpec] | None = None,
+             model: str | None = None, max_output_tokens: int = 8192, context: dict | None = None) -> ChatReply:
+        """One model turn of an agent loop: the reply is text, tool calls, or both. Raises ``LlmError`` subclasses."""
+        if not self.can_chat():
+            raise LlmError(f"the LLM provider {self.provider.name!r} cannot run a tool loop")
+        try:
+            reply, usage = self.provider.chat(system=system, messages=messages, tools=tools or [], model=model or self.model,  # type: ignore[attr-defined]
+                                              max_output_tokens=max_output_tokens, context=context)
+        except LlmError as e:
+            if self.ledger:
+                self.ledger.llm(agent=agent, skill=skill, provider=self.provider.name, model=model or self.model, tokens_in=0, tokens_out=0,
+                                elapsed_s=0.0, ok=False, note=f"{type(e).__name__}: {str(e)[:160]}")
+            raise
+        self.last_usage = usage
+        if self.ledger:
+            self.ledger.llm(agent=agent, skill=skill, provider=self.provider.name, model=usage.model, tokens_in=usage.prompt_tokens,
+                            tokens_out=usage.output_tokens + usage.thinking_tokens, elapsed_s=usage.elapsed_s)
+        return reply
 
     def can_transcribe(self) -> bool:
         return callable(getattr(self.provider, "transcribe", None))

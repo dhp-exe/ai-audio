@@ -24,6 +24,7 @@ import httpx
 from pydantic import ValidationError
 
 from emvoox.config import get_settings
+from emvoox.contracts.agentic import ChatMessage, ChatReply, ToolCall, ToolSpec
 from emvoox.providers.llm.base import LlmBlocked, LlmError, LlmSchemaError, LlmTruncated, T, Usage
 
 __all__ = ["GeminiLlm", "LlmBlocked", "LlmError", "LlmSchemaError", "LlmTruncated", "Usage", "generate_structured", "make_client"]
@@ -155,6 +156,79 @@ class GeminiLlm:
                             context: dict | None = None) -> tuple[T, Usage]:
         return generate_structured(system=system, user=user, schema=schema, model=model, temperature=temperature,
                                    max_output_tokens=max_output_tokens)
+
+    def chat(self, *, system: str, messages: list[ChatMessage], tools: list[ToolSpec], model: str | None = None,
+             max_output_tokens: int = 8192, context: dict | None = None, retries: int = 3) -> tuple[ChatReply, Usage]:
+        """One turn of a tool loop over Gemini function calling. A model turn is sent back exactly as it was
+        received (``provider_data``), because Gemini checks the thought signatures of its own function calls."""
+        from google.genai import errors, types
+
+        settings = get_settings()
+        model = model or (settings.llm_model if settings.llm_provider == "gemini" else "gemini-3.1-flash-lite")
+        contents: list = []
+        for m in messages:
+            if m.role == "user":
+                contents.append(types.Content(role="user", parts=[types.Part(text=m.content)]))
+            elif m.role == "assistant":
+                if m.provider_data and m.provider_data.get("gemini"):
+                    contents.append(types.Content.model_validate(m.provider_data["gemini"]))
+                else:
+                    parts = ([types.Part(text=m.content)] if m.content else []) + [
+                        types.Part(function_call=types.FunctionCall(name=c.name, args=c.args)) for c in m.tool_calls]
+                    contents.append(types.Content(role="model", parts=parts or [types.Part(text="")]))
+            else:  # tool results of one turn travel together in one user content
+                part = types.Part.from_function_response(name=m.name or "", response={"result": m.content})
+                if contents and contents[-1].role == "user" and contents[-1].parts and contents[-1].parts[0].function_response is not None:
+                    contents[-1].parts.append(part)
+                else:
+                    contents.append(types.Content(role="user", parts=[part]))
+        config = types.GenerateContentConfig(
+            system_instruction=system, temperature=settings.llm_temperature, max_output_tokens=max_output_tokens,
+            tools=[types.Tool(function_declarations=[types.FunctionDeclaration(name=t.name, description=t.description, parameters_json_schema=t.parameters)
+                                                     for t in tools])] if tools else None,
+            automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True))
+        client = make_client(self._api_key)
+        t0 = time.time()
+        for attempt in range(retries + 1):
+            try:
+                resp = client.models.generate_content(model=model, contents=contents, config=config)
+                break
+            except errors.APIError as e:
+                if getattr(e, "code", None) == 429:
+                    from emvoox.telemetry.events import record_event
+
+                    record_event("gemini", model, "rate_limit", status=429, message=str(getattr(e, "message", None) or e))
+                if getattr(e, "code", None) in (429, 500, 503) and attempt < retries:
+                    time.sleep(2 * (2**attempt))
+                    continue
+                raise LlmError(f"gemini {getattr(e, 'code', '?')}: {str(getattr(e, 'message', None) or e)[:300]}") from e
+            except (httpx.HTTPError, ConnectionError, TimeoutError) as e:
+                if attempt < retries:
+                    time.sleep(2 * (2**attempt))
+                    continue
+                raise LlmError(f"network error after {retries} retries: {e}") from e
+        pf = getattr(resp, "prompt_feedback", None)
+        if pf is not None and getattr(pf, "block_reason", None):
+            raise LlmBlocked(f"prompt blocked: {pf.block_reason}")
+        cand = resp.candidates[0] if resp.candidates else None
+        finish = str(getattr(cand, "finish_reason", "") or "")
+        if "SAFETY" in finish or "PROHIBITED" in finish or "BLOCKLIST" in finish:
+            raise LlmBlocked(f"response blocked: {finish}")
+        content = getattr(cand, "content", None)
+        parts = list(getattr(content, "parts", None) or [])
+        text = "".join(p.text for p in parts if p.text and not getattr(p, "thought", False)).strip()
+        calls = [ToolCall(id=f"call_{len(messages)}_{i}", name=p.function_call.name or "", args=dict(p.function_call.args or {}))
+                 for i, p in enumerate(q for q in parts if q.function_call is not None)]
+        if not text and not calls:
+            if "MAX_TOKENS" in finish:
+                raise LlmTruncated(f"response truncated at max_output_tokens={max_output_tokens}")
+            raise LlmError(f"empty response (finish_reason={finish or 'unknown'})")
+        um = getattr(resp, "usage_metadata", None)
+        usage = Usage(model=model, prompt_tokens=int(getattr(um, "prompt_token_count", 0) or 0),
+                      output_tokens=int(getattr(um, "candidates_token_count", 0) or 0),
+                      thinking_tokens=int(getattr(um, "thoughts_token_count", 0) or 0), elapsed_s=round(time.time() - t0, 2))
+        return ChatReply(text=text, tool_calls=calls, stop_reason=finish,
+                         provider_data={"gemini": content.model_dump(mode="json", exclude_none=True)} if content is not None else None), usage
 
     def transcribe(self, audio: Path, *, model: str | None = None, language: str = "vi") -> tuple[str, Usage]:
         """Verbatim transcript of a short audio file (Gemini audio understanding)."""

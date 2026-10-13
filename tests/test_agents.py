@@ -130,7 +130,7 @@ def test_browser_scan_records_each_page_and_reports_blocks(repos, monkeypatch):
     class Page:
         def goto(self, url, **_):
             self.url = url
-            self.status, self._title, self._text = pages[url]
+            self.status, self._title, self._text = pages.get(url) or pages["https://www.google.com/search?q=x"]  # any other search is Google's robot check
             return SimpleNamespace(status=self.status)
 
         mouse = SimpleNamespace(wheel=lambda *_: None)
@@ -156,13 +156,35 @@ def test_browser_scan_records_each_page_and_reports_blocks(repos, monkeypatch):
     brief = agent.run(ctx_for(repos), ResearchParams(use_browser=True, platforms=["dramabox", "google"], guide="3 thể loại hot nhất"), scan_id="scan-20261003-000000")
     scan = repos.research.load_scan("scan-20261003-000000")
     assert [(s.platform, s.status) for s in scan.steps] == [("dramabox", "ok"), ("google", "blocked")]  # tiktok was not asked for
+    # Search Plan turned the guide into the Google search that replaced the fixed one
+    assert [(q.platform, q.query) for q in scan.queries] == [("google", "3 thể loại hot nhất")] and scan.intent
+    assert scan.steps[1].url == "https://www.google.com/search?q=3%20th%E1%BB%83%20lo%E1%BA%A1i%20hot%20nh%E1%BA%A5t&hl=vi" and scan.steps[1].label == "Google search: 3 thể loại hot nhất"
     assert scan.steps[0].screenshot == "dramabox-1.jpg" and repos.blobs.exists("research/scans/scan-20261003-000000/dramabox-1.jpg") and scan.steps[0].chars > 400
     assert scan.status == "done" and scan.brief_id == brief.brief_id and brief.sources == ["https://a.example/"] and len(brief.candidates) == 3
     assert brief.with_selected(1).topic == brief.candidates[1].topic
     # nothing readable at all: the run fails with a clear message and the scan is closed as failed
     with pytest.raises(AgentError, match="blocked or failed"):
         agent.run(ctx_for(repos), ResearchParams(use_browser=True, platforms=["google"]), scan_id="scan-20261003-000001")
-    assert repos.research.load_scan("scan-20261003-000001").status == "failed"
+    failed = repos.research.load_scan("scan-20261003-000001")
+    assert failed.status == "failed" and failed.queries == [] and failed.steps[0].url == "https://www.google.com/search?q=x"  # no guide: the fixed source
+
+
+def test_search_plan_keeps_only_usable_queries(repos):
+    """The plan is cleaned before the scan: allowed platforms only, no URLs, no duplicates, two searches per platform."""
+    from emvoox.contracts import SearchPlan, SearchQuery
+
+    agent, ctx = MarketResearchAgent(), ctx_for(repos)
+    raw = SearchPlan(intent=" phim cổ trang ", queries=[SearchQuery(platform=p, query=q) for p, q in [
+        ("YouTube", "phim  cổ trang ngắn"), ("youtube", "Phim cổ trang ngắn"), ("youtube", "https://evil.example/"), ("youtube", "cung đấu full"),
+        ("youtube", "xuyên không full"), ("tiktok", "cổ trang"), ("douyin", "古装短剧")]])
+    ctx.llm.structured = lambda **_: raw  # type: ignore[method-assign]
+    params = ResearchParams(use_browser=True, platforms=["dramabox", "youtube", "google"], guide="phim cổ trang")
+    plan = agent.search_plan(ctx, params)
+    assert plan.intent == "phim cổ trang" and [(q.platform, q.query) for q in plan.queries] == [("youtube", "phim cổ trang ngắn"), ("youtube", "cung đấu full")]
+    urls = [s["url"] for s in agent.sources_for(ctx, params, plan)]
+    assert [u for u in urls if "youtube" in u] == ["https://www.youtube.com/results?search_query=phim%20c%E1%BB%95%20trang%20ng%E1%BA%AFn",
+                                                   "https://www.youtube.com/results?search_query=cung%20%C4%91%E1%BA%A5u%20full"]
+    assert sum("google.com" in u for u in urls) == 1 and sum("dramabox" in u for u in urls) == 2  # no planned Google search: the fixed one stays
 
 
 def test_cliffhanger_rules():

@@ -169,6 +169,10 @@ class SqliteDocumentStore:
             self._conn.execute("CREATE TABLE IF NOT EXISTS logs (id INTEGER PRIMARY KEY AUTOINCREMENT, key TEXT NOT NULL, body TEXT NOT NULL)")
             self._conn.execute("CREATE INDEX IF NOT EXISTS logs_key ON logs(key)")
 
+    def close(self) -> None:
+        with self._lock:
+            self._conn.close()
+
     def get(self, key: str) -> JsonDoc | None:
         with self._lock:
             row = self._conn.execute("SELECT body FROM documents WHERE key = ?", (key,)).fetchone()

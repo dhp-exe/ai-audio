@@ -242,13 +242,16 @@ class DirectorAgent(Agent):
         return directed
 
     def replan(self, ctx: AgentContext, episode: int, cast: ResolvedCast, *, line_mode: set[str] | None = None,
-               attempts: dict[str, int] | None = None) -> DirectedConversationUnits:
-        """Recompile and replan the saved script with retry parameters. No LLM call."""
+               attempts: dict[str, int] | None = None, save: bool = True) -> DirectedConversationUnits:
+        """Recompile and replan the saved script with retry parameters. No LLM call. ``save=False`` is the view one
+        scene works from while it retries; the plan is saved once for the episode when every scene is done."""
         repo = ctx.repos.series
         script = repo.load_script(ctx.series_id, episode)
         if script is None:
             raise AgentError(f"episode {episode}: nothing to replan; the episode has not been directed")
         directed = self._assemble(ctx, script, cast, line_mode=line_mode, attempts=attempts)
+        if not save:
+            return directed
         repo.save_directed(directed)
         ctx.log(f"ep{episode:02d}: replanned, {len(directed.render_plan)} request(s) ({directed.batching}); "
                 f"line mode for {sorted(line_mode or [])}; retry attempts {attempts or {}}")

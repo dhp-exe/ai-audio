@@ -7,7 +7,8 @@ not a language model: the story it writes is a fixed Vietnamese template. Select
 
 from __future__ import annotations
 
-from emvoox.providers.llm.base import LlmSchemaError, T, Usage
+from emvoox.contracts.agentic import ChatMessage, ChatReply, ToolCall, ToolSpec
+from emvoox.providers.llm.base import LlmError, LlmSchemaError, T, Usage
 
 _BEATS = [
     ("phát hiện một bằng chứng bất ngờ", "Nhưng người đưa nó cho tôi... lại là người tôi tin nhất."),
@@ -90,6 +91,11 @@ def _market(ctx: dict) -> dict:
             ]}
 
 
+def _search_plan(ctx: dict) -> dict:
+    guide = " ".join((ctx.get("guide") or "").split())[:80]
+    return {"intent": f"Tìm theo hướng dẫn: {guide}", "queries": [{"platform": p, "query": guide, "reason": "mẫu ngoại tuyến"} for p in ctx.get("platforms") or []]}
+
+
 def _adaptation(ctx: dict) -> dict:
     b = ctx.get("brief") or {}
     topic = b.get("topic", "Câu chuyện mẫu")
@@ -135,16 +141,121 @@ def _metadata(ctx: dict) -> dict:
 
 
 HANDLERS = {
-    "SeriesOutline": _outline, "EpisodeDraft": _draft, "MarketAnalysis": _market, "StoryAdaptation": _adaptation,
+    "SeriesOutline": _outline, "EpisodeDraft": _draft, "MarketAnalysis": _market, "SearchPlan": _search_plan, "StoryAdaptation": _adaptation,
     "CastingProposal": _casting, "EpisodeScript": _episode_script, "CliffhangerCheck": _cliffhanger, "PublishMetadata": _metadata,
 }
 
 
+def _call(messages: list[ChatMessage], name: str, **args) -> ChatReply:
+    return ChatReply(tool_calls=[ToolCall(id=f"mock_{len(messages)}", name=name, args=args)], stop_reason="tool_calls")
+
+
+def _research_policy(messages: list[ChatMessage], tools: list[ToolSpec], ctx: dict) -> ChatReply:
+    """A fixed researcher: notes, one platform page, one search, then the brief. Enough to run the loop offline."""
+    done = [m.name for m in messages if m.role == "tool"]
+    offered = {t.name for t in tools}
+    research = (ctx.get("session") or {}).get("research") or {}
+    guide = " ".join(str(research.get("guide") or "phim ngắn hot nhất").split())[:80]
+    wanted = [p.lower() for p in research.get("platforms") or []]
+    if "research_read_notes" in offered and "research_read_notes" not in done:
+        return _call(messages, "research_read_notes")
+    if research.get("use_browser"):
+        if "research_read_platform" not in done and (not wanted or "dramabox" in wanted):
+            return _call(messages, "research_read_platform", platform="dramabox")
+        if "research_search" not in done:
+            platform = next((p for p in ("youtube", "tiktok", "google") if not wanted or p in wanted), None)
+            if platform:
+                return _call(messages, "research_search", platform=platform, query=guide)
+    if "research_write_brief" in offered and "research_write_brief" not in done:
+        return _call(messages, "research_write_brief", understanding=f"Tìm theo hướng dẫn: {guide}")
+    last = next((m.content for m in reversed(messages) if m.role == "tool" and m.name == "research_write_brief"), "")
+    return ChatReply(text=f"Đã đọc {len(done) - 1} nguồn và lưu kết quả nghiên cứu. {last[:200]}", stop_reason="stop")
+
+
+def _tool_result(messages: list[ChatMessage], name: str) -> dict | None:
+    import json
+
+    for m in reversed(messages):
+        if m.role == "tool" and m.name == name:
+            try:
+                out = json.loads(m.content)
+            except json.JSONDecodeError:
+                return {"text": m.content}
+            return out if isinstance(out, dict) else {"value": out}
+    return None
+
+
+def _producer_policy(messages: list[ChatMessage], tools: list[ToolSpec], ctx: dict) -> ChatReply:
+    """A fixed Producer: research -> the three genres -> ask which one -> start one episode -> report. With a story in
+    the first message (a line starting with 'Truyện:'), it skips the research. Later messages get a status report."""
+    last_user = max((i for i, m in enumerate(messages) if m.role == "user"), default=0)
+    first, latest = messages[0].content, messages[last_user].content
+    done_now = [m.name for m in messages[last_user:] if m.role == "tool"]
+    started = _tool_result(messages, "production_start")
+    if started and started.get("started"):
+        if last_user == 0 or "production_start" in done_now:
+            return ChatReply(text=f"Đã bắt đầu sản xuất series {started['series_id']} (tập {started.get('producing_now')}). Run chạy nền; khi cần bạn duyệt, "
+                                  "thẻ quyết định sẽ hiện ở đây.", stop_reason="stop")
+        if "library_run_status" not in done_now:
+            return _call(messages, "library_run_status", series_id=started["series_id"])
+        status = _tool_result(messages, "library_run_status") or {}
+        return ChatReply(text=f"Run {status.get('run_id')} đang ở trạng thái {status.get('status')}; chi phí ${status.get('cost_usd', 0)}; "
+                              f"đang chờ {len(status.get('waiting_for') or [])} quyết định.", stop_reason="stop")
+    if started is not None:  # the person did not approve the start
+        return ChatReply(text="Mình chưa bắt đầu sản xuất. Bạn muốn điều chỉnh gì?", stop_reason="stop")
+    if "Truyện:" in first:
+        title = (first.split("Tựa:", 1)[1].split("\n", 1)[0].strip() if "Tựa:" in first else "Truyện của tôi")
+        return _call(messages, "production_start", source="story", title=title, story=first.split("Truyện:", 1)[1].strip(), episodes=10, produce=1)
+    spawned = _tool_result(messages, "spawn_subagent")
+    if spawned is None:
+        return _call(messages, "spawn_subagent", agent="market_research", task=f"Nghiên cứu xu hướng cho ý tưởng: {' '.join(first.split())[:200]}")
+    if not spawned.get("brief_id"):
+        return ChatReply(text=f"Nghiên cứu chưa ra kết quả: {spawned.get('result') or spawned.get('error')}", stop_reason="stop")
+    briefs = _tool_result(messages, "library_list_briefs")
+    if briefs is None:
+        return _call(messages, "library_list_briefs")
+    brief = next((b for b in briefs.get("briefs", []) if b["brief_id"] == spawned["brief_id"]), None) or {"genres": []}
+    genres = [g["genre"] for g in brief["genres"]]
+    picked = _tool_result(messages, "ask_user")
+    if picked is None:
+        return _call(messages, "ask_user", question="Bạn muốn sản xuất thể loại nào?", options=genres)
+    index = genres.index(picked.get("answer")) if picked.get("answer") in genres else 0
+    return _call(messages, "production_start", source="brief", brief_id=spawned["brief_id"], genre_index=index, episodes=10, produce=1,
+                 scene_approval="duyệt từng cảnh" in latest or "duyệt từng cảnh" in first)
+
+
+CHAT_POLICIES: dict = {"market_research": _research_policy, "producer": _producer_policy}
+
+
 class MockLlm:
+    """``script`` plays a fixed list of model turns (a ``ChatReply``, or a function of the conversation that returns
+    one), for tests that need an exact sequence of tool calls. Without a script, each agent has a small fixed policy."""
+
     name = "mock"
 
-    def __init__(self) -> None:
+    def __init__(self, script: list | None = None) -> None:
         self.calls: list[str] = []
+        self.script = list(script) if script is not None else None
+        self.turns: list[dict] = []  # what each chat call was offered: the tools and the number of messages
+
+    def chat(self, *, system: str, messages: list[ChatMessage], tools: list[ToolSpec], model: str | None = None,
+             max_output_tokens: int = 8192, context: dict | None = None) -> tuple[ChatReply, Usage]:
+        context = context or {}
+        self.calls.append("chat")
+        self.turns.append({"tools": [t.name for t in tools], "messages": len(messages), "system": system})
+        if self.script is not None:
+            if not self.script:
+                raise LlmError("mock LLM: the script has no more turns")
+            step = self.script.pop(0)
+            reply = step(messages, tools) if callable(step) else step
+        else:
+            policy = CHAT_POLICIES.get(str(context.get("agent")))
+            if policy is None:
+                raise LlmError(f"mock LLM has no chat policy for agent {context.get('agent')!r}")
+            reply = policy(messages, tools, context)
+        text = system + " ".join(m.content for m in messages)
+        return reply, Usage(model="mock-llm", prompt_tokens=_tokens(text), output_tokens=_tokens(reply.model_dump_json()), thinking_tokens=0,
+                            elapsed_s=0.0, provider="mock")
 
     def generate_structured(self, *, system: str, user: str, schema: type[T], model: str | None = None,
                             temperature: float | None = None, max_output_tokens: int = 65_536,

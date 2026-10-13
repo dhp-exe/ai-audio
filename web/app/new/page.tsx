@@ -110,6 +110,8 @@ function Wizard({ config }: { config: Config }) {
   const [maxRetries, setMaxRetries] = useState(config.defaults.max_retries);
   const [autoApprove, setAutoApprove] = useState(config.defaults.auto_approve);
   const [haltOnFail, setHaltOnFail] = useState(config.defaults.halt_on_qa_fail);
+  const [sceneApproval, setSceneApproval] = useState(false);
+  const [maxCost, setMaxCost] = useState<number | null>(null);
   const [seriesId, setSeriesId] = useState("");
   const [force, setForce] = useState(!!editId);
   const [busy, setBusy] = useState(false);
@@ -211,7 +213,7 @@ function Wizard({ config }: { config: Config }) {
       tts_provider: engine.provider, tts_model: engine.model, tts_batching: engine.batching, tier,
       engine_by_role_type: Object.keys(engineByRole).length ? engineByRole : undefined,
       llm_provider: llmProvider, llm_model: llmModel.trim() || null,
-      max_retries: maxRetries, auto_approve: autoApprove, halt_on_qa_fail: haltOnFail,
+      max_retries: maxRetries, auto_approve: autoApprove, halt_on_qa_fail: haltOnFail, scene_approval: sceneApproval, max_cost_usd: maxCost,
     };
     try {
       const run = await api.startRun(body);
@@ -420,6 +422,8 @@ function Wizard({ config }: { config: Config }) {
         <Col xs={12} md={4}><Form.Item label="QA max retries"><InputNumber min={0} max={5} value={maxRetries} onChange={(v) => setMaxRetries(v ?? 0)} style={{ width: "100%" }} /></Form.Item></Col>
         <Col xs={12} md={6}><Form.Item label="Auto-approve PASS" tooltip="Episodes that pass QA skip the human gate."><Switch checked={autoApprove} onChange={setAutoApprove} /></Form.Item></Col>
         <Col xs={12} md={6}><Form.Item label="Halt on QA fail" tooltip="Stop the run when an episode is still FLAGGED after its retries."><Switch checked={haltOnFail} onChange={setHaltOnFail} /></Form.Item></Col>
+        <Col xs={12} md={6}><Form.Item label="Approve each scene" tooltip="The run pauses after every scene's QA until a reviewer approves it or sends it back; the episode is mastered once all its scenes are approved."><Switch checked={sceneApproval} onChange={setSceneApproval} /></Form.Item></Col>
+        <Col xs={12} md={6}><Form.Item label="Budget (USD)" tooltip="The run pauses for a decision when its estimated cost reaches this amount. Empty = no cap."><InputNumber min={0.01} step={1} value={maxCost} onChange={setMaxCost} placeholder="No cap" style={{ width: "100%" }} /></Form.Item></Col>
         <Col xs={24} md={12}>
           <Form.Item label="Series id" extra={editId ? "Locked while editing." : "Optional; derived from the title when empty. Lowercase, digits, hyphens."}>
             <Input value={seriesId} onChange={(e) => setSeriesId(e.target.value.toLowerCase())} disabled={!!editId} placeholder="tong-tai-bi-mat" className="mono" />
@@ -452,7 +456,7 @@ function Wizard({ config }: { config: Config }) {
           { key: "ovr", label: "Role overrides", children: Object.entries(overrides).filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`).join(", ") || "none" },
           { key: "llm", label: "LLM", children: `${llmProvider} · ${llmModel || llmDefault}` },
           { key: "fmt", label: "Format", children: <span className="num">{episodes} episodes × {minSec}-{maxSec}s, produce {produce ?? "all"} now · {tier}</span> },
-          { key: "qa", label: "QA & gate", children: `${maxRetries} retries · ${autoApprove ? "auto-approve PASS" : "human approval"} · ${haltOnFail ? "halt on fail" : "continue on fail"}` },
+          { key: "qa", label: "QA & gate", children: `${maxRetries} retries · ${autoApprove ? "auto-approve PASS" : "human approval"} · ${haltOnFail ? "halt on fail" : "continue on fail"}${sceneApproval ? " · scene approval" : ""}${maxCost ? ` · budget $${maxCost}` : ""}` },
           { key: "force", label: "Overwrite", children: force ? "yes" : "no" },
         ]}
       />

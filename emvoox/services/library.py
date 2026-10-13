@@ -50,6 +50,21 @@ def run_summary(run: dict, title: str | None = None) -> dict:
             "episodes": sorted({s.get("episode") for s in steps if s.get("episode")})}
 
 
+def scene_detail(repos: Repositories, sid: str, n: int, scene_id: str) -> dict:
+    """What a reviewer needs to decide on one scene before the episode is mastered: its lines, its QA report and
+    the stems to listen to. The stems are found by render-unit id, because a scene that retried may have split a
+    conversation chunk into lines the saved plan does not list yet."""
+    report = repos.series.load_scene_qa(sid, n, scene_id)
+    directed = repos.docs.get(paths.directed(sid, n)) or {}
+    lines = [{"unit_id": u["unit_id"], "speaker_id": u.get("speaker_id"), "text": u.get("text"), "emotion": u.get("emotion_tag"),
+              "intensity": u.get("emotional_intensity")}
+             for u in directed.get("units", []) if u.get("scene_id") == scene_id and u.get("type") != "pause"]
+    names = sorted(key.rsplit("/", 1)[-1] for key in repos.blobs.list(paths.stems_dir(sid, n), ".wav"))
+    stems = [{"unit_id": uid, "name": name, "url": f"/api/series/{sid}/episodes/{n}/stems/{name}"}
+             for uid in (report.units if report else []) for name in names if name.startswith(uid + "_")]
+    return {"episode": n, "scene_id": scene_id, "lines": lines, "stems": stems, "qa": report.model_dump(mode="json") if report else None}
+
+
 def episode_status(repos: Repositories, sid: str, n: int, plan: dict | None = None) -> dict:
     s = repos.series
     master = s.has_master(sid, n, "mp3")

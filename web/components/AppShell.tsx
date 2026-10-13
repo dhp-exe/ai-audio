@@ -1,7 +1,7 @@
 "use client";
 
 import {
-  AppstoreOutlined, AuditOutlined, CustomerServiceOutlined, DashboardOutlined, DesktopOutlined, DollarOutlined, MenuOutlined,
+  AppstoreOutlined, AuditOutlined, CustomerServiceOutlined, DashboardOutlined, DesktopOutlined, DollarOutlined, MenuOutlined, MessageOutlined,
   MoonOutlined, NodeIndexOutlined, PlusCircleOutlined, RiseOutlined, SettingOutlined, SunOutlined,
 } from "@ant-design/icons";
 import { Badge, Breadcrumb, Button, Drawer, Grid, Layout, Menu, Segmented, Space, Tag, Tooltip, type MenuProps } from "antd";
@@ -16,7 +16,8 @@ import { useThemeMode, type ThemeMode } from "./providers/ThemeProvider";
 interface NavItem { key: string; href: string; label: string; icon: React.ReactNode }
 
 export const NAV: NavItem[] = [
-  { key: "dashboard", href: "/", label: "Dashboard", icon: <DashboardOutlined /> },
+  { key: "chat", href: "/", label: "Producer chat", icon: <MessageOutlined /> },
+  { key: "dashboard", href: "/dashboard/", label: "Dashboard", icon: <DashboardOutlined /> },
   { key: "productions", href: "/productions/", label: "Productions", icon: <AppstoreOutlined /> },
   { key: "new", href: "/new/", label: "New production", icon: <PlusCircleOutlined /> },
   { key: "pipeline", href: "/pipeline/", label: "Pipeline", icon: <NodeIndexOutlined /> },

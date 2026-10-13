@@ -100,3 +100,51 @@ on WaveSpeed until one is plugged in.
 - Gemini TTS: the multi-speaker direction header is not read aloud in single-speaker mode (verified); multi-speaker
   chunks are covered by tests, and the QA Critic's duration check catches spoken direction.
 - Measured pace: 3.6 words per second on ElevenLabs v3 (drafts aim at 3.3).
+
+## 6. Durable runs: PostgreSQL, Redis and workers (optional)
+
+The default needs nothing: documents are files under `./data`, the workflow graph's checkpoints are a SQLite file
+there, and runs are queued inside the server, which also runs them. A run paused for a decision survives a restart
+either way. Switch to PostgreSQL and Redis when several workers, or a server that restarts while runs are in
+progress, matter.
+
+```bash
+pip install -e ".[durable]"                      # psycopg, langgraph-checkpoint-postgres, redis
+createdb emvoox                                  # once
+```
+
+`.env`:
+
+```
+EMVOOX_STORAGE=postgres
+EMVOOX_DATABASE_URL=postgresql://localhost:5432/emvoox
+EMVOOX_QUEUE=redis
+EMVOOX_REDIS_URL=redis://127.0.0.1:6379/0
+EMVOOX_EMBEDDED_WORKER=false                     # true = the server also runs a worker
+```
+
+```bash
+python -m emvoox serve                           # API + web app; saves runs and queues them
+python -m emvoox worker                          # runs them; start as many as you need
+python -m emvoox doctor                          # shows the storage backend, the tenant and the queue
+```
+
+- Documents, run state, logs and checkpoints go to PostgreSQL. **Media files stay under `EMVOOX_DATA_DIR`**, so the
+  server and every worker must see the same directory.
+- **Existing data is not copied.** A data directory used with `EMVOOX_STORAGE=local` keeps its documents as files;
+  switching to `postgres` starts with an empty database (the Voice IP registry included). No migration tool exists yet.
+- A job whose worker dies comes back after its 30-second lease expires, and the run continues from its checkpoint.
+  Audio already rendered is not rendered again; a model call that was in progress is made again.
+- `EMVOOX_TENANT` selects whose data a process works on. `default` is the data root itself; another tenant lives
+  under `tenants/<id>/` and in its own rows. There is no login: a tenant is a deployment setting, not a security
+  boundary between users of one server.
+- Tests use `emvoox_test` (override with `EMVOOX_TEST_DATABASE_URL`) and Redis database 15 (`EMVOOX_TEST_REDIS_URL`),
+  and are skipped when the servers are not there.
+
+## 7. Findings from the live checks of 2026-10-13
+
+- Tool loop on WaveSpeed LLM: `google/gemini-3.1-flash-lite` and `google/gemini-3.6-flash` each completed the Market
+  Research loop twice with no invalid tool call; about $0.0025 and $0.026 per run.
+- The WaveSpeed LLM gateway accepts `tools: [{"type": "google_search"}]` and `web_search_options` and ignores them:
+  the answers carry no sources. Do not use it as a search source.
+- One gateway call took about ten minutes before answering (180 s timeout, three retries).

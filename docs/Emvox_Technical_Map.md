@@ -56,6 +56,7 @@ flowchart TB
     end
     A1["Market Research Agent"]
     subgraph S1["Skills"]
+      S1p["Search Plan"]
       S1a["Market Scan"]
       S1b["Content Analyze"]
       S1c["Trend Rank"]
@@ -176,7 +177,7 @@ flowchart TB
   class B,ST,RT entry
   class A1,A2,A3,A4,A5,A6 agent
   class F1,F2,F3,F4,F5,F6 fn
-  class S1a,S1b,S1c,S2a,S2b,S2c,S3a,S3b,S3c,S4a,S4b,S4c,S5a,S5b,S6a,S6b skill
+  class S1p,S1a,S1b,S1c,S2a,S2b,S2c,S3a,S3b,S3c,S4a,S4b,S4c,S5a,S5b,S6a,S6b skill
   class V1a,V1b,V2a,V3a,V3b,V4a,V5a,V5b,V6a v1ron
   class X1a,X1b,X1c,X1d,X1e ext
   class HG,VID gate

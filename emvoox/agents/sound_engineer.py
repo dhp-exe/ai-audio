@@ -54,12 +54,26 @@ class SoundEngineerAgent(Agent):
         meta = ctx.repos.series.stem_meta(sid, n, r.stem)
         return bool(meta) and meta.get("hash") == request_for(r).content_hash()
 
+    def write_manifest(self, ctx: AgentContext, directed: DirectedConversationUnits) -> None:
+        """render.json: the episode's final plan next to its stems."""
+        ctx.repos.series.save_manifest(directed.series_id, directed.episode_number, {
+            "version": 2, "batching": directed.batching, "episode": directed.episode_number, "written_at": now_iso(),
+            "units": [{"id": r.id, "kind": r.kind, "path": r.stem, "scene_id": r.scene_id, "line_ids": r.unit_ids, "actors": r.speakers,
+                       "pause_after_ms": r.pause_after_ms, "provider": r.provider, "model_id": r.model_id, "attempt": r.attempt}
+                      for r in directed.render_plan]})
+
     def generate_voice(self, ctx: AgentContext, directed: DirectedConversationUnits, cast: ResolvedCast, *,
-                       only: set[str] | None = None, force: bool = False) -> VoiceRenderResult:
+                       only: set[str] | None = None, force: bool = False, manifest: bool = True) -> VoiceRenderResult:
+        """Render the plan, or the units in ``only`` (one scene). Scenes render in parallel, so a scene passes
+        ``manifest=False`` and the episode writes the manifest once at the join."""
         sid, n = directed.series_id, directed.episode_number
         repo = ctx.repos.series
         units = [r for r in directed.render_plan if not only or r.id in only]
-        todo = [r for r in units if force or not self.is_cached(ctx, sid, n, r)]
+
+        def mine(r: RenderUnit) -> bool:  # rendered by this very run: a step that runs again after a restart must not pay twice
+            return bool(ctx.run_id) and (repo.stem_meta(sid, n, r.stem) or {}).get("run_id") == ctx.run_id
+
+        todo = [r for r in units if not self.is_cached(ctx, sid, n, r) or (force and not mine(r))]
         cached = len(units) - len(todo)
         ctx.log(f"generate voice: {len(units)} unit(s), {len(todo)} to render, {cached} cached")
 
@@ -72,7 +86,8 @@ class SoundEngineerAgent(Agent):
             t0 = time.time()
             placeholder = False
             try:
-                info = engine.synthesize(req, out)
+                with ctx.slot(r.provider):
+                    info = engine.synthesize(req, out)
             except ProviderError as e:
                 if r.provider == "elevenlabs" and e.status == 402 and r.kind == "line":
                     # The plan refuses this voice (library/PVC voice on the Free tier): render with the actor's
@@ -81,7 +96,8 @@ class SoundEngineerAgent(Agent):
                     alt = m.fallback_voice_id or placeholder_voice(guess_gender(m.role_name, m.display_name))
                     req = TtsRequest(provider=req.provider, model_id=req.model_id, voice_id=alt, text=req.text, settings=req.settings,
                                      line_id=req.line_id, attempt=req.attempt)
-                    info = engine.synthesize(req, out)
+                    with ctx.slot(r.provider):
+                        info = engine.synthesize(req, out)
                     info["voice_fallback"] = {"requested": r.voice_id, "used": alt, "reason": str(e)[:160]}
                     placeholder = True
                 else:
@@ -89,7 +105,7 @@ class SoundEngineerAgent(Agent):
             elapsed = time.time() - t0
             ctx.repos.blobs.commit(paths.stem(sid, n, r.stem))
             meta = {"hash": request_for(r).content_hash(), "request": req.as_dict(), "rendered_at": datetime.now(UTC).isoformat(timespec="seconds"),
-                    "elapsed_s": round(elapsed, 2), "unit_id": r.id, "line_ids": r.unit_ids, "actors": r.speakers, "scene_id": r.scene_id,
+                    "elapsed_s": round(elapsed, 2), "run_id": ctx.run_id, "unit_id": r.id, "line_ids": r.unit_ids, "actors": r.speakers, "scene_id": r.scene_id,
                     "kind": r.kind, "attempt": r.attempt, **{k: v for k, v in info.items() if k != "prompt"}}
             repo.save_stem_meta(sid, n, r.stem, meta)
             ctx.ledger.tts(agent=self.id, skill="generate_voice", provider=r.provider, model=r.model_id, characters=int(info.get("characters_billed") or len(req.text)),
@@ -120,11 +136,8 @@ class SoundEngineerAgent(Agent):
         for r in units:
             if r.id not in {s.unit_id for s in stems} and r.id not in failed:
                 stems.append(StemRecord(unit_id=r.id, stem=r.stem, provider=r.provider, model_id=r.model_id, voice_id=r.voice_id, cached=True, attempt=r.attempt))
-        repo.save_manifest(sid, n, {
-            "version": 2, "batching": directed.batching, "episode": n, "written_at": now_iso(),
-            "units": [{"id": r.id, "kind": r.kind, "path": r.stem, "scene_id": r.scene_id, "line_ids": r.unit_ids, "actors": r.speakers,
-                       "pause_after_ms": r.pause_after_ms, "provider": r.provider, "model_id": r.model_id, "attempt": r.attempt}
-                      for r in directed.render_plan]})
+        if manifest:
+            self.write_manifest(ctx, directed)
         placeholders = sorted({s.voice_id for s in stems if s.placeholder})
         if placeholders:
             ctx.note(f"ep{n:02d}: the ElevenLabs plan refused voice(s); rendered with premade fallbacks {placeholders}. Upgrade the plan and re-run to use the real Voice IPs.")

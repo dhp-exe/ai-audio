@@ -11,10 +11,12 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from emvoox import paths
+from emvoox.contracts.agentic import AgentSession
 from emvoox.contracts.audio import MasteredEpisode
 from emvoox.contracts.cast import ResolvedCast
+from emvoox.contracts.chat import ChatEvent, ChatThread
 from emvoox.contracts.direction import DirectedConversationUnits
-from emvoox.contracts.market import ScanState, TrendBrief
+from emvoox.contracts.market import MarketObservation, ScanState, TrendBrief
 from emvoox.contracts.production import (
     CharacterProfile,
     EpisodeScript,
@@ -24,7 +26,7 @@ from emvoox.contracts.production import (
     Timeline,
     VoiceRegistry,
 )
-from emvoox.contracts.qa import QAReport
+from emvoox.contracts.qa import QAReport, SceneQAReport
 from emvoox.contracts.release import ReleasePackage
 from emvoox.contracts.run import PipelineEvent, RunState
 from emvoox.contracts.script import CliffhangerCheck
@@ -271,6 +273,13 @@ class SeriesRepository:
             return None  # absent, or a pre-Emvoox report (see load_qa_raw)
         return QAReport.model_validate(d)
 
+    def save_scene_qa(self, report: SceneQAReport) -> None:
+        self.docs.put(paths.scene_qa_report(report.series_id, report.episode_number, report.scene_id), report.model_dump(mode="json"))
+
+    def load_scene_qa(self, sid: str, n: int, scene_id: str) -> SceneQAReport | None:
+        d = self.docs.get(paths.scene_qa_report(sid, n, scene_id))
+        return SceneQAReport.model_validate(d) if d else None
+
     def load_qa_raw(self, sid: str, n: int) -> dict | None:
         d = self.docs.get(paths.qa_report(sid, n))
         return d if isinstance(d, dict) else None
@@ -448,6 +457,64 @@ class ResearchRepository:
     def shot_path(self, scan_id: str, name: str) -> Path:
         """Local path to write a page screenshot to."""
         return self.blobs.path(paths.scan_shot(scan_id, name))
+
+    def save_observations(self, scan_id: str, observations: list[MarketObservation]) -> None:
+        self.docs.put(paths.scan_observations(scan_id), [o.model_dump(mode="json") for o in observations])
+
+    def load_observations(self, scan_id: str) -> list[MarketObservation]:
+        d = self.docs.get(paths.scan_observations(scan_id))
+        return [MarketObservation.model_validate(o) for o in d] if isinstance(d, list) else []
+
+
+class ChatRepository:
+    """Chat threads and their event logs."""
+
+    def __init__(self, docs: DocumentStore, blobs: BlobStore):
+        self.docs, self.blobs = docs, blobs
+
+    def save(self, thread: ChatThread) -> None:
+        thread.updated_at = now_iso()
+        self.docs.put(paths.thread(thread.id), thread.model_dump(mode="json"))
+
+    def load(self, thread_id: str) -> ChatThread | None:
+        try:
+            d = self.docs.get(paths.thread(thread_id))
+        except ValueError:
+            return None
+        return ChatThread.model_validate(d) if d else None
+
+    def list(self) -> list[ChatThread]:
+        out = [ChatThread.model_validate(d) for d in (self.docs.get(k) for k in self.docs.list(paths.THREADS)) if d]
+        return sorted(out, key=lambda t: t.updated_at, reverse=True)
+
+    def delete(self, thread_id: str) -> None:
+        self.docs.delete_prefix(paths.thread_root(thread_id))
+
+    def append_event(self, thread_id: str, type_: str, data: dict) -> ChatEvent:
+        event = ChatEvent(seq=len(self.docs.read_log(paths.thread_events(thread_id))) + 1, at=now_iso(), type=type_, data=data)
+        self.docs.append(paths.thread_events(thread_id), event.model_dump(mode="json"))
+        return event
+
+    def events(self, thread_id: str, after: int = 0) -> list[dict]:
+        return [e for e in self.docs.read_log(paths.thread_events(thread_id)) if e.get("seq", 0) > after]
+
+
+class SessionRepository:
+    """Agent sessions: one agent working on one task, saved after every turn so any worker can continue it."""
+
+    def __init__(self, docs: DocumentStore, blobs: BlobStore):
+        self.docs, self.blobs = docs, blobs
+
+    def save(self, session: AgentSession) -> None:
+        session.updated_at = now_iso()
+        self.docs.put(paths.session(session.id), session.model_dump(mode="json"))
+
+    def load(self, session_id: str) -> AgentSession | None:
+        d = self.docs.get(paths.session(session_id))
+        return AgentSession.model_validate(d) if d else None
+
+    def delete(self, session_id: str) -> None:
+        self.docs.delete(paths.session(session_id))
 
 
 class AssetRepository:

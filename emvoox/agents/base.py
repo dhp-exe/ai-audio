@@ -10,7 +10,9 @@ from __future__ import annotations
 
 import threading
 from collections.abc import Callable
+from contextlib import AbstractContextManager, nullcontext
 from dataclasses import dataclass, field
+from typing import Protocol
 
 from pydantic import BaseModel
 
@@ -37,6 +39,12 @@ class Skill:
     description: str
 
 
+class ProviderSlots(Protocol):
+    """Caps how many vendor requests run at once per provider, across everything that shares it."""
+
+    def slot(self, provider: str) -> AbstractContextManager: ...
+
+
 @dataclass
 class AgentContext:
     settings: Settings
@@ -48,6 +56,11 @@ class AgentContext:
     log: Callable[[str], None] = field(default=lambda _msg: None)
     cancel: threading.Event = field(default_factory=threading.Event)
     notes: list[str] = field(default_factory=list)
+    limiter: ProviderSlots | None = None
+
+    def slot(self, provider: str) -> AbstractContextManager:
+        """Hold this around a vendor request. A no-op unless the engine runs units of work in parallel."""
+        return self.limiter.slot(provider) if self.limiter else nullcontext()
 
     @property
     def series_id(self) -> str:

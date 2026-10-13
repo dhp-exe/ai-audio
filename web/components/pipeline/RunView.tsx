@@ -2,21 +2,22 @@
 
 import { ArrowRightOutlined, LoadingOutlined, StopOutlined } from "@ant-design/icons";
 import {
-  Alert, App, Badge, Button, Card, Descriptions, Drawer, Flex, Popconfirm, Space, Steps, Table, Tag, Timeline, Tooltip, Typography,
+  Alert, App, Badge, Button, Card, Descriptions, Drawer, Flex, Input, Popconfirm, Space, Steps, Table, Tag, Timeline, Tooltip, Typography,
 } from "antd";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AudioPlayer, EmptyState, ErrorAlert, Loading, Num, ObjectDescriptions, PageHead, SourceTag, StatusTag } from "@/components/common";
-import { api, type AgentInfo, type CastRow, type PipelineEvent, type Run, type StepState } from "@/lib/api";
+import { DecisionCard } from "@/components/DecisionCard";
+import { api, type AgentInfo, type CastRow, type PipelineEvent, type Run, type SceneRun, type StepState } from "@/lib/api";
 import { aggregate, FLEET, STEP_AGENT } from "@/lib/agents";
 import { ep, fmtClock, fmtCompact, fmtDuration, fmtInt, fmtTime, fmtUsd } from "@/lib/format";
-import { useNow, usePoll } from "@/lib/hooks";
+import { useNow, usePoll, useStoredState } from "@/lib/hooks";
 import { isLive, statusColor, stepsStatus } from "@/lib/status";
 
 const EPISODE_STEPS: StepState["step"][] = ["draft", "direct", "voice", "master", "qa", "gate"];
 const SERIES_STEPS: StepState["step"][] = ["research", "script", "casting"];
 const STEP_TITLE: Record<string, string> = {
-  research: "Trend brief", script: "Story + bible", casting: "Cast + engine policy", draft: "Draft", direct: "Direct", voice: "Voice", master: "Master", qa: "QA", gate: "Gate",
+  research: "Trend brief", script: "Story + bible", casting: "Cast + engine policy", draft: "Draft", direct: "Direct", voice: "Scenes", master: "Master", qa: "Episode QA", gate: "Gate",
 };
 
 const n = (v: unknown) => (typeof v === "number" ? v : null);
@@ -35,7 +36,7 @@ export function stepBrief(s: StepState): string {
     case "casting": return m.members != null ? `${m.members} roles` : "cast";
     case "draft": return m.reused ? "reused" : [n(m.words) != null ? `${m.words} words` : null, n(m.est_sec) != null ? `~${Math.round(n(m.est_sec)!)}s` : null].filter(Boolean).join(" · ");
     case "direct": return [m.units != null ? `${m.units} units` : null, m.batching ? String(m.batching) : null].filter(Boolean).join(" · ");
-    case "voice": return [m.rendered != null ? `${m.rendered}/${m.planned ?? "?"}` : null, n(m.cached) ? `${m.cached} cached` : null, n(m.failed) ? `${m.failed} failed` : null].filter(Boolean).join(" · ");
+    case "voice": return [n(m.scenes) != null ? `${m.scenes} scenes` : null, m.rendered != null ? `${m.rendered}/${m.planned ?? "?"}` : null, n(m.scene_retries) ? `${m.scene_retries} retr${m.scene_retries === 1 ? "y" : "ies"}` : null, n(m.cached) ? `${m.cached} cached` : null].filter(Boolean).join(" · ");
     case "master": return [n(m.duration_ms) != null ? fmtClock(n(m.duration_ms)) : null, n(m.lufs) != null ? `${n(m.lufs)!.toFixed(1)} LUFS` : null].filter(Boolean).join(" · ");
     case "qa": return m.status ? `${m.status} ${m.score != null ? Math.round(Number(m.score)) : ""}`.trim() : "";
     case "gate": return m.state ? String(m.state).replace(/_/g, " ") : "";
@@ -216,6 +217,28 @@ function CastingTable({ rows }: { rows: CastRow[] }) {
   );
 }
 
+function ScenesTable({ scenes }: { scenes: SceneRun[] }) {
+  return (
+    <Table<SceneRun>
+      size="small"
+      rowKey="id"
+      pagination={false}
+      dataSource={scenes}
+      scroll={{ x: 760 }}
+      columns={[
+        { title: "Ep", dataIndex: "episode", width: 56, render: (v: number) => <Num>{ep(v)}</Num> },
+        { title: "Scene", dataIndex: "scene_id", width: 80, render: (v: string) => <span className="mono">{v}</span> },
+        { title: "Status", dataIndex: "status", width: 130, render: (v: string) => <StatusTag status={v} /> },
+        { title: "Attempt", dataIndex: "attempt", width: 90, render: (v: number) => (v ? <Tag color="orange" style={{ marginInlineEnd: 0 }}>retry {v}</Tag> : <span className="muted">first</span>) },
+        { title: "Units", dataIndex: "units", width: 70, align: "right", render: (v: number) => <Num>{v}</Num> },
+        { title: "QA score", dataIndex: "score", width: 90, align: "right", render: (v: number | null) => <Num>{v ?? "–"}</Num> },
+        { title: "Issues", dataIndex: "issues", render: (v: string[]) => (v.length ? <Flex gap={2} wrap>{v.map((c) => <Tag key={c} style={{ marginInlineEnd: 0 }}>{c}</Tag>)}</Flex> : <span className="muted">none</span>) },
+        { title: "Reviewer", dataIndex: "reviewer", width: 120, render: (v: string | null, r) => v ?? (r.error ? <Typography.Text type="danger" style={{ fontSize: 12 }}>{r.error}</Typography.Text> : <span className="muted">–</span>) },
+      ]}
+    />
+  );
+}
+
 interface MatrixRow { episode: number; steps: Partial<Record<StepState["step"], StepState>> }
 
 export function RunView({ id }: { id: string }) {
@@ -227,6 +250,8 @@ export function RunView({ id }: { id: string }) {
   const [open, setOpen] = useState<string | null>(null);
   const [cancelling, setCancelling] = useState(false);
   const now = useNow(live ? 1000 : 60000);
+  const [reviewer, setReviewer] = useStoredState("emvoox-reviewer", "");
+  const pending = usePoll(() => api.decisions(), 0, [id, run?.status, run?.pending?.length], run?.status === "waiting");
   useEffect(() => { if (run) setLive(isLive(run.status)); }, [run]);
 
   const matrix = useMemo<MatrixRow[]>(() => {
@@ -267,7 +292,7 @@ export function RunView({ id }: { id: string }) {
             {run.engine.storage && <Tag>{run.engine.storage}</Tag>}
           </Space>
         }
-        extra={isLive(run.status) && (
+        extra={(isLive(run.status) || run.status === "waiting") && (
           <Popconfirm title="Cancel this run?" description="The current step finishes; nothing after it starts." okText="Cancel run" okButtonProps={{ danger: true }} cancelText="Keep running" onConfirm={cancel}>
             <Button danger icon={<StopOutlined />} loading={cancelling}>Cancel</Button>
           </Popconfirm>
@@ -275,6 +300,17 @@ export function RunView({ id }: { id: string }) {
       />
       <ErrorAlert error={error} onRetry={refresh} />
       {run.error && <Alert type="error" showIcon title="Run failed" description={run.error} style={{ marginBottom: 16 }} />}
+      {run.status === "waiting" && (
+        <Card size="small" style={{ marginBottom: 16, borderColor: "var(--ev-warning, #fa8c16)" }}
+          title={`This run is paused: ${run.pending.length} decision${run.pending.length === 1 ? "" : "s"} needed`}
+          extra={<Input value={reviewer} onChange={(e) => setReviewer(e.target.value)} placeholder="Reviewer name" style={{ width: 200 }} aria-label="Reviewer name" status={!reviewer.trim() ? "warning" : undefined} />}>
+          <Flex vertical gap={12}>
+            {(pending.data?.items ?? []).filter((d) => d.run_id === run.run_id).map((d) => (
+              <DecisionCard key={d.id} item={d} reviewer={reviewer} onDone={() => { setLive(true); refresh(); }} />
+            ))}
+          </Flex>
+        </Card>
+      )}
       {run.status === "awaiting_approval" && (
         <Alert type="warning" showIcon title="Episodes are waiting at the human gate" style={{ marginBottom: 16 }}
           action={<Link href="/approvals/"><Button size="small">Open approvals</Button></Link>} />
@@ -294,7 +330,8 @@ export function RunView({ id }: { id: string }) {
               { key: "r", label: "QA retries", children: <Num>{t.qa_retries}</Num> },
               { key: "e", label: "Elapsed", children: <Num>{fmtDuration(run.created_at, run.finished_at)}</Num> },
               { key: "p", label: "Episodes", children: <Num>{run.params.only?.length ? run.params.only.join(", ") : `${run.params.produce ?? run.params.episodes} of ${run.params.episodes}`}</Num> },
-              { key: "q", label: "Gate", children: run.params.auto_approve ? "auto-approve PASS" : "human approval" },
+              { key: "q", label: "Gate", children: `${run.params.scene_approval ? "scene approval · " : ""}${run.params.auto_approve ? "auto-approve PASS" : "human approval"}` },
+              ...(run.budget_usd != null ? [{ key: "b", label: "Budget", children: <Num>{fmtUsd(t.cost_usd)} / {fmtUsd(run.budget_usd)}</Num> }] : []),
             ]}
           />
         </Card>
@@ -341,6 +378,12 @@ export function RunView({ id }: { id: string }) {
             ]}
           />
         </Card>
+
+        {(run.scenes ?? []).length > 0 && (
+          <Card title={`Scenes (${run.scenes.length})`} size="small">
+            <ScenesTable scenes={run.scenes} />
+          </Card>
+        )}
 
         <Card title={`Casting (${run.casting.length})`} size="small">
           <CastingTable rows={run.casting} />

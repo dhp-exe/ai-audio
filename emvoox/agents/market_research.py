@@ -1,6 +1,9 @@
 """Market Research Agent: finds what audiences want next and hands the Script Writer a TrendBrief.
 
 Skills
+    Search Plan       one LLM call, only when the editor gave a research guide and the browser is on:
+                      reads the guide and writes the searches (TikTok, Google, YouTube) the scan runs
+                      for it, in place of the fixed default searches
     Market Scan       collect raw observations: local trend seeds (inputs/trends/), notes pasted by a
                       human, and, when enabled, the visible text of public pages on DramaBox,
                       ReelShort, TikTok, Google and YouTube through a headless browser (Playwright)
@@ -22,6 +25,7 @@ from __future__ import annotations
 import re
 import time
 from datetime import UTC, datetime
+from urllib.parse import quote
 
 from emvoox.agents.base import Agent, AgentContext, AgentError, Skill
 from emvoox.contracts.market import (
@@ -32,6 +36,8 @@ from emvoox.contracts.market import (
     MarketObservation,
     ScanState,
     ScanStep,
+    SearchPlan,
+    SearchQuery,
     ThemeCategory,
     TrendBrief,
     TrendCandidate,
@@ -52,6 +58,15 @@ DEFAULT_SOURCES: list[dict] = [
     {"platform": "youtube", "label": "YouTube search: short drama full episodes", "url": "https://www.youtube.com/results?search_query=short+drama+full+episodes"},
     {"platform": "youtube", "label": "YouTube search: phim ngắn tổng tài full", "url": "https://www.youtube.com/results?search_query=phim+ng%E1%BA%AFn+t%E1%BB%95ng+t%C3%A0i+full"},
 ]
+# Search pages the Search Plan skill may fill in. The model writes only the search words; the URL is always built here.
+SEARCH_URL = {
+    "tiktok": "https://www.tiktok.com/search?q={q}",
+    "google": "https://www.google.com/search?q={q}&hl=vi",
+    "youtube": "https://www.youtube.com/results?search_query={q}",
+}
+SEARCH_NAME = {"tiktok": "TikTok", "google": "Google", "youtube": "YouTube"}
+MAX_QUERIES_PER_PLATFORM = 2
+MAX_QUERY_CHARS = 120
 MAX_TEXT_PER_SOURCE = 6000
 MIN_USEFUL_CHARS = 400
 WEIGHTS = {"audience_fit": 0.45, "momentum": 0.30, "production_fit": 0.25}
@@ -59,6 +74,19 @@ USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36
 # Signs that the page is a robot check, an error or a login wall rather than content.
 BLOCK_URL = ("/sorry/", "/captcha", "/login", "accounts.google.com")
 BLOCK_TEXT = ("unusual traffic", "lưu lượng truy cập bất thường", "too many requests", "đã xảy ra lỗi", "verify you are human", "xác minh bạn là người")
+
+PLAN_SYSTEM = """Bạn là chuyên viên nghiên cứu thị trường của Emvoox, xưởng sản xuất micro-drama AUDIO tiếng Việt (kênh Mặc Khải).
+Biên tập viên đưa một "Hướng dẫn nghiên cứu". Trước khi quét các nền tảng, bạn lập kế hoạch tìm kiếm cho đúng hướng dẫn đó.
+
+Nhiệm vụ:
+1. intent: một câu nói rõ bạn hiểu biên tập viên muốn tìm gì (thể loại, khán giả, thị trường, khoảng thời gian, nền tảng...).
+2. queries[]: các truy vấn tìm kiếm sẽ được gõ trên các nền tảng cho phép. Mỗi phần tử:
+   - platform: đúng một mã trong danh sách "Nền tảng được phép".
+   - query: từ khóa như người xem thật sẽ gõ, 2-8 từ, bám sát hướng dẫn. KHÔNG viết URL, không dùng toán tử tìm kiếm.
+   - reason: một câu: truy vấn này giúp trả lời phần nào của hướng dẫn.
+
+Quy tắc: tối đa {per_platform} truy vấn cho mỗi nền tảng, các truy vấn khác nhau rõ rệt (không chỉ đổi thứ tự từ). Mặc định viết truy vấn bằng tiếng Việt; dùng ngôn ngữ khác khi hướng dẫn hỏi về thị trường nước ngoài hoặc từ khóa quốc tế cho kết quả tốt hơn. TikTok và YouTube hợp để tìm tựa phim và video đang nổi; Google hợp để tìm bảng xếp hạng, bài tổng hợp, số liệu. Nếu có "Trọng tâm biên tập", ưu tiên nó. Chỉ lập kế hoạch tìm kiếm, không trả lời hướng dẫn.
+"""
 
 ANALYZE_SYSTEM = """Bạn là chuyên viên nghiên cứu thị trường của Emvoox, xưởng sản xuất micro-drama AUDIO tiếng Việt (kênh Mặc Khải).
 Bạn nhận các ghi chú và văn bản thu thập từ các nền tảng phim ngắn (DramaBox, ReelShort, TikTok, Google, YouTube).
@@ -73,7 +101,7 @@ Nhiệm vụ:
    - Một hướng truyện MỚI cho khán giả Việt trong thể loại đó, không sao chép tựa có sẵn: topic, target_audience, hook một câu, premise 5-8 câu (ai muốn gì, ai cản và vì sao, bước ngoặt), anti_trope_angle (làm mới mô-típ thế nào), reference_titles (tựa trong dữ liệu).
    - Chấm 1-10: audience_fit (hợp người nghe Việt), momentum (dữ liệu cho thấy thể loại mạnh đến đâu: xuất hiện nhiều lần, trên nhiều nền tảng), production_fit (hợp audio chỉ có thoại, 2-4 diễn viên cố định). rationale: một câu giải thích điểm.
 
-Quy tắc: chỉ dựa trên dữ liệu được cung cấp, không bịa số liệu. Làm theo "Hướng dẫn nghiên cứu" của biên tập nếu có. Nhân vật phải có động cơ riêng, phản diện thông minh, bước ngoặt đầu trong 30 giây. Viết bằng tiếng Việt; theme_category và platforms dùng đúng mã tiếng Anh ở trên. Để score = 0.
+Quy tắc: chỉ dựa trên dữ liệu được cung cấp, không bịa số liệu. Nếu có "Hướng dẫn nghiên cứu", đó là ưu tiên cao nhất: chọn 3 thể loại, bằng chứng và hướng truyện để trả lời đúng hướng dẫn, ưu tiên dữ liệu từ các nguồn tìm theo hướng dẫn; khi dữ liệu không đủ để trả lời một phần của hướng dẫn, nói rõ điều đó trong evidence hoặc rationale thay vì bỏ qua hướng dẫn. Nhân vật phải có động cơ riêng, phản diện thông minh, bước ngoặt đầu trong 30 giây. Viết bằng tiếng Việt; theme_category và platforms dùng đúng mã tiếng Anh ở trên. Để score = 0.
 """
 
 
@@ -86,6 +114,13 @@ class ScanRecorder:
         self.state = ScanState(scan_id=scan_id or f"scan-{stamp}", created_at=now_iso(), guide=params.guide, focus=params.focus,
                                use_browser=use_browser, platforms=list(params.platforms))
         self.save()
+
+    @classmethod
+    def attach(cls, ctx: AgentContext, state: ScanState) -> ScanRecorder:
+        """Continue writing to a scan that already exists (a tool loop adds its sources one call at a time)."""
+        rec = cls.__new__(cls)
+        rec.ctx, rec.state = ctx, state
+        return rec
 
     def save(self) -> None:
         self.ctx.repos.research.save_scan(self.state)
@@ -120,6 +155,7 @@ class MarketResearchAgent(Agent):
     title = "Market Research Agent"
     description = "Scans short-drama platforms and local trend notes, analyses what works and ranks story directions."
     skills = (
+        Skill("search_plan", "Search Plan", "Reads the editor's research guide and writes the TikTok, Google and YouTube searches the scan runs for it."),
         Skill("market_scan", "Market Scan", "Collect observations from local trend seeds and, optionally, public platform pages via a headless browser."),
         Skill("content_analyze", "Content Analyze", "LLM analysis of hits: genre, hook, pacing, tropes; proposes story directions."),
         Skill("trend_ranking", "Trend Ranking", "Weighted score per candidate (audience fit, momentum, production fit); the top one becomes the brief."),
@@ -127,13 +163,69 @@ class MarketResearchAgent(Agent):
     consumes = "ResearchParams"
     produces = TrendBrief
 
+    # ---- skill: Search Plan
+    def search_platforms(self, params: ResearchParams) -> list[str]:
+        wanted = {p.lower() for p in params.platforms}
+        return [p for p in SEARCH_URL if not wanted or p in wanted]
+
+    def search_plan(self, ctx: AgentContext, params: ResearchParams) -> SearchPlan:
+        """The research guide as searches: at most MAX_QUERIES_PER_PLATFORM per platform the run may search."""
+        allowed = self.search_platforms(params)
+        user = (f"Hướng dẫn nghiên cứu: {params.guide.strip()}\nTrọng tâm biên tập: {params.focus or '(không có)'}\n"
+                f"Nền tảng được phép: {', '.join(allowed)}\n\nHãy trả về SearchPlan.")
+        plan = ctx.llm.structured(agent=self.id, skill="search_plan", system=PLAN_SYSTEM.format(per_platform=MAX_QUERIES_PER_PLATFORM), user=user,
+                                  schema=SearchPlan, context={"guide": params.guide, "focus": params.focus, "platforms": allowed})
+        queries: list[SearchQuery] = []
+        seen: set[tuple[str, str]] = set()
+        for q in plan.queries:
+            platform, text = q.platform.lower().strip(), " ".join(q.query.split())[:MAX_QUERY_CHARS]
+            key = (platform, text.lower())
+            if platform not in allowed or len(text) < 2 or "://" in text or key in seen or sum(x.platform == platform for x in queries) >= MAX_QUERIES_PER_PLATFORM:
+                continue
+            seen.add(key)
+            queries.append(SearchQuery(platform=platform, query=text, reason=q.reason))
+        return SearchPlan(intent=plan.intent.strip(), queries=queries)
+
+    def _plan(self, ctx: AgentContext, params: ResearchParams, rec: ScanRecorder) -> SearchPlan | None:
+        """Runs Search Plan when it can change the scan: a guide, the browser, and a platform that can be searched.
+        A failed plan never fails the run; the scan then reads the fixed sources."""
+        if not params.guide.strip() or not rec.state.use_browser or not self.search_platforms(params):
+            return None
+        rec.phase("plan", f"search plan: reading the research guide with {ctx.llm.model}")
+        try:
+            plan = self.search_plan(ctx, params)
+        except LlmError as e:
+            rec.log(f"search plan: failed ({type(e).__name__}: {str(e)[:160]}); scanning the fixed sources")
+            ctx.note("Search Plan failed; the scan read the fixed sources instead of searches written for the guide.")
+            return None
+        rec.state.intent, rec.state.queries = plan.intent, plan.queries
+        rec.log(f"search plan: {plan.intent}")
+        for q in plan.queries:
+            rec.log(f"search plan: {q.platform} \"{q.query}\"")
+        if not plan.queries:
+            rec.log("search plan: no usable search was written; scanning the fixed sources")
+        return plan
+
     # ---- skill: Market Scan
-    def sources_for(self, ctx: AgentContext, params: ResearchParams) -> list[dict]:
+    def sources_for(self, ctx: AgentContext, params: ResearchParams, plan: SearchPlan | None = None) -> list[dict]:
+        """The pages to read. Planned searches replace the fixed search pages of their platform; other pages stay."""
         wanted = {p.lower() for p in params.platforms}
         sources = ctx.repos.research.market_sources() or DEFAULT_SOURCES
-        return [s for s in sources if not wanted or str(s.get("platform", "")).lower() in wanted]
+        sources = [s for s in sources if not wanted or str(s.get("platform", "")).lower() in wanted]
+        if not plan or not plan.queries:
+            return sources
+        planned = {q.platform for q in plan.queries}
 
-    def market_scan(self, ctx: AgentContext, params: ResearchParams, rec: ScanRecorder | None = None) -> list[MarketObservation]:
+        def fixed_search(s: dict) -> bool:
+            platform = str(s.get("platform", "")).lower()
+            return platform in planned and str(s.get("url", "")).startswith(SEARCH_URL[platform].split("{q}")[0])
+
+        return [s for s in sources if not fixed_search(s)] + [
+            {"platform": q.platform, "label": f"{SEARCH_NAME[q.platform]} search: {q.query}", "url": SEARCH_URL[q.platform].format(q=quote(q.query, safe=""))}
+            for q in plan.queries]
+
+    def market_scan(self, ctx: AgentContext, params: ResearchParams, rec: ScanRecorder | None = None,
+                    plan: SearchPlan | None = None) -> list[MarketObservation]:
         now = now_iso()
         use_browser = ctx.settings.research_use_browser if params.use_browser is None else params.use_browser
         rec = rec or ScanRecorder(ctx, params, use_browser)
@@ -148,7 +240,7 @@ class MarketResearchAgent(Agent):
         for name, text in ctx.repos.research.seed_files():
             local(name, name.rsplit(".", 1)[0], text[:MAX_TEXT_PER_SOURCE])
         if use_browser:
-            obs.extend(self._scan_pages(ctx, self.sources_for(ctx, params), rec))
+            obs.extend(self._scan_pages(ctx, self.sources_for(ctx, params, plan), rec))
         rec.log(f"market scan: {len(obs)} observation(s) from {sorted({o.platform for o in obs}) or '[]'}")
         return obs
 
@@ -227,9 +319,13 @@ class MarketResearchAgent(Agent):
         return MarketObservation(platform=st.platform, source=st.url, title=st.title, text=text[:MAX_TEXT_PER_SOURCE], captured_at=now_iso(), via="browser")
 
     # ---- skill: Content Analyze
-    def content_analyze(self, ctx: AgentContext, observations: list[MarketObservation], focus: str = "", guide: str = "") -> MarketAnalysis:
+    def content_analyze(self, ctx: AgentContext, observations: list[MarketObservation], focus: str = "", guide: str = "",
+                        plan: SearchPlan | None = None) -> MarketAnalysis:
+        planned = ""
+        if plan and plan.queries:
+            planned = f"Cách hiểu hướng dẫn: {plan.intent}\nĐã tìm theo hướng dẫn: " + "; ".join(f"{q.platform}: {q.query}" for q in plan.queries) + "\n"
         blocks = "\n\n".join(f"<source platform=\"{o.platform}\" name=\"{o.source}\">\n{o.text}\n</source>" for o in observations)
-        user = (f"Hướng dẫn nghiên cứu: {guide.strip() or '(không có)'}\nTrọng tâm biên tập: {focus or '(không có)'}\n\nDỮ LIỆU THU THẬP ({len(observations)} nguồn):\n{blocks}\n\n"
+        user = (f"Hướng dẫn nghiên cứu: {guide.strip() or '(không có)'}\n{planned}Trọng tâm biên tập: {focus or '(không có)'}\n\nDỮ LIỆU THU THẬP ({len(observations)} nguồn):\n{blocks}\n\n"
                 "Hãy trả về MarketAnalysis.")
         return ctx.llm.structured(agent=self.id, skill="content_analyze", system=ANALYZE_SYSTEM, user=user, schema=MarketAnalysis,
                                   context={"observations": [o.model_dump() for o in observations], "focus": focus, "guide": guide})
@@ -261,14 +357,23 @@ class MarketResearchAgent(Agent):
         return brief
 
     def _run(self, ctx: AgentContext, params: ResearchParams, rec: ScanRecorder, fmt: FormatSpec | None) -> TrendBrief:
-        observations = self.market_scan(ctx, params, rec)
+        plan = self._plan(ctx, params, rec)
+        if plan:
+            rec.phase("scan", f"market scan: {len(plan.queries)} search(es) written for the guide")
+        observations = self.market_scan(ctx, params, rec, plan)
+        return self.write_brief(ctx, params, rec, observations, plan, fmt)
+
+    def write_brief(self, ctx: AgentContext, params: ResearchParams, rec: ScanRecorder, observations: list[MarketObservation],
+                    plan: SearchPlan | None = None, fmt: FormatSpec | None = None) -> TrendBrief:
+        """Content Analyze + Trend Ranking over ``observations`` -> the saved TrendBrief. The fixed scan and the
+        tool loop both end here, so a brief has the same shape however its sources were chosen."""
         if not observations:
             blocked = [s.platform for s in rec.state.steps if s.status in ("blocked", "error")]
             raise AgentError("Market Scan found nothing to analyse: " + (f"every scanned page was blocked or failed ({', '.join(sorted(set(blocked)))}); " if blocked else "")
                              + "add trend notes under data/inputs/trends/, paste notes into the run, or enable the browser scan (EMVOOX_RESEARCH_USE_BROWSER=true).")
         rec.phase("analyze", f"content analyze: {sum(len(o.text) for o in observations):,} characters from {len(observations)} source(s) to {ctx.llm.model}")
         try:
-            analysis = self.content_analyze(ctx, observations, params.focus, params.guide)
+            analysis = self.content_analyze(ctx, observations, params.focus, params.guide, plan)
         except LlmError as e:
             raise AgentError(f"Content Analyze failed: {e}", retryable=True) from e
         rec.phase("rank", f"trend ranking: {len(analysis.candidates)} genre(s) scored")

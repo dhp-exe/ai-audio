@@ -29,3 +29,9 @@ web/out/
 web/next-env.d.ts
 web/tsconfig.tsbuildinfo
 data/research/scans/
+
+# runtime state of this machine (agent sessions, chat threads, graph checkpoints, pages read by a research task)
+data/agents/
+data/chat/
+data/runs/
+data/research/observations/

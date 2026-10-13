@@ -1,4 +1,10 @@
-"""QA Critic Agent: measures the mastered episode against the technical standard and says what to redo.
+"""QA Critic Agent: measures every scene and the mastered episode against the technical standard and says what to redo.
+
+Two levels, because scenes are produced in parallel and each one has its own retry loop:
+
+    review_scene   the stem checks of one scene's render units -> ``SceneQAReport`` with the retries that scene can do
+    run            the episode report: the scene reports rolled up (issues placed on the master's timeline) plus the
+                   checks only a master can answer (loudness, true peak, duration) -> ``QAReport``
 
 Skills
     QA Audio      deterministic FFmpeg checks per stem and on the master:
@@ -27,7 +33,7 @@ from emvoox.audio.timeline import unit_offsets
 from emvoox.contracts.audio import MasteredEpisode
 from emvoox.contracts.cast import ResolvedCast
 from emvoox.contracts.direction import DirectedConversationUnits, RenderUnit
-from emvoox.contracts.qa import QAIssue, QAReport, RetryInstruction
+from emvoox.contracts.qa import QAIssue, QAReport, RetryInstruction, SceneQAReport
 from emvoox.repositories import now_iso
 
 WORDS_PER_SEC = 3.6
@@ -76,14 +82,21 @@ class QACriticAgent(Agent):
 
     # ---- skill: QA Audio
     def qa_audio(self, ctx: AgentContext, directed: DirectedConversationUnits, cast: ResolvedCast, mastered: MasteredEpisode | None) -> tuple[dict, list[QAIssue]]:
+        """Every stem of the episode and the master, measured in one go."""
+        tl = ctx.repos.series.load_timeline(directed.series_id, directed.episode_number)
+        checks, issues = self.stem_checks(ctx, directed, cast, directed.render_plan, unit_offsets(tl) if tl else {})
+        master, master_issues = self.master_checks(ctx, directed, mastered)
+        return {**checks, **master}, issues + master_issues
+
+    def stem_checks(self, ctx: AgentContext, directed: DirectedConversationUnits, cast: ResolvedCast, units: list[RenderUnit],
+                    offsets: dict[str, int]) -> tuple[dict, list[QAIssue]]:
+        """The checks a stem can answer on its own. ``offsets`` places an issue on the master when one exists."""
         sid, n = directed.series_id, directed.episode_number
         repo = ctx.repos.series
-        tl = repo.load_timeline(sid, n)
-        offsets = unit_offsets(tl) if tl else {}
         issues: list[QAIssue] = []
         checks: dict[str, dict] = {}
         missing, short, long_, clipped, silent, mismatch, placeholder = [], [], [], [], [], [], []
-        for r in directed.render_plan:
+        for r in units:
             at = offsets.get(r.id)
             first_line = r.unit_ids[0]
             if not repo.stem_exists(sid, n, r.stem):
@@ -138,12 +151,18 @@ class QACriticAgent(Agent):
                     mismatch.append(r.id)
                     issues.append(QAIssue(code="speaker_mismatch", severity="major", unit_id=r.id, line_id=first_line, at_ms=at,
                                           message=f"{r.id}: speakers {got} do not match the cast {want_pairs}"))
-        checks["stems_complete"] = {"ok": not missing, "missing": missing, "units": len(directed.render_plan)}
+        checks["stems_complete"] = {"ok": not missing, "missing": missing, "units": len(units)}
         checks["sentences"] = {"ok": not short and not long_, "short": short, "long": long_}
         checks["clipping"] = {"ok": not clipped, "units": clipped, "threshold_dbfs": CLIP_DB}
         checks["silence"] = {"ok": not silent, "units": silent, "min_silence_s": SILENCE_S}
         checks["speakers"] = {"ok": not mismatch, "mismatch": mismatch, "placeholder": placeholder}
+        return checks, issues
 
+    def master_checks(self, ctx: AgentContext, directed: DirectedConversationUnits, mastered: MasteredEpisode | None) -> tuple[dict, list[QAIssue]]:
+        """The checks only the mastered episode can answer: loudness, true peak, duration."""
+        sid, n = directed.series_id, directed.episode_number
+        issues: list[QAIssue] = []
+        checks: dict[str, dict] = {}
         if mastered is None or not ctx.repos.blobs.exists(paths.master(sid, n, "wav")):
             checks["loudness"] = {"ok": False, "error": "master not found"}
             issues.append(QAIssue(code="master_missing", severity="blocker", message="the episode has no master"))
@@ -174,8 +193,12 @@ class QACriticAgent(Agent):
         return checks, issues
 
     # ---- skill: Review Audio
-    def review_audio(self, ctx: AgentContext, directed: DirectedConversationUnits, offsets: dict[str, int]) -> tuple[dict, list[QAIssue], list[str]]:
-        review = [u.unit_id for u in directed.spoken() if u.emotional_intensity >= 9 or (u.type.value == "monologue" and u.emotional_intensity >= 7)]
+    def review_audio(self, ctx: AgentContext, directed: DirectedConversationUnits, offsets: dict[str, int],
+                     units: list[RenderUnit] | None = None) -> tuple[dict, list[QAIssue], list[str]]:
+        units = directed.render_plan if units is None else units
+        lines = {uid for r in units for uid in r.unit_ids}
+        review = [u.unit_id for u in directed.spoken()
+                  if u.unit_id in lines and (u.emotional_intensity >= 9 or (u.type.value == "monologue" and u.emotional_intensity >= 7))]
         if not ctx.settings.qa_transcribe:
             return {"ok": None, "skipped": "EMVOOX_QA_TRANSCRIBE is off"}, [], review
         if not ctx.llm.can_transcribe():
@@ -183,7 +206,7 @@ class QACriticAgent(Agent):
         sid, n = directed.series_id, directed.episode_number
         issues: list[QAIssue] = []
         rows = []
-        for r in directed.render_plan:
+        for r in units:
             if not ctx.repos.series.stem_exists(sid, n, r.stem):
                 continue
             ref = " ".join(directed.unit(uid).text for uid in r.unit_ids)
@@ -234,21 +257,79 @@ class QACriticAgent(Agent):
             out.append(RetryInstruction(action="reassemble", step="master", params={"attempt": nxt}, reason="master loudness outside the target"))
         return out
 
-    # ---- agent entry point
-    def run(self, ctx: AgentContext, directed: DirectedConversationUnits, cast: ResolvedCast, mastered: MasteredEpisode | None, *, attempt: int = 0) -> QAReport:
-        checks, issues = self.qa_audio(ctx, directed, cast, mastered)
-        tl = ctx.repos.series.load_timeline(directed.series_id, directed.episode_number)
-        transcript, review_issues, review_lines = self.review_audio(ctx, directed, unit_offsets(tl) if tl else {})
-        checks["transcript"] = transcript
-        issues += review_issues
+    # ---- agent entry points
+    def _verdict(self, ctx: AgentContext, issues: list[QAIssue]) -> tuple[int, bool]:
         score = max(0, 100 - sum(PENALTY[i.severity] for i in issues))
         # A score under the bar from minor issues alone is FLAGGED with no retry: nothing to re-render, a human decides.
-        flagged = any(i.severity in ("blocker", "major") for i in issues) or score < ctx.settings.qa_pass_score
+        return score, any(i.severity in ("blocker", "major") for i in issues) or score < ctx.settings.qa_pass_score
+
+    def review_scene(self, ctx: AgentContext, directed: DirectedConversationUnits, cast: ResolvedCast, scene_id: str, *, attempt: int = 0) -> SceneQAReport:
+        """QA of one scene, from its stems alone. ``directed`` is the plan the scene was rendered from."""
+        units = [r for r in directed.render_plan if r.scene_id == scene_id]
+        checks, issues = self.stem_checks(ctx, directed, cast, units, {})
+        transcript, review_issues, review_lines = self.review_audio(ctx, directed, {}, units)
+        checks["transcript"] = transcript
+        issues += review_issues
+        score, flagged = self._verdict(ctx, issues)
+        report = SceneQAReport(series_id=directed.series_id, episode_number=directed.episode_number, scene_id=scene_id, attempt=attempt,
+                               status="FLAGGED" if flagged else "PASS", score=score, units=[r.id for r in units], checks=checks, error_logs=issues,
+                               retry_instructions=self.retry_plan(directed, issues, attempt) if flagged else [], review_lines=review_lines,
+                               generated_at=now_iso())
+        ctx.repos.series.save_scene_qa(report)
+        ctx.log(f"qa {scene_id}: {report.status} score {score} ({len(issues)} issue(s)); retry: "
+                + (", ".join(f"{r.action}[{','.join(r.unit_ids)}]" for r in report.retry_instructions) or "none"))
+        return report
+
+    def run(self, ctx: AgentContext, directed: DirectedConversationUnits, cast: ResolvedCast, mastered: MasteredEpisode | None, *, attempt: int = 0,
+            scenes: list[SceneQAReport] | None = None) -> QAReport:
+        """The episode report. With ``scenes`` it rolls their reports up and measures only the master; without, it
+        measures every stem itself (an episode checked outside the scene loop)."""
+        tl = ctx.repos.series.load_timeline(directed.series_id, directed.episode_number)
+        offsets = unit_offsets(tl) if tl else {}
+        if scenes is None:
+            checks, issues = self.stem_checks(ctx, directed, cast, directed.render_plan, offsets)
+            transcript, review_issues, review_lines = self.review_audio(ctx, directed, offsets)
+            checks["transcript"] = transcript
+            issues += review_issues
+            scene_rows: list[dict] = []
+        else:
+            checks, issues, review_lines = _roll_up(scenes, offsets)
+            scene_rows = [{"scene_id": s.scene_id, "status": s.status, "score": s.score, "attempt": s.attempt, "issues": sorted({i.code for i in s.error_logs}),
+                           "approved_by": s.approval.reviewer if s.approval and s.approval.approved else None} for s in scenes]
+        master, master_issues = self.master_checks(ctx, directed, mastered)
+        checks.update(master)
+        issues += master_issues
+        score, flagged = self._verdict(ctx, issues)
         report = QAReport(series_id=directed.series_id, episode_number=directed.episode_number, attempt=attempt,
                           status="FLAGGED" if flagged else "PASS", score=score, checks=checks, error_logs=issues,
                           retry_instructions=self.retry_plan(directed, issues, attempt) if flagged else [],
-                          review_lines=review_lines, generated_at=now_iso())
+                          review_lines=review_lines, scenes=scene_rows, generated_at=now_iso())
         ctx.repos.series.save_qa(report)
         ctx.log(f"qa: {report.status} score {score} ({len(issues)} issue(s)); retry: "
                 + (", ".join(f"{r.action}[{','.join(r.unit_ids) or 'master'}]" for r in report.retry_instructions) or "none"))
         return report
+
+
+def _roll_up(scenes: list[SceneQAReport], offsets: dict[str, int]) -> tuple[dict, list[QAIssue], list[str]]:
+    """Scene reports as one set of episode checks. An issue found on a stem gets its position in the master."""
+    checks: dict[str, dict] = {}
+    for s in scenes:
+        for name, c in s.checks.items():
+            cur = checks.setdefault(name, {})
+            for k, v in c.items():
+                if k == "ok":
+                    cur["ok"] = v if "ok" not in cur else (None if v is None and cur["ok"] is None else bool(v is not False and cur["ok"] is not False))
+                elif isinstance(v, list):
+                    cur[k] = [*cur.get(k, []), *v]
+                elif k == "units" and isinstance(v, int):
+                    cur[k] = cur.get(k, 0) + v
+                else:
+                    cur.setdefault(k, v)
+    issues: list[QAIssue] = []
+    for s in scenes:
+        for i in s.error_logs:
+            base = offsets.get(i.unit_id or "")
+            # inside a stem, a silence was measured from the stem's start
+            at = None if base is None else base + (i.at_ms or 0 if i.code == "long_silence" else 0)
+            issues.append(i.model_copy(update={"at_ms": at}))
+    return checks, issues, [line for s in scenes for line in s.review_lines]

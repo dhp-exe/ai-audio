@@ -8,7 +8,6 @@ import {
   Alert, App, Button, Card, Checkbox, Col, Collapse, Descriptions, Flex, Form, Image, Input, Popconfirm, Row, Select, Space, Steps, Switch, Table, Tag,
   Tooltip, Typography,
 } from "antd";
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { EmptyState, ErrorAlert, Loading, Meter, Num, PageHead } from "@/components/common";
@@ -17,28 +16,29 @@ import { useStudio } from "@/components/providers/StudioProvider";
 import { api, type ContentInsight, type ScanState, type ScanStep, type TrendBrief, type TrendCandidate } from "@/lib/api";
 import { PLATFORM_LABEL, PLATFORMS } from "@/lib/constants";
 import { fmtAgo, fmtDuration, fmtTime } from "@/lib/format";
-import { usePoll } from "@/lib/hooks";
+import { useMemoryState, usePoll } from "@/lib/hooks";
 
 /** Scores may be 0-1, 0-10 or 0-100 depending on the agent prompt; pick a sensible scale. */
 const scaleOf = (v: number) => (v <= 1 ? 1 : v <= 10 ? 10 : 100);
 const fmtScore = (v: number) => (v <= 1 ? v.toFixed(2) : v.toFixed(v < 10 ? 1 : 0));
 const platformName = (p: string) => PLATFORM_LABEL[p] ?? p;
-const DEFAULT_GUIDE = "Scan the platforms and document the 3 most trending short drama film genres.";
 
 function ScanForm({ running, onStarted }: { running: boolean; onStarted: (s: ScanState) => void }) {
   const { config } = useStudio();
-  const [guide, setGuide] = useState(DEFAULT_GUIDE);
-  const [seeds, setSeeds] = useState("");
-  const [platforms, setPlatforms] = useState<string[]>(PLATFORMS.map((p) => p.value));
-  const [useBrowser, setUseBrowser] = useState<boolean>(true);
-  const [focus, setFocus] = useState<string>("");
+  // The form is kept while the editor moves between pages of the app; a reload starts it empty.
+  const [guide, setGuide] = useMemoryState("research.guide", "");
+  const [seeds, setSeeds] = useMemoryState("research.seeds", "");
+  const [platforms, setPlatforms] = useMemoryState<string[]>("research.platforms", PLATFORMS.map((p) => p.value));
+  const [useBrowser, setUseBrowser] = useMemoryState<boolean>("research.useBrowser", true);
+  const [focus, setFocus] = useMemoryState<string>("research.focus", "");
+  const [agent, setAgent] = useMemoryState<boolean>("research.agent", false);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
   const scan = async () => {
     if (!seeds.trim() && !(useBrowser && platforms.length)) { setErr("Add seed notes, or turn on the browser and pick at least one platform."); return; }
     setErr(null); setBusy(true);
-    try { onStarted(await api.scan({ seeds, platforms, use_browser: useBrowser, focus, guide })); }
+    try { onStarted(await api.scan({ seeds, platforms, use_browser: useBrowser, focus, guide, agent })); }
     catch (e) { setErr((e as Error).message); }
     finally { setBusy(false); }
   };
@@ -46,7 +46,7 @@ function ScanForm({ running, onStarted }: { running: boolean; onStarted: (s: Sca
   return (
     <Card title={<Space><RadarChartOutlined />Scan the market</Space>} size="small">
       <Form layout="vertical" disabled={running || busy}>
-        <Form.Item label="Research guide" extra="What the agent should look for. It always documents the three most trending genres.">
+        <Form.Item label="Research guide" extra="Optional: what the agent should look for. It always documents the three most trending genres.">
           <Input.TextArea rows={3} value={guide} onChange={(e) => setGuide(e.target.value)} />
         </Form.Item>
         <Form.Item label="Platforms" extra={useBrowser ? "Public pages are read as an anonymous visitor; a site that shows a robot check is reported as blocked." : "Turn on the browser to read these."}>
@@ -54,6 +54,9 @@ function ScanForm({ running, onStarted }: { running: boolean; onStarted: (s: Sca
         </Form.Item>
         <Form.Item label="Use a browser" extra="Reads live platform pages with a headless browser on the engine host.">
           <Switch checked={useBrowser} onChange={setUseBrowser} />
+        </Form.Item>
+        <Form.Item label="Let the agent decide" extra="Off: the fixed sources (and searches planned from the guide) are read in order. On: the agent chooses what to read and search turn by turn, and stops when it has enough. It makes more LLM calls.">
+          <Switch checked={agent} onChange={setAgent} />
         </Form.Item>
         <Form.Item label="Seed notes" extra="Optional: trend notes, titles or comments your team collected.">
           <Input.TextArea rows={3} value={seeds} onChange={(e) => setSeeds(e.target.value)} placeholder="Ví dụ: top DramaBox tuần này: tổng tài, trọng sinh…" />
@@ -130,19 +133,20 @@ function SourceRow({ scanId, s }: { scanId: string; s: ScanStep }) {
   );
 }
 
-const PHASES = ["scan", "analyze", "rank"] as const;
+const PHASES = ["plan", "scan", "analyze", "rank"] as const;
 
 function ScanProgress({ scan }: { scan: ScanState }) {
   const running = scan.status === "running";
   const failed = scan.status === "failed";
-  const current = scan.status === "done" ? 3 : PHASES.indexOf(scan.phase as (typeof PHASES)[number]);
+  const current = scan.status === "done" ? PHASES.length : PHASES.indexOf(scan.phase as (typeof PHASES)[number]);
   const read = scan.steps.filter((s) => s.status === "ok").length;
   const blocked = scan.steps.filter((s) => s.status === "blocked" || s.status === "error");
+  const planned = scan.queries.length > 0;
   const stepStatus = (i: number) => (i < current ? "finish" : i > current ? "wait" : failed ? "error" : "process") as "finish" | "wait" | "error" | "process";
   return (
     <Card
       size="small"
-      title={<Space><RadarChartOutlined />{running ? "Scanning now" : "Scan record"}<span className="mono muted" style={{ fontSize: 12, fontWeight: 400 }}>{scan.scan_id}</span></Space>}
+      title={<Space><RadarChartOutlined />{running ? "Scanning now" : "Scan record"}<span className="mono muted" style={{ fontSize: 12, fontWeight: 400 }}>{scan.scan_id}</span>{scan.mode === "agent" && <Tag color="purple" style={{ marginInlineEnd: 0 }}>agent loop</Tag>}</Space>}
       extra={<span className="muted num" style={{ fontSize: 12 }}>{running ? `started ${fmtAgo(scan.created_at)}` : `${fmtTime(scan.created_at)} · ${fmtDuration(scan.created_at, scan.finished_at)}`}</span>}
     >
       <Flex vertical gap={12}>
@@ -150,12 +154,25 @@ function ScanProgress({ scan }: { scan: ScanState }) {
           size="small"
           current={Math.max(0, current)}
           items={[
-            { title: "Market Scan", description: `${read} of ${scan.steps.length} sources read`, status: stepStatus(0), icon: running && current === 0 ? <LoadingOutlined /> : undefined },
-            { title: "Content Analyze", description: "LLM reads the collected text", status: stepStatus(1), icon: running && current === 1 ? <LoadingOutlined /> : undefined },
-            { title: "Trend Ranking", description: "Top 3 genres scored", status: stepStatus(2), icon: running && current === 2 ? <LoadingOutlined /> : undefined },
+            { title: scan.mode === "agent" ? "Agent loop" : "Search Plan", description: scan.mode === "agent" ? "the model picks sources" : planned ? `${scan.queries.length} search${scan.queries.length > 1 ? "es" : ""} from the guide` : current === 0 ? "LLM reads the guide" : "Fixed sources",
+              status: stepStatus(0), icon: running && current === 0 ? <LoadingOutlined /> : undefined },
+            { title: "Market Scan", description: `${read} of ${scan.steps.length} sources read`, status: stepStatus(1), icon: running && current === 1 ? <LoadingOutlined /> : undefined },
+            { title: "Content Analyze", description: "LLM reads the collected text", status: stepStatus(2), icon: running && current === 2 ? <LoadingOutlined /> : undefined },
+            { title: "Trend Ranking", description: "Top 3 genres scored", status: stepStatus(3), icon: running && current === 3 ? <LoadingOutlined /> : undefined },
           ]}
         />
         {scan.guide && <Typography.Text type="secondary" style={{ fontSize: 12 }}><b>Guide:</b> {scan.guide}</Typography.Text>}
+        {scan.intent && <Typography.Text type="secondary" style={{ fontSize: 12 }}><b>Understood as:</b> {scan.intent}</Typography.Text>}
+        {planned && (
+          <Flex gap={4} wrap align="center">
+            <Typography.Text type="secondary" style={{ fontSize: 12 }}><b>Searches:</b></Typography.Text>
+            {scan.queries.map((q) => (
+              <Tooltip key={`${q.platform}-${q.query}`} title={q.reason || undefined}>
+                <Tag style={{ marginInlineEnd: 0 }}>{platformName(q.platform)}: {q.query}</Tag>
+              </Tooltip>
+            ))}
+          </Flex>
+        )}
         {failed && <Alert type="error" showIcon title="The scan failed" description={scan.error} />}
         {!running && !failed && blocked.length > 0 && (
           <Alert type="warning" showIcon title={`${blocked.length} source${blocked.length > 1 ? "s were" : " was"} not readable`}
@@ -305,17 +322,24 @@ function Research() {
   const router = useRouter();
   const { message } = App.useApp();
   const { data, error, loading, refresh } = usePoll(() => api.briefs(), 0);
-  const [selected, setSelected] = useState<string | null>(params.get("id"));
+  const [selected, setSelected] = useMemoryState<string | null>("research.selected", null);
   const [scanId, setScanId] = useState<string | null>(null);
   const [live, setLive] = useState<ScanState | null>(null);
   const briefs = useMemo(() => [...(data?.briefs ?? [])].sort((a, b) => b.created_at.localeCompare(a.created_at)), [data]);
-  useEffect(() => { if (!selected && briefs.length) setSelected(briefs[0].brief_id); }, [briefs, selected]);
   const brief = briefs.find((b) => b.brief_id === selected) ?? null;
-  const select = (id: string) => { setSelected(id); router.replace(`/research/?id=${encodeURIComponent(id)}`, { scroll: false }); };
+  // The open brief is kept while moving between pages of the app. A deep link (?id=) opens its brief once; the
+  // address is then cleaned so a reload starts from an empty page.
+  useEffect(() => {
+    const id = params.get("id");
+    if (id) { setSelected(id); router.replace("/research/", { scroll: false }); }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Re-attach to a scan that is still running (page reload, second tab).
   useEffect(() => {
-    api.scans().then((r) => { const s = r.scans.find((x) => x.status === "running"); if (s) { setLive(s); setScanId(s.scan_id); } }).catch(() => {});
+    // A scan left "running" for over 15 minutes died with the engine (the API frees its slot after the same delay).
+    const fresh = (x: ScanState) => x.status === "running" && Date.now() - Date.parse(x.created_at) < 900_000;
+    api.scans().then((r) => { const s = r.scans.find(fresh); if (s) { setLive(s); setScanId(s.scan_id); } }).catch(() => {});
   }, []);
   // Follow the running scan once a second; when it ends, open its brief.
   const running = live?.status === "running";
@@ -327,7 +351,7 @@ function Research() {
         const s = await api.scanState(scanId);
         if (!alive) return;
         setLive(s);
-        if (s.status === "done" && s.brief_id) { message.success("Scan finished: pick one of the three genres"); await refresh(); select(s.brief_id); }
+        if (s.status === "done" && s.brief_id) { message.success("Scan finished: pick one of the three genres"); await refresh(); setSelected(s.brief_id); }
       } catch { /* keep polling */ }
     };
     const id = setInterval(tick, 1000);
@@ -355,8 +379,8 @@ function Research() {
                       key={b.brief_id}
                       role="button"
                       tabIndex={0}
-                      onClick={() => select(b.brief_id)}
-                      onKeyDown={(e) => { if (e.key === "Enter") select(b.brief_id); }}
+                      onClick={() => setSelected(b.brief_id)}
+                      onKeyDown={(e) => { if (e.key === "Enter") setSelected(b.brief_id); }}
                       className="ev-issue seekable"
                       style={{ background: b.brief_id === selected ? "var(--ev-sunken)" : undefined, boxShadow: b.brief_id === selected ? "inset 3px 0 0 var(--ev-navy)" : undefined }}
                     >
@@ -374,13 +398,13 @@ function Research() {
           <Flex vertical gap={16}>
             {running && live && <ScanProgress scan={live} />}
             {!running && brief && (
-              <BriefDetail key={brief.brief_id} b={brief} onChanged={refresh} onDeleted={() => { setSelected(null); router.replace("/research/"); refresh(); }}
+              <BriefDetail key={brief.brief_id} b={brief} onChanged={refresh} onDeleted={() => { setSelected(null); refresh(); }}
                 record={shown && shown.brief_id === brief.brief_id ? <ScanProgress scan={shown} /> : undefined} />
             )}
             {!running && shown && shown.brief_id !== brief?.brief_id && <ScanProgress scan={shown} />}
             {!running && !brief && !shown && (briefs.length > 0 && selected
-              ? <Card><EmptyState description="This brief no longer exists" action={<Link href="/research/">Show all</Link>} /></Card>
-              : <Card><EmptyState description="Run a scan to see the platforms being read here, then pick one of the three trending genres." /></Card>)}
+              ? <Card><EmptyState description="This brief no longer exists" action={<Button type="link" onClick={() => setSelected(null)}>Show all</Button>} /></Card>
+              : <Card><EmptyState description="Run a scan to see the platforms being read here, or open a brief from the list to pick one of its three trending genres." /></Card>)}
           </Flex>
         </Col>
       </Row>

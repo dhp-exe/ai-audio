@@ -12,9 +12,10 @@ Subscriber = Callable[[PipelineEvent], None]
 
 
 class EventBus:
-    def __init__(self) -> None:
+    def __init__(self, start: int = 0) -> None:
+        """``start`` = events this run already published (a run continued by another process keeps counting)."""
         self._subs: list[Subscriber] = []
-        self._seq = 0
+        self._seq = start
         self._lock = threading.Lock()
         self.history: list[PipelineEvent] = []
 

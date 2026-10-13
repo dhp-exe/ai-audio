@@ -17,6 +17,8 @@ from emvoox.contracts.market import (
     FormatSpec,
     MarketAnalysis,
     MarketObservation,
+    SearchPlan,
+    SearchQuery,
     ThemeCategory,
     TrendBrief,
     TrendCandidate,
@@ -46,9 +48,9 @@ from emvoox.contracts.production import (
     VoiceRegistry,
     slugify_id,
 )
-from emvoox.contracts.qa import HumanVerdict, QAIssue, QAReport, RetryInstruction
+from emvoox.contracts.qa import HumanVerdict, QAIssue, QAReport, RetryInstruction, SceneApproval, SceneQAReport
 from emvoox.contracts.release import ApprovalDecision, ExportedFile, PublishMetadata, ReleasePackage
-from emvoox.contracts.run import PipelineEvent, ResearchParams, RunParams, RunState, RunTotals, StepState
+from emvoox.contracts.run import PendingDecision, PipelineEvent, ResearchParams, RunParams, RunState, RunTotals, SceneRun, StepState
 from emvoox.contracts.script import CliffhangerCheck, EpisodeDraftResult, ScriptPackage, StoryAdaptation
 from emvoox.contracts.telemetry import UsageRecord
 
@@ -59,7 +61,8 @@ __all__ = [
     "ExportedFile", "FormatSpec", "HumanVerdict", "Line", "LineType", "LoudnessMetrics", "MarketAnalysis", "MarketObservation",
     "MasteredEpisode", "NewCharacter", "PipelineEvent", "ProviderVoice", "PublishMetadata", "QAIssue", "QAReport",
     "ReleasePackage", "RenderUnit", "ResearchParams", "ResolvedCast", "RetryInstruction", "RoleCast", "RunParams", "RunState",
-    "RunTotals", "Scene", "ScriptPackage", "SeriesBible", "SeriesOutline", "StemRecord", "StepState", "StoryAdaptation",
+    "PendingDecision", "RunTotals", "Scene", "SceneApproval", "SceneQAReport", "SceneRun",
+    "ScriptPackage", "SearchPlan", "SearchQuery", "SeriesBible", "SeriesOutline", "StemRecord", "StepState", "StoryAdaptation",
     "StoryInput", "StoryOverview", "StoryRole", "ThemeCategory", "Timeline", "TimelineClip", "TrendBrief", "TrendCandidate",
     "UsageRecord", "VoiceRegistry", "VoiceRenderResult", "slugify_id",
 ]

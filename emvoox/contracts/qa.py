@@ -48,8 +48,45 @@ class HumanVerdict(BaseModel):
     at: str
 
 
+class SceneApproval(BaseModel):
+    """A reviewer's decision on one scene, taken while the run is paused for it."""
+
+    approved: bool
+    reviewer: str = ""
+    notes: str = ""
+    unit_ids: list[str] = Field(default_factory=list, description="Rejected: the render units to redo; empty = the whole scene.")
+    at: str = ""
+
+
+class SceneQAReport(BaseModel):
+    """QA Critic Agent output for one scene: the stem checks of that scene's render units. The episode
+    ``QAReport`` rolls these up and adds the checks only a master can answer (loudness, true peak, duration)."""
+
+    series_id: str
+    episode_number: int = Field(ge=1, le=99)
+    scene_id: str
+    attempt: int = Field(0, ge=0, description="0 = first render, n = after the n-th retry of this scene.")
+    status: Literal["PASS", "FLAGGED"]
+    score: int = Field(ge=0, le=100)
+    units: list[str] = Field(default_factory=list, description="Render units of the scene that were checked.")
+    checks: dict[str, dict] = Field(default_factory=dict)
+    error_logs: list[QAIssue] = Field(default_factory=list)
+    retry_instructions: list[RetryInstruction] = Field(default_factory=list)
+    review_lines: list[str] = Field(default_factory=list)
+    approval: SceneApproval | None = None
+    generated_at: str = ""
+
+    @model_validator(mode="after")
+    def _consistent(self) -> SceneQAReport:
+        if self.status == "PASS" and any(i.severity in ("blocker", "major") for i in self.error_logs):
+            raise ValueError("a PASS report cannot carry blocker/major issues")
+        if any(r.action == "reassemble" for r in self.retry_instructions):
+            raise ValueError("a scene cannot ask for a re-master; that is decided on the episode")
+        return self
+
+
 class QAReport(BaseModel):
-    """QA Critic Agent output."""
+    """QA Critic Agent output for one episode: the roll-up of its scene reports plus the master checks."""
 
     series_id: str
     episode_number: int = Field(ge=1, le=99)
@@ -60,6 +97,7 @@ class QAReport(BaseModel):
     error_logs: list[QAIssue] = Field(default_factory=list)
     retry_instructions: list[RetryInstruction] = Field(default_factory=list)
     review_lines: list[str] = Field(default_factory=list, description="Lines a human should listen to (peaks, intense monologues).")
+    scenes: list[dict] = Field(default_factory=list, description="Per scene: scene_id, status, score, attempt, issues, approved_by.")
     human: HumanVerdict | None = None
     generated_at: str = ""
 

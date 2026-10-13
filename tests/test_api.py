@@ -6,7 +6,7 @@ import json
 import time
 
 import pytest
-from conftest import needs_ffmpeg, seed_registry
+from conftest import needs_ffmpeg, restart_workers, seed_registry
 from fastapi.testclient import TestClient
 
 from emvoox.api import app as webapp
@@ -15,7 +15,6 @@ from emvoox.api import app as webapp
 @pytest.fixture
 def client(sandbox):
     seed_registry(sandbox)
-    webapp._engines.clear()
     return TestClient(webapp.app)
 
 
@@ -103,6 +102,47 @@ def test_run_gate_approve_and_costs(client):
     assert client.post("/api/series/s1/resume", json={"tts_provider": "minimax"}).status_code == 422
 
 
+@needs_ffmpeg
+def test_scene_decisions_pause_and_continue_a_run_across_a_server_restart(client):
+    body = {"source": "story", "series_id": "s1", "title": "Bản hợp đồng", "script": "Một câu chuyện về bản hợp đồng. " * 4, "episodes": 3, "produce": 1,
+            "min_sec": 30, "max_sec": 60, "tts_provider": "mock", "llm_provider": "mock", "max_retries": 1, "scene_approval": True,
+            "roles": [{"name": "Linh", "description": "nữ 26 tuổi", "actor_id": "ngan"}, {"name": "Khôi", "description": "nam 31 tuổi", "actor_id": None}]}
+    run_id = client.post("/api/runs", json=body).json()["run_id"]
+    st = wait_run(client, run_id)
+    assert st["status"] == "waiting" and [s["status"] for s in st["scenes"]] == ["waiting", "waiting"]
+    items = client.get("/api/decisions").json()["items"]
+    assert [(i["kind"], i["series_title"], i["scene_id"]) for i in items] == [("scene_approval", "Bản hợp đồng", "sc01"), ("scene_approval", "Bản hợp đồng", "sc02")]
+    scene = items[0]["scene"]
+    assert scene["lines"] and scene["qa"]["status"] == "PASS" and len(scene["stems"]) == len(scene["qa"]["units"])
+    audio = client.get(scene["stems"][0]["url"])
+    assert audio.status_code == 200 and audio.headers["content-type"] == "audio/wav"
+    assert client.get("/api/series/s1/episodes/1/stems/..%2Fx.wav").status_code == 404
+    # a waiting series cannot be continued or deleted around the open decisions
+    assert client.post("/api/series/s1/resume", json={"next": 1}).status_code == 409 and client.delete("/api/series/s1").status_code == 409
+    assert client.post(f"/api/runs/{run_id}/decisions", json={"decisions": [{"id": "nope", "approved": True, "reviewer": "an"}]}).status_code == 422
+    assert client.post(f"/api/runs/{run_id}/decisions", json={"decisions": [{"id": items[0]["id"], "approved": True, "reviewer": ""}]}).status_code == 422
+
+    restart_workers()  # the server restarted: a new worker rebuilds the run from storage and its checkpoint
+    r = client.post(f"/api/runs/{run_id}/decisions", json={"decisions": [{"id": i["id"], "approved": True, "reviewer": "an"} for i in items]})
+    assert r.status_code == 200 and r.json()["run_id"] == run_id
+    st = wait_run(client, run_id)
+    assert st["status"] == "awaiting_approval" and st["pending"] == [] and client.get("/api/decisions").json()["items"] == []
+    assert client.post(f"/api/runs/{run_id}/decisions", json={"decisions": [{"id": items[0]["id"], "approved": True, "reviewer": "an"}]}).status_code == 409
+    assert client.post("/api/series/s1/episodes/1/approve", json={"reviewer": "an"}).json()["state"] == "approved"
+
+
+@needs_ffmpeg
+def test_a_waiting_run_can_be_cancelled(client):
+    body = {"source": "story", "series_id": "s1", "title": "Bản hợp đồng", "script": "Một câu chuyện về bản hợp đồng. " * 4, "episodes": 3, "produce": 1,
+            "min_sec": 30, "max_sec": 60, "tts_provider": "mock", "llm_provider": "mock", "scene_approval": True}
+    run_id = client.post("/api/runs", json=body).json()["run_id"]
+    assert wait_run(client, run_id)["status"] == "waiting"
+    assert client.post(f"/api/runs/{run_id}/cancel").json() == {"ok": True}
+    st = client.get(f"/api/runs/{run_id}").json()
+    assert st["status"] == "cancelled" and st["pending"] == [] and client.get("/api/decisions").json()["items"] == []
+    assert client.post("/api/series/s1/resume", json={"next": 1}).status_code == 200  # the series can be continued again
+
+
 def test_voice_ips_crud_lock_and_plugging_a_cloned_voice(client):
     r = client.post("/api/characters", json={"character_id": "linh", "display_name": "Linh", "providers": {"gemini": {"voice_id": "kore"}}})
     assert r.status_code == 200, r.text
@@ -156,12 +196,12 @@ def test_interrupted_runs_and_legacy_runs(client, repos):
               "params": {"series_id": "old", "episodes": 3, "tts_provider": "gemini"},
               "jobs": [{"id": "outline", "stage": "outline", "episode": None, "status": "done"}, {"id": "ep01.voice", "stage": "voice", "episode": 1, "status": "running"}]}
     repos.docs.put("series/old/pipeline_run.json", legacy)
-    assert webapp.mark_interrupted_runs() == ["old-20260920-000000"]
+    assert webapp.recover_interrupted_runs() == {"recovered": [], "interrupted": ["old-20260920-000000"]}
     data = repos.runs.load_raw("old")
     assert data["status"] == "cancelled" and [j["status"] for j in data["jobs"]] == ["done", "skipped"]
     run = client.get("/api/runs/old-20260920-000000").json()
     assert [s["id"] for s in run["steps"]] == ["outline", "ep01.voice"] and run["totals"]["cost_usd"] == 0
-    assert webapp.mark_interrupted_runs() == []
+    assert webapp.recover_interrupted_runs() == {"recovered": [], "interrupted": []}
 
 
 def test_usage_quota_status(client, repos):

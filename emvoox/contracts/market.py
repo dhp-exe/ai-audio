@@ -9,6 +9,7 @@ from pydantic import BaseModel, Field, model_validator
 
 PLATFORMS: tuple[str, ...] = ("dramabox", "reelshort", "tiktok", "google", "youtube", "douyin", "local")
 TOP_GENRES = 3  # the brief documents the three most trending genres; a human picks one
+SEARCH_PLATFORMS: tuple[str, ...] = ("tiktok", "google", "youtube")  # platforms the Search Plan skill may write queries for
 
 
 class ThemeCategory(str, Enum):
@@ -78,6 +79,21 @@ class MarketAnalysis(BaseModel):
     candidates: list[TrendCandidate] = Field(min_length=1, max_length=8)
 
 
+class SearchQuery(BaseModel):
+    """One search the Market Scan runs because the research guide asked for it."""
+
+    platform: str = Field(description="tiktok, google or youtube.")
+    query: str = Field(description="Search words as a viewer would type them. Never a URL.")
+    reason: str = Field("", description="What this search is expected to show, in one sentence.")
+
+
+class SearchPlan(BaseModel):
+    """Structured output of the Search Plan LLM call: the research guide turned into searches."""
+
+    intent: str = Field(description="How the agent understood the research guide, in one sentence.")
+    queries: list[SearchQuery] = Field(default_factory=list)
+
+
 class FormatSpec(BaseModel):
     medium: Literal["audio_micro_drama", "audio_long_story"] = "audio_micro_drama"
     language: Literal["vi-VN"] = "vi-VN"
@@ -142,14 +158,17 @@ class ScanStep(BaseModel):
 
 
 class ScanState(BaseModel):
-    """Progress of one Market Research run: Market Scan -> Content Analyze -> Trend Ranking."""
+    """Progress of one Market Research run: Search Plan -> Market Scan -> Content Analyze -> Trend Ranking."""
 
     scan_id: str
     status: Literal["running", "done", "failed"] = "running"
-    phase: Literal["scan", "analyze", "rank", "done"] = "scan"
+    phase: Literal["plan", "scan", "analyze", "rank", "done"] = "scan"
     created_at: str
     finished_at: str | None = None
+    mode: Literal["fixed", "agent"] = Field("fixed", description="fixed = the four skills in order; agent = a tool loop decides what to read.")
     guide: str = ""
+    intent: str = Field("", description="How the agent understood the guide (Search Plan, or the tool loop's own words).")
+    queries: list[SearchQuery] = Field(default_factory=list, description="Search Plan: the searches this scan ran for the guide.")
     focus: str = ""
     use_browser: bool = False
     platforms: list[str] = Field(default_factory=list)

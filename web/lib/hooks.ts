@@ -43,6 +43,21 @@ export function useStoredState<T>(key: string, initial: T) {
   return [value, set] as const;
 }
 
+const memory = new Map<string, unknown>();
+
+/** State kept in memory for the browser session: survives moving between pages of the app, cleared by a reload. */
+export function useMemoryState<T>(key: string, initial: T) {
+  const [value, setValue] = useState<T>(() => (memory.has(key) ? (memory.get(key) as T) : initial));
+  const set = useCallback((v: T | ((prev: T) => T)) => {
+    setValue((prev) => {
+      const next = typeof v === "function" ? (v as (p: T) => T)(prev) : v;
+      memory.set(key, next);
+      return next;
+    });
+  }, [key]);
+  return [value, set] as const;
+}
+
 /** A clock that ticks every second, for countdowns. */
 export function useNow(intervalMs = 1000) {
   const [now, setNow] = useState(() => Date.now());

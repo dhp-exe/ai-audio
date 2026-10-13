@@ -10,6 +10,7 @@ from conftest import needs_ffmpeg, seed_registry
 
 from emvoox.agents import AgentError, DirectorAgent
 from emvoox.agents.publisher import approve, reject
+from emvoox.config import reset_settings
 from emvoox.contracts import ResearchParams, RunParams, StoryInput, StoryOverview, StoryRole
 from emvoox.engine.orchestrator import Engine
 from emvoox.providers.llm.mock import MockLlm
@@ -79,17 +80,24 @@ def test_full_run_reaches_the_gate_and_exports_on_approval(studio):
     assert pkg.state == "rejected" and studio.outputs.list() == []
 
 
-def test_qa_flags_a_broken_line_and_the_engine_rerenders_only_that_line(studio):
+def test_each_scene_retries_only_its_own_flagged_line(studio):
+    """Two faults in two different scenes: each scene runs its own QA loop, and the episode report rolls them up."""
     MockTtsProvider.faults = {"ep01_sc01_l002": "clip", "ep01_sc02_l003": "truncate"}
     st = run(Engine(params(produce=1), story=STORY, repos=studio, llm=MockLlm()))
     assert st.status == "awaiting_approval", st.error
     report = studio.series.load_qa("s1", 1)
-    assert report.status == "PASS" and report.attempt == 1 and st.totals.qa_retries == 1
-    assert st.step("ep01.voice").attempts == 2 and st.step("ep01.qa").attempts == 2
+    assert report.status == "PASS" and report.attempt == 1 and st.totals.qa_retries == 2  # one retry in each scene
+    assert [(s["scene_id"], s["status"], s["attempt"]) for s in report.scenes] == [("sc01", "PASS", 1), ("sc02", "PASS", 1)]
+    voice = st.step("ep01.voice")
+    assert voice.attempts == 1 and voice.status == "done" and voice.summary["scenes"] == 2 and voice.summary["scene_retries"] == 2
+    assert st.step("ep01.qa").attempts == 1 and st.step("ep01.master").attempts == 1  # the episode is mastered and checked once
+    assert st.step("ep01.direct").attempts == 2  # the plan is saved once more, carrying both scenes' retry parameters
+    assert [(s.id, s.status, s.attempt, s.score) for s in st.scenes] == [("ep01.sc01", "passed", 1, 100), ("ep01.sc02", "passed", 1, 100)]
+    assert all(studio.series.load_scene_qa("s1", 1, sc).status == "PASS" for sc in ("sc01", "sc02"))
     # only the two flagged units were rendered again
     assert sorted(c for c in MockTtsProvider.calls if MockTtsProvider.calls.count(c) > 1) == ["ep01_sc01_l002", "ep01_sc01_l002", "ep01_sc02_l003", "ep01_sc02_l003"]
     flagged = [e for e in studio.runs.events("s1") if e["type"] == "qa.flagged"]
-    assert len(flagged) == 1 and set(flagged[0]["data"]["codes"]) == {"clipping", "missing_sentence"}
+    assert {e["data"]["scene"]: e["data"]["codes"] for e in flagged} == {"sc01": ["clipping"], "sc02": ["missing_sentence"]}
     meta = studio.series.stem_meta("s1", 1, "ep01_sc01_l002_duong_dialogue.wav") or studio.series.stem_meta("s1", 1, "ep01_sc01_l002_ngan_dialogue.wav")
     assert meta["attempt"] == 1 and meta["request"]["attempt"] == 1
 
@@ -183,8 +191,6 @@ def test_resume_keeps_outline_and_drafts(studio):
 
 def test_missing_key_fails_before_spending(studio, monkeypatch):
     monkeypatch.setenv("GEMINI_API_KEY", "")
-    from emvoox.config import reset_settings
-
     reset_settings()
     with pytest.raises(ValueError):
         RunParams(series_id="s1", tts_provider="minimax")

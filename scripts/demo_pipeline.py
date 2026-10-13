@@ -91,7 +91,8 @@ def main() -> int:
                        auto_approve=False, halt_on_qa_fail=True, force=True)
 
     def show(ev: PipelineEvent) -> None:
-        if ev.type in ("step.finished", "step.failed", "contract.rejected", "qa.flagged", "gate.waiting", "gate.approved", "run.finished", "cast.resolved"):
+        if ev.type in ("step.finished", "step.failed", "contract.rejected", "scene.qa", "qa.flagged", "gate.waiting", "gate.approved", "run.finished",
+                       "cast.resolved"):
             print(f"  {ev.type:<17} {ev.step_id or '':<11} {(ev.status or ''):<17} {ev.message[:90]}")
 
     print(f"Emvoox demo | data: {data} | LLM {params.llm_provider} | TTS {params.tts_provider}\n")

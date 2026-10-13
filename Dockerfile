@@ -27,7 +27,7 @@ WORKDIR /app
 # Dependencies first, against a stub package, so editing the engine does not reinstall them or re-download Chromium.
 COPY pyproject.toml README.md ./
 RUN mkdir emvoox && touch emvoox/__init__.py \
-    && pip install -e ".[research,claude]" \
+    && pip install -e ".[research,claude,durable]" \
     && python -m playwright install --with-deps chromium \
     && rm -rf /var/lib/apt/lists/*
 

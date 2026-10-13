@@ -7,6 +7,7 @@ import {
 import Link from "next/link";
 import { useRef, useState } from "react";
 import { AudioPlayer, EmptyState, ErrorAlert, Loading, Num, PageHead, QaIssues, StatusTag, seekAudio } from "@/components/common";
+import { DecisionCard } from "@/components/DecisionCard";
 import { useStudio } from "@/components/providers/StudioProvider";
 import { api, type ApprovalItem, type GateState, type OutputItem, type PublishMetadata, type ReleasePackage } from "@/lib/api";
 import { fmtBytes, fmtClock, fmtTime } from "@/lib/format";
@@ -251,15 +252,18 @@ const TABS: { key: GateState; label: string }[] = [
 
 export default function ApprovalsPage() {
   const { data, error, loading, refresh } = usePoll(() => api.approvals(), 15000);
+  const decisions = usePoll(() => api.decisions(), 5000);
+  const { refreshGate } = useStudio();
   const [reviewer, setReviewer] = useStoredState("emvoox-reviewer", "");
   const [tab, setTab] = useStoredState<string>("emvoox-approvals-tab", "awaiting_approval");
   const items = data?.items ?? [];
+  const open = decisions.data?.items ?? [];
 
   return (
     <>
       <PageHead
         title="Approvals"
-        sub="The human gate: listen, check QA, polish the publish metadata, then approve or send back."
+        sub="Everything that waits for a person: decisions a paused run needs (scenes, budget), and finished episodes at the human gate."
         extra={
           <Input
             prefix={<UserOutlined />}
@@ -278,6 +282,15 @@ export default function ApprovalsPage() {
           activeKey={tab}
           onChange={setTab}
           items={[
+            {
+              key: "decisions",
+              label: <Space size={6}>Paused runs<Badge count={open.length} showZero={false} color="#fa8c16" size="small" /></Space>,
+              children: open.length ? (
+                <Flex vertical gap={12}>
+                  {open.map((d) => <DecisionCard key={d.id} item={d} reviewer={reviewer} onDone={() => { decisions.refresh(); refreshGate(); }} />)}
+                </Flex>
+              ) : <Card size="small"><EmptyState description="No run is waiting for a decision." /></Card>,
+            },
             ...TABS.map((t) => {
               const list = items.filter((i) => i.state === t.key);
               return {

@@ -21,9 +21,12 @@ export const useStudio = () => useContext(Ctx);
 
 export function StudioProvider({ children }: { children: React.ReactNode }) {
   const cfg = usePoll(() => api.config(), 10000);
-  const gate = usePoll(() => api.approvals(), 20000);
+  const gate = usePoll(async () => {
+    const [approvals, decisions] = await Promise.all([api.approvals(), api.decisions().catch(() => ({ items: [] }))]);
+    return { items: approvals.items, decisions: decisions.items.length };
+  }, 20000);
   const gateCount = useMemo(
-    () => (gate.data?.items ?? []).filter((i) => i.state === "awaiting_approval" || i.state === "needs_review").length,
+    () => (gate.data?.items ?? []).filter((i) => i.state === "awaiting_approval" || i.state === "needs_review").length + (gate.data?.decisions ?? 0),
     [gate.data],
   );
   const value = useMemo<StudioCtx>(() => ({

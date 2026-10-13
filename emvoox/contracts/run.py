@@ -9,7 +9,8 @@ from pydantic import BaseModel, Field, model_validator
 from emvoox.contracts.cast import EngineRef
 
 StepStatus = Literal["pending", "running", "done", "warn", "failed", "skipped", "waiting", "approved", "rejected"]
-RunStatus = Literal["pending", "running", "done", "failed", "cancelled", "halted", "awaiting_approval"]
+RunStatus = Literal["pending", "running", "waiting", "done", "failed", "cancelled", "halted", "awaiting_approval"]
+SceneStatus = Literal["pending", "rendering", "checking", "retrying", "waiting", "passed", "flagged", "approved", "failed"]
 LIVE_RUN = ("pending", "running")
 
 SERIES_STEPS: tuple[str, ...] = ("research", "script", "casting")
@@ -20,7 +21,7 @@ STEP_AGENT = {
 }
 STEP_LABEL = {
     "research": "Trend brief", "script": "Story + bible", "casting": "Cast + engine policy", "draft": "Draft",
-    "direct": "Direct", "voice": "Voice", "master": "Master", "qa": "QA", "gate": "Approval gate",
+    "direct": "Direct", "voice": "Scenes: voice + QA", "master": "Master", "qa": "Episode QA", "gate": "Approval gate",
 }
 
 
@@ -55,9 +56,11 @@ class RunParams(BaseModel):
     llm_provider: str | None = None
     llm_model: str | None = None
     # QA loop and gate
-    max_retries: int = Field(3, ge=0, le=5)
+    max_retries: int = Field(3, ge=0, le=5, description="Automatic retries per scene, and re-masters per episode.")
     auto_approve: bool = False
     halt_on_qa_fail: bool = True
+    scene_approval: bool = Field(False, description="Pause every scene for a reviewer after its QA (manual mode).")
+    max_cost_usd: float | None = Field(None, gt=0, description="Budget cap for the run; reaching it pauses the run for a decision.")
 
     @model_validator(mode="after")
     def _checks(self) -> RunParams:
@@ -100,6 +103,33 @@ class StepState(BaseModel):
     log_key: str | None = None
 
 
+class SceneRun(BaseModel):
+    """One scene of an episode on the run board: its own render -> QA -> retry -> approval loop."""
+
+    id: str = Field(description="'ep01.sc01'")
+    episode: int
+    scene_id: str
+    status: SceneStatus = "pending"
+    attempt: int = 0
+    units: int = 0
+    score: int | None = None
+    issues: list[str] = Field(default_factory=list, description="Issue codes of the latest scene QA.")
+    reviewer: str | None = None
+    error: str | None = None
+
+
+class PendingDecision(BaseModel):
+    """Something a paused run is waiting for a person to decide."""
+
+    id: str = Field(description="Answer with this id.")
+    kind: Literal["scene_approval", "budget"]
+    episode: int | None = None
+    scene_id: str | None = None
+    message: str = ""
+    data: dict = Field(default_factory=dict)
+    asked_at: str = ""
+
+
 class RunTotals(BaseModel):
     cost_usd: float = 0.0
     llm_calls: int = 0
@@ -120,6 +150,9 @@ class RunState(BaseModel):
     finished_at: str | None = None
     params: RunParams
     steps: list[StepState] = Field(default_factory=list)
+    scenes: list[SceneRun] = Field(default_factory=list)
+    pending: list[PendingDecision] = Field(default_factory=list, description="Open decisions while status is 'waiting'.")
+    budget_usd: float | None = Field(None, description="Current cap: params.max_cost_usd, raised when a reviewer allows more.")
     notes: list[str] = Field(default_factory=list)
     casting: list[dict] = Field(default_factory=list)
     totals: RunTotals = Field(default_factory=RunTotals)
@@ -134,14 +167,24 @@ class RunState(BaseModel):
     def episodes(self) -> list[int]:
         return sorted({s.episode for s in self.steps if s.episode})
 
+    def scene(self, episode: int, scene_id: str) -> SceneRun:
+        key = f"ep{episode:02d}.{scene_id}"
+        for s in self.scenes:
+            if s.id == key:
+                return s
+        s = SceneRun(id=key, episode=episode, scene_id=scene_id)
+        self.scenes.append(s)
+        return s
+
 
 class PipelineEvent(BaseModel):
     seq: int = 0
     at: str
     run_id: str
     series_id: str
-    type: str = Field(description="run.started | step.started | step.finished | step.failed | step.retry | contract.rejected | "
-                                  "qa.flagged | gate.waiting | gate.approved | gate.rejected | run.finished ...")
+    type: str = Field(description="run.started | run.waiting | run.resumed | step.started | step.finished | step.failed | step.retry | "
+                                  "contract.rejected | scene.qa | scene.retry | scene.waiting | scene.approved | scene.rejected | scene.failed | "
+                                  "qa.flagged | budget.waiting | budget.raised | gate.waiting | gate.approved | gate.rejected | run.finished ...")
     step_id: str | None = None
     agent: str | None = None
     episode: int | None = None

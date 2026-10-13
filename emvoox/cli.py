@@ -1,10 +1,16 @@
 """Command line for Emvoox Engine.
 
     python -m emvoox serve [--host 127.0.0.1] [--port 8765]     API + web app
+    python -m emvoox worker                                      run queued jobs (EMVOOX_QUEUE=redis); start as many as needed
     python -m emvoox run --series s1 --story story.txt --episodes 30 --produce 3 --tts gemini
     python -m emvoox run --series s2 --research --seeds "ghi chú xu hướng..." --llm wavespeed --tts wavespeed
     python -m emvoox run --series s1 --only 4-6                  continue an existing series
     python -m emvoox research [--seeds "..."] [--browser] [--platforms dramabox,youtube] [--guide "..."] [--focus urban_ceo]
+    python -m emvoox run --series s1 --story story.txt --scene-approval --max-cost 2     pause for scene approvals and at a budget
+    python -m emvoox decide --series s1                           list what a paused run is waiting for
+    python -m emvoox decide --series s1 --scene sc01 --approve --reviewer an           answer; the run continues
+    python -m emvoox decide --series s1 --scene sc02 --reject --reviewer an --units ep01_sc02_l003 --notes "flat"
+    python -m emvoox decide --series s1 --budget --approve --max-cost 5 --reviewer an
     python -m emvoox approve --series s1 --episode 1 --reviewer an [--notes "..."]
     python -m emvoox reject  --series s1 --episode 1 --reviewer an --notes "line 3 sounds flat"
     python -m emvoox voices                                       list Voice IPs and their voices
@@ -34,6 +40,12 @@ def cmd_serve(a: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_worker(_a: argparse.Namespace) -> int:
+    from emvoox.worker.worker import main as worker_main
+
+    return worker_main()
+
+
 def cmd_run(argv: list[str]) -> int:
     from emvoox.engine.orchestrator import main as run_main
 
@@ -58,6 +70,19 @@ def cmd_research(a: argparse.Namespace) -> int:
         from pathlib import Path
 
         seeds = Path(seeds).read_text(encoding="utf-8")
+    if a.agent:
+        from emvoox.services.research import run_agent_scan
+
+        session = run_agent_scan(repos, {"llm_provider": a.llm or s.llm_provider, "llm_model": a.llm_model, "seeds": seeds or "", "focus": a.focus or "",
+                                         "guide": a.guide or "", "use_browser": a.browser or None,
+                                         "platforms": [p.strip() for p in (a.platforms or "").split(",") if p.strip()]})
+        scan = repos.research.load_scan(session.data["scan_id"])
+        for line in scan.log:
+            print(line, file=sys.stderr)
+        print(session.result, file=sys.stderr)
+        return _out({"ok": bool(scan.brief_id), "brief_id": scan.brief_id, "scan_id": scan.scan_id, "status": session.status, "steps": session.steps,
+                     "tool_calls": sum(len(m.tool_calls) for m in session.messages), "cost_usd": session.cost_usd, "error": scan.error},
+                    ok=bool(scan.brief_id))
     brief = MarketResearchAgent().run(ctx, ResearchParams(seeds=seeds or "", use_browser=a.browser or None, focus=a.focus or "", guide=a.guide or "",
                                                          platforms=[p.strip() for p in (a.platforms or "").split(",") if p.strip()]))
     for c in brief.candidates:
@@ -131,6 +156,37 @@ def cmd_agents(_a: argparse.Namespace) -> int:
     return _out({"ok": True, "agents": len(fleet())})
 
 
+def cmd_decide(a: argparse.Namespace) -> int:
+    """List a waiting run's open decisions, or answer some of them and continue the run in this process."""
+    import asyncio
+
+    from emvoox.agents import AgentError
+    from emvoox.engine.orchestrator import Engine, report
+    from emvoox.repositories import get_repositories
+
+    try:
+        engine = Engine.restore(get_repositories(), a.series)
+    except AgentError as e:
+        return _out({"ok": False, "error": str(e)}, ok=False)
+    st = engine.state
+    if st.status != "waiting":
+        return _out({"ok": False, "error": f"run {st.run_id} is not waiting for a decision (status: {st.status})"}, ok=False)
+    if not (a.approve or a.reject):
+        for d in st.pending:
+            print(f"{d.id}  {d.kind:<15} {d.message}", file=sys.stderr)
+        return _out({"ok": True, "run_id": st.run_id, "status": st.status, "pending": [d.model_dump(mode="json") for d in st.pending]})
+    if not a.reviewer:
+        return _out({"ok": False, "error": "--reviewer is required to answer a decision"}, ok=False)
+    chosen = [d for d in st.pending if (a.all or d.id == a.id or (a.budget and d.kind == "budget")
+                                        or (a.scene and d.scene_id == a.scene and (a.episode is None or d.episode == a.episode)))]
+    if not chosen:
+        return _out({"ok": False, "error": "no open decision matches; run 'decide --series ...' to list them"}, ok=False)
+    answer = {"approved": bool(a.approve), "reviewer": a.reviewer, "notes": a.notes, "unit_ids": [u for u in a.units.split(",") if u]}
+    if a.max_cost:
+        answer["max_cost_usd"] = a.max_cost
+    return report(asyncio.run(engine.run({d.id: answer for d in chosen})))
+
+
 def main(argv: list[str] | None = None) -> int:
     argv = list(sys.argv[1:] if argv is None else argv)
     if argv and argv[0] == "run":
@@ -140,6 +196,7 @@ def main(argv: list[str] | None = None) -> int:
     sv = sub.add_parser("serve", help="API + web app")
     sv.add_argument("--host", default="127.0.0.1")
     sv.add_argument("--port", type=int, default=8765)
+    sub.add_parser("worker", help="run queued jobs until interrupted (needs EMVOOX_QUEUE=redis)")
     sub.add_parser("run", help="run the pipeline (see: python -m emvoox run --help)")
     rs = sub.add_parser("research", help="Market Research Agent only: produce a TrendBrief")
     rs.add_argument("--seeds", default="", help="trend notes (text, or a .md/.txt file)")
@@ -148,6 +205,8 @@ def main(argv: list[str] | None = None) -> int:
     rs.add_argument("--guide", default="", help="what the agent should look for")
     rs.add_argument("--platforms", default="", help="comma-separated: dramabox,reelshort,tiktok,google,youtube (default: all)")
     rs.add_argument("--llm", default=None)
+    rs.add_argument("--llm-model", default=None)
+    rs.add_argument("--agent", action="store_true", help="tool loop: the model decides what to read and search, then writes the brief")
     for name in ("approve", "reject"):
         g = sub.add_parser(name, help=f"{name} an episode at the human gate")
         g.add_argument("--series", required=True)
@@ -156,6 +215,20 @@ def main(argv: list[str] | None = None) -> int:
         g.add_argument("--notes", default="")
         if name == "reject":
             g.add_argument("--lines", default="")
+    dd = sub.add_parser("decide", help="list or answer what a paused run is waiting for (scene approvals, budget)")
+    dd.add_argument("--series", required=True)
+    dd.add_argument("--id", default=None, help="one decision by id")
+    dd.add_argument("--scene", default=None, help="a scene approval, e.g. sc01")
+    dd.add_argument("--episode", type=int, default=None)
+    dd.add_argument("--budget", action="store_true", help="the budget decision")
+    dd.add_argument("--all", action="store_true", help="every open decision")
+    verdict = dd.add_mutually_exclusive_group()
+    verdict.add_argument("--approve", action="store_true")
+    verdict.add_argument("--reject", action="store_true")
+    dd.add_argument("--reviewer", default="")
+    dd.add_argument("--notes", default="")
+    dd.add_argument("--units", default="", help="rejecting a scene: render units to redo, comma-separated (default: the whole scene)")
+    dd.add_argument("--max-cost", type=float, default=None, help="approving the budget decision: the new cap in USD")
     sub.add_parser("voices", help="list Voice IPs")
     pv = sub.add_parser("plug-voice", help="plug a (cloned) voice into a Voice IP; the next run uses it")
     pv.add_argument("--actor", required=True)
@@ -172,7 +245,8 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("agents", help="list the agent fleet")
     a = ap.parse_args(argv)
     return {
-        "serve": cmd_serve, "research": cmd_research, "approve": lambda x: cmd_gate(x, "approve"), "reject": lambda x: cmd_gate(x, "reject"),
+        "serve": cmd_serve, "worker": cmd_worker, "research": cmd_research, "decide": cmd_decide,
+        "approve": lambda x: cmd_gate(x, "approve"), "reject": lambda x: cmd_gate(x, "reject"),
         "voices": cmd_voices, "plug-voice": cmd_plug, "doctor": cmd_doctor, "agents": cmd_agents,
     }[a.cmd](a)
 

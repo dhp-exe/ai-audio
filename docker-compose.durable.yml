@@ -1,0 +1,67 @@
+# Adds PostgreSQL, Redis and a worker to docker-compose.yml, and points the API at them:
+#   docker compose -f docker-compose.yml -f docker-compose.durable.yml up --build
+# The API saves a run and queues it; the worker runs it. Either can restart without losing the run: it continues
+# from its checkpoint. Media files (stems, masters) stay in ./data, shared by both containers.
+x-durable-env: &durable_env
+  EMVOOX_DATA_DIR: /app/data
+  EMVOOX_STORAGE: postgres
+  EMVOOX_DATABASE_URL: postgresql://emvoox:emvoox@postgres:5432/emvoox
+  EMVOOX_QUEUE: redis
+  EMVOOX_REDIS_URL: redis://redis:6379/0
+  EMVOOX_EMBEDDED_WORKER: "false"   # the worker service does the work
+
+services:
+  emvoox:
+    environment: *durable_env
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+
+  worker:
+    image: emvoox-studio:latest
+    init: true
+    command: ["python", "-m", "emvoox", "worker"]
+    env_file:
+      - path: .env
+        required: false
+    environment: *durable_env
+    volumes:
+      - ./data:/app/data
+    shm_size: "1gb"
+    healthcheck: { disable: true }
+    depends_on:
+      emvoox: { condition: service_started }   # the image is built by the emvoox service
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:18
+    environment:
+      POSTGRES_USER: emvoox
+      POSTGRES_PASSWORD: emvoox   # reachable only inside the compose network
+      POSTGRES_DB: emvoox
+    volumes:
+      - emvoox-postgres:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U emvoox -d emvoox"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+  redis:
+    image: redis:8
+    command: ["redis-server", "--appendonly", "yes"]   # queued jobs survive a Redis restart
+    volumes:
+      - emvoox-redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+volumes:
+  emvoox-postgres:
+  emvoox-redis:

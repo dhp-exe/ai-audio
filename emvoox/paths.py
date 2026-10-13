@@ -39,10 +39,15 @@ TREND_SEEDS = "inputs/trends"
 MARKET_SOURCES = "inputs/market_sources.json"
 BRIEFS = "research/briefs"
 SCANS = "research/scans"
+OBSERVATIONS = "research/observations"  # what an agent-driven scan has read so far (full text; the conversation keeps excerpts)
+SESSIONS = "agents/sessions"  # AgentSession documents: one agent working on one task
+THREADS = "chat/threads"  # chat threads with the Producer agent
+MEMORY = "agents/memory"  # long-term memory, one document per agent
 SERIES = "series"
 APPROVED = "outputs/approved_masters"
 RUN_LOG = "telemetry/run_log.jsonl"
 VENDOR_EVENTS = "telemetry/usage_events.jsonl"
+CHECKPOINTS = "runs/checkpoints.sqlite"  # workflow graph checkpoints (local storage); a paused run resumes from here
 
 
 def preview(name: str) -> str:
@@ -67,6 +72,30 @@ def brief(brief_id: str) -> str:
 
 def scan(scan_id: str) -> str:
     return f"{SCANS}/{_check_field(scan_id, 'scan id')}.json"
+
+
+def scan_observations(scan_id: str) -> str:
+    return f"{OBSERVATIONS}/{_check_field(scan_id, 'scan id')}.json"
+
+
+def session(session_id: str) -> str:
+    return f"{SESSIONS}/{_check_field(session_id, 'session id')}.json"
+
+
+def thread_root(thread_id: str) -> str:
+    return f"{THREADS}/{_check_field(thread_id, 'thread id')}"
+
+
+def thread(thread_id: str) -> str:
+    return f"{thread_root(thread_id)}/thread.json"
+
+
+def thread_events(thread_id: str) -> str:
+    return f"{thread_root(thread_id)}/events.jsonl"
+
+
+def agent_memory(agent_id: str) -> str:
+    return f"{MEMORY}/{_check_field(agent_id.replace('_', '-'), 'agent id')}.json"
 
 
 def scan_shot(scan_id: str, name: str) -> str:
@@ -152,6 +181,11 @@ def qa_report(series_id: str, episode: int) -> str:
     return f"{series_root(series_id)}/qa/{ep(episode)}_report.json"
 
 
+def scene_qa_report(series_id: str, episode: int, scene_id: str) -> str:
+    """SceneQAReport of one scene (latest attempt); the episode report rolls these up."""
+    return f"{series_root(series_id)}/qa/{ep(episode)}_{_check_field(scene_id, 'scene_id')}.json"
+
+
 def release(series_id: str, episode: int) -> str:
     """ReleasePackage: human gate state + publishing metadata."""
     return f"{series_root(series_id)}/release/{ep(episode)}.json"
@@ -217,6 +251,11 @@ def parse_stem_name(filename: str) -> dict:
         "type": d["type"],
         "line_id": f"ep{d['ep']}_sc{d['sc']}_l{d['line']}",
     }
+
+
+def is_stem_name(filename: str) -> bool:
+    """A line stem or a conversation-chunk stem."""
+    return bool(_STEM_RE.match(filename) or re.match(r"^ep\d{2}_sc\d{2}_c\d{2}_chunk\.wav$", filename))
 
 
 def chunk_stem_name(episode: int, scene: int, chunk: int) -> str:

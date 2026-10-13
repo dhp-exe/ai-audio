@@ -8,7 +8,13 @@ Market research
     GET /api/research/briefs[/{id}]  POST /api/research/briefs/{id}/select  DELETE /api/research/briefs/{id}   GET /api/research/seeds
 Runs (the engine)
     POST /api/runs                   GET /api/runs   GET /api/runs/{id}   POST /api/runs/{id}/cancel
+    GET  /api/decisions (what paused runs wait for)   POST /api/runs/{id}/decisions (answer; the run continues)
+    GET  /api/series/{sid}/episodes/{n}/stems/{name} (listen to a scene before the master exists)
     GET  /api/runs/{id}/steps/{step}/log             GET /api/runs/{id}/events?after=N
+Chat (the Producer agent)
+    POST /api/chat/threads (first message)   GET /api/chat/threads   GET/DELETE /api/chat/threads/{id}
+    POST /api/chat/threads/{id}/messages     POST /api/chat/threads/{id}/answers (questions and approvals the agent is waiting for)
+    GET  /api/chat/threads/{id}/events?after=N   GET /api/chat/threads/{id}/stream (server-sent events)
 Productions
     GET  /api/library   GET /api/series/{sid}   GET /api/series/{sid}/episodes/{n}   POST /api/series/{sid}/resume
     DELETE /api/series/{sid}         GET /api/series/{sid}/master/{n}.mp3
@@ -36,33 +42,35 @@ from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, HTMLResponse, PlainTextResponse
+from fastapi.responses import FileResponse, HTMLResponse, PlainTextResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field, ValidationError
 
 from emvoox import __version__, paths
-from emvoox.agents import AgentContext, AgentError, MarketResearchAgent, fleet
+from emvoox.agents import AgentError, fleet
 from emvoox.agents import publisher as gate
 from emvoox.casting import apply_role_tags, duplicate_actor_pins, parse_roles_text
 from emvoox.config import DEFAULT_LLM_MODEL, LLM_MODEL_SUGGESTIONS, LLM_PROVIDERS, REPO_ROOT, get_settings
 from emvoox.contracts.cast import EngineRef
+from emvoox.contracts.jobs import Job
 from emvoox.contracts.market import THEME_LABEL_VI, ThemeCategory
 from emvoox.contracts.production import CharacterProfile, ProviderVoice, StoryInput, StoryOverview, StoryRole, VoiceSource
 from emvoox.contracts.release import PublishMetadata
 from emvoox.contracts.run import LIVE_RUN, ResearchParams, RunParams
 from emvoox.engine.orchestrator import Engine
-from emvoox.providers.llm import LlmClient, get_llm_provider
 from emvoox.providers.tts import DEFAULT_MODEL, PROVIDER_NAMES, ProviderError, catalog, model_ids
 from emvoox.providers.tts.catalog import gemini_voice
 from emvoox.repositories import RegistryLocked, get_repositories, now_iso
-from emvoox.services import doctor, library, previews
+from emvoox.services import chat, doctor, library, previews, research
+from emvoox.services.runs import slug as _slug
 from emvoox.telemetry import usage
 from emvoox.telemetry.ledger import Ledger
+from emvoox.worker import ensure_embedded_worker, get_queue
 
 
 @asynccontextmanager
 async def _lifespan(_app: FastAPI):
-    mark_interrupted_runs()
+    recover_interrupted_runs()
     yield
 
 
@@ -75,7 +83,6 @@ app.add_middleware(
 )
 WEB_OUT = REPO_ROOT / "web" / "out"  # Next.js static export (cd web && npm run export)
 
-_engines: dict[str, Engine] = {}
 _lock = threading.Lock()
 
 
@@ -83,30 +90,62 @@ def repos():
     return get_repositories()
 
 
-def _active() -> list[Engine]:
-    return [e for e in _engines.values() if e.state.status in LIVE_RUN]
+def _submit(job: Job) -> Job:
+    """Hand a job to the workers. With the memory queue (or EMVOOX_EMBEDDED_WORKER) this process runs one itself."""
+    queue = get_queue()
+    queue.enqueue(job)
+    s = get_settings()
+    if s.queue_backend == "memory" or s.embedded_worker:
+        ensure_embedded_worker(queue)
+    return job
 
 
-def mark_interrupted_runs() -> list[str]:
-    """A run lives in a thread of this process; if the server died mid-run its state file still says
-    'running'. On startup mark those as cancelled so the UI tells the truth (finished steps stay done;
-    Continue picks up from the cached artifacts)."""
-    fixed: list[str] = []
+def _live_runs() -> list[dict]:
+    """Runs queued or in progress, read from storage: the API holds no engine of its own."""
     r = repos()
+    out = []
+    for sid in r.series.list_ids():
+        raw = r.runs.load_raw(sid)
+        if raw and raw.get("status") in LIVE_RUN and "steps" in raw:
+            out.append(raw)
+    return sorted(out, key=lambda x: x.get("created_at") or "")
+
+
+def _busy(sid: str) -> dict | None:
+    raw = repos().runs.load_raw(sid)
+    return raw if raw and raw.get("status") in (*LIVE_RUN, "waiting") and "steps" in raw else None
+
+
+def recover_interrupted_runs() -> dict[str, list[str]]:
+    """At startup: what happened to runs that were queued or in progress when the server last stopped.
+
+    With the Redis queue nothing is needed here: their jobs are still in the queue, and a job whose worker died is
+    delivered again. With the memory queue the jobs went with the process, so they are enqueued again: a run that
+    had started continues from its checkpoint (``recover``), one that had not starts. A run recorded before the
+    workflow graph has no checkpoint to continue from and is closed as interrupted (its finished steps stay done;
+    Continue picks up from the cached artifacts)."""
+    out: dict[str, list[str]] = {"recovered": [], "interrupted": []}
+    r = repos()
+    memory = get_settings().queue_backend == "memory"
     for sid in r.series.list_ids():
         data = r.runs.load_raw(sid)
         if not data or data.get("status") not in LIVE_RUN:
             continue
+        if "steps" in data:
+            if memory:
+                _submit(Job(kind="run", action="recover" if data["status"] == "running" else "start", tenant=r.tenant, series_id=sid, run_id=data["run_id"]))
+                out["recovered"].append(data["run_id"])
+            continue
         data["status"] = "cancelled"
         data["error"] = "interrupted: the server stopped while this run was in progress; use Continue on the production page"
         data["finished_at"] = now_iso()
-        for s in data.get("steps") or data.get("jobs") or []:
-            if s.get("status") in LIVE_RUN:
-                s["status"] = "skipped"
-                s["finished_at"] = s.get("finished_at") or data["finished_at"]
+        for st in data.get("jobs") or []:
+            if st.get("status") in LIVE_RUN:
+                st["status"] = "skipped"
+                st["finished_at"] = st.get("finished_at") or data["finished_at"]
         r.runs.save_raw(sid, data)
-        fixed.append(data.get("run_id", sid))
-    return fixed
+        out["interrupted"].append(data.get("run_id", sid))
+    return out
 
 
 def _check_engine(provider: str, model: str | None) -> str | None:
@@ -143,19 +182,21 @@ def _actor_summary(c: CharacterProfile) -> dict:
             "previews": {p: previews.actor_preview(r, c, p, render=False) for p in c.providers}}
 
 
-def _slug(s: str) -> str:
-    import unicodedata
+def _start(params: RunParams, *, story: StoryInput | None = None, brief=None) -> dict:
+    """Save the run as pending and queue it; a worker starts it."""
+    r = repos()
+    try:
+        engine = Engine.create(params, story=story, brief=brief, repos=r)
+    except AgentError as e:
+        raise HTTPException(409, str(e)) from e
+    _submit(Job(kind="run", action="start", tenant=r.tenant, series_id=params.series_id, run_id=engine.run_id))
+    return engine.state.model_dump(mode="json")
 
-    s = unicodedata.normalize("NFD", s)
-    s = "".join(ch for ch in s if unicodedata.category(ch) != "Mn").replace("đ", "d").replace("Đ", "D")
-    s = re.sub(r"[^a-z0-9-]+", "-", s.lower()).strip("-")
-    return s[:24].rstrip("-") or "series"
 
-
-def _start(engine: Engine) -> dict:
-    state = engine.start()
-    _engines[engine.run_id] = engine
-    return state.model_dump(mode="json")
+def _waiting(sid: str) -> dict | None:
+    """The series' latest run, when it is paused for a decision."""
+    raw = repos().runs.load_raw(sid)
+    return raw if raw and raw.get("status") == "waiting" else None
 
 
 # ---------------------------------------------------------------------------------------- studio
@@ -166,21 +207,21 @@ def config() -> dict:
     s = get_settings()
     r = repos()
     reg = r.registry.load()
-    active = _active()
+    active = _live_runs()
     return {
         "version": __version__,
         "llm": {"provider": s.llm_provider, "model": s.llm_model, "providers": [p for p in LLM_PROVIDERS if p != "mock" or _mock_enabled()],
                 "defaults": DEFAULT_LLM_MODEL, "models": LLM_MODEL_SUGGESTIONS},
         "tts": {"provider": s.tts_provider, "model": s.tts_model or DEFAULT_MODEL.get(s.tts_provider), "batching": s.tts_batching},
         "keys": s.keys_present(),
-        "storage": {"backend": r.backend, "root": r.root},
+        "storage": {"backend": r.backend, "root": r.root, "tenant": r.tenant, "queue": s.queue_backend},
         "catalog": catalog(include_mock=_mock_enabled()),
         "defaults": {"episodes": 30, "produce": 3, "min_sec": 50, "max_sec": 70, "max_retries": s.qa_max_retries, "auto_approve": s.auto_approve,
                      "halt_on_qa_fail": s.halt_on_qa_fail, "qa_transcribe": s.qa_transcribe, "enable_bgm": s.enable_bgm, "enable_sfx": s.enable_sfx,
                      "research_use_browser": s.research_use_browser, "loudness_lufs": s.loudness_lufs, "true_peak_dbtp": s.true_peak_dbtp},
         "actors": [_actor_summary(c) for c in reg.characters],
-        "active_run": active[0].run_id if active else None,
-        "active_series": active[0].params.series_id if active else None,
+        "active_run": active[0]["run_id"] if active else None,
+        "active_series": active[0]["series_id"] if active else None,
         "theme_categories": [{"id": t.value, "label": THEME_LABEL_VI[t]} for t in ThemeCategory],
         "mock_enabled": _mock_enabled(),
     }
@@ -188,7 +229,18 @@ def config() -> dict:
 
 @app.get("/api/agents")
 def agents() -> dict:
-    return {"agents": fleet()}
+    """The fleet (what each agent does in the workflow graph), the agents of the runtime with the tools each may
+    call, and the tool registry by area."""
+    from emvoox.runtime.agents import AGENTS
+    from emvoox.tools import load_builtin_tools
+
+    registry = load_builtin_tools()
+    tools = [{"name": t.name, "area": t.area, "kind": t.kind, "description": t.description, "parameters": t.spec().parameters} for t in registry.all()]
+    return {"agents": fleet(),
+            "runtime": [{"id": a.id, "title": a.title, "areas": a.areas, "loadable": a.loadable, "core": a.core, "max_steps": a.max_steps,
+                         "max_cost_usd": a.max_cost_usd, "model": a.model,
+                         "tools": [t.name for area in a.areas for t in registry.in_area(area)] + a.core} for a in AGENTS.values()],
+            "tools": tools}
 
 
 @app.get("/api/doctor")
@@ -199,7 +251,8 @@ def doctor_checks(live: bool = False) -> dict:
 @app.get("/api/dashboard")
 def dashboard() -> dict:
     r = repos()
-    active = {e.params.series_id: e.run_id for e in _active()}
+    live_runs = _live_runs()
+    active = {x["series_id"]: x["run_id"] for x in live_runs}
     series = library.list_series(r, active)
     costs = usage.cost_summary(r, vendor_counters=False)
     attention = []
@@ -213,7 +266,7 @@ def dashboard() -> dict:
         raw = r.runs.load_raw(sid)
         if raw:
             runs.append(library.run_summary(raw, titles.get(sid)))
-    live = [library.run_summary(e.state.model_dump(mode="json"), titles.get(e.params.series_id)) for e in _active()]
+    live = [library.run_summary(x, titles.get(x["series_id"])) for x in live_runs]
     live_ids = {x["run_id"] for x in live}
     return {
         "kpis": {"series": len(series), "episodes_planned": sum(s["planned"] for s in series), "episodes_mastered": sum(s["produced"] for s in series),
@@ -239,6 +292,7 @@ class ScanIn(BaseModel):
     guide: str = ""
     llm_provider: str | None = None
     wait: bool = False  # true = answer only when the scan has finished (scripts, tests)
+    agent: bool = False  # true = the tool loop: the model decides what to read and search
 
 
 _SCAN_ID = re.compile(r"scan-[0-9]{8}-[0-9]{6}(-[0-9]+)?")
@@ -272,25 +326,16 @@ def research_scan(body: ScanIn) -> dict:
         while r.research.load_scan(scan_id) is not None:
             n += 1
             scan_id = f"scan-{stamp}-{n}"
-        ledger = Ledger(r.telemetry)
-        ctx = AgentContext(settings=s, repos=r, llm=LlmClient(get_llm_provider(provider), ledger), ledger=ledger,
-                           params=RunParams(series_id="research", tts_provider="mock"))  # research renders no audio
-        params = ResearchParams(seeds=body.seeds, platforms=body.platforms, use_browser=body.use_browser, focus=body.focus, guide=body.guide)
-
-        def work() -> None:
-            try:
-                MarketResearchAgent().run(ctx, params, scan_id=scan_id)
-            except Exception:  # noqa: BLE001 - the agent records the failure in the scan document
-                pass
-
+        payload = {"scan_id": scan_id, "llm_provider": provider, "seeds": body.seeds, "platforms": body.platforms, "use_browser": body.use_browser,
+                   "focus": body.focus, "guide": body.guide, "agent": body.agent}
         if body.wait:
-            work()
+            research.run_scan(r, payload)
         else:
             from emvoox.contracts.market import ScanState
 
             r.research.save_scan(ScanState(scan_id=scan_id, created_at=now_iso(), guide=body.guide, focus=body.focus, use_browser=use_browser,
-                                           platforms=body.platforms))  # visible before the thread's first write
-            threading.Thread(target=work, name=scan_id, daemon=True).start()
+                                           platforms=body.platforms, mode="agent" if body.agent else "fixed"))  # visible before a worker's first write
+            _submit(Job(kind="scan", tenant=r.tenant, payload=payload))
     return _scan_or_404(scan_id).model_dump(mode="json")
 
 
@@ -393,13 +438,13 @@ class StartRun(BaseModel):
     max_retries: int = Field(3, ge=0, le=5)
     auto_approve: bool = False
     halt_on_qa_fail: bool = True
+    scene_approval: bool = False
+    max_cost_usd: float | None = Field(None, gt=0)
 
 
 @app.post("/api/runs")
 def start_run(body: StartRun) -> dict:
     with _lock:
-        if _active():
-            raise HTTPException(409, f"a run is already in progress: {_active()[0].run_id}")
         r = repos()
         if body.source not in ("story", "brief", "research"):
             raise HTTPException(422, "source must be story, brief or research")
@@ -437,6 +482,8 @@ def start_run(body: StartRun) -> dict:
         else:
             base = "research"
         sid = _slug(body.series_id) if body.series_id else _slug(base) + "-" + datetime.now(UTC).strftime("%m%d%H%M")
+        if _busy(sid):
+            raise HTTPException(409, f"series '{sid}' already has a run that is {_busy(sid)['status']}: {_busy(sid)['run_id']}")
         if r.series.load_bible(sid) is not None and not body.force:
             raise HTTPException(409, f"series '{sid}' already exists; continue it from Productions, or tick 'overwrite'")
         try:
@@ -444,16 +491,17 @@ def start_run(body: StartRun) -> dict:
                                source=body.source, brief_id=body.brief_id, research=body.research or ResearchParams(),  # type: ignore[arg-type]
                                tts_provider=body.tts_provider, tts_model=model, tts_batching=body.tts_batching, tier=body.tier,  # type: ignore[arg-type]
                                engine_by_role_type=body.engine_by_role_type, llm_provider=body.llm_provider, llm_model=body.llm_model or None,
-                               max_retries=body.max_retries, auto_approve=body.auto_approve, halt_on_qa_fail=body.halt_on_qa_fail)
+                               max_retries=body.max_retries, auto_approve=body.auto_approve, halt_on_qa_fail=body.halt_on_qa_fail,
+                               scene_approval=body.scene_approval, max_cost_usd=body.max_cost_usd)
         except ValidationError as e:
             raise HTTPException(422, str(e)) from e
-        return _start(Engine(params, story=story, brief=brief, repos=r))
+        return _start(params, story=story, brief=brief)
 
 
 @app.get("/api/runs")
 def list_runs() -> dict:
     r = repos()
-    live = {e.run_id: e.state.model_dump(mode="json") for e in _active()}
+    live = {x["run_id"]: x for x in _live_runs()}
     recent = []
     for sid in r.series.list_ids():
         raw = r.runs.load_raw(sid)
@@ -465,8 +513,6 @@ def list_runs() -> dict:
 
 
 def _get_run(run_id: str) -> dict:
-    if run_id in _engines:
-        return _engines[run_id].state.model_dump(mode="json")
     r = repos()
     for sid in r.series.list_ids():
         if run_id.startswith(sid + "-"):
@@ -491,11 +537,84 @@ def get_run(run_id: str) -> dict:
 
 @app.post("/api/runs/{run_id}/cancel")
 def cancel_run(run_id: str) -> dict:
-    e = _engines.get(run_id)
-    if not e or e.state.status not in LIVE_RUN:
+    raw = _get_run(run_id)
+    if raw.get("status") in LIVE_RUN and "steps" in raw:
+        get_queue().request_cancel(run_id)  # the worker on it stops after the current step; a queued run is closed when claimed
+        return {"ok": True}
+    if raw.get("status") != "waiting":
         raise HTTPException(404, "run not active")
-    e.cancel()
+    # a waiting run holds no worker: close it in place; its artifacts stay and Continue picks them up
+    raw.update({"status": "cancelled", "error": "cancelled while waiting for a decision", "finished_at": now_iso(), "pending": []})
+    for s in raw.get("steps") or []:
+        if s.get("status") in ("pending", "running"):
+            s["status"] = "skipped"
+    repos().runs.save_raw(raw["series_id"], raw)
     return {"ok": True}
+
+
+class DecisionIn(BaseModel):
+    id: str = Field(min_length=1)
+    approved: bool
+    reviewer: str = Field(min_length=1)
+    notes: str = ""
+    unit_ids: list[str] = Field(default_factory=list, description="Rejecting a scene: the render units to redo; empty = the whole scene.")
+    max_cost_usd: float | None = Field(None, gt=0, description="Approving a budget decision: the new cap.")
+
+
+class DecideIn(BaseModel):
+    decisions: list[DecisionIn] = Field(min_length=1)
+
+
+@app.get("/api/decisions")
+def decisions() -> dict:
+    """Everything a paused run is waiting for a person to decide, across series."""
+    r = repos()
+    items = []
+    for sid in r.series.list_ids():
+        raw = _waiting(sid)
+        if not raw:
+            continue
+        title = (r.docs.get(paths.bible(sid)) or {}).get("title") or sid
+        for d in raw.get("pending") or []:
+            item = {**d, "run_id": raw["run_id"], "series_id": sid, "series_title": title}
+            if d.get("kind") == "scene_approval":
+                item["scene"] = library.scene_detail(r, sid, d["episode"], d["scene_id"])
+            items.append(item)
+    return {"items": sorted(items, key=lambda i: (i.get("asked_at") or "", i["series_id"], i.get("episode") or 0, i.get("scene_id") or ""))}
+
+
+@app.post("/api/runs/{run_id}/decisions")
+def decide(run_id: str, body: DecideIn) -> dict:
+    """Answer one or more of a waiting run's decisions; the run continues, and the ones left out stay open."""
+    with _lock:
+        raw = _get_run(run_id)
+        open_ids = {d["id"] for d in raw.get("pending") or []}
+        # "running" with open decisions = an earlier answer is being carried out; the rest can still be answered
+        if raw.get("status") not in ("waiting", "running") or not open_ids:
+            raise HTTPException(409, f"run {run_id} is not waiting for a decision (status: {raw.get('status')})")
+        unknown = [d.id for d in body.decisions if d.id not in open_ids]
+        if unknown:
+            raise HTTPException(422, f"not an open decision of this run: {unknown}")
+        answers = {d.id: d.model_dump(exclude={"id"}, exclude_none=True) for d in body.decisions}
+        r = repos()
+        _submit(Job(kind="run", action="resume", tenant=r.tenant, series_id=raw["series_id"], run_id=run_id, resume=answers))
+        # shown as running at once; the worker that takes the job continues the run from its checkpoint
+        raw["status"] = "running"
+        raw["pending"] = [d for d in raw["pending"] if d["id"] not in answers]
+        r.runs.save_raw(raw["series_id"], raw)
+        return raw
+
+
+@app.get("/api/series/{sid}/episodes/{n}/stems/{name}")
+def stem_audio(sid: str, n: int, name: str):
+    """One rendered stem, so a reviewer can listen to a scene before the episode is mastered."""
+    r = repos()
+    if not paths.is_stem_name(name):
+        raise HTTPException(404, "not a stem")
+    key = paths.stem(sid, n, name)
+    if not r.blobs.exists(key):
+        raise HTTPException(404, "stem not rendered")
+    return FileResponse(r.blobs.local(key), media_type="audio/wav")
 
 
 @app.get("/api/runs/{run_id}/steps/{step_id}/log", response_class=PlainTextResponse)
@@ -514,22 +633,131 @@ def run_events(run_id: str, after: int = 0) -> dict:
     return {"events": events[-500:]}
 
 
+# ---------------------------------------------------------------------------------------- chat
+
+
+class ChatMessageIn(BaseModel):
+    text: str = Field(min_length=1, max_length=20_000)
+    user: str = ""
+    mode: str = Field("auto", pattern="^(auto|manual)$")  # manual: the agent's write tools wait for approval too
+
+
+class ChatAnswerIn(BaseModel):
+    id: str = Field(min_length=1)
+    answer: str | None = None  # a question the agent asked
+    approved: bool | None = None  # a tool call that needs approval
+    notes: str = ""
+    reviewer: str = ""
+
+
+class ChatAnswersIn(BaseModel):
+    answers: list[ChatAnswerIn] = Field(min_length=1)
+
+
+def _chat(call, *args, **kwargs):
+    try:
+        return call(*args, **kwargs)
+    except chat.ChatError as e:
+        raise HTTPException(e.status, str(e)) from e
+
+
+@app.post("/api/chat/threads")
+def chat_start(body: ChatMessageIn) -> dict:
+    """Start a conversation with the Producer agent. The reply arrives on the thread; poll it or read its events."""
+    thread = _chat(chat.create_thread, repos(), body.text, _submit, user=body.user, mode=body.mode)
+    return chat.thread_view(repos(), thread.id)
+
+
+@app.get("/api/chat/threads")
+def chat_threads() -> dict:
+    return {"threads": [t.model_dump(mode="json") for t in repos().chat.list()]}
+
+
+@app.get("/api/chat/threads/{thread_id}")
+def chat_thread(thread_id: str) -> dict:
+    return _chat(chat.thread_view, repos(), thread_id)
+
+
+@app.delete("/api/chat/threads/{thread_id}")
+def chat_delete(thread_id: str) -> dict:
+    r = repos()
+    thread = r.chat.load(thread_id)
+    if thread is None:
+        raise HTTPException(404, "no such conversation")
+    if thread.status == "running":
+        raise HTTPException(409, "the Producer is still working in this conversation")
+    r.chat.delete(thread_id)
+    r.sessions.delete(thread_id)
+    return {"ok": True}
+
+
+@app.post("/api/chat/threads/{thread_id}/messages")
+def chat_message(thread_id: str, body: ChatMessageIn) -> dict:
+    with _lock:
+        _chat(chat.post_message, repos(), thread_id, body.text, _submit)
+    return chat.thread_view(repos(), thread_id)
+
+
+@app.post("/api/chat/threads/{thread_id}/answers")
+def chat_answers(thread_id: str, body: ChatAnswersIn) -> dict:
+    """Answer what the agent is waiting for: a question (``answer``), or a tool call that needs approval (``approved``)."""
+    answers = {a.id: a.model_dump(exclude={"id"}, exclude_none=True) for a in body.answers}
+    with _lock:
+        _chat(chat.answer, repos(), thread_id, answers, _submit)
+    return chat.thread_view(repos(), thread_id)
+
+
+@app.get("/api/chat/threads/{thread_id}/events")
+def chat_events(thread_id: str, after: int = 0) -> dict:
+    r = repos()
+    thread = r.chat.load(thread_id)
+    if thread is None:
+        raise HTTPException(404, "no such conversation")
+    return {"status": thread.status, "events": r.chat.events(thread_id, after)[-500:]}
+
+
+@app.get("/api/chat/threads/{thread_id}/stream")
+def chat_stream(thread_id: str, after: int = 0):
+    """The thread's events as they happen (text/event-stream). Ends when the agent's turn does."""
+    r = repos()
+    if r.chat.load(thread_id) is None:
+        raise HTTPException(404, "no such conversation")
+
+    def events():
+        import json as _json
+
+        last, idle = after, 0
+        while idle < 1200:  # ten minutes without anything new: the client reconnects
+            fresh = r.chat.events(thread_id, last)
+            for e in fresh:
+                last = e["seq"]
+                yield f"id: {e['seq']}\nevent: {e['type']}\ndata: {_json.dumps(e, ensure_ascii=False)}\n\n"
+            thread = r.chat.load(thread_id)
+            if thread is None or (thread.status != "running" and not fresh):
+                yield f"event: turn.end\ndata: {_json.dumps({'status': thread.status if thread else 'deleted'})}\n\n"
+                return
+            idle = 0 if fresh else idle + 1
+            time.sleep(0.5)
+
+    return StreamingResponse(events(), media_type="text/event-stream", headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
+
+
 # ---------------------------------------------------------------------------------------- productions
 
 
 @app.get("/api/library")
 def get_library() -> dict:
-    return {"series": library.list_series(repos(), {e.params.series_id: e.run_id for e in _active()})}
+    return {"series": library.list_series(repos(), {x["series_id"]: x["run_id"] for x in _live_runs()})}
 
 
 @app.get("/api/series/{sid}")
 def get_series(sid: str) -> dict:
-    e = next((e for e in _active() if e.params.series_id == sid), None)
-    d = library.series_detail(repos(), sid, active_run=e.run_id if e else None)
+    live = next((x for x in _live_runs() if x["series_id"] == sid), None)
+    d = library.series_detail(repos(), sid, active_run=live["run_id"] if live else None)
     if not d:
         raise HTTPException(404, "unknown series")
-    if e:
-        d["run_state"] = e.state.model_dump(mode="json")
+    if live:
+        d["run_state"] = live
     return d
 
 
@@ -551,14 +779,18 @@ class ResumeIn(BaseModel):
     auto_approve: bool | None = None
     max_retries: int | None = Field(None, ge=0, le=5)
     llm_provider: str | None = None
+    scene_approval: bool = False
+    max_cost_usd: float | None = Field(None, gt=0)
 
 
 @app.post("/api/series/{sid}/resume")
 def resume_series(sid: str, body: ResumeIn) -> dict:
     with _lock:
-        if _active():
-            raise HTTPException(409, f"a run is already in progress: {_active()[0].run_id}")
         r = repos()
+        if _waiting(sid):
+            raise HTTPException(409, "this series has a run waiting for a decision; answer it on the Approvals page first")
+        if _busy(sid):
+            raise HTTPException(409, f"a run is already in progress for this series: {_busy(sid)['run_id']}")
         s = library.series_summary(r, sid)
         bible = r.series.load_bible(sid)
         if not s or bible is None:
@@ -580,22 +812,23 @@ def resume_series(sid: str, body: ResumeIn) -> dict:
                                max_sec=bible.episode_format.max_duration_sec, force=body.force, source="existing", tts_provider=provider, tts_model=model,
                                tts_batching=body.tts_batching, only=only, llm_provider=body.llm_provider,  # type: ignore[arg-type]
                                auto_approve=st.auto_approve if body.auto_approve is None else body.auto_approve,
-                               max_retries=st.qa_max_retries if body.max_retries is None else body.max_retries, halt_on_qa_fail=st.halt_on_qa_fail)
+                               max_retries=st.qa_max_retries if body.max_retries is None else body.max_retries, halt_on_qa_fail=st.halt_on_qa_fail,
+                               scene_approval=body.scene_approval, max_cost_usd=body.max_cost_usd)
         except ValidationError as e:
             raise HTTPException(422, str(e)) from e
-        return _start(Engine(params, repos=r))
+        return _start(params)
 
 
 @app.delete("/api/series/{sid}")
 def delete_series(sid: str) -> dict:
-    if any(e.params.series_id == sid for e in _active()):
+    if any(x["series_id"] == sid for x in _live_runs()):
         raise HTTPException(409, "a run is in progress for this series")
+    if _waiting(sid):
+        raise HTTPException(409, "this series has a run waiting for a decision; answer or cancel it first")
     r = repos()
     if sid not in r.series.list_ids():
         raise HTTPException(404, "unknown series")
     library.delete_series(r, sid)
-    for rid in [rid for rid, e in _engines.items() if e.params.series_id == sid]:
-        _engines.pop(rid, None)
     return {"ok": True}
 
 

@@ -59,8 +59,13 @@ def _bool(value: str | None, default: bool) -> bool:
 class Settings:
     # storage
     data_dir: Path
-    storage_backend: str  # local | v1ron (not available yet)
-    doc_store: str  # json | sqlite
+    storage_backend: str  # local | postgres (documents and checkpoints in PostgreSQL, media on local disk) | v1ron (not available yet)
+    doc_store: str  # json | sqlite (local storage only)
+    database_url: str | None  # PostgreSQL DSN for EMVOOX_STORAGE=postgres
+    tenant: str  # whose data this process works on by default; "default" is the data root itself
+    queue_backend: str  # memory (jobs live in this process) | redis (durable, shared with `emvoox worker` processes)
+    redis_url: str
+    embedded_worker: bool  # run a worker inside the API process (always the case for the memory queue)
     # keys
     gemini_api_key: str | None
     elevenlabs_api_key: str | None
@@ -137,6 +142,11 @@ def get_settings() -> Settings:
         data_dir=_data_dir(_env("DATA_DIR")),
         storage_backend=(_env("STORAGE", "local") or "local").lower(),
         doc_store=(_env("DOC_STORE", "json") or "json").lower(),
+        database_url=_env("DATABASE_URL"),
+        tenant=(_env("TENANT", "default") or "default").lower(),
+        queue_backend=(_env("QUEUE", "memory") or "memory").lower(),
+        redis_url=_env("REDIS_URL", "redis://127.0.0.1:6379/0") or "redis://127.0.0.1:6379/0",
+        embedded_worker=_bool(_env("EMBEDDED_WORKER"), True),
         gemini_api_key=os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY") or None,
         elevenlabs_api_key=os.getenv("ELEVENLABS_API_KEY") or None,
         wavespeed_api_key=os.getenv("WAVESPEED_API_KEY") or None,

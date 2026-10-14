@@ -1,0 +1,14 @@
+{
+  "episode_number": 1,
+  "hook_score": 9,
+  "twist_within_30s": false,
+  "antagonist_is_smart": true,
+  "independent_motivations": true,
+  "issues": [
+    "Thiếu bước ngoặt trong 30 giây đầu (100 từ đầu tiên chỉ là đối thoại xung đột thông thường).",
+    "Nhân vật Tuấn hơi mờ nhạt, cần thể hiện rõ hơn động cơ cá nhân ngoài việc nghe lời mẹ."
+  ],
+  "suggestion": "Hãy đưa một chi tiết nhỏ về việc An Nhiên đã âm thầm chuẩn bị bằng chứng hoặc một hành động bất ngờ của cô ngay trong 30 giây đầu để phá vỡ thế bị động, thay vì chỉ để cô chịu trận.",
+  "checked_by": "llm",
+  "passed": false
+}

@@ -1,0 +1,38 @@
+# Emvoox landing page on DreamHost (Apache).
+
+# Always HTTPS, and the bare domain (enable DreamHost's free Let's Encrypt certificate first).
+RewriteEngine On
+RewriteCond %{HTTPS} !=on
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+RewriteCond %{HTTP_HOST} ^www\.emvoox\.com$ [NC]
+RewriteRule ^ https://emvoox.com%{REQUEST_URI} [L,R=301]
+
+# Nothing but the page, its assets and the form handler is served.
+<FilesMatch "^(README\.md|\..*)$">
+  Require all denied
+</FilesMatch>
+Options -Indexes
+
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+  Header always set Strict-Transport-Security "max-age=31536000" env=HTTPS
+</IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json image/svg+xml text/plain application/xml
+</IfModule>
+
+# Assets carry a ?v= query in index.html; bump it when they change.
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/html "access plus 0 seconds"
+  ExpiresByType text/css "access plus 30 days"
+  ExpiresByType application/javascript "access plus 30 days"
+  ExpiresByType image/png "access plus 30 days"
+  ExpiresByType audio/mpeg "access plus 30 days"
+</IfModule>
+
+ErrorDocument 404 /index.html

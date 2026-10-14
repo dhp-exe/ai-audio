@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "WebFetch(domain:vidmuse.ai)"
+      "WebFetch(domain:vidmuse.ai)",
+      "WebFetch(domain:www.v1ron.com)",
+      "WebFetch(domain:www.knitos.ai)"
     ]
   }
 }

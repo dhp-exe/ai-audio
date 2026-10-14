@@ -1,0 +1,82 @@
+{
+  "series_id": "nu-chinh-bi-gia-dinh-cho-10140245",
+  "engine_policy": {
+    "default": {
+      "provider": "wavespeed",
+      "model": null
+    },
+    "by_role_type": {},
+    "by_actor": {},
+    "prefer_cloned": true,
+    "tier": "test",
+    "batching": "auto"
+  },
+  "protagonist_id": "linh",
+  "members": [
+    {
+      "role_name": "An Nhiên",
+      "role_type": "protagonist",
+      "actor_id": "linh",
+      "display_name": "Linh",
+      "assigned_by": "ai",
+      "reason": "Chất giọng sắc sảo, điềm tĩnh và thông minh của Linh rất phù hợp với hình tượng nữ chính bản lĩnh, đòi lại công lý.",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Kore",
+      "voice_source": "prebuilt",
+      "fallback_voice_id": null,
+      "voice_settings": {},
+      "is_ip_asset": true
+    },
+    {
+      "role_name": "Bà Lan",
+      "role_type": "antagonist",
+      "actor_id": "hanh",
+      "display_name": "Hạnh",
+      "assigned_by": "ai",
+      "reason": "Giọng nữ trung niên trầm, uy quyền và nghiêm khắc của Hạnh là lựa chọn hoàn hảo cho vai mẹ chồng đầy tham vọng.",
+      "provider": "wavespeed",
+      "model_id": "elevenlabs/eleven-v3",
+      "voice_id": "cgSgspJ2msm6clMCkdW9",
+      "voice_source": "premade",
+      "fallback_voice_id": null,
+      "voice_settings": {},
+      "is_ip_asset": true
+    },
+    {
+      "role_name": "Tuấn",
+      "role_type": "antagonist",
+      "actor_id": "minh-khoi",
+      "display_name": "Minh Khôi",
+      "assigned_by": "ai",
+      "reason": "Sự biến hóa trong giọng nói của Minh Khôi có thể thể hiện tốt nét nhu nhược, hèn nhát và sự bối rối của nhân vật Tuấn.",
+      "provider": "wavespeed",
+      "model_id": "google/gemini-3.8-flash/text-to-speech",
+      "voice_id": "Puck",
+      "voice_source": "prebuilt",
+      "fallback_voice_id": null,
+      "voice_settings": {},
+      "is_ip_asset": true
+    },
+    {
+      "role_name": "Ông Minh",
+      "role_type": "supporting",
+      "actor_id": "thanh",
+      "display_name": "Thành",
+      "assigned_by": "ai",
+      "reason": "Chất giọng bass-baritone khàn, thâm trầm và đầy trải nghiệm của Thành rất hợp với vai luật sư cấp cao lạnh lùng.",
+      "provider": "wavespeed",
+      "model_id": "elevenlabs/eleven-v3",
+      "voice_id": "nPczCjzI2devNBz1zQrb",
+      "voice_source": "premade",
+      "fallback_voice_id": null,
+      "voice_settings": {},
+      "is_ip_asset": true
+    }
+  ],
+  "notes": [
+    "hanh: no WaveSpeed voice yet; auto-assigned cgSgspJ2msm6clMCkdW9. Pick a preferred one on the Voice IPs page.",
+    "thanh: no WaveSpeed voice yet; auto-assigned nPczCjzI2devNBz1zQrb. Pick a preferred one on the Voice IPs page."
+  ],
+  "resolved_at": "2026-10-14T02:45:33+00:00"
+}

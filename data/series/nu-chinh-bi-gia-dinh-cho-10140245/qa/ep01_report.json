@@ -1,0 +1,77 @@
+{
+  "series_id": "nu-chinh-bi-gia-dinh-cho-10140245",
+  "episode_number": 1,
+  "attempt": 0,
+  "status": "PASS",
+  "score": 100,
+  "checks": {
+    "stems_complete": {
+      "ok": true,
+      "missing": [],
+      "units": 8
+    },
+    "sentences": {
+      "ok": true,
+      "short": [],
+      "long": []
+    },
+    "clipping": {
+      "ok": true,
+      "units": [],
+      "threshold_dbfs": -0.1
+    },
+    "silence": {
+      "ok": true,
+      "units": [],
+      "min_silence_s": 1.5
+    },
+    "speakers": {
+      "ok": true,
+      "mismatch": [],
+      "placeholder": []
+    },
+    "transcript": {
+      "ok": null,
+      "skipped": "EMVOOX_QA_TRANSCRIBE is off"
+    },
+    "loudness": {
+      "ok": true,
+      "integrated_lufs": -16.0,
+      "true_peak_dbtp": -4.5,
+      "target_lufs": -16.0,
+      "target_tp": -1.5
+    },
+    "duration": {
+      "ok": true,
+      "seconds": 64.4,
+      "target": 70
+    }
+  },
+  "error_logs": [],
+  "retry_instructions": [],
+  "review_lines": [
+    "ep01_sc01_l005",
+    "ep01_sc02_l001",
+    "ep01_sc02_l005"
+  ],
+  "scenes": [
+    {
+      "scene_id": "sc01",
+      "status": "PASS",
+      "score": 100,
+      "attempt": 0,
+      "issues": [],
+      "approved_by": null
+    },
+    {
+      "scene_id": "sc02",
+      "status": "PASS",
+      "score": 100,
+      "attempt": 0,
+      "issues": [],
+      "approved_by": null
+    }
+  ],
+  "human": null,
+  "generated_at": "2026-10-14T02:46:29+00:00"
+}

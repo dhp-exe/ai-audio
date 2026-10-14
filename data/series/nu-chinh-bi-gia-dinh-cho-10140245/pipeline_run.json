@@ -1,0 +1,324 @@
+{
+  "run_id": "nu-chinh-bi-gia-dinh-cho-10140245-20261014-024506",
+  "series_id": "nu-chinh-bi-gia-dinh-cho-10140245",
+  "status": "awaiting_approval",
+  "error": null,
+  "created_at": "2026-10-14T02:45:06+00:00",
+  "finished_at": "2026-10-14T02:46:32+00:00",
+  "params": {
+    "series_id": "nu-chinh-bi-gia-dinh-cho-10140245",
+    "episodes": 10,
+    "produce": 1,
+    "only": null,
+    "min_sec": 50,
+    "max_sec": 70,
+    "force": false,
+    "source": "brief",
+    "brief_id": "intellectual-20261014-02",
+    "research": {
+      "seeds": "",
+      "platforms": [],
+      "use_browser": null,
+      "focus": "",
+      "guide": ""
+    },
+    "tts_provider": "wavespeed",
+    "tts_model": null,
+    "tts_batching": "auto",
+    "engine_by_role_type": {},
+    "engine_by_actor": {},
+    "tier": "test",
+    "llm_provider": null,
+    "llm_model": null,
+    "max_retries": 3,
+    "auto_approve": false,
+    "halt_on_qa_fail": true,
+    "scene_approval": false,
+    "max_cost_usd": null
+  },
+  "steps": [
+    {
+      "id": "script",
+      "step": "script",
+      "agent": "script_writer",
+      "label": "Story + bible",
+      "episode": null,
+      "status": "done",
+      "attempts": 1,
+      "started_at": "2026-10-14T02:45:19+00:00",
+      "finished_at": "2026-10-14T02:45:31+00:00",
+      "elapsed_s": 11.82,
+      "summary": {
+        "title": "Hợp đồng tàn cuộc",
+        "episodes": 10,
+        "mode": "write",
+        "roles": 4,
+        "reused": false,
+        "from_brief": "intellectual-20261014-02"
+      },
+      "error": null,
+      "cost_usd": 0.001433,
+      "log_key": null
+    },
+    {
+      "id": "casting",
+      "step": "casting",
+      "agent": "casting",
+      "label": "Cast + engine policy",
+      "episode": null,
+      "status": "done",
+      "attempts": 1,
+      "started_at": "2026-10-14T02:45:31+00:00",
+      "finished_at": "2026-10-14T02:45:33+00:00",
+      "elapsed_s": 1.84,
+      "summary": {
+        "members": 4,
+        "providers": [
+          "wavespeed"
+        ],
+        "placeholders": [],
+        "cloned": []
+      },
+      "error": null,
+      "cost_usd": 0.000309,
+      "log_key": null
+    },
+    {
+      "id": "ep01.draft",
+      "step": "draft",
+      "agent": "script_writer",
+      "label": "Draft",
+      "episode": 1,
+      "status": "done",
+      "attempts": 1,
+      "started_at": "2026-10-14T02:45:33+00:00",
+      "finished_at": "2026-10-14T02:45:45+00:00",
+      "elapsed_s": 11.89,
+      "summary": {
+        "words": 200,
+        "scenes": 2,
+        "est_sec": 65,
+        "reused": false,
+        "hook": 9,
+        "rewrites": 1
+      },
+      "error": null,
+      "cost_usd": 0.001312,
+      "log_key": null
+    },
+    {
+      "id": "ep01.direct",
+      "step": "direct",
+      "agent": "director",
+      "label": "Direct",
+      "episode": 1,
+      "status": "done",
+      "attempts": 1,
+      "started_at": "2026-10-14T02:45:45+00:00",
+      "finished_at": "2026-10-14T02:45:52+00:00",
+      "elapsed_s": 6.73,
+      "summary": {
+        "units": 10,
+        "requests": 8,
+        "batching": "mixed",
+        "characters": 898
+      },
+      "error": null,
+      "cost_usd": 0.001197,
+      "log_key": null
+    },
+    {
+      "id": "ep01.voice",
+      "step": "voice",
+      "agent": "sound_engineer",
+      "label": "Scenes: voice + QA",
+      "episode": 1,
+      "status": "done",
+      "attempts": 1,
+      "started_at": "2026-10-14T02:45:52+00:00",
+      "finished_at": "2026-10-14T02:46:24+00:00",
+      "elapsed_s": 31.94,
+      "summary": {
+        "planned": 8,
+        "rendered": 8,
+        "cached": 0,
+        "failed": [],
+        "characters": 898,
+        "placeholder_voices": [],
+        "scenes": 2,
+        "scene_retries": 0,
+        "flagged_scenes": []
+      },
+      "error": null,
+      "cost_usd": 0.477,
+      "log_key": null
+    },
+    {
+      "id": "ep01.master",
+      "step": "master",
+      "agent": "sound_engineer",
+      "label": "Master",
+      "episode": 1,
+      "status": "done",
+      "attempts": 1,
+      "started_at": "2026-10-14T02:46:24+00:00",
+      "finished_at": "2026-10-14T02:46:29+00:00",
+      "elapsed_s": 4.99,
+      "summary": {
+        "duration_ms": 64360,
+        "lufs": -16.0,
+        "true_peak": -4.5,
+        "stems": 8,
+        "bgm": false,
+        "sfx": 0,
+        "attempt": 0
+      },
+      "error": null,
+      "cost_usd": 0.0,
+      "log_key": null
+    },
+    {
+      "id": "ep01.qa",
+      "step": "qa",
+      "agent": "qa_critic",
+      "label": "Episode QA",
+      "episode": 1,
+      "status": "done",
+      "attempts": 1,
+      "started_at": "2026-10-14T02:46:29+00:00",
+      "finished_at": "2026-10-14T02:46:29+00:00",
+      "elapsed_s": 0.48,
+      "summary": {
+        "status": "PASS",
+        "score": 100,
+        "issues": 0,
+        "attempt": 0,
+        "codes": [],
+        "retry": []
+      },
+      "error": null,
+      "cost_usd": 0.0,
+      "log_key": null
+    },
+    {
+      "id": "ep01.gate",
+      "step": "gate",
+      "agent": "publisher",
+      "label": "Approval gate",
+      "episode": 1,
+      "status": "waiting",
+      "attempts": 1,
+      "started_at": "2026-10-14T02:46:29+00:00",
+      "finished_at": "2026-10-14T02:46:32+00:00",
+      "elapsed_s": 3.0,
+      "summary": {
+        "state": "awaiting_approval",
+        "qa": "PASS",
+        "score": 100,
+        "attempts": 0,
+        "reason": "QA passed; waiting for a human to listen and approve."
+      },
+      "error": null,
+      "cost_usd": 0.000212,
+      "log_key": null
+    }
+  ],
+  "scenes": [
+    {
+      "id": "ep01.sc01",
+      "episode": 1,
+      "scene_id": "sc01",
+      "status": "passed",
+      "attempt": 0,
+      "units": 4,
+      "score": 100,
+      "issues": [],
+      "reviewer": null,
+      "error": null
+    },
+    {
+      "id": "ep01.sc02",
+      "episode": 1,
+      "scene_id": "sc02",
+      "status": "passed",
+      "attempt": 0,
+      "units": 4,
+      "score": 100,
+      "issues": [],
+      "reviewer": null,
+      "error": null
+    }
+  ],
+  "pending": [],
+  "budget_usd": null,
+  "notes": [
+    "hanh: no WaveSpeed voice yet; auto-assigned cgSgspJ2msm6clMCkdW9. Pick a preferred one on the Voice IPs page.",
+    "thanh: no WaveSpeed voice yet; auto-assigned nPczCjzI2devNBz1zQrb. Pick a preferred one on the Voice IPs page.",
+    "ep01: cliffhanger hook 9/10 is below the bar (6); review the script before publishing."
+  ],
+  "casting": [
+    {
+      "role": "An Nhiên",
+      "type": "protagonist",
+      "actor": "linh",
+      "actor_name": "Linh",
+      "assigned_by": "ai",
+      "reason": "Chất giọng sắc sảo, điềm tĩnh và thông minh của Linh rất phù hợp với hình tượng nữ chính bản lĩnh, đòi lại công lý.",
+      "provider": "wavespeed",
+      "model": "google/gemini-3.8-flash/text-to-speech",
+      "voice": "Kore",
+      "voice_source": "prebuilt"
+    },
+    {
+      "role": "Bà Lan",
+      "type": "antagonist",
+      "actor": "hanh",
+      "actor_name": "Hạnh",
+      "assigned_by": "ai",
+      "reason": "Giọng nữ trung niên trầm, uy quyền và nghiêm khắc của Hạnh là lựa chọn hoàn hảo cho vai mẹ chồng đầy tham vọng.",
+      "provider": "wavespeed",
+      "model": "elevenlabs/eleven-v3",
+      "voice": "cgSgspJ2msm6clMCkdW9",
+      "voice_source": "premade"
+    },
+    {
+      "role": "Tuấn",
+      "type": "antagonist",
+      "actor": "minh-khoi",
+      "actor_name": "Minh Khôi",
+      "assigned_by": "ai",
+      "reason": "Sự biến hóa trong giọng nói của Minh Khôi có thể thể hiện tốt nét nhu nhược, hèn nhát và sự bối rối của nhân vật Tuấn.",
+      "provider": "wavespeed",
+      "model": "google/gemini-3.8-flash/text-to-speech",
+      "voice": "Puck",
+      "voice_source": "prebuilt"
+    },
+    {
+      "role": "Ông Minh",
+      "type": "supporting",
+      "actor": "thanh",
+      "actor_name": "Thành",
+      "assigned_by": "ai",
+      "reason": "Chất giọng bass-baritone khàn, thâm trầm và đầy trải nghiệm của Thành rất hợp với vai luật sư cấp cao lạnh lùng.",
+      "provider": "wavespeed",
+      "model": "elevenlabs/eleven-v3",
+      "voice": "nPczCjzI2devNBz1zQrb",
+      "voice_source": "premade"
+    }
+  ],
+  "totals": {
+    "cost_usd": 0.278063,
+    "llm_calls": 9,
+    "tokens_in": 15403,
+    "tokens_out": 7308,
+    "tts_requests": 8,
+    "tts_characters": 3205,
+    "audio_ms": 60160,
+    "qa_retries": 0
+  },
+  "engine": {
+    "llm": "wavespeed/google/gemini-3.1-flash-lite",
+    "tts": "wavespeed",
+    "storage": "local/json"
+  }
+}

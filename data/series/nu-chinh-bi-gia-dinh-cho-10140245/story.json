@@ -1,0 +1,35 @@
+{
+  "overview": {
+    "title": "Hợp đồng tàn cuộc",
+    "total_minutes": 10,
+    "genre": "Nữ cường, Tâm lý xã hội",
+    "setting": "Thành phố hiện đại, trụ sở tập đoàn bất động sản"
+  },
+  "roles": [
+    {
+      "name": "An Nhiên",
+      "description": "Nữ, 28 tuổi, thông minh, điềm tĩnh. Mục tiêu: Lấy lại danh dự và sự công bằng. Động cơ: Sự phản bội của chồng cũ và sự sỉ nhục của mẹ chồng.",
+      "gender": null,
+      "actor_id": null
+    },
+    {
+      "name": "Bà Lan",
+      "description": "Nữ, 55 tuổi, sắc sảo, thực dụng. Mục tiêu: Giữ vững vị thế gia tộc. Động cơ: Tham vọng quyền lực và sự khinh miệt người nghèo.",
+      "gender": null,
+      "actor_id": null
+    },
+    {
+      "name": "Tuấn",
+      "description": "Nam, 30 tuổi, nhu nhược, hèn nhát. Mục tiêu: Giữ tài sản gia đình. Động cơ: Sợ mẹ và muốn che đậy sai lầm tài chính.",
+      "gender": null,
+      "actor_id": null
+    },
+    {
+      "name": "Ông Minh",
+      "description": "Nam, 60 tuổi, luật sư cấp cao, lạnh lùng. Mục tiêu: Thực thi pháp luật theo hợp đồng. Động cơ: Trung thành với người kế thừa thực sự.",
+      "gender": null,
+      "actor_id": null
+    }
+  ],
+  "script": "Hồi 1: An Nhiên bị đuổi khỏi nhà trong đêm mưa vì bị vu khống làm thất thoát tài chính công ty gia đình chồng. Bà Lan và Tuấn cười nhạo cô. Bước ngoặt: Ngay khi bước ra khỏi cửa, cô nhận được cuộc gọi từ Ông Minh thông báo cô chính là người nắm giữ 51% cổ phần ưu đãi của tòa nhà này thông qua di chúc người cha quá cố. Hồi 2: An Nhiên bắt đầu thu thập bằng chứng về việc Tuấn biển thủ công quỹ. Bà Lan phát hiện ra sự bất thường trong các văn bản pháp lý nhưng vẫn chủ quan cho rằng An Nhiên không có khả năng chống trả. Bước ngoặt: An Nhiên dùng quyền sở hữu tòa nhà để phong tỏa tài khoản công ty của nhà chồng ngay trước ngày kỷ niệm thành lập. Hồi 3: Tại buổi tiệc kỷ niệm, khi Bà Lan đang huênh hoang về sự thịnh vượng, An Nhiên xuất hiện với tư cách là chủ sở hữu mới. Cô không dùng bạo lực mà đưa ra các hồ sơ pháp lý khiến Tuấn bị bắt ngay tại chỗ vì tội tham ô. Kết thúc: Bà Lan mất tất cả, An Nhiên rời đi, để lại tòa nhà cho các cơ quan chức năng thanh lý, hoàn tất sự trả thù bằng trí tuệ và pháp luật."
+}

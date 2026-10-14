@@ -1,0 +1,47 @@
+{
+  "series_id": "nu-chinh-bi-gia-dinh-cho-10140245",
+  "episode_number": 1,
+  "title": "Đêm mưa tàn cuộc",
+  "state": "awaiting_approval",
+  "qa_status": "PASS",
+  "qa_score": 100,
+  "qa_attempts": 0,
+  "reason": "QA passed; waiting for a human to listen and approve.",
+  "duration_ms": 64360,
+  "master_mp3": "series/nu-chinh-bi-gia-dinh-cho-10140245/masters/ep01_master.mp3",
+  "master_wav": "series/nu-chinh-bi-gia-dinh-cho-10140245/masters/ep01_master.wav",
+  "metadata": {
+    "title": "Hợp đồng tàn cuộc | Tập 1: Đêm mưa tàn cuộc - An Nhiên bị đuổi khỏi nhà chồng",
+    "description": "An Nhiên bị đuổi khỏi nhà trong nhục nhã giữa đêm mưa vì tội danh tham ô giả mạo. Ngay lúc tuyệt vọng nhất, một cuộc gọi định mệnh đã mở ra cơ hội để cô bắt đầu hành trình đòi lại công lý. Nghe tập tiếp theo trong danh sách phát. Giọng đọc trong video được tạo bằng AI.",
+    "tags": [
+      "Hợp đồng tàn cuộc",
+      "truyện audio",
+      "Mặc Khải",
+      "Emvoox",
+      "truyện nữ cường",
+      "truyện tâm lý xã hội",
+      "truyện giật gân",
+      "audiobook việt nam",
+      "truyện ngôn tình",
+      "truyện hay nhất"
+    ],
+    "hashtags": [
+      "#HợpĐồngTànCuộc",
+      "#MặcKhải",
+      "#TruyệnAudio",
+      "#NữCường"
+    ],
+    "playlist_title": "Hợp đồng tàn cuộc",
+    "thumbnail_text": "Bị đuổi khỏi nhà",
+    "language": "vi",
+    "category": "Entertainment",
+    "made_for_kids": false,
+    "contains_synthetic_media": true,
+    "generated_by": "llm"
+  },
+  "decision": null,
+  "exported": [],
+  "publish": {},
+  "created_at": "2026-10-14T02:46:32+00:00",
+  "updated_at": "2026-10-14T02:46:32+00:00"
+}

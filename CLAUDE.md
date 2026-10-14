@@ -79,6 +79,11 @@ Rules for this codebase:
 - New storage keys go through `emvoox.paths`; storage is reached through a tenant's `Repositories`, never a raw path.
 - When a phase lands, update `docs/ARCHITECTURE.md` (what runs), its Result in `docs/MIGRATION_PLAN.md`, this file and
   the affected skill in the same change.
+- **Never run Claude on the DreamHost server** (emvoox.com, `iad1-shared-e1-32.dreamhost.com`, SSH alias `emvoox`).
+  It is shared hosting with severe resource limits. Do not install or start Claude Code, VS Code Server (Remote-SSH),
+  builds, Python, Node or any long-running process there, and do not edit files on the server. Claude works only on the
+  local machine. The server is touched by `scripts/deploy_landing.sh` (rsync) and by short read-only checks
+  (`ls`, `tail` of `~/logs/emvoox.com/https/error.log`).
 
 ## Repository layout
 
@@ -110,6 +115,7 @@ emvoox/
 web/                   Next.js 16 + Ant Design 6; web/lib/api.ts is the API contract; app/page.tsx is the Producer chat
 data/                  assets/, inputs/, research/, series/<id>/, agents/sessions/, chat/threads/, runs/, outputs/, telemetry/,
                        tenants/<id>/ (the same layout for any tenant other than "default")
+landing/               emvoox.com landing page: static HTML/CSS/JS + contact.php for DreamHost (landing/README.md)
 scripts/demo_pipeline.py   offline end-to-end demo (mock LLM + mock voices, injected fault)
 tests/                 pytest, offline: outside sockets blocked, .env not loaded (EMVOOX_SKIP_DOTENV); PostgreSQL and
                        Redis tests run against localhost and are skipped when absent
@@ -176,6 +182,21 @@ clamped to 300-500 ms; `pause` units uncapped; scene gap 800 ms; 500 ms tail.
 
 A voice's `default_settings` (identity anchor of a cloned voice) always win. QA retries move toward stable delivery:
 v3 stability 0.5 then 1.0; v2 stability +0.15, style -0.15 per attempt; Gemini adds "đọc thật rõ ràng, đầy đủ từng chữ".
+
+## Landing page (emvoox.com)
+
+Static site in `landing/` (no build step), hosted on DreamHost shared hosting; details in `landing/README.md`.
+1. Edit locally in `landing/`. English copy is in `index.html`; every `data-i18n` key also needs its Vietnamese text in
+   `assets/js/i18n.js`. When CSS or JS changes, bump its `?v=` in `index.html`.
+2. Preview locally: `cd landing && python3 -m http.server 8811` → `http://127.0.0.1:8811` (and `?lang=vi`). Check
+   both languages, light and dark, and a phone width. The contact form only works on the server.
+3. Commit the change in git.
+4. Deploy: `scripts/deploy_landing.sh` (dry run, uploads nothing), check the list, then `scripts/deploy_landing.sh --live`.
+   It never deletes server files.
+5. Check https://emvoox.com (Cmd+Shift+R). The live site is public: a deploy needs the user's go-ahead.
+
+Facts not to lose: the form sends from and to `dhp@emvoox.com`; public copy must not claim what the team flagged as
+hypotheses (see `landing/README.md`); KnitOS is not mentioned on the page.
 
 ## Current account constraints (2026-10-13)
 

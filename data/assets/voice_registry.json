@@ -255,6 +255,16 @@
           "source": "prebuilt",
           "label": null,
           "added_at": "2026-10-03T14:13:08+00:00"
+        },
+        "wavespeed": {
+          "voice_id": "cgSgspJ2msm6clMCkdW9",
+          "model_id": "elevenlabs/eleven-v3",
+          "voice_url": null,
+          "fallback_voice_id": null,
+          "default_settings": {},
+          "source": "premade",
+          "label": null,
+          "added_at": "2026-10-14T02:45:33+00:00"
         }
       },
       "preferred_provider": null,
@@ -285,6 +295,16 @@
           "source": "prebuilt",
           "label": null,
           "added_at": "2026-10-03T14:13:08+00:00"
+        },
+        "wavespeed": {
+          "voice_id": "nPczCjzI2devNBz1zQrb",
+          "model_id": "elevenlabs/eleven-v3",
+          "voice_url": null,
+          "fallback_voice_id": null,
+          "default_settings": {},
+          "source": "premade",
+          "label": null,
+          "added_at": "2026-10-14T02:45:33+00:00"
         }
       },
       "preferred_provider": null,
@@ -313,6 +333,8 @@
     "2026-10-05 linh/wavespeed: +Kore@google/gemini-3.8-flash/text-to-speech",
     "2026-10-05 duong/wavespeed: +Orus@google/gemini-3.8-flash/text-to-speech",
     "2026-10-05 diep/wavespeed: +Despina@google/gemini-3.8-flash/text-to-speech",
-    "2026-10-05 minh-khoi/wavespeed: +Puck@google/gemini-3.8-flash/text-to-speech"
+    "2026-10-05 minh-khoi/wavespeed: +Puck@google/gemini-3.8-flash/text-to-speech",
+    "2026-10-14 hanh/wavespeed: +cgSgspJ2msm6clMCkdW9@elevenlabs/eleven-v3",
+    "2026-10-14 thanh/wavespeed: +nPczCjzI2devNBz1zQrb@elevenlabs/eleven-v3"
   ]
 }

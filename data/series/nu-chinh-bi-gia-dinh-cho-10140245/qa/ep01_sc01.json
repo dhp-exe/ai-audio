@@ -1,0 +1,52 @@
+{
+  "series_id": "nu-chinh-bi-gia-dinh-cho-10140245",
+  "episode_number": 1,
+  "scene_id": "sc01",
+  "attempt": 0,
+  "status": "PASS",
+  "score": 100,
+  "units": [
+    "ep01_sc01_c01",
+    "ep01_sc01_l002",
+    "ep01_sc01_c02",
+    "ep01_sc01_l005"
+  ],
+  "checks": {
+    "stems_complete": {
+      "ok": true,
+      "missing": [],
+      "units": 4
+    },
+    "sentences": {
+      "ok": true,
+      "short": [],
+      "long": []
+    },
+    "clipping": {
+      "ok": true,
+      "units": [],
+      "threshold_dbfs": -0.1
+    },
+    "silence": {
+      "ok": true,
+      "units": [],
+      "min_silence_s": 1.5
+    },
+    "speakers": {
+      "ok": true,
+      "mismatch": [],
+      "placeholder": []
+    },
+    "transcript": {
+      "ok": null,
+      "skipped": "EMVOOX_QA_TRANSCRIBE is off"
+    }
+  },
+  "error_logs": [],
+  "retry_instructions": [],
+  "review_lines": [
+    "ep01_sc01_l005"
+  ],
+  "approval": null,
+  "generated_at": "2026-10-14T02:46:16+00:00"
+}

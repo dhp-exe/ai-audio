@@ -1,0 +1,240 @@
+{
+  "series_id": "nu-chinh-bi-gia-dinh-cho-10140245",
+  "language": "vi-VN",
+  "title": "Hợp đồng tàn cuộc",
+  "logline": "Bị gia đình chồng vu khống và ruồng bỏ, An Nhiên sử dụng di chúc bí mật của cha để lật ngược thế cờ, biến kẻ phản bội thành tù nhân trong chính đế chế của họ.",
+  "premise": "An Nhiên bị đuổi khỏi nhà chồng trong đêm mưa vì tội danh tham ô giả mạo. Ngay lúc tuyệt vọng nhất, cô phát hiện mình là cổ đông lớn nhất của tập đoàn gia đình chồng. Cô bắt đầu hành trình đòi lại công lý bằng trí tuệ, từng bước cô lập và vạch trần bộ mặt thật của mẹ con bà Lan.",
+  "tone": "Căng thẳng, kịch tính, sắc sảo, đầy tính toán.",
+  "genre": [
+    "Nữ cường",
+    "Tâm lý xã hội",
+    "Giật gân"
+  ],
+  "overview": {
+    "title": "Hợp đồng tàn cuộc",
+    "total_minutes": 10,
+    "genre": "Nữ cường, Tâm lý xã hội",
+    "setting": "Thành phố hiện đại, trụ sở tập đoàn bất động sản"
+  },
+  "mode": "write",
+  "protagonist_id": "linh",
+  "protagonist_role": "An Nhiên",
+  "roles": [
+    {
+      "role_name": "An Nhiên",
+      "role_type": "protagonist",
+      "description": "Nữ, 28 tuổi, thông minh, điềm tĩnh. Mục tiêu: Lấy lại danh dự và sự công bằng. Động cơ: Sự phản bội của chồng cũ và sự sỉ nhục của mẹ chồng.",
+      "gender": "female",
+      "actor_id": "linh",
+      "assigned_by": "ai",
+      "reason": "Chất giọng sắc sảo, điềm tĩnh và thông minh của Linh rất phù hợp với hình tượng nữ chính bản lĩnh, đòi lại công lý."
+    },
+    {
+      "role_name": "Bà Lan",
+      "role_type": "antagonist",
+      "description": "Nữ, 55 tuổi, sắc sảo, thực dụng. Mục tiêu: Giữ vững vị thế gia tộc. Động cơ: Tham vọng quyền lực và sự khinh miệt người nghèo.",
+      "gender": "female",
+      "actor_id": "hanh",
+      "assigned_by": "ai",
+      "reason": "Giọng nữ trung niên trầm, uy quyền và nghiêm khắc của Hạnh là lựa chọn hoàn hảo cho vai mẹ chồng đầy tham vọng."
+    },
+    {
+      "role_name": "Tuấn",
+      "role_type": "antagonist",
+      "description": "Nam, 30 tuổi, nhu nhược, hèn nhát. Mục tiêu: Giữ tài sản gia đình. Động cơ: Sợ mẹ và muốn che đậy sai lầm tài chính.",
+      "gender": "male",
+      "actor_id": "minh-khoi",
+      "assigned_by": "ai",
+      "reason": "Sự biến hóa trong giọng nói của Minh Khôi có thể thể hiện tốt nét nhu nhược, hèn nhát và sự bối rối của nhân vật Tuấn."
+    },
+    {
+      "role_name": "Ông Minh",
+      "role_type": "supporting",
+      "description": "Nam, 60 tuổi, luật sư cấp cao, lạnh lùng. Mục tiêu: Thực thi pháp luật theo hợp đồng. Động cơ: Trung thành với người kế thừa thực sự.",
+      "gender": "male",
+      "actor_id": "thanh",
+      "assigned_by": "ai",
+      "reason": "Chất giọng bass-baritone khàn, thâm trầm và đầy trải nghiệm của Thành rất hợp với vai luật sư cấp cao lạnh lùng."
+    }
+  ],
+  "cast": [
+    "linh",
+    "hanh",
+    "minh-khoi",
+    "thanh"
+  ],
+  "trend_brief_id": "intellectual-20261014-02",
+  "theme_category": "intellectual_slap_anti_trope",
+  "pending_characters": [],
+  "episode_format": {
+    "count": 10,
+    "min_duration_sec": 50,
+    "max_duration_sec": 70,
+    "ends_on_cliffhanger": true
+  },
+  "episodes": [
+    {
+      "number": 1,
+      "title": "Đêm mưa tàn cuộc",
+      "logline": "An Nhiên bị đuổi khỏi nhà trong nhục nhã, nhưng một cuộc gọi định mệnh thay đổi tất cả.",
+      "key_beats": [
+        "An Nhiên bị bà Lan và Tuấn đuổi khỏi nhà",
+        "Sự sỉ nhục của gia đình chồng",
+        "An Nhiên bước vào màn mưa",
+        "Điện thoại vang lên",
+        "Ông Minh tiết lộ sự thật về cổ phần",
+        "An Nhiên nhận ra mình là chủ sở hữu tòa nhà"
+      ],
+      "cliffhanger": "Ông Minh nói: 'Cô không phải là kẻ trắng tay, cô là chủ sở hữu 51% cổ phần của chính tòa nhà này'.",
+      "source_span": "",
+      "hook_score": 9
+    },
+    {
+      "number": 2,
+      "title": "Bóng ma pháp lý",
+      "logline": "An Nhiên bắt đầu tìm hiểu về di chúc và phát hiện những lỗ hổng trong tài chính của Tuấn.",
+      "key_beats": [
+        "An Nhiên gặp Ông Minh tại văn phòng",
+        "Xem xét các văn bản pháp lý",
+        "Phát hiện bằng chứng Tuấn biển thủ",
+        "Bà Lan nghi ngờ có điều bất thường",
+        "An Nhiên âm thầm thu thập dữ liệu",
+        "Sự chủ quan của bà Lan"
+      ],
+      "cliffhanger": "Bà Lan cười khẩy: 'Con nhỏ đó chỉ là con tốt, không thể làm gì được chúng ta'.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 3,
+      "title": "Vết nứt đầu tiên",
+      "logline": "An Nhiên bắt đầu gây áp lực lên tài khoản công ty nhà chồng.",
+      "key_beats": [
+        "An Nhiên liên lạc với bộ phận kế toán",
+        "Yêu cầu kiểm toán đột xuất",
+        "Tuấn hoảng loạn tìm cách che đậy",
+        "Bà Lan cố gắng can thiệp nhưng thất bại",
+        "An Nhiên gửi thông báo pháp lý",
+        "Tài khoản công ty bị phong tỏa"
+      ],
+      "cliffhanger": "Tuấn hét lên trong điện thoại: 'Tại sao tài khoản công ty lại bị đóng băng ngay trước ngày kỷ niệm?'",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 4,
+      "title": "Cuộc chiến trong bóng tối",
+      "logline": "Bà Lan cố gắng tìm cách đảo ngược tình thế, nhưng An Nhiên đã đi trước một bước.",
+      "key_beats": [
+        "Bà Lan gặp luật sư riêng để tìm cách lách luật",
+        "An Nhiên nắm giữ bằng chứng chuyển tiền trái phép",
+        "Tuấn bị ép phải thú tội với mẹ",
+        "Bà Lan quyết định dùng chiêu bài cuối cùng",
+        "An Nhiên nhận được tin nhắn đe dọa",
+        "Cô không hề nao núng"
+      ],
+      "cliffhanger": "An Nhiên mỉm cười: 'Mẹ, con đã đợi ngày này từ rất lâu rồi'.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 5,
+      "title": "Ngày kỷ niệm định mệnh",
+      "logline": "Buổi tiệc kỷ niệm thành lập tập đoàn trở thành sân khấu cho sự trả thù.",
+      "key_beats": [
+        "Không khí xa hoa của buổi tiệc",
+        "Bà Lan huênh hoang về sự thịnh vượng",
+        "Tuấn lo âu nhìn quanh",
+        "An Nhiên xuất hiện tại sảnh",
+        "Khách mời xì xào",
+        "An Nhiên bước thẳng lên sân khấu"
+      ],
+      "cliffhanger": "An Nhiên cầm micro, ánh mắt sắc lạnh nhìn thẳng vào bà Lan.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 6,
+      "title": "Mặt nạ rơi xuống",
+      "logline": "An Nhiên công khai các tài liệu tham ô trước mặt cổ đông.",
+      "key_beats": [
+        "An Nhiên trình chiếu hồ sơ tài chính",
+        "Sự im lặng bao trùm buổi tiệc",
+        "Bà Lan cố gắng ngăn cản",
+        "Tuấn bị bóc trần sự thật",
+        "Các cổ đông bắt đầu phản đối",
+        "Sự sụp đổ của uy tín gia tộc"
+      ],
+      "cliffhanger": "Cảnh sát xuất hiện ngay tại cửa sảnh tiệc.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 7,
+      "title": "Cái giá của tham vọng",
+      "logline": "Tuấn bị bắt giữ, bà Lan đối mặt với sự sụp đổ của đế chế.",
+      "key_beats": [
+        "Tuấn bị còng tay đưa đi",
+        "Bà Lan gào thét trong vô vọng",
+        "An Nhiên đứng nhìn từ xa",
+        "Ông Minh xác nhận quyền sở hữu của An Nhiên",
+        "Bà Lan mất kiểm soát",
+        "An Nhiên giữ thái độ điềm tĩnh"
+      ],
+      "cliffhanger": "Bà Lan gầm lên: 'Mày sẽ không bao giờ thắng được tao!'",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 8,
+      "title": "Sự thật phơi bày",
+      "logline": "An Nhiên đối diện với bà Lan lần cuối trong phòng làm việc cũ.",
+      "key_beats": [
+        "An Nhiên bước vào phòng làm việc của chồng cũ",
+        "Bà Lan cầu xin sự tha thứ",
+        "An Nhiên vạch trần sự khinh miệt của bà Lan trong quá khứ",
+        "Sự thật về người cha quá cố",
+        "Bà Lan hoàn toàn suy sụp",
+        "An Nhiên không còn cảm xúc"
+      ],
+      "cliffhanger": "An Nhiên lạnh lùng: 'Tất cả những gì bà có, đều là vay mượn từ danh dự của người khác'.",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 9,
+      "title": "Thanh lý quá khứ",
+      "logline": "An Nhiên quyết định từ bỏ tòa nhà để bắt đầu cuộc đời mới.",
+      "key_beats": [
+        "An Nhiên ký giấy tờ thanh lý",
+        "Tòa nhà bị niêm phong",
+        "Cô rời khỏi văn phòng",
+        "Nhìn lại quá khứ lần cuối",
+        "Cảm giác nhẹ nhõm",
+        "Sự tự do thực sự"
+      ],
+      "cliffhanger": "Ông Minh hỏi: 'Cô thực sự muốn từ bỏ tất cả sao?'",
+      "source_span": "",
+      "hook_score": null
+    },
+    {
+      "number": 10,
+      "title": "Bình minh mới",
+      "logline": "An Nhiên bước ra khỏi tòa nhà, để lại sau lưng những kẻ phản bội.",
+      "key_beats": [
+        "An Nhiên bước ra phố",
+        "Trời tạnh mưa",
+        "Cô nhìn về phía mặt trời mọc",
+        "Điện thoại của bà Lan gọi đến nhưng cô tắt máy",
+        "Cô bắt đầu hành trình mới",
+        "Kết thúc viên mãn cho sự thông tuệ"
+      ],
+      "cliffhanger": "An Nhiên mỉm cười: 'Kết thúc rồi, đây là khởi đầu của tôi'.",
+      "source_span": "",
+      "hook_score": null
+    }
+  ],
+  "changelog": [
+    "2026-10-14 outline (google/gemini-3.1-flash-lite, mode=write)"
+  ]
+}

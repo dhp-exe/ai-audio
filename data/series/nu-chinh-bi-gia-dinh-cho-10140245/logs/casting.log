@@ -1,0 +1,10 @@
+[02:45:33] casting: An Nhiên -> linh (ai; Chất giọng sắc sảo, điềm tĩnh và thông minh của Linh rất phù hợp với h)
+[02:45:33] casting: Bà Lan -> hanh (ai; Giọng nữ trung niên trầm, uy quyền và nghiêm khắc của Hạnh là lựa chọn)
+[02:45:33] casting: Tuấn -> minh-khoi (ai; Sự biến hóa trong giọng nói của Minh Khôi có thể thể hiện tốt nét nhu )
+[02:45:33] casting: Ông Minh -> thanh (ai; Chất giọng bass-baritone khàn, thâm trầm và đầy trải nghiệm của Thành )
+[02:45:33] engine policy: linh -> wavespeed/google/gemini-3.8-flash/text-to-speech voice Kore [prebuilt; default]
+[02:45:33] NOTE hanh: no WaveSpeed voice yet; auto-assigned cgSgspJ2msm6clMCkdW9. Pick a preferred one on the Voice IPs page.
+[02:45:33] engine policy: hanh -> wavespeed/elevenlabs/eleven-v3 voice cgSgspJ2msm6clMCkdW9 [premade; default]
+[02:45:33] engine policy: minh-khoi -> wavespeed/google/gemini-3.8-flash/text-to-speech voice Puck [prebuilt; default]
+[02:45:33] NOTE thanh: no WaveSpeed voice yet; auto-assigned nPczCjzI2devNBz1zQrb. Pick a preferred one on the Voice IPs page.
+[02:45:33] engine policy: thanh -> wavespeed/elevenlabs/eleven-v3 voice nPczCjzI2devNBz1zQrb [premade; default]

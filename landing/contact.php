@@ -41,7 +41,8 @@ function field(string $name, int $max): string {
 $name     = field('name', 120);
 $company  = field('company', 160);
 $email    = field('email', 160);
-$phone    = field('phone', 40);
+$phoneCc  = field('phone_cc', 6);
+$phone    = field('phone', 20);
 $interest = field('interest', 40);
 $message  = field('message', 4000);
 $lang     = field('lang', 4);
@@ -49,13 +50,27 @@ $lang     = field('lang', 4);
 $interests = ['production', 'brand', 'licensing', 'studio', 'invest', 'other'];
 if (!in_array($interest, $interests, true)) $interest = 'other';
 
-if ($name === '' || $message === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    reply(422, ['ok' => false, 'error' => 'fields']);
-}
+// Same rules as the form (assets/js/site.js). Codes map to the inline messages ct.e.<field>.<code>.
+$errors = [];
+if ($name === '') $errors['name'] = 'req';
+elseif (mb_strlen($name) < 2) $errors['name'] = 'min';
+if ($email === '') $errors['email'] = 'req';
+elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors['email'] = 'bad';
+$phoneDigits = preg_replace('/[\s.\-()]/', '', $phone);
+if (!preg_match('/^\+?\d{1,4}$/', $phoneCc)) $errors['phone'] = 'cc';
+elseif ($phoneDigits === '') $errors['phone'] = 'req';
+elseif (!preg_match('/^\d{6,14}$/', $phoneDigits)) $errors['phone'] = 'bad';
+if ($message === '') $errors['message'] = 'req';
+elseif (mb_strlen($message) < 10) $errors['message'] = 'min';
 // Header fields must stay on one line.
-foreach ([$name, $company, $email, $phone] as $v) {
-    if (strpos($v, "\n") !== false) reply(422, ['ok' => false, 'error' => 'fields']);
+foreach ([$name, $company, $email] as $v) {
+    if (strpos($v, "\n") !== false) $errors['name'] = $errors['name'] ?? 'req';
 }
+if ($errors) {
+    reply(422, ['ok' => false, 'error' => 'fields', 'fields' => $errors]);
+}
+if ($phoneCc[0] !== '+') $phoneCc = '+' . $phoneCc;
+$phoneFull = $phoneCc . ' ' . $phone;
 
 // Simple per-IP rate limit in the system temp directory.
 $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
@@ -76,7 +91,7 @@ $body = "New message from emvoox.com\n\n"
       . "Name:      $name\n"
       . "Company:   $company\n"
       . "Email:     $email\n"
-      . "Phone/Zalo: $phone\n"
+      . "Phone:     $phoneFull\n"
       . "Interest:  $interest\n"
       . "Language:  $lang\n"
       . "IP:        $ip\n"

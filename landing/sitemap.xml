@@ -2,8 +2,24 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://emvoox.com/</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://emvoox.com/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://emvoox.com/"/>
     <xhtml:link rel="alternate" hreflang="vi" href="https://emvoox.com/?lang=vi"/>
-    <lastmod>2026-10-14</lastmod>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://emvoox.com/?lang=zh"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://emvoox.com/"/>
+    <lastmod>2026-10-15</lastmod>
+  </url>
+  <url>
+    <loc>https://emvoox.com/?lang=vi</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://emvoox.com/"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://emvoox.com/?lang=vi"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://emvoox.com/?lang=zh"/>
+    <lastmod>2026-10-15</lastmod>
+  </url>
+  <url>
+    <loc>https://emvoox.com/?lang=zh</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://emvoox.com/"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://emvoox.com/?lang=vi"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://emvoox.com/?lang=zh"/>
+    <lastmod>2026-10-15</lastmod>
   </url>
 </urlset>

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" class="no-js">
+<html lang="en" class="no-js" data-theme="dark" data-lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,6 +7,10 @@
   <meta name="description" data-i18n-content="meta.desc" content="Emvoox is an agentic production pipeline for drama series: eight AI agents research, write, cast, direct, voice and check every episode, performed by recurring Character IPs with their own voice and look. Audio today, audio-and-image short dramas next.">
   <meta name="theme-color" content="#284979">
   <link rel="canonical" href="https://emvoox.com/">
+  <link rel="alternate" hreflang="en" href="https://emvoox.com/">
+  <link rel="alternate" hreflang="vi" href="https://emvoox.com/?lang=vi">
+  <link rel="alternate" hreflang="zh-Hans" href="https://emvoox.com/?lang=zh">
+  <link rel="alternate" hreflang="x-default" href="https://emvoox.com/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Emvoox">
   <meta property="og:title" content="Emvoox — One story. One agentic pipeline. Your series, live.">
@@ -19,18 +23,19 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Noto+Serif:ital,wght@0,600;0,700;1,700&family=JetBrains+Mono:wght@400;500&display=swap&subset=vietnamese">
-  <link rel="stylesheet" href="assets/css/site.css?v=2">
+  <link rel="stylesheet" href="assets/css/site.css?v=10">
   <script>
-    /* Theme and language before first paint: stored choice, else the system / browser preference. */
+    /* Theme and language before first paint: a ?lang= link or the visitor's stored choice, else English and dark. */
     (function () {
       var d = document.documentElement, t = null, l = null;
       try { t = localStorage.getItem("emvoox-theme"); l = localStorage.getItem("emvoox-lang"); } catch (e) {}
-      if (t !== "light" && t !== "dark") t = window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      if (t !== "light" && t !== "dark") t = "dark";
       d.setAttribute("data-theme", t);
       var q = new URLSearchParams(location.search).get("lang");
-      if (q === "vi" || q === "en") l = q;
-      if (l !== "vi" && l !== "en") l = (navigator.language || "").toLowerCase().indexOf("vi") === 0 ? "vi" : "en";
+      if (q === "vi" || q === "en" || q === "zh") l = q;
+      if (l !== "vi" && l !== "en" && l !== "zh") l = "en";
       d.setAttribute("data-lang", l);
+      d.setAttribute("lang", l === "zh" ? "zh-Hans" : l);
       d.classList.remove("no-js");
     })();
   </script>
@@ -105,6 +110,7 @@
       <div class="lang" role="group" aria-label="Language">
         <button type="button" data-lang="en" aria-pressed="true">EN</button>
         <button type="button" data-lang="vi" aria-pressed="false">VI</button>
+        <button type="button" data-lang="zh" aria-pressed="false" lang="zh-Hans">中文</button>
       </div>
       <button type="button" class="icon-btn" id="theme-btn" aria-label="Toggle dark mode" data-i18n-aria="nav.theme">
         <svg class="theme-moon"><use href="#i-moon"/></svg><svg class="theme-sun"><use href="#i-sun"/></svg>
@@ -142,20 +148,20 @@
         <div class="win-bar"><i></i><i></i><i></i><span>emvoox studio · </span></div>
         <div class="ep-head">
           <div>
-            <small>MẶC KHẢI · TÁI SINH – LỘI NGƯỢC DÒNG · TẬP 01</small>
-            <h3>Ván Cờ Tái Sinh: Sự Trở Lại Của Đế Vương</h3>
+            <small data-i18n="mk.hero.k">MẶC KHẢI · REBIRTH – COMEBACK · EPISODE 01</small>
+            <h3 data-i18n="mk.title">Rebirth Gambit: Return of the Emperor</h3>
           </div>
-          <span class="qa-pass">QA PASS · 100</span>
+          <span class="qa-pass" data-i18n="mk.qapass">QA PASS · 100</span>
         </div>
         <div class="agent-track" aria-hidden="true">
-          <span class="ok">Research</span><span class="ok">Script</span><span class="ok">Cast</span><span class="ok">Direct</span><span class="ok">Voice</span><span class="ok">QA</span><span class="wait">Gate</span>
+          <span class="ok" data-i18n="mk.tr.1">Research</span><span class="ok" data-i18n="mk.tr.2">Script</span><span class="ok" data-i18n="mk.tr.3">Cast</span><span class="ok" data-i18n="mk.tr.4">Direct</span><span class="ok" data-i18n="mk.tr.5">Voice</span><span class="ok" data-i18n="mk.tr.6">QA</span><span class="wait" data-i18n="mk.tr.7">Gate</span>
         </div>
         <div class="wave playing" id="hero-wave" aria-hidden="true"></div>
         <div class="ep-time"><span>00:41</span><span>01:04</span></div>
         <div class="lines">
-          <div class="line"><span class="av s">D</span><p><b>Dương</b>(Lòng mình) Kiếp trước họ lấy đi tất cả. Kiếp này, ta lấy lại từng thứ một.</p><span class="tag">độc thoại · 7</span></div>
-          <div class="line"><span class="av g">L</span><p><b>Linh</b>Anh nghĩ một bàn cờ thua có thể lật lại sao?</p><span class="tag">lạnh · 6</span></div>
-          <div class="line"><span class="av r">H</span><p><b>Hạnh</b>Nhà này chưa đến lượt con lên tiếng.</p><span class="tag">nghiêm · 8</span></div>
+          <div class="line"><span class="av s">D</span><p><b>Dương</b><span data-i18n="mk.l1p">(Inner voice) In my last life they took everything. In this one, I take it back, piece by piece.</span></p><span class="tag" data-i18n="mk.tag1">monologue · 7</span></div>
+          <div class="line"><span class="av g">L</span><p><b>Linh</b><span data-i18n="mk.l2">You think a lost game of chess can be turned around?</span></p><span class="tag" data-i18n="mk.tag2">cold · 6</span></div>
+          <div class="line"><span class="av r">H</span><p><b>Hạnh</b><span data-i18n="mk.l3">It is not your turn to speak in this house.</span></p><span class="tag" data-i18n="mk.tag3">stern · 8</span></div>
         </div>
         <div class="ep-foot">
           <div><b>3 / 3</b><span data-i18n="hero.card.scenes">scenes passed</span></div>
@@ -193,38 +199,38 @@
       <div class="app" data-reveal role="img" aria-label="Emvoox Studio: a chat with the Producer agent">
         <div class="win-bar"><i></i><i></i><i></i><span>emvoox.com/studio · Producer</span></div>
         <aside class="app-side">
-          <div class="lbl">Agents</div>
+          <div class="lbl" data-i18n="mk.side.ag">Agents</div>
           <div class="agent on"><svg><use href="#i-sparkle"/></svg>Producer<span class="st ok"></span></div>
-          <div class="agent"><svg><use href="#i-search"/></svg>Market Research<span class="st ok"></span></div>
-          <div class="agent"><svg><use href="#i-pen"/></svg>Script Writer<span class="st ok"></span></div>
-          <div class="agent"><svg><use href="#i-users"/></svg>Casting<span class="st ok"></span></div>
-          <div class="agent"><svg><use href="#i-sliders"/></svg>AI Director<span class="st run"></span></div>
-          <div class="agent"><svg><use href="#i-wave"/></svg>Sound Engineer<span class="st run"></span></div>
-          <div class="agent"><svg><use href="#i-shield"/></svg>QA Critic<span class="st"></span></div>
-          <div class="lbl">Series</div>
-          <div class="agent">Ván Cờ Tái Sinh</div>
-          <div class="agent">Sau lớp hào quang</div>
+          <div class="agent"><svg><use href="#i-search"/></svg><span data-i18n="mk.side.1">Market Research</span><span class="st ok"></span></div>
+          <div class="agent"><svg><use href="#i-pen"/></svg><span data-i18n="mk.side.2">Script Writer</span><span class="st ok"></span></div>
+          <div class="agent"><svg><use href="#i-users"/></svg><span data-i18n="mk.side.3">Casting</span><span class="st ok"></span></div>
+          <div class="agent"><svg><use href="#i-sliders"/></svg><span data-i18n="mk.side.4">AI Director</span><span class="st run"></span></div>
+          <div class="agent"><svg><use href="#i-wave"/></svg><span data-i18n="mk.side.5">Sound Engineer</span><span class="st run"></span></div>
+          <div class="agent"><svg><use href="#i-shield"/></svg><span data-i18n="mk.side.6">QA Critic</span><span class="st"></span></div>
+          <div class="lbl" data-i18n="mk.side.series">Series</div>
+          <div class="agent" data-i18n="mk.s1">Rebirth Gambit</div>
+          <div class="agent" data-i18n="mk.s2">Behind the Spotlight</div>
         </aside>
         <div class="app-main">
-          <div class="app-head"><b>Producer</b><small>● online</small><span class="tag">tái sinh · đế vương</span></div>
+          <div class="app-head"><b>Producer</b><small data-i18n="mk.online">● online</small><span class="tag" data-i18n="mk.chat.tag">rebirth · emperor</span></div>
           <div class="thread">
-            <div class="msg me">Làm cho mình một series tái sinh: nam chính bị phản bội, quay lại giành lại đế chế.</div>
+            <div class="msg me" data-i18n="mk.chat.me">Make me a rebirth series: the hero is betrayed and comes back to take his empire back.</div>
             <div class="steps-box">
-              <div>// research → write → cast</div>
-              <div class="ok">✓ Quét xu hướng: 3 thể loại đang lên</div>
-              <div class="ok">✓ Chọn hướng: Tái sinh – Lội ngược dòng</div>
-              <div class="ok">✓ Series Bible: mỗi tập một cliffhanger</div>
-              <div class="ok">✓ Tuyển vai: Dương · Linh · Hạnh</div>
-              <div class="run">▸ Đạo diễn tập 01: 3 cảnh chạy song song…</div>
+              <div data-i18n="mk.st.0">// research → write → cast</div>
+              <div class="ok" data-i18n="mk.st.1">✓ Trend scan: 3 genres rising</div>
+              <div class="ok" data-i18n="mk.st.2">✓ Direction: Rebirth – Comeback</div>
+              <div class="ok" data-i18n="mk.st.3">✓ Series Bible: a cliffhanger every episode</div>
+              <div class="ok" data-i18n="mk.st.4">✓ Cast: Dương · Linh · Hạnh</div>
+              <div class="run" data-i18n="mk.st.5">▸ Directing episode 01: 3 scenes in parallel…</div>
             </div>
-            <div class="msg ai">Dàn ý "Ván Cờ Tái Sinh" đã xong. Dương vào vai đế vương, Linh là đối thủ, Hạnh là mẹ kế. Mình cần bạn duyệt ngân sách trước khi thu giọng.</div>
+            <div class="msg ai" data-i18n="mk.chat.ai">The outline for “Rebirth Gambit” is done. Dương plays the emperor, Linh the rival, Hạnh the stepmother. I need you to approve the budget before we record.</div>
             <div class="decision">
-              <small>Cần bạn quyết định · ngân sách</small>
-              <p>Sản xuất tập 1–3 · trần chi phí $2.00</p>
-              <div class="row"><span>Duyệt</span><span>Xem chi tiết</span></div>
+              <small data-i18n="mk.dec.k">Your decision · budget</small>
+              <p data-i18n="mk.dec.p">Produce episodes 1–3 · cost cap $2.00</p>
+              <div class="row"><span data-i18n="mk.approve">Approve</span><span data-i18n="mk.details">View details</span></div>
             </div>
           </div>
-          <div class="composer"><span>Hỏi Producer bất cứ điều gì…</span><i><svg width="14" height="14"><use href="#i-arrow"/></svg></i></div>
+          <div class="composer"><span data-i18n="mk.ask">Ask the Producer anything…</span><i><svg width="14" height="14"><use href="#i-arrow"/></svg></i></div>
         </div>
       </div>
 
@@ -248,14 +254,31 @@
       <h2 data-i18n="sol.title">Most micro-dramas vanish. <span class="hl">Series with recurring stars don't.</span></h2>
       <p data-i18n="sol.lead">Short drama is one of the fastest-growing entertainment formats in Asia, but hits are rare and live-action production is slow and expensive. The data points one way: audiences come back for characters they already know.</p>
     </header>
-    <div class="grid grid-3" data-reveal>
-      <div class="card"><div class="big-num">95.37%</div><h3 data-i18n="sol.c1.t">of standalone short dramas never pass 50M heat</h3><p data-i18n="sol.c1.d">Titles made one at a time, with no recurring characters, rarely find an audience.</p></div>
-      <div class="card"><div class="big-num" data-i18n="sol.c2.n">7 of 10</div><h3 data-i18n="sol.c2.t">titles above 100M heat in 2025 were series or sequels</h3><p data-i18n="sol.c2.d">Recurring characters are what audiences return for, and they build a fan base that carries over.</p></div>
-      <div class="card"><div class="big-num" data-i18n="sol.c3.n">302 bn ₫</div><h3 data-i18n="sol.c3.t">spent by Vietnamese viewers on 60-second drama apps in 2025</h3><p data-i18n="sol.c3.d">About 11.5M USD, one of the top five entertainment in-app categories in Vietnam.</p></div>
+    <div class="facts" data-reveal>
+      <div class="fact">
+        <div class="fact-viz dots" aria-hidden="true" data-dots="100" data-lit="5"></div>
+        <div class="big-num">95.37%</div><h3 data-i18n="sol.c1.t">of standalone short dramas never pass 50M heat</h3><p data-i18n="sol.c1.d">Titles made one at a time, with no recurring characters, rarely find an audience.</p>
+      </div>
+      <div class="fact">
+        <div class="fact-viz bars" aria-hidden="true" data-bars="10" data-lit="7"></div>
+        <div class="big-num" data-i18n="sol.c2.n">7 of 10</div><h3 data-i18n="sol.c2.t">titles above 100M heat in 2025 were series or sequels</h3><p data-i18n="sol.c2.d">Recurring characters are what audiences return for, and they build a fan base that carries over.</p>
+      </div>
+      <div class="fact">
+        <div class="fact-viz clock" aria-hidden="true"><span>60s</span></div>
+        <div class="big-num" data-i18n="sol.c3.n">302 bn ₫</div><h3 data-i18n="sol.c3.t">spent by Vietnamese viewers on 60-second drama apps in 2025</h3><p data-i18n="sol.c3.d">About 11.5M USD, one of the top five entertainment in-app categories in Vietnam.</p>
+      </div>
     </div>
     <p class="source" data-i18n="sol.source">Sources: DataEye 2025 short-drama report; Vietnam in-app spending as compiled in Emvoox market research (October 2026).</p>
 
-    <header class="sec-head center" style="margin-top:96px" data-reveal>
+    <div class="bridge" data-reveal>
+      <span class="bridge-line" aria-hidden="true"></span>
+      <p class="bridge-q" data-i18n="bridge.q">Audiences come back for characters.</p>
+      <p class="bridge-p" data-i18n="bridge.p">So we build the characters first, and test every story in audio before it gets a picture.</p>
+      <span class="bridge-line b" aria-hidden="true"></span>
+      <span class="bridge-dot" aria-hidden="true"><svg><use href="#i-arrow"/></svg></span>
+    </div>
+
+    <header class="sec-head center" data-reveal>
       <span class="eyebrow" data-i18n="sol.eyebrow2">Our solution</span>
       <h2 data-i18n="sol.title2">An agent team for production. <span class="hl">Character IPs for the audience.</span></h2>
       <p data-i18n="sol.lead2">Agents do the production work at the speed and cost of software; Character IPs give audiences someone to come back for. Every story is proven in audio first, then the winners move to the short-drama pipeline with the same agents and the same characters.</p>
@@ -303,7 +326,7 @@
     </header>
 
     <div class="diff" data-reveal>
-      <article class="diff-card">
+      <article class="diff-card" data-n="01" data-spot>
         <div class="ico"><svg><use href="#i-sparkle"/></svg></div>
         <span class="eyebrow" data-i18n="diff.1.k">Differentiator 01</span>
         <h3 data-i18n="diff.1.t">An agentic production pipeline</h3>
@@ -314,14 +337,14 @@
           <li><svg><use href="#i-check"/></svg><span data-i18n="diff.1.c">Any step re-runs alone; nothing is paid for twice</span></li>
         </ul>
       </article>
-      <article class="diff-card gold">
+      <article class="diff-card gold" data-n="02" data-spot>
         <div class="ico gold"><svg><use href="#i-users"/></svg></div>
         <span class="eyebrow" data-i18n="diff.2.k">Differentiator 02</span>
         <h3 data-i18n="diff.2.t">Character IPs with a voice and a look</h3>
         <p data-i18n="diff.2.d">Our characters are owned assets, not one-off prompts. Each Character IP has a locked persona, voice and visual identity, plays many roles across series, and builds a fan base that every new story inherits.</p>
         <ul class="checks">
           <li><svg><use href="#i-check"/></svg><span data-i18n="diff.2.a">One IP per role, changed only through an audited unlock</span></li>
-          <li><svg><use href="#i-check"/></svg><span data-i18n="diff.2.b">Emotion performed inside each IP's identity, episode 1 to 30</span></li>
+          <li><svg><use href="#i-check"/></svg><span data-i18n="diff.2.b">Emotion performed inside each IP's identity</span></li>
           <li><svg><use href="#i-check"/></svg><span data-i18n="diff.2.c">The same face and voice carry into the short-drama pipeline</span></li>
         </ul>
       </article>
@@ -336,7 +359,7 @@
         <tbody>
           <tr><th scope="row" data-i18n="vs.r1">Production</th><td class="me" data-i18n="vs.r1.a">An agent team, research to release</td><td data-i18n="vs.r1.b">Voice only; the rest is manual</td><td data-i18n="vs.r1.c">One clip at a time, no series structure</td><td data-i18n="vs.r1.d">A crew at every step</td></tr>
           <tr><th scope="row" data-i18n="vs.r2">Characters</th><td class="me" data-i18n="vs.r2.a">Owned Character IPs: voice + look</td><td data-i18n="vs.r2.b">Voices, no casting or continuity</td><td data-i18n="vs.r2.c">New faces with every prompt</td><td data-i18n="vs.r2.d">Human actors, availability-bound</td></tr>
-          <tr><th scope="row" data-i18n="vs.r3">Consistency across 30+ episodes</th><td class="me" data-i18n="vs.r3.a">Identity locked; QA on every scene</td><td data-i18n="vs.r3.b">Manual, per clip</td><td data-i18n="vs.r3.c">Not addressed</td><td data-i18n="vs.r3.d">Yes, at studio cost</td></tr>
+          <tr><th scope="row" data-i18n="vs.r3">Consistency across episodes</th><td class="me" data-i18n="vs.r3.a">Identity locked; QA on every scene</td><td data-i18n="vs.r3.b">Manual, per clip</td><td data-i18n="vs.r3.c">Not addressed</td><td data-i18n="vs.r3.d">Yes, at studio cost</td></tr>
           <tr><th scope="row" data-i18n="vs.r4">Quality control</th><td class="me" data-i18n="vs.r4.a">Automatic checks, bounded retries, human gate</td><td data-i18n="vs.r4.b">Listen and redo</td><td data-i18n="vs.r4.c">Hard to audit</td><td data-i18n="vs.r4.d">Human, expensive</td></tr>
           <tr><th scope="row" data-i18n="vs.r5">Formats</th><td class="me" data-i18n="vs.r5.a">Audio now; audio + image short drama next</td><td data-i18n="vs.r5.b">Audio</td><td data-i18n="vs.r5.c">Clips</td><td data-i18n="vs.r5.d">Film</td></tr>
           <tr><th scope="row" data-i18n="vs.r6">Language</th><td class="me" data-i18n="vs.r6.a">Vietnamese-first writing and delivery</td><td data-i18n="vs.r6.b">Generic multilingual</td><td data-i18n="vs.r6.c">English-first</td><td data-i18n="vs.r6.d">Local, hard to scale</td></tr>
@@ -344,19 +367,58 @@
       </table>
     </div>
 
-    <div class="grid grid-3" style="margin-top:56px" data-reveal>
-      <div class="card"><div class="ico"><svg><use href="#i-pen"/></svg></div><h3 data-i18n="f2.t">Vietnamese-first writing</h3><p data-i18n="f2.d">Correct forms of address, spoken register and a distinct voice per character. Our Anti-Trope rules keep the genre's promise but earn it through motive, wit and consequence.</p><span class="tag">vi-VN · anti-trope</span></div>
-      <div class="card"><div class="ico"><svg><use href="#i-sliders"/></svg></div><h3 data-i18n="f3.t">Directed, not just read</h3><p data-i18n="f3.d">An AI Director sets emotion, intensity (1–10), pace and pauses for every line, then compiles them into each voice engine's own settings.</p><span class="tag">emotion · intensity · pace</span></div>
-      <div class="card"><div class="ico"><svg><use href="#i-repeat"/></svg></div><h3 data-i18n="f4.t">Scene-level QA with retries</h3><p data-i18n="f4.d">Each scene is checked for duration, clipping, silence, loudness and transcript match. A failed scene is re-rendered up to three times, then queued for a person.</p><span class="tag">max 3 retries</span></div>
-      <div class="card"><div class="ico"><svg><use href="#i-wave"/></svg></div><h3 data-i18n="f5.t">Broadcast-ready masters</h3><p data-i18n="f5.d">Stereo WAV and MP3 at −16 LUFS / −1.5 dBTP. Every line is cached by content, so nothing is paid for twice.</p><span class="tag">−16 LUFS · MP3 192 kbps</span></div>
-      <div class="card"><div class="ico gold"><svg><use href="#i-shield"/></svg></div><h3 data-i18n="f6.t">Human approval and hard budgets</h3><p data-i18n="f6.d">Nothing is published without a reviewer. Budgets are hard caps, and every model and voice call is recorded with its cost.</p><span class="tag">human gate · cost ledger</span></div>
-      <div class="card"><div class="ico"><svg><use href="#i-layers"/></svg></div><h3 data-i18n="f8.t">Durable, parallel runs</h3><p data-i18n="f8.d">Scenes render in parallel within each provider's limits. Runs pause for decisions, survive restarts and resume where they stopped.</p><span class="tag">workflow graph · checkpoints</span></div>
+    <div class="bento" data-reveal>
+      <article class="tile span2" data-spot>
+        <div class="tile-viz viz-addr" aria-hidden="true">
+          <div class="addr"><span class="spk">Ngân → Hạnh</span><p>Thưa <mark>mẹ</mark>, <mark>con</mark> không cần ai thương hại.</p><small class="gloss" data-i18n="mk.gloss.1">“Mother, I don’t need anyone’s pity.”</small></div>
+          <div class="addr"><span class="spk">Linh → Dương</span><p><mark>Anh</mark> nghĩ <mark>em</mark> sẽ quỳ xuống sao?</p><small class="gloss" data-i18n="mk.gloss.2">“You think I’ll kneel?”</small></div>
+          <div class="addr"><span class="spk">Dương</span><p><em>(độc thoại)</em> Kiếp này, <mark>ta</mark> lấy lại từng thứ một.</p><small class="gloss" data-i18n="mk.gloss.3">“In this life, I take it all back, piece by piece.”</small></div>
+        </div>
+        <div class="tile-txt"><h3 data-i18n="f2.t">Vietnamese-first writing</h3><p data-i18n="f2.d">Correct forms of address, spoken register and a distinct voice per character. Our Anti-Trope rules keep the genre's promise but earn it through motive, wit and consequence.</p><span class="tag">vi-VN · anti-trope</span></div>
+      </article>
+      <article class="tile" data-spot>
+        <div class="tile-viz viz-int" aria-hidden="true">
+          <div class="meter n7"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="int-meta"><span data-i18n="mk.cold">cold</span><span>7 / 10</span><span data-i18n="mk.slow">slow</span><span>400 ms</span></div>
+        </div>
+        <div class="tile-txt"><h3 data-i18n="f3.t">Directed, not just read</h3><p data-i18n="f3.d">An AI Director sets emotion, intensity, pace and pauses for every line, then compiles them into each voice engine's own settings.</p><span class="tag">emotion · intensity · pace</span></div>
+      </article>
+      <article class="tile" data-spot>
+        <div class="tile-viz viz-retry" aria-hidden="true">
+          <span class="try bad"><b>1</b><small data-i18n="mk.clip">clipping</small></span><span class="try bad"><b>2</b><small>91%</small></span><span class="try ok"><b>3</b><small data-i18n="mk.pass">PASS</small></span>
+        </div>
+        <div class="tile-txt"><h3 data-i18n="f4.t">Scene-level QA with retries</h3><p data-i18n="f4.d">Each scene is checked for duration, clipping, silence, loudness and transcript match. A failed scene is re-rendered up to three times, then queued for a person.</p><span class="tag">max 3 retries</span></div>
+      </article>
+      <article class="tile" data-spot>
+        <div class="tile-viz viz-lufs" aria-hidden="true">
+          <div class="scale"><i class="fill"></i><span class="lm m16">−16 LUFS</span><span class="lm pk">−1.5 dBTP</span></div>
+          <div class="ticks"><span>−30</span><span>−20</span><span>−10</span><span>0</span></div>
+        </div>
+        <div class="tile-txt"><h3 data-i18n="f5.t">Broadcast-ready masters</h3><p data-i18n="f5.d">Stereo WAV and MP3 at −16 LUFS / −1.5 dBTP. Every line is cached by content, so nothing is paid for twice.</p><span class="tag">−16 LUFS · MP3 192 kbps</span></div>
+      </article>
+      <article class="tile" data-spot>
+        <div class="tile-viz viz-gate" aria-hidden="true">
+          <div class="budget"><b>$1.42</b><span>/ $2.00</span></div>
+          <div class="bbar"><i></i></div>
+          <div class="gate-row"><em data-i18n="mk.approve">Approve</em><em class="ghost" data-i18n="mk.reject">Reject</em></div>
+        </div>
+        <div class="tile-txt"><h3 data-i18n="f6.t">Human approval and hard budgets</h3><p data-i18n="f6.d">Nothing is published without a reviewer. Budgets are hard caps, and every model and voice call is recorded with its cost.</p><span class="tag">human gate · cost ledger</span></div>
+      </article>
+      <article class="tile span2" data-spot>
+        <div class="tile-viz viz-lanes" aria-hidden="true">
+          <div class="lane"><span>sc01</span><div class="track"><i style="--w:100%;--d:0s"></i></div><em class="ok">✓</em></div>
+          <div class="lane"><span>sc02</span><div class="track"><i style="--w:100%;--d:.25s"></i></div><em class="ok">✓</em></div>
+          <div class="lane"><span>sc03</span><div class="track"><i style="--w:62%;--d:.12s"></i></div><em class="run">‖</em></div>
+          <div class="lane-foot"><span data-i18n="mk.ckpt">checkpoint · sc03</span><span data-i18n="mk.resume">▸ resume</span></div>
+        </div>
+        <div class="tile-txt"><h3 data-i18n="f8.t">Durable, parallel runs</h3><p data-i18n="f8.d">Scenes render in parallel within each provider's limits. Runs pause for decisions, survive restarts and resume where they stopped.</p><span class="tag">workflow graph · checkpoints</span></div>
+      </article>
     </div>
   </div>
 </section>
 
 <!-- ═════════════ AGENT TEAM ═════════════ -->
-<section class="section surface" id="agents">
+<section class="section band-dark" id="agents">
   <div class="container">
     <header class="sec-head center" data-reveal>
       <span class="eyebrow" data-i18n="ag.eyebrow">The agent team</span>
@@ -364,124 +426,274 @@
       <p data-i18n="ag.lead">Each agent owns one craft, uses its own skills and hands the next agent a validated contract, so any step can be re-run on its own. The Producer runs the team; a person has the final say.</p>
     </header>
 
-    <article class="ag-lead" data-reveal>
-      <div>
-        <div class="ag-top"><div class="ag-ico"><svg><use href="#i-sparkle"/></svg></div><span class="ag-num">00</span><span class="pill pill-live" data-i18n="ag.live">live</span></div>
-        <h3>Producer</h3>
-        <div class="ag-role" data-i18n="ag.0.r">The showrunner you talk to</div>
-        <p data-i18n="ag.0.d">Holds the conversation, turns your idea into a production plan and delegates each part to a specialist. It asks before it spends, reports progress and cost, and never answers a decision that belongs to a person.</p>
-        <div class="tags"><span class="tag" data-i18n="ag.0.t1">chat</span><span class="tag" data-i18n="ag.0.t2">planning</span><span class="tag" data-i18n="ag.0.t3">delegation</span><span class="tag" data-i18n="ag.0.t4">budgets</span></div>
+    <div class="crew" data-reveal>
+      <div class="crew-left">
+        <div class="pillnav crew-seg" role="group" aria-label="Agent group" data-i18n-aria="ag.seg.aria">
+          <span class="pillnav-thumb" aria-hidden="true"></span>
+          <button type="button" class="pillnav-item" data-crew="live" aria-pressed="true"><span data-i18n="ag.seg.live">In production</span> <small>8</small></button>
+          <button type="button" class="pillnav-item" data-crew="next" aria-pressed="false"><span data-i18n="ag.nextpill">coming next</span> <small>4</small></button>
+        </div>
+        <div class="crew-body">
+          <div class="crew-steps">
+            <button type="button" class="step-btn" data-step="-1" aria-label="Previous agent" data-i18n-aria="ag.up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 15 6-6 6 6"/></svg></button>
+            <button type="button" class="step-btn" data-step="1" aria-label="Next agent" data-i18n-aria="ag.down"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>
+          </div>
+          <ul class="crew-list" data-group="live">
+          <li class="cp on" data-agent="0" data-k="00">
+            <button type="button" class="cp-btn" id="cpb-0" aria-expanded="true" aria-controls="cpd-0"><span class="cp-plus" aria-hidden="true"></span><span class="cp-name">Producer</span></button>
+            <div class="cp-body" id="cpd-0"><div class="cp-in"><p data-i18n="ag.0.d">Holds the conversation, turns your idea into a production plan and delegates each part to a specialist. It asks before it spends, reports progress and cost, and never answers a decision that belongs to a person.</p></div></div>
+          </li>
+          <li class="cp" data-agent="1" data-k="01">
+            <button type="button" class="cp-btn" id="cpb-1" aria-expanded="false" aria-controls="cpd-1"><span class="cp-plus" aria-hidden="true"></span><span class="cp-name" data-i18n="ag.1.n">Market Research</span></button>
+            <div class="cp-body" id="cpd-1"><div class="cp-in"><p data-i18n="ag.1.d">Reads public pages of short-drama platforms, TikTok and YouTube, analyses the hits and ranks the next direction for our audience.</p></div></div>
+          </li>
+          <li class="cp" data-agent="2" data-k="02">
+            <button type="button" class="cp-btn" id="cpb-2" aria-expanded="false" aria-controls="cpd-2"><span class="cp-plus" aria-hidden="true"></span><span class="cp-name" data-i18n="ag.2.n">Script Writer</span></button>
+            <div class="cp-body" id="cpd-2"><div class="cp-in"><p data-i18n="ag.2.d">Story concept, Vietnamese adaptation, a season arc with a cliffhanger every episode and the Anti-Trope rules. Your own dialogue can be kept word for word.</p></div></div>
+          </li>
+          <li class="cp" data-agent="3" data-k="03">
+            <button type="button" class="cp-btn" id="cpb-3" aria-expanded="false" aria-controls="cpd-3"><span class="cp-plus" aria-hidden="true"></span><span class="cp-name" data-i18n="ag.3.n">Casting &amp; Character IP</span></button>
+            <div class="cp-body" id="cpd-3"><div class="cp-in"><p data-i18n="ag.3.d">Matches roles to our Character IPs on age, persona and voice, one IP per role, and sets which voice engine each one uses.</p></div></div>
+          </li>
+          <li class="cp" data-agent="4" data-k="04">
+            <button type="button" class="cp-btn" id="cpb-4" aria-expanded="false" aria-controls="cpd-4"><span class="cp-plus" aria-hidden="true"></span><span class="cp-name" data-i18n="ag.4.n">AI Director</span></button>
+            <div class="cp-body" id="cpd-4"><div class="cp-in"><p data-i18n="ag.4.d">Emotion, intensity, pace and pauses for each line, performed inside the Character IP's identity and compiled for every voice engine.</p></div></div>
+          </li>
+          <li class="cp" data-agent="5" data-k="05">
+            <button type="button" class="cp-btn" id="cpb-5" aria-expanded="false" aria-controls="cpd-5"><span class="cp-plus" aria-hidden="true"></span><span class="cp-name" data-i18n="ag.5.n">Sound Engineer</span></button>
+            <div class="cp-body" id="cpd-5"><div class="cp-in"><p data-i18n="ag.5.d">Synthesises each scene, splits it into lines, builds the timeline and masters the episode to broadcast loudness. Every line is cached by content.</p></div></div>
+          </li>
+          <li class="cp" data-agent="6" data-k="06">
+            <button type="button" class="cp-btn" id="cpb-6" aria-expanded="false" aria-controls="cpd-6"><span class="cp-plus" aria-hidden="true"></span><span class="cp-name" data-i18n="ag.6.n">QA Critic</span></button>
+            <div class="cp-body" id="cpd-6"><div class="cp-in"><p data-i18n="ag.6.d">Automatic checks on every scene, transcript match against the script and a judgment on the peak lines. Re-renders within budget, then hands over to a person.</p></div></div>
+          </li>
+          <li class="cp" data-agent="7" data-k="07">
+            <button type="button" class="cp-btn" id="cpb-7" aria-expanded="false" aria-controls="cpd-7"><span class="cp-plus" aria-hidden="true"></span><span class="cp-name" data-i18n="ag.7.n">Publisher &amp; Approval Gate</span></button>
+            <div class="cp-body" id="cpd-7"><div class="cp-in"><p data-i18n="ag.7.d">A reviewer approves each episode. The Publisher then packages the master with its title, description and hashtags for release.</p></div></div>
+          </li>
+          <li class="cp you" data-agent="you" data-k="you">
+            <button type="button" class="cp-btn" id="cpb-you" aria-expanded="false" aria-controls="cpd-you"><span class="cp-plus" aria-hidden="true"></span><span class="cp-name" data-i18n="ag.you.n">You, the showrunner</span></button>
+            <div class="cp-body" id="cpd-you"><div class="cp-in"><p data-i18n="ag.you.d">Genre, budget, scene approval and release are yours. The team pauses and waits for you, for minutes or for days.</p></div></div>
+          </li>
+          </ul>
+          <ul class="crew-list" data-group="next" hidden>
+          <li class="crew-note" data-i18n="ag.next.d">Audio plus images, with the same Character IPs, the same series bible and the same approval gate. The QA Critic extends its checks to visuals.</li>
+          <li class="cp on" data-agent="8" data-k="08">
+            <button type="button" class="cp-btn" id="cpb-8" aria-expanded="true" aria-controls="cpd-8"><span class="cp-plus" aria-hidden="true"></span><span class="cp-name" data-i18n="ag.8.n">Visual Development</span></button>
+            <div class="cp-body" id="cpd-8"><div class="cp-in"><p data-i18n="ag.8.d">Face, wardrobe, style guide and locations, with reference frames that every later shot must match.</p></div></div>
+          </li>
+          <li class="cp" data-agent="9" data-k="09">
+            <button type="button" class="cp-btn" id="cpb-9" aria-expanded="false" aria-controls="cpd-9"><span class="cp-plus" aria-hidden="true"></span><span class="cp-name" data-i18n="ag.9.n">Storyboard</span></button>
+            <div class="cp-body" id="cpd-9"><div class="cp-in"><p data-i18n="ag.9.d">Framing and camera for every scene, with shot lengths timed to the approved audio.</p></div></div>
+          </li>
+          <li class="cp" data-agent="10" data-k="10">
+            <button type="button" class="cp-btn" id="cpb-10" aria-expanded="false" aria-controls="cpd-10"><span class="cp-plus" aria-hidden="true"></span><span class="cp-name" data-i18n="ag.10.n">Visual Director</span></button>
+            <div class="cp-body" id="cpd-10"><div class="cp-in"><p data-i18n="ag.10.d">One prompt per shot, the same face in every frame, and expression driven by the performance in the audio.</p></div></div>
+          </li>
+          <li class="cp" data-agent="11" data-k="11">
+            <button type="button" class="cp-btn" id="cpb-11" aria-expanded="false" aria-controls="cpd-11"><span class="cp-plus" aria-hidden="true"></span><span class="cp-name" data-i18n="ag.11.n">Editor</span></button>
+            <div class="cp-body" id="cpd-11"><div class="cp-in"><p data-i18n="ag.11.d">Shots cut to the audio timeline, Vietnamese subtitles, and vertical and horizontal formats.</p></div></div>
+          </li>
+          </ul>
+        </div>
       </div>
-      <ol class="ag-flow">
-        <li><span>01</span>Market Research</li>
-        <li><span>02</span>Script Writer</li>
-        <li><span>03</span>Casting &amp; Character IP</li>
-        <li><span>04</span>AI Director</li>
-        <li><span>05</span>Sound Engineer</li>
-        <li><span>06</span>QA Critic</li>
-        <li class="gate"><span>07</span>Publisher &amp; Gate</li>
-      </ol>
-    </article>
-
-    <div class="ag-grid" data-reveal>
-      <article class="ag-card">
-        <div class="ag-top"><div class="ag-ico"><svg><use href="#i-search"/></svg></div><span class="ag-num">01</span><span class="pill pill-live" data-i18n="ag.live">live</span></div>
-        <h3 data-i18n="ag.1.n">Market Research</h3>
-        <div class="ag-role" data-i18n="ag.1.r">Finds what audiences want next</div>
-        <p data-i18n="ag.1.d">Reads public pages of short-drama platforms, TikTok and YouTube, analyses the hits and ranks the next direction for our audience.</p>
-        <div class="tags"><span class="tag">Market Scan</span><span class="tag">Trend Rank</span></div>
-        <div class="ag-io">→ TrendBrief</div>
-      </article>
-      <article class="ag-card">
-        <div class="ag-top"><div class="ag-ico"><svg><use href="#i-pen"/></svg></div><span class="ag-num">02</span><span class="pill pill-live" data-i18n="ag.live">live</span></div>
-        <h3 data-i18n="ag.2.n">Script Writer</h3>
-        <div class="ag-role" data-i18n="ag.2.r">Turns a brief into a Vietnamese series</div>
-        <p data-i18n="ag.2.d">Story concept, Vietnamese adaptation, a season arc with a cliffhanger every episode and the Anti-Trope rules. Your own dialogue can be kept word for word.</p>
-        <div class="tags"><span class="tag">Episodize</span><span class="tag">Story Adapt VI</span></div>
-        <div class="ag-io">→ Series Bible</div>
-      </article>
-      <article class="ag-card">
-        <div class="ag-top"><div class="ag-ico gold"><svg><use href="#i-users"/></svg></div><span class="ag-num">03</span><span class="pill pill-live" data-i18n="ag.live">live</span></div>
-        <h3 data-i18n="ag.3.n">Casting &amp; Character IP</h3>
-        <div class="ag-role" data-i18n="ag.3.r">Gives every role a locked Character IP</div>
-        <p data-i18n="ag.3.d">Matches roles to our Character IPs on age, persona and voice, one IP per role, and sets which voice engine each one uses.</p>
-        <div class="tags"><span class="tag">Casting Match</span><span class="tag">Engine Policy</span></div>
-        <div class="ag-io">→ Resolved Cast</div>
-      </article>
-      <article class="ag-card">
-        <div class="ag-top"><div class="ag-ico"><svg><use href="#i-sliders"/></svg></div><span class="ag-num">04</span><span class="pill pill-live" data-i18n="ag.live">live</span></div>
-        <h3 data-i18n="ag.4.n">AI Director</h3>
-        <div class="ag-role" data-i18n="ag.4.r">Directs every line</div>
-        <p data-i18n="ag.4.d">Emotion, intensity, pace and pauses for each line, performed inside the Character IP's identity and compiled for every voice engine.</p>
-        <div class="tags"><span class="tag">Delivery Compile</span><span class="tag">Render Plan</span></div>
-        <div class="ag-io">→ Directed lines</div>
-      </article>
-      <article class="ag-card">
-        <div class="ag-top"><div class="ag-ico"><svg><use href="#i-wave"/></svg></div><span class="ag-num">05</span><span class="pill pill-live" data-i18n="ag.live">live</span></div>
-        <h3 data-i18n="ag.5.n">Sound Engineer</h3>
-        <div class="ag-role" data-i18n="ag.5.r">Voices, cuts and masters</div>
-        <p data-i18n="ag.5.d">Synthesises each scene, splits it into lines, builds the timeline and masters the episode to broadcast loudness. Every line is cached by content.</p>
-        <div class="tags"><span class="tag">Generate Voice</span><span class="tag">Assemble Audio</span></div>
-        <div class="ag-io">→ Mastered episode</div>
-      </article>
-      <article class="ag-card">
-        <div class="ag-top"><div class="ag-ico"><svg><use href="#i-repeat"/></svg></div><span class="ag-num">06</span><span class="pill pill-live" data-i18n="ag.live">live</span></div>
-        <h3 data-i18n="ag.6.n">QA Critic</h3>
-        <div class="ag-role" data-i18n="ag.6.r">Checks, fixes, escalates</div>
-        <p data-i18n="ag.6.d">Automatic checks on every scene, transcript match against the script and a judgment on the peak lines. Re-renders within budget, then hands over to a person.</p>
-        <div class="tags"><span class="tag">QA Audio</span><span class="tag">Review Audio</span></div>
-        <div class="ag-io">→ QA Report</div>
-      </article>
-      <article class="ag-card gate">
-        <div class="ag-top"><div class="ag-ico green"><svg><use href="#i-send"/></svg></div><span class="ag-num">07</span><span class="pill pill-live" data-i18n="ag.live">live</span></div>
-        <h3 data-i18n="ag.7.n">Publisher &amp; Approval Gate</h3>
-        <div class="ag-role" data-i18n="ag.7.r">Nothing ships without a person</div>
-        <p data-i18n="ag.7.d">A reviewer approves each episode. The Publisher then packages the master with its title, description and hashtags for release.</p>
-        <div class="tags"><span class="tag" data-i18n="ag.7.t1">human gate</span><span class="tag">YouTube</span></div>
-        <div class="ag-io">→ Release package</div>
-      </article>
-      <article class="ag-card you">
-        <div class="ag-top"><div class="ag-ico gold"><svg><use href="#i-heart"/></svg></div><span class="ag-num">you</span></div>
-        <h3 data-i18n="ag.you.n">You, the showrunner</h3>
-        <div class="ag-role" data-i18n="ag.you.r">The decisions stay human</div>
-        <p data-i18n="ag.you.d">Genre, budget, scene approval and release are yours. The team pauses and waits for you, for minutes or for days.</p>
-      </article>
+      <div class="crew-right">
+        <div class="crew-stage" aria-live="polite">
+          <div class="slides">
+        <article class="slide on" data-agent="0">
+          <span class="sl-num" aria-hidden="true">00</span>
+          <div class="sl-top"><span class="sl-ico"><svg><use href="#i-sparkle"/></svg></span><span class="pill pill-live" data-i18n="ag.live">live</span></div>
+          <h3>Producer</h3>
+          <p class="sl-role" data-i18n="ag.0.r">The showrunner you talk to</p>
+          <p class="sl-desc" data-i18n="ag.0.d">Holds the conversation, turns your idea into a production plan and delegates each part to a specialist. It asks before it spends, reports progress and cost, and never answers a decision that belongs to a person.</p>
+          <div class="art art-chat" aria-hidden="true">
+            <div class="b me" data-i18n="mk.chat.me">Make me a rebirth series: the hero is betrayed and comes back to take his empire back.</div>
+            <div class="b ai" data-i18n="mk.p.ai">3 episodes planned. Handing off: Research → Script → Casting.</div>
+            <div class="b ask"><small data-i18n="mk.dec.k">Your decision · budget</small><span data-i18n="mk.p.cap">Episodes 1–3 · cap $2.00</span><em data-i18n="mk.approve">Approve</em></div>
+          </div>
+          <div class="sl-foot"><div class="tags"><span class="tag" data-i18n="ag.0.t1">chat</span><span class="tag" data-i18n="ag.0.t2">planning</span><span class="tag" data-i18n="ag.0.t3">delegation</span><span class="tag" data-i18n="ag.0.t4">budgets</span></div><span class="sl-io">→ Production plan</span></div>
+        </article>
+        <article class="slide" data-agent="1" aria-hidden="true">
+          <span class="sl-num" aria-hidden="true">01</span>
+          <div class="sl-top"><span class="sl-ico"><svg><use href="#i-search"/></svg></span><span class="pill pill-live" data-i18n="ag.live">live</span></div>
+          <h3 data-i18n="ag.1.n">Market Research</h3>
+          <p class="sl-role" data-i18n="ag.1.r">Finds what audiences want next</p>
+          <p class="sl-desc" data-i18n="ag.1.d">Reads public pages of short-drama platforms, TikTok and YouTube, analyses the hits and ranks the next direction for our audience.</p>
+          <div class="art" aria-hidden="true">
+            <div class="art-h"><span>TrendBrief</span><span data-i18n="mk.r.n">3 directions</span></div>
+            <div class="rank"><b>1</b><span data-i18n="mk.g.rebirth">Rebirth – Comeback</span><i style="--w:92%"></i></div>
+            <div class="rank"><b>2</b><span data-i18n="mk.g.slap">Face-slap – Payback</span><i style="--w:74%"></i></div>
+            <div class="rank"><b>3</b><span data-i18n="mk.g.urban">Urban – CEO</span><i style="--w:58%"></i></div>
+          </div>
+          <div class="sl-foot"><div class="tags"><span class="tag">Market Scan</span><span class="tag">Trend Rank</span></div><span class="sl-io">→ TrendBrief</span></div>
+        </article>
+        <article class="slide" data-agent="2" aria-hidden="true">
+          <span class="sl-num" aria-hidden="true">02</span>
+          <div class="sl-top"><span class="sl-ico"><svg><use href="#i-pen"/></svg></span><span class="pill pill-live" data-i18n="ag.live">live</span></div>
+          <h3 data-i18n="ag.2.n">Script Writer</h3>
+          <p class="sl-role" data-i18n="ag.2.r">Turns a brief into a Vietnamese series</p>
+          <p class="sl-desc" data-i18n="ag.2.d">Story concept, Vietnamese adaptation, a season arc with a cliffhanger every episode and the Anti-Trope rules. Your own dialogue can be kept word for word.</p>
+          <div class="art art-script" aria-hidden="true">
+            <div class="art-h"><span data-i18n="mk.bible">Series Bible · Episode 01</span><span data-i18n="mk.cliff">cliffhanger</span></div>
+            <p class="sc-h" data-i18n="mk.sch">SCENE 1 · THE TRẦN MANSION · NIGHT</p>
+            <p><b>DƯƠNG</b> <em data-i18n="mk.mono">(inner voice)</em> <span data-i18n="mk.l1">In my last life they took everything. In this one, I take it back, piece by piece.</span></p>
+            <p><b>LINH</b> <span data-i18n="mk.l2">You think a lost game of chess can be turned around?</span></p>
+          </div>
+          <div class="sl-foot"><div class="tags"><span class="tag">Episodize</span><span class="tag">Story Adapt VI</span></div><span class="sl-io">→ Series Bible</span></div>
+        </article>
+        <article class="slide" data-agent="3" aria-hidden="true">
+          <span class="sl-num" aria-hidden="true">03</span>
+          <div class="sl-top"><span class="sl-ico gold"><svg><use href="#i-users"/></svg></span><span class="pill pill-live" data-i18n="ag.live">live</span></div>
+          <h3 data-i18n="ag.3.n">Casting &amp; Character IP</h3>
+          <p class="sl-role" data-i18n="ag.3.r">Gives every role a locked Character IP</p>
+          <p class="sl-desc" data-i18n="ag.3.d">Matches roles to our Character IPs on age, persona and voice, one IP per role, and sets which voice engine each one uses.</p>
+          <div class="art" aria-hidden="true">
+            <div class="art-h"><span data-i18n="mk.cast">Resolved Cast</span><span data-i18n="mk.perrole">1 IP / role</span></div>
+            <div class="cast"><span class="role" data-i18n="mk.role.emp">Emperor</span><span class="av s">D</span><b>Dương</b><span class="lock" data-i18n="mk.locked">IP locked</span></div>
+            <div class="cast"><span class="role" data-i18n="mk.role.rival">Rival</span><span class="av g">L</span><b>Linh</b><span class="lock" data-i18n="mk.locked">IP locked</span></div>
+            <div class="cast"><span class="role" data-i18n="mk.role.step">Stepmother</span><span class="av r">H</span><b>Hạnh</b><span class="lock" data-i18n="mk.locked">IP locked</span></div>
+          </div>
+          <div class="sl-foot"><div class="tags"><span class="tag">Casting Match</span><span class="tag">Engine Policy</span></div><span class="sl-io">→ Resolved Cast</span></div>
+        </article>
+        <article class="slide" data-agent="4" aria-hidden="true">
+          <span class="sl-num" aria-hidden="true">04</span>
+          <div class="sl-top"><span class="sl-ico"><svg><use href="#i-sliders"/></svg></span><span class="pill pill-live" data-i18n="ag.live">live</span></div>
+          <h3 data-i18n="ag.4.n">AI Director</h3>
+          <p class="sl-role" data-i18n="ag.4.r">Directs every line</p>
+          <p class="sl-desc" data-i18n="ag.4.d">Emotion, intensity, pace and pauses for each line, performed inside the Character IP's identity and compiled for every voice engine.</p>
+          <div class="art" aria-hidden="true">
+            <div class="art-h"><span>sc01 · l003</span><span>Hạnh</span></div>
+            <p class="say">“<span data-i18n="mk.l3">It is not your turn to speak in this house.</span>”</p>
+            <div class="meter n8"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="dir"><div><small data-i18n="mk.emo">emotion</small><b data-i18n="mk.stern">stern</b></div><div><small data-i18n="mk.int">intensity</small><b>8 / 10</b></div><div><small data-i18n="mk.pace">pace</small><b data-i18n="mk.slow">slow</b></div><div><small data-i18n="mk.pause">pause</small><b>450 ms</b></div></div>
+          </div>
+          <div class="sl-foot"><div class="tags"><span class="tag">Delivery Compile</span><span class="tag">Render Plan</span></div><span class="sl-io">→ Directed lines</span></div>
+        </article>
+        <article class="slide" data-agent="5" aria-hidden="true">
+          <span class="sl-num" aria-hidden="true">05</span>
+          <div class="sl-top"><span class="sl-ico"><svg><use href="#i-wave"/></svg></span><span class="pill pill-live" data-i18n="ag.live">live</span></div>
+          <h3 data-i18n="ag.5.n">Sound Engineer</h3>
+          <p class="sl-role" data-i18n="ag.5.r">Voices, cuts and masters</p>
+          <p class="sl-desc" data-i18n="ag.5.d">Synthesises each scene, splits it into lines, builds the timeline and masters the episode to broadcast loudness. Every line is cached by content.</p>
+          <div class="art" aria-hidden="true">
+            <div class="art-h"><span>ep01_master.wav</span><span>01:04</span></div>
+            <div class="art-wave" data-bars="48"></div>
+            <div class="dir"><div><small data-i18n="mk.loud">loudness</small><b>−16 LUFS</b></div><div><small data-i18n="mk.peak">true peak</small><b>−1.5 dBTP</b></div><div><small>mp3</small><b>192 kbps</b></div></div>
+          </div>
+          <div class="sl-foot"><div class="tags"><span class="tag">Generate Voice</span><span class="tag">Assemble Audio</span></div><span class="sl-io">→ Mastered episode</span></div>
+        </article>
+        <article class="slide" data-agent="6" aria-hidden="true">
+          <span class="sl-num" aria-hidden="true">06</span>
+          <div class="sl-top"><span class="sl-ico"><svg><use href="#i-repeat"/></svg></span><span class="pill pill-live" data-i18n="ag.live">live</span></div>
+          <h3 data-i18n="ag.6.n">QA Critic</h3>
+          <p class="sl-role" data-i18n="ag.6.r">Checks, fixes, escalates</p>
+          <p class="sl-desc" data-i18n="ag.6.d">Automatic checks on every scene, transcript match against the script and a judgment on the peak lines. Re-renders within budget, then hands over to a person.</p>
+          <div class="art" aria-hidden="true">
+            <div class="art-h"><span data-i18n="mk.qarep">QA Report · sc02</span><span class="ok" data-i18n="mk.pass">PASS</span></div>
+            <div class="chk"><span data-i18n="mk.c.dur">Duration</span><svg><use href="#i-check"/></svg></div>
+            <div class="chk"><span data-i18n="mk.c.clip">Clipping</span><svg><use href="#i-check"/></svg></div>
+            <div class="chk"><span data-i18n="mk.c.sil">Silence</span><svg><use href="#i-check"/></svg></div>
+            <div class="chk"><span data-i18n="mk.c.match">Transcript match</span><b>98%</b><svg><use href="#i-check"/></svg></div>
+            <p class="retry" data-i18n="mk.retry">Try 1 · transcript 91% → re-render → try 2 · pass</p>
+          </div>
+          <div class="sl-foot"><div class="tags"><span class="tag">QA Audio</span><span class="tag">Review Audio</span></div><span class="sl-io">→ QA Report</span></div>
+        </article>
+        <article class="slide" data-agent="7" aria-hidden="true">
+          <span class="sl-num" aria-hidden="true">07</span>
+          <div class="sl-top"><span class="sl-ico green"><svg><use href="#i-send"/></svg></span><span class="pill pill-live" data-i18n="ag.live">live</span></div>
+          <h3 data-i18n="ag.7.n">Publisher &amp; Approval Gate</h3>
+          <p class="sl-role" data-i18n="ag.7.r">Nothing ships without a person</p>
+          <p class="sl-desc" data-i18n="ag.7.d">A reviewer approves each episode. The Publisher then packages the master with its title, description and hashtags for release.</p>
+          <div class="art" aria-hidden="true">
+            <div class="art-h"><span data-i18n="mk.rel">Release package · Episode 01</span><span class="wait" data-i18n="mk.await">● awaiting approval</span></div>
+            <p class="yt" data-i18n="mk.yt">Rebirth Gambit: Return of the Emperor | Episode 1</p>
+            <p class="yt-tags" data-i18n="mk.tags">#MặcKhải #Rebirth #Emperor</p>
+            <div class="gate-row"><em data-i18n="mk.approve">Approve</em><em class="ghost" data-i18n="mk.reject">Reject</em></div>
+          </div>
+          <div class="sl-foot"><div class="tags"><span class="tag" data-i18n="ag.7.t1">human gate</span><span class="tag">YouTube</span></div><span class="sl-io">→ Release package</span></div>
+        </article>
+        <article class="slide" data-agent="you" aria-hidden="true">
+          <span class="sl-num" aria-hidden="true">you</span>
+          <div class="sl-top"><span class="sl-ico gold"><svg><use href="#i-heart"/></svg></span></div>
+          <h3 data-i18n="ag.you.n">You, the showrunner</h3>
+          <p class="sl-role" data-i18n="ag.you.r">The decisions stay human</p>
+          <p class="sl-desc" data-i18n="ag.you.d">Genre, budget, scene approval and release are yours. The team pauses and waits for you, for minutes or for days.</p>
+          <div class="art" aria-hidden="true">
+            <div class="art-h"><span data-i18n="mk.yours">Your decisions</span><span>4</span></div>
+            <div class="chk"><span data-i18n="mk.y.1">Genre · Rebirth</span><svg><use href="#i-check"/></svg></div>
+            <div class="chk"><span data-i18n="mk.y.2">Budget · cap $2.00</span><svg><use href="#i-check"/></svg></div>
+            <div class="chk"><span data-i18n="mk.y.3">Scene approval · sc01–sc03</span><svg><use href="#i-check"/></svg></div>
+            <div class="chk wait"><span data-i18n="mk.y.4">Release · Episode 01</span><i></i></div>
+          </div>
+        </article>
+        <article class="slide" data-agent="8" aria-hidden="true">
+          <span class="sl-num" aria-hidden="true">08</span>
+          <div class="sl-top"><span class="sl-ico"><svg><use href="#i-image"/></svg></span><span class="pill pill-next" data-i18n="ag.next">next</span></div>
+          <h3 data-i18n="ag.8.n">Visual Development</h3>
+          <p class="sl-role" data-i18n="ag.8.r">Locks each Character IP's look</p>
+          <p class="sl-desc" data-i18n="ag.8.d">Face, wardrobe, style guide and locations, with reference frames that every later shot must match.</p>
+          <div class="art draft" aria-hidden="true">
+            <div class="art-h"><span>Visual Bible · Dương</span><span>ref 01–03</span></div>
+            <div class="frames"><i></i><i></i><i></i></div>
+            <div class="swatch"><i style="background:#1a2234"></i><i style="background:#8e2934"></i><i style="background:#c99a2e"></i><i style="background:#d8cfc0"></i><span data-i18n="mk.ward">wardrobe · locations</span></div>
+          </div>
+          <div class="sl-foot"><div class="tags"></div><span class="sl-io">→ Visual Bible</span></div>
+        </article>
+        <article class="slide" data-agent="9" aria-hidden="true">
+          <span class="sl-num" aria-hidden="true">09</span>
+          <div class="sl-top"><span class="sl-ico"><svg><use href="#i-grid"/></svg></span><span class="pill pill-next" data-i18n="ag.next">next</span></div>
+          <h3 data-i18n="ag.9.n">Storyboard</h3>
+          <p class="sl-role" data-i18n="ag.9.r">Turns scenes into shots</p>
+          <p class="sl-desc" data-i18n="ag.9.d">Framing and camera for every scene, with shot lengths timed to the approved audio.</p>
+          <div class="art draft" aria-hidden="true">
+            <div class="art-h"><span data-i18n="mk.shots">Shot list · sc01</span><span data-i18n="mk.timed">timed to audio</span></div>
+            <div class="shots"><div><i class="wide"></i><span data-i18n="mk.sh.1">S1 wide · 3.2s</span></div><div><i class="close"></i><span data-i18n="mk.sh.2">S2 close-up · 1.8s</span></div><div><i class="mid"></i><span data-i18n="mk.sh.3">S3 medium · 2.4s</span></div><div><i class="xcu"></i><span data-i18n="mk.sh.4">S4 extreme close-up · 1.1s</span></div></div>
+          </div>
+          <div class="sl-foot"><div class="tags"></div><span class="sl-io">→ Shot list</span></div>
+        </article>
+        <article class="slide" data-agent="10" aria-hidden="true">
+          <span class="sl-num" aria-hidden="true">10</span>
+          <div class="sl-top"><span class="sl-ico"><svg><use href="#i-film"/></svg></span><span class="pill pill-next" data-i18n="ag.next">next</span></div>
+          <h3 data-i18n="ag.10.n">Visual Director</h3>
+          <p class="sl-role" data-i18n="ag.10.r">Generates every shot</p>
+          <p class="sl-desc" data-i18n="ag.10.d">One prompt per shot, the same face in every frame, and expression driven by the performance in the audio.</p>
+          <div class="art draft" aria-hidden="true">
+            <div class="art-h"><span>sc01 · S1–S3</span><span data-i18n="mk.same">same face</span></div>
+            <div class="frames face"><i></i><i></i><i></i></div>
+            <p class="retry" data-i18n="mk.vd">1 prompt per shot · expression from the audio</p>
+          </div>
+          <div class="sl-foot"><div class="tags"></div><span class="sl-io">→ Generated shots</span></div>
+        </article>
+        <article class="slide" data-agent="11" aria-hidden="true">
+          <span class="sl-num" aria-hidden="true">11</span>
+          <div class="sl-top"><span class="sl-ico"><svg><use href="#i-scissors"/></svg></span><span class="pill pill-next" data-i18n="ag.next">next</span></div>
+          <h3 data-i18n="ag.11.n">Editor</h3>
+          <p class="sl-role" data-i18n="ag.11.r">Cuts the episode</p>
+          <p class="sl-desc" data-i18n="ag.11.d">Shots cut to the audio timeline, Vietnamese subtitles, and vertical and horizontal formats.</p>
+          <div class="art draft" aria-hidden="true">
+            <div class="art-h"><span>ep01_cut</span><span>9:16 · 16:9</span></div>
+            <div class="tl"><small>V</small><div><i style="flex:3"></i><i style="flex:2"></i><i style="flex:2.4"></i><i style="flex:1.2"></i></div></div>
+            <div class="tl"><small>A</small><div class="a"><i style="flex:1"></i></div></div>
+            <div class="tl"><small>SUB</small><div class="s"><i style="flex:2"></i><b style="flex:.6"></b><i style="flex:2.6"></i><b style="flex:.4"></b><i style="flex:1.6"></i></div></div>
+          </div>
+          <div class="sl-foot"><div class="tags"></div><span class="sl-io">→ Episode cut</span></div>
+        </article>
+          </div>
+          <div class="rail" aria-hidden="true"></div>
+        </div>
+      </div>
     </div>
-
-    <header class="ag-next-head" data-reveal>
-      <span class="pill pill-next" data-i18n="ag.nextpill">coming next</span>
-      <h3 data-i18n="ag.next.t">Joining the team for the short-drama pipeline</h3>
-      <p data-i18n="ag.next.d">Audio plus images, with the same Character IPs, the same series bible and the same approval gate. The QA Critic extends its checks to visuals.</p>
-    </header>
-    <div class="ag-grid next" data-reveal>
-      <article class="ag-card">
-        <div class="ag-top"><div class="ag-ico"><svg><use href="#i-image"/></svg></div><span class="ag-num">08</span><span class="pill pill-next" data-i18n="ag.next">next</span></div>
-        <h3 data-i18n="ag.8.n">Visual Development</h3>
-        <div class="ag-role" data-i18n="ag.8.r">Locks each Character IP's look</div>
-        <p data-i18n="ag.8.d">Face, wardrobe, style guide and locations, with reference frames that every later shot must match.</p>
-        <div class="ag-io">→ Visual Bible</div>
-      </article>
-      <article class="ag-card">
-        <div class="ag-top"><div class="ag-ico"><svg><use href="#i-grid"/></svg></div><span class="ag-num">09</span><span class="pill pill-next" data-i18n="ag.next">next</span></div>
-        <h3 data-i18n="ag.9.n">Storyboard</h3>
-        <div class="ag-role" data-i18n="ag.9.r">Turns scenes into shots</div>
-        <p data-i18n="ag.9.d">Framing and camera for every scene, with shot lengths timed to the approved audio.</p>
-        <div class="ag-io">→ Shot list</div>
-      </article>
-      <article class="ag-card">
-        <div class="ag-top"><div class="ag-ico"><svg><use href="#i-film"/></svg></div><span class="ag-num">10</span><span class="pill pill-next" data-i18n="ag.next">next</span></div>
-        <h3 data-i18n="ag.10.n">Visual Director</h3>
-        <div class="ag-role" data-i18n="ag.10.r">Generates every shot</div>
-        <p data-i18n="ag.10.d">One prompt per shot, the same face in every frame, and expression driven by the performance in the audio.</p>
-        <div class="ag-io">→ Generated shots</div>
-      </article>
-      <article class="ag-card">
-        <div class="ag-top"><div class="ag-ico"><svg><use href="#i-scissors"/></svg></div><span class="ag-num">11</span><span class="pill pill-next" data-i18n="ag.next">next</span></div>
-        <h3 data-i18n="ag.11.n">Editor</h3>
-        <div class="ag-role" data-i18n="ag.11.r">Cuts the episode</div>
-        <p data-i18n="ag.11.d">Shots cut to the audio timeline, Vietnamese subtitles, and vertical and horizontal formats.</p>
-        <div class="ag-io">→ Episode cut</div>
-      </article>
+    <div class="tune" data-reveal>
+      <div class="tune-head">
+        <span class="pill pill-next" data-i18n="tune.pill">in progress</span>
+        <h3 data-i18n="tune.t">Better with every run, <span class="hl">inside the rules.</span></h3>
+        <p data-i18n="tune.d">We are fine-tuning our agents on the work they already do, so quality keeps rising as production scales. A tuned agent replaces the current one only when it scores better on the same checks.</p>
+      </div>
+      <ol class="tune-list">
+        <li><small>01</small><b data-i18n="tune.1.t">Learns from every run</b><p data-i18n="tune.1.d">QA reports, reviewer decisions and audience response become the data that tunes and tests each agent.</p></li>
+        <li><small>02</small><b data-i18n="tune.2.t">Adapts to every user</b><p data-i18n="tune.2.d">Learns each user's style and preferences, from tone and pacing to genre and how they review, so every run starts closer to what they want. Users can see, edit or clear what it remembers.</p></li>
+        <li><small>03</small><b data-i18n="tune.3.t">Inside the law</b><p data-i18n="tune.3.d">Consent and a licence for every voice and likeness, AI use disclosed on every platform, personal data protected under Vietnamese law, and a person approving every release.</p></li>
+      </ol>
     </div>
   </div>
 </section>
@@ -495,13 +707,14 @@
       <p data-i18n="prod.lead">The pipeline and the Character IPs are the core. Around them: our own channel, production for partners, IP licensing and, next, short dramas.</p>
     </header>
 
-    <div class="tabs" role="tablist" aria-label="Products" data-reveal>
-      <button class="tab" role="tab" id="t-studio" aria-controls="p-studio" aria-selected="true"><span data-i18n="prod.t1">Emvoox Studio</span></button>
-      <button class="tab" role="tab" id="t-ip" aria-controls="p-ip" aria-selected="false" tabindex="-1"><span data-i18n="prod.t4">Character IPs</span></button>
-      <button class="tab" role="tab" id="t-drama" aria-controls="p-drama" aria-selected="false" tabindex="-1"><span data-i18n="prod.t5">Short-drama pipeline</span></button>
-      <button class="tab" role="tab" id="t-service" aria-controls="p-service" aria-selected="false" tabindex="-1"><span data-i18n="prod.t3">Production service</span></button>
-      <button class="tab" role="tab" id="t-mk" aria-controls="p-mk" aria-selected="false" tabindex="-1">Mặc Khải</button>
-    </div>
+    <div class="tabs-wrap" data-reveal><div class="pillnav tabs" role="tablist" aria-label="Products">
+      <span class="pillnav-thumb" aria-hidden="true"></span>
+      <button class="tab pillnav-item" role="tab" id="t-studio" aria-controls="p-studio" aria-selected="true"><span data-i18n="prod.t1">Emvoox Studio</span></button>
+      <button class="tab pillnav-item" role="tab" id="t-ip" aria-controls="p-ip" aria-selected="false" tabindex="-1"><span data-i18n="prod.t4">Character IPs</span></button>
+      <button class="tab pillnav-item" role="tab" id="t-drama" aria-controls="p-drama" aria-selected="false" tabindex="-1"><span data-i18n="prod.t5">Short-drama pipeline</span></button>
+      <button class="tab pillnav-item" role="tab" id="t-service" aria-controls="p-service" aria-selected="false" tabindex="-1"><span data-i18n="prod.t3">Production service</span></button>
+      <button class="tab pillnav-item" role="tab" id="t-mk" aria-controls="p-mk" aria-selected="false" tabindex="-1">Mặc Khải</button>
+    </div></div>
 
     <div class="panel" role="tabpanel" id="p-studio" aria-labelledby="t-studio">
       <div>
@@ -517,7 +730,7 @@
       </div>
       <div class="panel-art">
         <div class="row"><span data-i18n="prod.s.a1">Input</span><span data-i18n="prod.s.a1v">Story · trend brief · research run</span></div>
-        <div class="row"><span data-i18n="prod.s.a2">Agents</span><span data-i18n="prod.s.a2v">Producer + 7 specialists</span></div>
+        <div class="row"><span data-i18n="prod.s.a2">Agents</span><span data-i18n="prod.s.a2v">Producer + specialists</span></div>
         <div class="row"><span data-i18n="prod.s.a3">Output</span><span data-i18n="prod.s.a3v">Approved masters + metadata</span></div>
         <div class="row"><span data-i18n="prod.s.a4">Runs</span><span data-i18n="prod.s.a4v">Durable, pause and resume</span></div>
         <div class="row"><span data-i18n="prod.s.a5">Runs on</span><span>V1RON OS</span></div>
@@ -604,11 +817,11 @@
       <div class="panel-art mk">
         <div class="mk-sub">墨啟 · BY EMVOOX</div>
         <div class="mk-title">Mặc Khải</div>
-        <div style="color:#b9b1a3;font-style:italic;margin-top:4px">Mở trang truyện, đánh thức cảm xúc.</div>
+        <div style="color:#b9b1a3;font-style:italic;margin-top:4px" data-i18n="mk.mk.tag">Open the page, awaken the feeling.</div>
         <div class="lines-mk">
-          <div><b>Đô thị – Tổng tài</b><span>Địa vị, gia đình, quyền lực và những bí mật phía sau</span></div>
-          <div><b>Vả mặt – Ngược tra</b><span>Đối đầu và phản công, bằng chứng cứ và trí tuệ</span></div>
-          <div><b>Tái sinh – Lội ngược dòng</b><span>Một cơ hội mới, những lựa chọn mới</span></div>
+          <div><b data-i18n="mk.g.urban">Urban – CEO</b><span data-i18n="mk.mk.urban">Status, family, power and the secrets behind them</span></div>
+          <div><b data-i18n="mk.g.slap">Face-slap – Payback</b><span data-i18n="mk.mk.slap">Confrontation and comebacks, won with evidence and wit</span></div>
+          <div><b data-i18n="mk.g.rebirth">Rebirth – Comeback</b><span data-i18n="mk.mk.rebirth">A second chance, new choices</span></div>
         </div>
       </div>
     </div>
@@ -655,13 +868,42 @@
       <h2 data-i18n="who.title">Made for audiences. <span class="hl">Built with partners.</span></h2>
       <p data-i18n="who.lead">Audiences get characters worth following. Partners get an agent pipeline that tests cheaply and scales only what audiences prove.</p>
     </header>
-    <div class="aud" data-reveal>
-      <div class="card"><div class="ico gold"><svg><use href="#i-heart"/></svg></div><h3 data-i18n="who.1.t">Listeners and fans</h3><p data-i18n="who.1.d">People who love stories with clear conflict and real turning points.</p><ul><li data-i18n="who.1.a">Free episodes on Mặc Khải</li><li data-i18n="who.1.b">Characters to follow from series to series</li></ul><a class="cta-link" href="#product" data-tab="t-mk" data-i18n="who.1.cta">About Mặc Khải →</a></div>
-      <div class="card"><div class="ico"><svg><use href="#i-book"/></svg></div><h3 data-i18n="who.2.t">Writers and storytellers</h3><p data-i18n="who.2.d">Have a story? The agent team turns it into a voiced series and shows you what the audience did with it.</p><ul><li data-i18n="who.2.a">Your dialogue kept word for word, or expanded from a treatment</li><li data-i18n="who.2.b">Retention data per episode</li></ul><a class="cta-link" href="#contact" data-interest="production" data-i18n="who.cta">Talk to us →</a></div>
-      <div class="card"><div class="ico"><svg><use href="#i-megaphone"/></svg></div><h3 data-i18n="who.3.t">Brands and agencies</h3><p data-i18n="who.3.d">Story-led content with consistent Character IPs, for campaigns people actually finish.</p><ul><li data-i18n="who.3.a">Sponsorship and brand integration in series</li><li data-i18n="who.3.b">Your reviewer approves every episode</li></ul><a class="cta-link" href="#contact" data-interest="brand" data-i18n="who.cta">Talk to us →</a></div>
-      <div class="card"><div class="ico"><svg><use href="#i-play-sq"/></svg></div><h3 data-i18n="who.4.t">Creators and MCNs</h3><p data-i18n="who.4.d">Serialized drama at a pace and cost a traditional studio cannot match.</p><ul><li data-i18n="who.4.a">Our Character IPs, or ones developed for your channel</li><li data-i18n="who.4.b">Masters ready for YouTube, with metadata</li></ul><a class="cta-link" href="#contact" data-interest="production" data-i18n="who.cta">Talk to us →</a></div>
-      <div class="card"><div class="ico"><svg><use href="#i-building"/></svg></div><h3 data-i18n="who.5.t">Platforms and studios</h3><p data-i18n="who.5.d">License Character IPs, co-produce series, or bring the agent pipeline in-house as it opens to partners.</p><ul><li data-i18n="who.5.a">Character IP licensing</li><li data-i18n="who.5.b">The agent pipeline for media teams</li></ul><a class="cta-link" href="#contact" data-interest="studio" data-i18n="who.cta">Talk to us →</a></div>
-      <div class="card"><div class="ico"><svg><use href="#i-trend"/></svg></div><h3 data-i18n="who.6.t">Partners and investors</h3><p data-i18n="who.6.d">Back a studio built on two compounding assets: an agent pipeline that gets better with every run, and characters that gain fans with every series.</p><ul><li data-i18n="who.6.a">Character IPs that compound across series</li><li data-i18n="who.6.b">Cost visible per episode, per line</li></ul><a class="cta-link" href="#contact" data-interest="invest" data-i18n="who.cta">Talk to us →</a></div>
+    <div class="ogal" data-reveal role="region" aria-roledescription="carousel" aria-label="Who it's for" data-i18n-aria="who.aria">
+      <button type="button" class="ogal-btn prev" aria-label="Previous" data-i18n-aria="who.prev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg></button>
+      <div class="ogal-stage">
+        <article class="og-card" role="group" aria-roledescription="slide">
+          <div class="og-top"><span class="og-ico gold"><svg><use href="#i-heart"/></svg></span><span class="og-n">01</span></div>
+          <h3 data-i18n="who.1.t">Listeners and fans</h3>
+          <p data-i18n="who.1.d">People who love stories with clear conflict and real turning points.</p><ul><li data-i18n="who.1.a">Free episodes on Mặc Khải</li><li data-i18n="who.1.b">Characters to follow from series to series</li></ul><a class="cta-link" href="#product" data-tab="t-mk" data-i18n="who.1.cta">About Mặc Khải →</a>
+        </article>
+        <article class="og-card" role="group" aria-roledescription="slide">
+          <div class="og-top"><span class="og-ico"><svg><use href="#i-book"/></svg></span><span class="og-n">02</span></div>
+          <h3 data-i18n="who.2.t">Writers and storytellers</h3>
+          <p data-i18n="who.2.d">Have an idea for a story? The agent team turns it into a voiced series and shows you what the audience did with it.</p><ul><li data-i18n="who.2.a">Your dialogue kept word for word, or expanded from a treatment</li><li data-i18n="who.2.b">Retention data per episode</li></ul><a class="cta-link" href="#contact" data-interest="production" data-i18n="who.cta">Talk to us →</a>
+        </article>
+        <article class="og-card" role="group" aria-roledescription="slide">
+          <div class="og-top"><span class="og-ico"><svg><use href="#i-megaphone"/></svg></span><span class="og-n">03</span></div>
+          <h3 data-i18n="who.3.t">Brands and agencies</h3>
+          <p data-i18n="who.3.d">Story-led content with consistent Character IPs, for campaigns people actually finish.</p><ul><li data-i18n="who.3.a">Sponsorship and brand integration in series</li><li data-i18n="who.3.b">Your reviewer approves every episode</li></ul><a class="cta-link" href="#contact" data-interest="brand" data-i18n="who.cta">Talk to us →</a>
+        </article>
+        <article class="og-card" role="group" aria-roledescription="slide">
+          <div class="og-top"><span class="og-ico"><svg><use href="#i-play-sq"/></svg></span><span class="og-n">04</span></div>
+          <h3 data-i18n="who.4.t">Creators and MCNs</h3>
+          <p data-i18n="who.4.d">Serialized drama at a pace and cost a traditional studio cannot match.</p><ul><li data-i18n="who.4.a">Our Character IPs, or ones developed for your channel</li><li data-i18n="who.4.b">Masters ready for YouTube, with metadata</li></ul><a class="cta-link" href="#contact" data-interest="production" data-i18n="who.cta">Talk to us →</a>
+        </article>
+        <article class="og-card" role="group" aria-roledescription="slide">
+          <div class="og-top"><span class="og-ico"><svg><use href="#i-building"/></svg></span><span class="og-n">05</span></div>
+          <h3 data-i18n="who.5.t">Platforms and studios</h3>
+          <p data-i18n="who.5.d">License Character IPs, co-produce series, or bring the agent pipeline in-house as it opens to partners.</p><ul><li data-i18n="who.5.a">Character IP licensing</li><li data-i18n="who.5.b">The agent pipeline for media teams</li></ul><a class="cta-link" href="#contact" data-interest="studio" data-i18n="who.cta">Talk to us →</a>
+        </article>
+        <article class="og-card" role="group" aria-roledescription="slide">
+          <div class="og-top"><span class="og-ico"><svg><use href="#i-trend"/></svg></span><span class="og-n">06</span></div>
+          <h3 data-i18n="who.6.t">Partners and investors</h3>
+          <p data-i18n="who.6.d">Back a studio built on two compounding assets: an agent pipeline that gets better with every run, and characters that gain fans with every series.</p><ul><li data-i18n="who.6.a">Character IPs that compound across series</li><li data-i18n="who.6.b">Cost visible per episode, per line</li></ul><a class="cta-link" href="#contact" data-interest="invest" data-i18n="who.cta">Talk to us →</a>
+        </article>
+      </div>
+      <button type="button" class="ogal-btn next" aria-label="Next" data-i18n-aria="who.next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button>
+      <div class="ogal-foot"><div class="ogal-dots" aria-hidden="true"></div><span class="ogal-count" aria-live="polite">01 / 06</span></div>
     </div>
   </div>
 </section>
@@ -671,14 +913,15 @@
   <div class="container">
     <header class="sec-head center" data-reveal>
       <span class="eyebrow" data-i18n="road.eyebrow">Roadmap</span>
-      <h2 data-i18n="road.title">From audio series <span class="hl">to short dramas.</span></h2>
+      <h2 data-i18n="road.title">From Voice IPs <span class="hl">to living characters.</span></h2>
       <p data-i18n="road.lead">Each phase is a gate, not a date: we move on when quality, cost and audience response meet the bar.</p>
     </header>
     <div class="road" data-reveal>
-      <div class="ms now"><small data-i18n="road.1.k">Phase 1</small><h3 data-i18n="road.1.t">Agentic audio pipeline</h3><p data-i18n="road.1.d">Producer and seven specialist agents in production use. Stories across three content lines and the Mặc Khải launch.</p><span class="pill pill-next" data-i18n="road.now">Now</span></div>
-      <div class="ms"><small data-i18n="road.2.k">Phase 2</small><h3 data-i18n="road.2.t">Character IP looks</h3><p data-i18n="road.2.d">A locked visual identity for each Character IP: face, wardrobe and reference frames, checked for consistency.</p></div>
-      <div class="ms"><small data-i18n="road.3.k">Phase 3</small><h3 data-i18n="road.3.t">Short-drama pilot</h3><p data-i18n="road.3.d">Audio plus images, cut to the approved audio: a three-to-five-episode pilot from a proven series.</p></div>
-      <div class="ms"><small data-i18n="road.4.k">Phase 4</small><h3 data-i18n="road.4.t">Series and partners</h3><p data-i18n="road.4.d">Short-drama series for proven stories, Character IP licensing, and the agent pipeline as a service for media partners.</p></div>
+      <div class="ms now" style="--i:0"><small data-i18n="road.1.k">Phase 1</small><h3 data-i18n="road.1.t">Agentic audio pipeline &amp; Voice IPs</h3><p data-i18n="road.1.d">The Producer and its specialist agents in production use, with a locked Voice IP for every member of the founding cast.</p><span class="pill pill-next" data-i18n="road.now">Now</span></div>
+      <div class="ms" style="--i:1"><small data-i18n="road.2.k">Phase 2</small><h3 data-i18n="road.2.t">Complete audio pipeline &amp; Mặc Khải launch</h3><p data-i18n="road.2.d">Signature voices, publishing and audience analytics complete the audio pipeline, and Mặc Khải goes live with series across three content lines.</p></div>
+      <div class="ms" style="--i:2"><small data-i18n="road.3.k">Phase 3</small><h3 data-i18n="road.3.t">Short films with Visual IPs</h3><p data-i18n="road.3.d">Each Character IP gains a locked look. Stories that won in audio become short films with images, made by the same agent team.</p></div>
+      <div class="ms" style="--i:3"><small data-i18n="road.4.k">Phase 4</small><h3 data-i18n="road.4.t">IP licensing &amp; pipeline as a service</h3><p data-i18n="road.4.d">Character IPs licensed to brands and platforms, and the agentic pipeline offered as a service to media companies and partners.</p></div>
+      <div class="ms vision" style="--i:4"><small data-i18n="road.5.k">Phase 5</small><h3 data-i18n="road.5.t">Living Character IPs</h3><p data-i18n="road.5.d">Our characters step beyond the series: their own social media accounts, live streams and direct conversations with fans, as the pipeline scales to new formats.</p><span class="pill pill-custom" data-i18n="road.vision">Vision</span></div>
     </div>
   </div>
 </section>
@@ -711,13 +954,13 @@
       <h2 data-i18n="faq.title">Questions, answered.</h2>
     </header>
     <div class="faq" data-reveal>
-      <details><summary data-i18n="faq.1.q">What makes Emvoox different from AI voice or video tools?</summary><p data-i18n="faq.1.a">Two things together. A pipeline of specialist agents that produces a whole series, from research to release, with QA and a human gate; and Character IPs that keep the same voice and look in every series, so audiences follow them.</p></details>
-      <details><summary data-i18n="faq.2.q">What is a Character IP?</summary><p data-i18n="faq.2.a">A reusable character-actor with a locked persona, voice and visual identity, who plays many roles across series. The role changes from story to story; the IP stays the same, and so does its fan base.</p></details>
-      <details><summary data-i18n="faq.3.q">Is Emvoox only for audio?</summary><p data-i18n="faq.3.a">No. Audio is where every story is tested first, because it is the cheapest way to learn whether it holds an audience. The short-drama pipeline, audio plus images with the same Character IPs, is next on our roadmap.</p></details>
-      <details><summary data-i18n="faq.4.q">Is the content made by AI?</summary><p data-i18n="faq.4.a">The agents do most of the production, directed and reviewed by people. A person approves every episode before release, and AI use is disclosed according to each platform's policy.</p></details>
-      <details><summary data-i18n="faq.5.q">Can you produce a series from my story?</summary><p data-i18n="faq.5.a">Yes, that is our production service. Send us the story or a brief; we agree scope, cost and a reviewer, then deliver approved episodes.</p></details>
-      <details><summary data-i18n="faq.6.q">How is Emvoox related to V1RON?</summary><p data-i18n="faq.6.a">Emvoox runs as a domain on V1RON OS, an AI operating system on owned hardware. V1RON provides the runtime, model access, storage and security; Emvoox owns the agent team, the Character IPs and the content.</p></details>
-      <details><summary data-i18n="faq.7.q">Can I license a Character IP or use the pipeline for my team?</summary><p data-i18n="faq.7.a">Character IP licensing and pipeline access for partners are on our roadmap. Tell us what you need and we will include you in the early partner group.</p></details>
+      <details><summary><span class="qa-q" data-i18n="faq.1.q">What makes Emvoox different from AI voice or video tools?</span><span class="qa-ico" aria-hidden="true"></span></summary><div class="qa-a"><p data-i18n="faq.1.a">Two things together. A pipeline of specialist agents that produces a whole series, from research to release, with QA and a human gate; and Character IPs that keep the same voice and look in every series, so audiences follow them.</p></div></details>
+      <details><summary><span class="qa-q" data-i18n="faq.2.q">What is a Character IP?</span><span class="qa-ico" aria-hidden="true"></span></summary><div class="qa-a"><p data-i18n="faq.2.a">A reusable character-actor with a locked persona, voice and visual identity, who plays many roles across series. The role changes from story to story; the IP stays the same, and so does its fan base.</p></div></details>
+      <details><summary><span class="qa-q" data-i18n="faq.3.q">Is Emvoox only for audio?</span><span class="qa-ico" aria-hidden="true"></span></summary><div class="qa-a"><p data-i18n="faq.3.a">No. Audio is where every story is tested first, because it is the cheapest way to learn whether it holds an audience. The short-drama pipeline, audio plus images with the same Character IPs, is next on our roadmap.</p></div></details>
+      <details><summary><span class="qa-q" data-i18n="faq.4.q">Is the content made by AI?</span><span class="qa-ico" aria-hidden="true"></span></summary><div class="qa-a"><p data-i18n="faq.4.a">The agents do most of the production, directed and reviewed by people. A person approves every episode before release, and AI use is disclosed according to each platform's policy.</p></div></details>
+      <details><summary><span class="qa-q" data-i18n="faq.5.q">Can you produce a series from my story?</span><span class="qa-ico" aria-hidden="true"></span></summary><div class="qa-a"><p data-i18n="faq.5.a">Yes, that is our production service. Send us the story or a brief; we agree scope, cost and a reviewer, then deliver approved episodes.</p></div></details>
+      <details><summary><span class="qa-q" data-i18n="faq.6.q">How is Emvoox related to V1RON?</span><span class="qa-ico" aria-hidden="true"></span></summary><div class="qa-a"><p data-i18n="faq.6.a">Emvoox runs as a domain on V1RON OS, an AI operating system on owned hardware. V1RON provides the runtime, model access, storage and security; Emvoox owns the agent team, the Character IPs and the content.</p></div></details>
+      <details><summary><span class="qa-q" data-i18n="faq.7.q">Can I license a Character IP or use the pipeline for my team?</span><span class="qa-ico" aria-hidden="true"></span></summary><div class="qa-a"><p data-i18n="faq.7.a">Character IP licensing and pipeline access for partners are on our roadmap. Tell us what you need and we will include you in the early partner group.</p></div></details>
     </div>
   </div>
 </section>
@@ -731,21 +974,46 @@
         <h2 data-i18n="ct.title">Have a story? Let's put it on air.</h2>
         <p data-i18n="ct.lead">Tell us about your story, brand or platform, or how you would like to work with our agents and Character IPs. We read every message.</p>
         <ul class="contact-list">
-          <li><svg><use href="#i-mail"/></svg><a href="mailto:dhp@emvoox.com" id="contact-email">dhp@emvoox.com</a></li>
+          <li><svg><use href="#i-mail"/></svg><a href="mailto:contact@emvoox.com" id="contact-email">contact@emvoox.com</a></li>
           <li><svg><use href="#i-pin"/></svg><span data-i18n="ct.loc">Ho Chi Minh City, Vietnam</span></li>
           <li><svg><use href="#i-layers"/></svg><span><span data-i18n="ct.built">Built on</span> <a href="https://www.v1ron.com" target="_blank" rel="noopener">V1RON</a></span></li>
         </ul>
       </div>
       <form class="form" id="contact-form" action="contact.php" method="post" novalidate>
         <div class="row2">
-          <label><span data-i18n="ct.f.name">Name</span><input name="name" required autocomplete="name" maxlength="120"></label>
-          <label><span data-i18n="ct.f.company">Company</span><input name="company" autocomplete="organization" maxlength="160"></label>
+          <div class="field" data-field="name">
+            <label for="f-name"><span data-i18n="ct.f.name">Name</span> <span class="req" aria-hidden="true">*</span></label>
+            <input id="f-name" name="name" required aria-required="true" autocomplete="name" maxlength="120" aria-describedby="err-name">
+            <p class="field-err" id="err-name" aria-live="polite"></p>
+          </div>
+          <div class="field" data-field="company">
+            <label for="f-company" data-i18n="ct.f.company">Company</label>
+            <input id="f-company" name="company" autocomplete="organization" maxlength="160">
+          </div>
         </div>
         <div class="row2">
-          <label><span>Email</span><input name="email" type="email" required autocomplete="email" maxlength="160"></label>
-          <label><span data-i18n="ct.f.phone">Phone / Zalo</span><input name="phone" type="tel" autocomplete="tel" maxlength="40"></label>
+          <div class="field" data-field="email">
+            <label for="f-email"><span>Email</span> <span class="req" aria-hidden="true">*</span></label>
+            <input id="f-email" name="email" type="email" required aria-required="true" autocomplete="email" maxlength="160" aria-describedby="err-email">
+            <p class="field-err" id="err-email" aria-live="polite"></p>
+          </div>
+          <div class="field" data-field="phone">
+            <label for="f-phone"><span data-i18n="ct.f.phone">Phone</span> <span class="req" aria-hidden="true">*</span></label>
+            <div class="phone-group">
+              <div class="cc">
+                <span class="cc-show" id="cc-show" aria-hidden="true">🇻🇳 +84</span>
+                <select id="f-cc" name="phone_cc" aria-label="Country code" data-i18n-aria="ct.f.cc">
+                  <option value="+84" data-iso="VN" selected>🇻🇳 Vietnam (+84)</option>
+                </select>
+              </div>
+              <input id="f-cc-custom" class="cc-custom" name="phone_cc_custom" type="text" inputmode="tel" maxlength="5" placeholder="+" aria-label="Country code" data-i18n-aria="ct.f.cc" aria-describedby="err-phone" hidden>
+              <input id="f-phone" name="phone" type="tel" required aria-required="true" autocomplete="tel-national" inputmode="tel" maxlength="20" placeholder="912 345 678" aria-describedby="err-phone">
+            </div>
+            <p class="field-err" id="err-phone" aria-live="polite"></p>
+          </div>
         </div>
-        <label><span data-i18n="ct.f.interest">I'm interested in</span>
+        <div class="field" data-field="interest">
+          <label for="interest" data-i18n="ct.f.interest">I'm interested in</label>
           <select name="interest" id="interest">
             <option value="production" data-i18n="ct.o.production">Producing a series from my story</option>
             <option value="brand" data-i18n="ct.o.brand">Brand partnership or sponsorship</option>
@@ -754,12 +1022,16 @@
             <option value="invest" data-i18n="ct.o.invest">Partnership or investment</option>
             <option value="other" data-i18n="ct.o.other">Something else</option>
           </select>
-        </label>
-        <label><span data-i18n="ct.f.msg">Message</span><textarea name="message" required maxlength="4000" data-i18n-ph="ct.f.msgph" placeholder="A few lines about your story, brand or idea"></textarea></label>
+        </div>
+        <div class="field" data-field="message">
+          <label for="f-message"><span data-i18n="ct.f.msg">Message</span> <span class="req" aria-hidden="true">*</span></label>
+          <textarea id="f-message" name="message" required aria-required="true" maxlength="4000" aria-describedby="err-message" data-i18n-ph="ct.f.msgph" placeholder="A few lines about your story, brand or idea"></textarea>
+          <p class="field-err" id="err-message" aria-live="polite"></p>
+        </div>
         <label class="hp" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off"></label>
         <button class="btn btn-primary btn-block" type="submit"><span data-i18n="ct.f.send">Send message</span><svg><use href="#i-arrow"/></svg></button>
         <div class="form-status" id="form-status" role="status" aria-live="polite"></div>
-        <small data-i18n="ct.f.privacy">We use your details only to reply to you.</small>
+        <small><span data-i18n="ct.f.reqnote">Fields marked * are required.</span> <span data-i18n="ct.f.privacy">We use your details only to reply to you.</span></small>
       </form>
     </div>
   </div>
@@ -790,7 +1062,8 @@
   </div>
 </footer>
 
-<script src="assets/js/i18n.js?v=2"></script>
-<script src="assets/js/site.js?v=2"></script>
+<script src="assets/js/i18n.js?v=9"></script>
+<script src="assets/js/i18n-zh.js?v=9"></script>
+<script src="assets/js/site.js?v=6"></script>
 </body>
 </html>

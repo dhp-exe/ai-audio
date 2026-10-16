@@ -187,9 +187,10 @@ v3 stability 0.5 then 1.0; v2 stability +0.15, style -0.15 per attempt; Gemini a
 
 Static site in `landing/` (no build step), hosted on DreamHost shared hosting; details in `landing/README.md`.
 1. Edit locally in `landing/`. English copy is in `index.html`; every `data-i18n` key also needs its Vietnamese text in
-   `assets/js/i18n.js`. When CSS or JS changes, bump its `?v=` in `index.html`.
-2. Preview locally: `cd landing && python3 -m http.server 8811` → `http://127.0.0.1:8811` (and `?lang=vi`). Check
-   both languages, light and dark, and a phone width. The contact form only works on the server.
+   `assets/js/i18n.js` and its Chinese (Simplified) text in `assets/js/i18n-zh.js`. When CSS or JS changes, bump its
+   `?v=` in `index.html`. Contact-form rules live in both `assets/js/site.js` and `contact.php`; keep them the same.
+2. Preview locally: `cd landing && python3 -m http.server 8811` → `http://127.0.0.1:8811` (and `?lang=vi`, `?lang=zh`).
+   Check all three languages, light and dark, and a phone width. The contact form only works on the server.
 3. Commit the change in git.
 4. Deploy: `scripts/deploy_landing.sh` (dry run, uploads nothing), check the list, then `scripts/deploy_landing.sh --live`.
    It never deletes server files.
